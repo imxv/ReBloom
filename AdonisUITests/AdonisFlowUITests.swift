@@ -93,6 +93,100 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  func testHardTimeoutExitsWaitingAndRejectsLateResult() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-hold-generation",
+        "-ui-testing-force-generation-timeout",
+      ]
+    )
+    app.launch()
+
+    let firstSample = app.buttons["sample-01"]
+    XCTAssertTrue(firstSample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(firstSample, in: app, attempts: 8))
+    firstSample.tap()
+
+    let overlay = app.descendants(matching: .any)["processing-overlay"]
+    XCTAssertTrue(overlay.waitForExistence(timeout: 3))
+    let timeoutAlert = app.alerts["这次等得有点久"]
+    XCTAssertTrue(timeoutAlert.waitForExistence(timeout: 5))
+    XCTAssertTrue(
+      app.staticTexts["处理超过 90 秒，已经停止等待。可以再试一次，或换一张照片。"].exists
+    )
+    XCTAssertTrue(timeoutAlert.buttons["再试一次"].exists)
+    XCTAssertTrue(timeoutAlert.buttons["换一张照片"].exists)
+    keepScreenshot(named: "Adonis-generation-timeout-alert")
+    timeoutAlert.buttons["换一张照片"].tap()
+
+    XCTAssertFalse(overlay.exists)
+    let settings = app.buttons["本地设置"]
+    for _ in 0..<8 where !settings.isHittable {
+      app.swipeDown()
+    }
+    XCTAssertTrue(settings.waitForExistence(timeout: 4))
+    settings.tap()
+    XCTAssertTrue(app.navigationBars["本地设置"].waitForExistence(timeout: 4))
+
+    let lateResultWait = expectation(description: "迟到处理有机会返回")
+    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+      lateResultWait.fulfill()
+    }
+    wait(for: [lateResultWait], timeout: 4)
+
+    XCTAssertTrue(app.navigationBars["本地设置"].exists)
+    XCTAssertFalse(app.staticTexts["result-title"].exists)
+    let latestEvent = app.descendants(matching: .any)["performance-latest-event"]
+    XCTAssertTrue(scrollToHittable(latestEvent, in: app, attempts: 8))
+    XCTAssertTrue(latestEvent.label.contains("处理超时"))
+    keepScreenshot(named: "Adonis-generation-timeout")
+  }
+
+  @MainActor
+  func testTimeoutDeliversAndPersistsValidatedBasicStickerFallback() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: ["-ui-testing", "-ui-testing-force-generation-fallback-timeout"]
+    )
+    app.launch()
+
+    let firstSample = app.buttons["sample-01"]
+    XCTAssertTrue(firstSample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(firstSample, in: app, attempts: 8))
+    firstSample.tap()
+
+    let resultTitle = app.staticTexts["result-title"]
+    XCTAssertTrue(resultTitle.waitForExistence(timeout: 10))
+    XCTAssertEqual(resultTitle.label, "先收下这张贴纸")
+    let fallbackNotice = app.descendants(matching: .any)["generation-fallback-notice"]
+    XCTAssertTrue(fallbackNotice.exists)
+    XCTAssertTrue(fallbackNotice.label.contains("衣物线索"))
+    XCTAssertFalse(app.descendants(matching: .any)["garment-observation-hint"].exists)
+    XCTAssertTrue(scrollToHittable(fallbackNotice, in: app, attempts: 5))
+    keepScreenshot(named: "Adonis-generation-fallback-result")
+
+    let save = app.buttons["save-today"]
+    XCTAssertTrue(scrollToHittable(save, in: app, attempts: 8))
+    save.tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 3))
+    let makeAnother = app.buttons["make-another"]
+    XCTAssertTrue(scrollToHittable(makeAnother, in: app, attempts: 5))
+    makeAnother.tap()
+
+    app.tabBars.buttons["花历"].tap()
+    let record = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(record.waitForExistence(timeout: 5))
+    record.tap()
+    let historyNotice =
+      app.descendants(matching: .any)["history-generation-fallback-notice"]
+    XCTAssertTrue(historyNotice.waitForExistence(timeout: 5))
+    XCTAssertTrue(historyNotice.label.contains("基础贴纸"))
+    keepScreenshot(named: "Adonis-generation-fallback-history")
+  }
+
+  @MainActor
   func testLocalPerformanceTraceShowsBudgetAndStages() {
     let app = XCUIApplication()
     app.launchArguments.append("-ui-testing")

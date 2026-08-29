@@ -24,7 +24,8 @@ struct GenerationResultView: View {
     self.onSave = onSave
     self.onReset = onReset
     _mode = State(
-      initialValue: draft.qualityAssessment.requiresReview ? .sticker : .shareCard
+      initialValue: draft.completionMode == .basicStickerFallback
+        || draft.qualityAssessment.requiresReview ? .sticker : .shareCard
     )
     _isSaved = State(initialValue: initiallySaved)
   }
@@ -41,6 +42,13 @@ struct GenerationResultView: View {
           resultModePicker
 
           preview
+
+          if draft.completionMode == .basicStickerFallback {
+            GenerationFallbackNotice(
+              identifier: "generation-fallback-notice",
+              isHistory: false
+            )
+          }
 
           if draft.qualityAssessment.requiresReview {
             StickerQualityNotice(assessment: draft.qualityAssessment)
@@ -128,7 +136,7 @@ struct GenerationResultView: View {
   private var resultHeader: some View {
     HStack {
       VStack(alignment: .leading, spacing: 4) {
-        Text(draft.qualityAssessment.requiresReview ? "先看看这张贴纸" : "今天开了一朵花")
+        Text(resultTitle)
           .font(.system(.title2, design: .rounded, weight: .black))
           .foregroundStyle(AdonisTheme.ink)
           .fixedSize(horizontal: false, vertical: true)
@@ -314,6 +322,14 @@ struct GenerationResultView: View {
 
   private var saveButtonTitle: String {
     if isSaved { return "今天已经收藏" }
+    if draft.completionMode == .basicStickerFallback { return "收藏这张贴纸" }
     return draft.qualityAssessment.requiresReview ? "这样也收藏" : "收藏今天"
+  }
+
+  private var resultTitle: String {
+    if draft.completionMode == .basicStickerFallback {
+      return draft.completionMode.resultTitle
+    }
+    return draft.qualityAssessment.requiresReview ? "先看看这张贴纸" : "今天开了一朵花"
   }
 }

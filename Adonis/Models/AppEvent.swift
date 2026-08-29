@@ -114,6 +114,7 @@ enum AppEventKind: String {
   case generationStarted
   case generationSucceeded
   case generationFailed
+  case generationTimedOut
   case generationCancelled
   case generationQualityWarning
   case generationQualityRejected
@@ -141,6 +142,7 @@ enum AppEventKind: String {
     case .generationStarted: "开始处理"
     case .generationSucceeded: "处理成功"
     case .generationFailed: "处理失败"
+    case .generationTimedOut: "处理超时"
     case .generationCancelled: "取消处理"
     case .generationQualityWarning: "贴纸建议复查"
     case .generationQualityRejected: "贴纸质量未通过"

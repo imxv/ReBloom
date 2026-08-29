@@ -11,6 +11,7 @@ final class OutfitRecord {
   var cardImageFilename: String
   var bloomNumber: Int
   var note: String
+  var generationCompletionModeRawValue: String = GenerationCompletionMode.complete.rawValue
   var stickerQualityLevelRawValue: String = StickerQualityLevel.acceptable.rawValue
   var stickerQualityIssueRawValues: String = ""
   var stickerQualityVersion: String = AdonisProcessingVersion.stickerQuality
@@ -24,6 +25,10 @@ final class OutfitRecord {
     )
   }
 
+  var generationCompletionMode: GenerationCompletionMode {
+    GenerationCompletionMode(rawValue: generationCompletionModeRawValue) ?? .complete
+  }
+
   init(
     id: UUID = UUID(),
     createdAt: Date = .now,
@@ -33,6 +38,7 @@ final class OutfitRecord {
     cardImageFilename: String,
     bloomNumber: Int,
     note: String = "",
+    generationCompletionMode: GenerationCompletionMode = .complete,
     stickerQualityAssessment: StickerQualityAssessment = .acceptable,
     stickerQualityVersion: String = AdonisProcessingVersion.stickerQuality,
     garmentObservations: [GarmentObservation] = []
@@ -45,6 +51,7 @@ final class OutfitRecord {
     self.cardImageFilename = cardImageFilename
     self.bloomNumber = bloomNumber
     self.note = note
+    self.generationCompletionModeRawValue = generationCompletionMode.rawValue
     self.stickerQualityLevelRawValue = stickerQualityAssessment.level.rawValue
     self.stickerQualityIssueRawValues = stickerQualityAssessment.issueRawValues
     self.stickerQualityVersion = stickerQualityVersion

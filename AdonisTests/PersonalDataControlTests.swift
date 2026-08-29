@@ -25,6 +25,7 @@ final class PersonalDataControlTests: XCTestCase {
       cardImageFilename: cardFilename,
       bloomNumber: 7,
       note: "公园",
+      generationCompletionMode: .basicStickerFallback,
       stickerQualityAssessment: StickerQualityAssessment(
         level: .reviewRecommended,
         issues: [.edgeMayIncludeBackground]
@@ -99,6 +100,10 @@ final class PersonalDataControlTests: XCTestCase {
     XCTAssertEqual(outfits.first?["originalPhotoPath"] as? String, "media/\(sourceFilename)")
     XCTAssertEqual(outfits.first?["derivedStickerPath"] as? String, "media/\(stickerFilename)")
     XCTAssertEqual(outfits.first?["derivedShareCardPath"] as? String, "media/\(cardFilename)")
+    XCTAssertEqual(
+      outfits.first?["generationCompletionMode"] as? String,
+      GenerationCompletionMode.basicStickerFallback.rawValue
+    )
     XCTAssertEqual(
       outfits.first?["stickerQualityLevel"] as? String,
       StickerQualityLevel.reviewRecommended.rawValue

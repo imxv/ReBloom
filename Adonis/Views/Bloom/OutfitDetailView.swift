@@ -16,7 +16,8 @@ struct OutfitDetailView: View {
     self.record = record
     self.onDelete = onDelete
     _visualAsset = State(
-      initialValue: record.stickerQualityAssessment.requiresReview ? .sticker : .shareCard
+      initialValue: record.generationCompletionMode == .basicStickerFallback
+        || record.stickerQualityAssessment.requiresReview ? .sticker : .shareCard
     )
   }
 
@@ -30,6 +31,13 @@ struct OutfitDetailView: View {
           visualAssetPicker
 
           visualPreview
+
+          if record.generationCompletionMode == .basicStickerFallback {
+            GenerationFallbackNotice(
+              identifier: "history-generation-fallback-notice",
+              isHistory: true
+            )
+          }
 
           if record.stickerQualityAssessment.requiresReview {
             StickerQualityNotice(

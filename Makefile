@@ -27,10 +27,13 @@ accessibility-regression: project
 
 performance-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
+		-only-testing:AdonisTests/GenerationDeadlineControllerTests \
 		-only-testing:AdonisTests/ProcessingTraceTests \
 		-only-testing:AdonisTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testLocalPerformanceTraceShowsBudgetAndStages \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testProcessingOverlayKeepsCancelReachable
+		-only-testing:AdonisUITests/AdonisFlowUITests/testProcessingOverlayKeepsCancelReachable \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testHardTimeoutExitsWaitingAndRejectsLateResult \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testTimeoutDeliversAndPersistsValidatedBasicStickerFallback
 
 lint:
 	xcrun swift-format lint --recursive --parallel --strict Adonis AdonisShared AdonisShareExtension AdonisTests AdonisUITests

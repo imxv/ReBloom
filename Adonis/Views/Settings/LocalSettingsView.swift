@@ -159,6 +159,7 @@ struct LocalSettingsView: View {
     Section("处理状态") {
       LabeledContent("成功", value: "\(successfulEvents.count)")
       LabeledContent("失败", value: "\(failedEvents.count)")
+      LabeledContent("超时", value: "\(timedOutEvents.count)")
       LabeledContent("取消", value: "\(cancelledEvents.count)")
       LabeledContent("平均端到端耗时", value: averageDurationText)
 
@@ -272,6 +273,10 @@ struct LocalSettingsView: View {
     events.filter { $0.kind == .generationCancelled }
   }
 
+  private var timedOutEvents: [AppEvent] {
+    events.filter { $0.kind == .generationTimedOut }
+  }
+
   private var successfulPerformanceTraces: [GenerationPerformanceTrace] {
     successfulEvents.compactMap(\.generationPerformanceTrace)
   }
@@ -283,7 +288,12 @@ struct LocalSettingsView: View {
   private var latestPerformanceEvent: AppEvent? {
     events.first {
       $0.generationPerformanceTrace != nil
-        && [.generationSucceeded, .generationFailed, .generationCancelled].contains($0.kind)
+        && [
+          .generationSucceeded,
+          .generationFailed,
+          .generationTimedOut,
+          .generationCancelled,
+        ].contains($0.kind)
     }
   }
 

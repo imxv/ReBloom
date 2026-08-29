@@ -88,7 +88,7 @@ M0 退出条件：
 - [x] **ADO-107：实现最小历史视图。** 花历按日期显示记录，并能再次打开、分享或删除。
 - [ ] **ADO-108：完成真实设备或目标浏览器回归。** 验证上传、生成、保存、重试和删除的完整链路。
 
-  模拟器当前 66 项测试（53 个单元测试与 13 个 UI 流程测试）、最大辅助字号与增强对比度界面检查、前后台恢复、图片像素检查、生成性能诊断和通用 iOS 真机构建已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[无障碍与前后台恢复验证](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[固定样片回归基线](docs/verification/2026-08-30-sample-regression-baseline.md)、[贴纸低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)、[生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)与 [生成性能和预算验证](docs/verification/2026-08-30-generation-performance-budget.md)。
+  模拟器当前 73 项测试（58 个单元测试与 15 个 UI 流程测试）、最大辅助字号与增强对比度界面检查、前后台恢复、图片像素检查、90 秒超时降级、生成性能诊断和通用 iOS 真机静态分析已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[无障碍与前后台恢复验证](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[固定样片回归基线](docs/verification/2026-08-30-sample-regression-baseline.md)、[贴纸低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)、[生成超时与基础贴纸降级验证](docs/verification/2026-08-30-generation-timeout-fallback.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)、[生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)与 [生成性能和预算验证](docs/verification/2026-08-30-generation-performance-budget.md)。
 
 M1 退出条件：新用户无需建立衣橱即可完成一次真实 OOTD 记录，并能再次找到或删除它。
 
@@ -149,11 +149,11 @@ M4 退出条件：历史数据可以生成用户愿意再次打开、保存或�
 - [x] **ADO-Q03：固定回归样本集。** 四张用户授权原图、透明贴纸、处理版本、哈希、像素指标、覆盖标签和已知缺陷已进入统一清单；`make sample-regression` 会执行宿主机字节级重生成、iOS 像素门槛、四张收藏卡和模拟器/真机 Vision 边界测试。基线可防止静默退化，但不替代 ADO-005 的素材扩充或 ADO-006 的泛化与用户价值验证。证据见 [固定样片回归基线验证记录](docs/verification/2026-08-30-sample-regression-baseline.md)。
 - [ ] **ADO-Q04：失败与降级。** 为超时、低质量、识别不确定和供应商不可用提供用户可理解的结果。
 
-  已完成贴纸低质量纵向切片：正常结果不打扰；结构可疑结果默认打开透明贴纸，提供无分数轻提示、“这样也收藏”和“再做一张”，并把质量状态持久化到花历、事件与个人数据导出；透明背景未分离、主体缺失或严重碎裂时不再生成收藏卡。第 4 张困难样片会稳定进入“建议复查”，前三张保持正常。硬超时、真实供应商不可用与联网重试尚未实现，因此任务保持未完成。证据见 [贴纸低质量降级验证记录](docs/verification/2026-08-30-sticker-quality-degradation.md)。
+  已完成两个本地纵向切片。贴纸低质量路径在正常结果时不打扰，结构可疑时允许检查后收藏，明显破损时拒绝误导收藏卡；第 4 张困难样片稳定进入“建议复查”。生成路径现在有 90 秒用户等待上限：无合格中间产物时可同图重试或换图，有通过结构检查的贴纸与收藏卡时直接交付基础贴纸；迟到结果不能覆盖页面，降级状态会保留到花历、事件与 `adonis-personal-data-v4` 导出。识别建议继续要求用户确认。当前没有联网供应商，因此真实供应商不可用、弱网与联网重试尚未实现，任务保持未完成。证据见 [贴纸低质量降级验证记录](docs/verification/2026-08-30-sticker-quality-degradation.md)与 [生成超时和基础贴纸降级验证记录](docs/verification/2026-08-30-generation-timeout-fallback.md)。
 - [ ] **ADO-Q05：成本与时延预算。** 在选定供应方案前记录真实请求成本、重试和后处理开销。
 
-  已完成本地链路预算切片：从输入可用到结果或终止，按“读取照片 / 抠图与白边 / 结构检查 / 收藏卡排版 / 衣物线索”记录端到端与分阶段耗时；成功、失败和取消都持久化，取消或失败保留中断阶段，设置页显示 45 秒目标、平均耗时、最慢阶段、重试与外部请求。当前没有网络请求，因此重试与外部请求真实值为 0、外部费用为“不适用”；内置样片明确标记为演示链路。真实供应商成本、联网重试、真机实时 Vision 时延和硬超时仍未实现，因此任务保持未完成。证据见 [生成性能与预算验证记录](docs/verification/2026-08-30-generation-performance-budget.md)。
-- [x] **ADO-Q06：可观测性。** 本地 Demo 记录不含图片内容的开始、成功、失败、取消、保存、删除、复用、纠正、线索创建、关联、排除、暂放和补商品图事件，并追踪相册/相机/样片/其他 App 输入来源及贴纸、卡片、衣橱分析、共享收件箱、OOTD 观察、候选排序、补图事务和历史回填版本。生成终态还保存结构化阶段耗时、预算、中断位置、重试和外部请求；事件落库失败会留下不含用户内容的系统日志，而不是静默忽略。
+  已完成本地链路预算切片：从输入可用到结果或终止，按“读取照片 / 抠图与白边 / 结构检查 / 收藏卡排版 / 衣物线索”记录端到端与分阶段耗时；成功、失败、超时和取消都持久化，中断终态保留阶段，设置页显示 45 秒目标、平均耗时、最慢阶段、重试与外部请求。90 秒用户等待边界与迟到结果隔离已经实现。当前没有网络请求，因此重试与外部请求真实值为 0、外部费用为“不适用”；内置样片明确标记为演示链路。真实供应商成本、联网重试和真机实时 Vision 时延仍未实现，因此任务保持未完成。证据见 [生成性能与预算验证记录](docs/verification/2026-08-30-generation-performance-budget.md)与 [生成超时和基础贴纸降级验证记录](docs/verification/2026-08-30-generation-timeout-fallback.md)。
+- [x] **ADO-Q06：可观测性。** 本地 Demo 记录不含图片内容的开始、成功、失败、超时、取消、保存、删除、复用、纠正、线索创建、关联、排除、暂放和补商品图事件，并追踪相册/相机/样片/其他 App 输入来源及贴纸、卡片、衣橱分析、共享收件箱、OOTD 观察、候选排序、补图事务和历史回填版本。生成终态还保存结构化阶段耗时、预算、中断位置、重试、外部请求和超时降级类型；事件落库失败会留下不含用户内容的系统日志，而不是静默忽略。
 - [ ] **ADO-Q07：可访问性与真实设备体验。** 覆盖相册权限、相机权限、弱网、前后台切换和辅助功能。
 
   已完成本地无障碍与生命周期切片：最大辅助字号、增强对比度、关键 VoiceOver 语义、44 点触控区域、减弱动态效果分支、处理中取消，以及结果页前后台往返均已实现；专项回归会恢复模拟器原设置。真实 VoiceOver 朗读与手势、相册/相机权限、真实 iPhone、重启和未来联网后的弱网仍未验证，因此任务保持未完成。证据见 [无障碍与前后台恢复验证记录](docs/verification/2026-08-30-accessibility-and-lifecycle.md)。

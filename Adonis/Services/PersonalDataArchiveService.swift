@@ -8,7 +8,7 @@ struct PersonalDataArchive: Identifiable, Sendable {
 }
 
 struct PersonalDataArchiveService {
-  static let formatVersion = "adonis-personal-data-v3"
+  static let formatVersion = "adonis-personal-data-v4"
   static let exportDirectoryName = "AdonisExports"
 
   private let mediaStore: MediaStore
@@ -345,6 +345,7 @@ private struct ExportedOutfit: Encodable, Sendable {
   let derivedShareCardPath: String
   let bloomNumber: Int
   let note: String
+  let generationCompletionMode: String
   let stickerQualityLevel: String
   let stickerQualityIssues: [String]
   let stickerQualityRequiresReview: Bool
@@ -360,6 +361,7 @@ private struct ExportedOutfit: Encodable, Sendable {
     derivedShareCardPath = "media/\(record.cardImageFilename)"
     bloomNumber = record.bloomNumber
     note = record.note
+    generationCompletionMode = record.generationCompletionMode.rawValue
     stickerQualityLevel = record.stickerQualityAssessment.level.rawValue
     stickerQualityIssues = record.stickerQualityAssessment.issues.map(\.rawValue)
     stickerQualityRequiresReview = record.stickerQualityAssessment.requiresReview

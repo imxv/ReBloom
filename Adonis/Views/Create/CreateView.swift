@@ -14,12 +14,18 @@ struct CreateView: View {
   @State private var isProcessing = false
   @State private var processingStage: ProcessingStage = .reading
   @State private var errorMessage: String?
+  @State private var errorTitle = "这次没有生成成功"
+  @State private var offersRetry = false
+  @State private var retryInput: GenerationRetryInput?
+  @State private var retryPhotoItem: PhotosPickerItem?
+  @State private var activeFallbackCandidate: GenerationFallbackCandidate?
   @State private var showCamera = false
   @State private var showCameraUnavailable = false
   @State private var showSettings = false
   @State private var activeGenerationID: UUID?
   @State private var activeInputSource: EventInputSource?
   @State private var activePerformanceRecorder: GenerationPerformanceRecorder?
+  @State private var deadlineController = GenerationDeadlineController()
 
   private let processor = StickerProcessor()
   private let qualityAssessor = StickerQualityAssessor()
@@ -82,13 +88,20 @@ struct CreateView: View {
       }
     }
     .alert(
-      "这次没有生成成功",
+      errorTitle,
       isPresented: Binding(
         get: { errorMessage != nil },
         set: { if !$0 { errorMessage = nil } }
       )
     ) {
-      Button("换一张试试", role: .cancel) {}
+      if offersRetry {
+        Button("再试一次", action: retryLastGeneration)
+      }
+      Button(offersRetry ? "换一张照片" : "换一张试试", role: .cancel) {
+        retryInput = nil
+        retryPhotoItem = nil
+        offersRetry = false
+      }
     } message: {
       Text(errorMessage ?? "请换一张照片再试。")
     }
@@ -197,7 +210,7 @@ struct CreateView: View {
               guard let image = sample.image(),
                 let sticker = sample.preparedStickerImage()
               else {
-                errorMessage = "样片没有正确打包进 App。"
+                presentGenerationError("样片没有正确打包进 App。")
                 return
               }
               Task {
@@ -265,7 +278,11 @@ struct CreateView: View {
     activeGenerationID = loadID
     activeInputSource = .photoLibrary
     activePerformanceRecorder = recorder
+    retryInput = nil
+    retryPhotoItem = item
+    activeFallbackCandidate = nil
     recorder.begin(.inputLoading)
+    armGenerationDeadline(for: loadID)
     EventLogger.log(
       .generationStarted,
       inputSource: .photoLibrary,
@@ -287,10 +304,13 @@ struct CreateView: View {
         inputSource: .photoLibrary,
         alreadyShowingProgress: true,
         performanceRecorder: recorder,
-        startEventLogged: true
+        startEventLogged: true,
+        generationID: loadID,
+        deadlineAlreadyArmed: true
       )
     } catch {
       guard activeGenerationID == loadID else { return }
+      deadlineController.cancel(generationID: loadID)
       let trace = recorder.makeTrace(interrupted: true)
       EventLogger.log(
         .generationFailed,
@@ -303,8 +323,9 @@ struct CreateView: View {
       activeGenerationID = nil
       activeInputSource = nil
       activePerformanceRecorder = nil
+      retryPhotoItem = nil
       isProcessing = false
-      errorMessage = error.localizedDescription
+      presentGenerationError(error.localizedDescription)
     }
   }
 
@@ -314,7 +335,9 @@ struct CreateView: View {
     inputSource: EventInputSource,
     alreadyShowingProgress: Bool = false,
     performanceRecorder: GenerationPerformanceRecorder? = nil,
-    startEventLogged: Bool = false
+    startEventLogged: Bool = false,
+    generationID: UUID? = nil,
+    deadlineAlreadyArmed: Bool = false
   ) async {
     await generate(
       from: image,
@@ -322,7 +345,9 @@ struct CreateView: View {
       inputSource: inputSource,
       alreadyShowingProgress: alreadyShowingProgress,
       performanceRecorder: performanceRecorder,
-      startEventLogged: startEventLogged
+      startEventLogged: startEventLogged,
+      generationID: generationID,
+      deadlineAlreadyArmed: deadlineAlreadyArmed
     )
   }
 
@@ -333,15 +358,27 @@ struct CreateView: View {
     inputSource: EventInputSource,
     alreadyShowingProgress: Bool = false,
     performanceRecorder: GenerationPerformanceRecorder? = nil,
-    startEventLogged: Bool = false
+    startEventLogged: Bool = false,
+    generationID suppliedGenerationID: UUID? = nil,
+    deadlineAlreadyArmed: Bool = false
   ) async {
-    let generationID = UUID()
+    let generationID = suppliedGenerationID ?? UUID()
     let recorder =
       performanceRecorder
       ?? GenerationPerformanceRecorder(usesPreparedSample: preparedSticker != nil)
     activeGenerationID = generationID
     activeInputSource = inputSource
     activePerformanceRecorder = recorder
+    activeFallbackCandidate = nil
+    retryPhotoItem = nil
+    retryInput = GenerationRetryInput(
+      image: image,
+      preparedSticker: preparedSticker,
+      inputSource: inputSource
+    )
+    if !deadlineAlreadyArmed {
+      armGenerationDeadline(for: generationID)
+    }
     if !alreadyShowingProgress {
       isProcessing = true
     }
@@ -358,7 +395,11 @@ struct CreateView: View {
     recorder.begin(.subjectExtraction)
 
     if ProcessInfo.processInfo.arguments.contains("-ui-testing-hold-generation") {
-      try? await Task.sleep(for: .seconds(15))
+      let holdDuration: Duration =
+        ProcessInfo.processInfo.arguments.contains(
+          "-ui-testing-force-generation-timeout"
+        ) ? .seconds(3) : .seconds(15)
+      try? await Task.sleep(for: holdDuration)
       guard activeGenerationID == generationID else { return }
     }
 
@@ -417,13 +458,33 @@ struct CreateView: View {
         date: date
       )
       recorder.finish(.shareCardComposition)
+      activeFallbackCandidate = GenerationFallbackCandidate(
+        id: generationID,
+        createdAt: date,
+        sourceImage: image,
+        stickerImage: processed.image,
+        cardImage: card,
+        bloomNumber: bloomNumber,
+        foregroundCoverage: processed.foregroundCoverage,
+        usesPreparedSample: preparedSticker != nil,
+        inputSource: inputSource,
+        qualityAssessment: qualityAssessment
+      )
       processingStage = .observing
       recorder.begin(.garmentObservation)
+      if ProcessInfo.processInfo.arguments.contains(
+        "-ui-testing-force-generation-fallback-timeout"
+      ) {
+        armGenerationDeadline(for: generationID, timeout: .seconds(1))
+        try? await Task.sleep(for: .seconds(2))
+        guard activeGenerationID == generationID else { return }
+      }
       let garmentObservations = await garmentObserver.observe(sticker: processed.image)
       recorder.finish(.garmentObservation)
       guard activeGenerationID == generationID else { return }
 
       let trace = recorder.makeTrace(interrupted: false)
+      deadlineController.cancel(generationID: generationID)
       EventLogger.log(
         .generationSucceeded,
         detail: preparedSticker == nil ? nil : "prepared_sample",
@@ -435,6 +496,9 @@ struct CreateView: View {
       activeGenerationID = nil
       activeInputSource = nil
       activePerformanceRecorder = nil
+      retryInput = nil
+      retryPhotoItem = nil
+      activeFallbackCandidate = nil
       isProcessing = false
       draft = GenerationDraft(
         createdAt: date,
@@ -451,6 +515,7 @@ struct CreateView: View {
       )
     } catch {
       guard activeGenerationID == generationID else { return }
+      deadlineController.cancel(generationID: generationID)
       let trace = recorder.makeTrace(interrupted: true)
       EventLogger.log(
         .generationFailed,
@@ -463,14 +528,18 @@ struct CreateView: View {
       activeGenerationID = nil
       activeInputSource = nil
       activePerformanceRecorder = nil
+      retryInput = nil
+      retryPhotoItem = nil
+      activeFallbackCandidate = nil
       isProcessing = false
-      errorMessage = error.localizedDescription
+      presentGenerationError(error.localizedDescription)
     }
   }
 
   @MainActor
   private func cancelGeneration() {
-    guard activeGenerationID != nil else { return }
+    guard let generationID = activeGenerationID else { return }
+    deadlineController.cancel(generationID: generationID)
     let trace = activePerformanceRecorder?.makeTrace(interrupted: true)
     activeGenerationID = nil
     selectedPhotoItem = nil
@@ -484,6 +553,89 @@ struct CreateView: View {
     )
     activeInputSource = nil
     activePerformanceRecorder = nil
+    retryInput = nil
+    retryPhotoItem = nil
+    activeFallbackCandidate = nil
+  }
+
+  @MainActor
+  private func armGenerationDeadline(
+    for generationID: UUID,
+    timeout timeoutOverride: Duration? = nil
+  ) {
+    let timeout: Duration =
+      timeoutOverride
+      ?? (ProcessInfo.processInfo.arguments.contains("-ui-testing-force-generation-timeout")
+        ? .milliseconds(1_500) : GenerationDeadlineController.productionTimeout)
+    deadlineController.arm(generationID: generationID, timeout: timeout) { expiredID in
+      handleGenerationTimeout(generationID: expiredID)
+    }
+  }
+
+  @MainActor
+  private func handleGenerationTimeout(generationID: UUID) {
+    guard activeGenerationID == generationID else { return }
+    let trace = activePerformanceRecorder?.makeTrace(interrupted: true)
+    let inputSource = activeInputSource
+    let fallbackCandidate = activeFallbackCandidate
+    activeGenerationID = nil
+    activeInputSource = nil
+    activePerformanceRecorder = nil
+    activeFallbackCandidate = nil
+    selectedPhotoItem = nil
+    isProcessing = false
+    EventLogger.log(
+      .generationTimedOut,
+      detail: fallbackCandidate == nil
+        ? "deadline_ms=90000;fallback=unavailable"
+        : "deadline_ms=90000;fallback=basic_sticker",
+      inputSource: inputSource,
+      processingVersion: AdonisProcessingVersion.generationPipeline,
+      generationPerformanceTrace: trace,
+      in: modelContext
+    )
+    if let fallbackCandidate {
+      retryInput = nil
+      retryPhotoItem = nil
+      offersRetry = false
+      errorMessage = nil
+      draft = fallbackCandidate.makeDraft(
+        processingMilliseconds: trace?.totalMilliseconds ?? 90_000
+      )
+      return
+    }
+    errorTitle = "这次等得有点久"
+    offersRetry = retryInput != nil || retryPhotoItem != nil
+    errorMessage = "处理超过 90 秒，已经停止等待。可以再试一次，或换一张照片。"
+  }
+
+  @MainActor
+  private func retryLastGeneration() {
+    errorMessage = nil
+    offersRetry = false
+    if let retryInput {
+      Task {
+        await generate(
+          from: retryInput.image,
+          preparedSticker: retryInput.preparedSticker,
+          inputSource: retryInput.inputSource
+        )
+      }
+      return
+    }
+    guard let retryPhotoItem else { return }
+    Task {
+      await loadPhoto(from: retryPhotoItem)
+    }
+  }
+
+  @MainActor
+  private func presentGenerationError(_ message: String) {
+    errorTitle = "这次没有生成成功"
+    offersRetry = false
+    retryInput = nil
+    retryPhotoItem = nil
+    errorMessage = message
   }
 
   @MainActor
@@ -517,6 +669,7 @@ struct CreateView: View {
         stickerImageFilename: stickerFilename,
         cardImageFilename: cardFilename,
         bloomNumber: draft.bloomNumber,
+        generationCompletionMode: draft.completionMode,
         stickerQualityAssessment: draft.qualityAssessment,
         stickerQualityVersion: StickerQualityAssessor.version
       )
@@ -564,6 +717,42 @@ struct CreateView: View {
         in: modelContext
       )
     }
+  }
+}
+
+private struct GenerationRetryInput {
+  let image: UIImage
+  let preparedSticker: UIImage?
+  let inputSource: EventInputSource
+}
+
+private struct GenerationFallbackCandidate {
+  let id: UUID
+  let createdAt: Date
+  let sourceImage: UIImage
+  let stickerImage: UIImage
+  let cardImage: UIImage
+  let bloomNumber: Int
+  let foregroundCoverage: Double
+  let usesPreparedSample: Bool
+  let inputSource: EventInputSource
+  let qualityAssessment: StickerQualityAssessment
+
+  func makeDraft(processingMilliseconds: Int) -> GenerationDraft {
+    GenerationDraft(
+      id: id,
+      createdAt: createdAt,
+      sourceImage: sourceImage,
+      stickerImage: stickerImage,
+      cardImage: cardImage,
+      bloomNumber: bloomNumber,
+      processingMilliseconds: processingMilliseconds,
+      foregroundCoverage: foregroundCoverage,
+      usesPreparedSample: usesPreparedSample,
+      inputSource: inputSource,
+      completionMode: .basicStickerFallback,
+      qualityAssessment: qualityAssessment
+    )
   }
 }
 
