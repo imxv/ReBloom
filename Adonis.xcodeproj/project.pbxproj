@@ -43,6 +43,7 @@
 		753A1D4111D6DA78C35A12B4 /* sample-01-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 77F83D427A76B9EAE21B0876 /* sample-01-sticker.png */; };
 		756BD9C49D13F4E62E447528 /* AdonisFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2153A825703E5C59A02F6A3D /* AdonisFlowUITests.swift */; };
 		7648F7094EA366551F43714F /* AdonisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C79187C672D6932F46FD1BC /* AdonisApp.swift */; };
+		794A006056BB5F4413ABAACF /* SampleRegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCEE85686A0D72974233370 /* SampleRegressionTests.swift */; };
 		833D591989DF8A521A68D1C1 /* WardrobeCandidateMatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2ED59B556B639C01144CF3 /* WardrobeCandidateMatcherTests.swift */; };
 		84E550994C1DD4E25B25F5D6 /* SharedImageInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9C4FA8A91B8CCA08F29DBB /* SharedImageInbox.swift */; };
 		8A92C00F7CF1C1DE1976C59F /* sample-03.png in Resources */ = {isa = PBXBuildFile; fileRef = 7C1B423C8D9B768E0AB09434 /* sample-03.png */; };
@@ -56,6 +57,7 @@
 		A9A9F6F7D289FC8856D4D3A1 /* AdonisTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A8470E112FD06E2CDC338F /* AdonisTheme.swift */; };
 		AA09CC345698764168BFAD0F /* WardrobeItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A0AC80513194F13CBD6154 /* WardrobeItem.swift */; };
 		AA7616F94BC57247CB84EB02 /* WardrobeItemImageUpgradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41C63FE0943B218F96DECA0 /* WardrobeItemImageUpgradeView.swift */; };
+		AF2F7F5C8C190F1FE8B1B9B5 /* regression-baseline.json in Resources */ = {isa = PBXBuildFile; fileRef = FDAAA9947C77EB91D4FB6673 /* regression-baseline.json */; };
 		B025F76F64788BA52A25BFBE /* VisualContentProvenance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E35A62405F04F4C91FD146 /* VisualContentProvenance.swift */; };
 		B8E00E8E01CF44D38A6F50C0 /* WardrobeImageAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344C0FB1909A7A7BC018E316 /* WardrobeImageAnalyzer.swift */; };
 		B9540D2F881B8B9964CA15EC /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12FE82838AC414CFC2DB702A /* ShareViewController.swift */; };
@@ -124,6 +126,7 @@
 		05DBA0C9DB94BDE4B6AA5635 /* AdonisShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AdonisShareExtension.entitlements; sourceTree = "<group>"; };
 		06D602C70C508E36FB89DD60 /* OutfitGarmentObservationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitGarmentObservationsView.swift; sourceTree = "<group>"; };
 		0AE5FB9960887C789F813E51 /* ShareCardRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRenderer.swift; sourceTree = "<group>"; };
+		0BCEE85686A0D72974233370 /* SampleRegressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleRegressionTests.swift; sourceTree = "<group>"; };
 		0F44F8DBF49B6179FC299C61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		110BE262F9946F560C99A9F5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		129CE264359B0015C452A7D5 /* WardrobeItemImageUpgradeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemImageUpgradeService.swift; sourceTree = "<group>"; };
@@ -195,6 +198,7 @@
 		F3A0AC80513194F13CBD6154 /* WardrobeItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItem.swift; sourceTree = "<group>"; };
 		F3A9C1588A5A38E96E7EA650 /* SharedWardrobeImportCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedWardrobeImportCoordinatorTests.swift; sourceTree = "<group>"; };
 		FAD5A96B162481D212E146A1 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
+		FDAAA9947C77EB91D4FB6673 /* regression-baseline.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "regression-baseline.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -227,6 +231,7 @@
 			isa = PBXGroup;
 			children = (
 				1616941BE0EAB40F74A088AA /* README.md */,
+				FDAAA9947C77EB91D4FB6673 /* regression-baseline.json */,
 				77F83D427A76B9EAE21B0876 /* sample-01-sticker.png */,
 				94AFB89D4E0698D5253B8179 /* sample-01.png */,
 				770A0820A3D2A9292070667E /* sample-02-sticker.png */,
@@ -402,6 +407,7 @@
 				0297B7A729F4B3D757F6A0A3 /* OutfitGarmentObserverTests.swift */,
 				6392E24759177B8122E2626C /* PersonalDataControlTests.swift */,
 				D6CAE9A2C46336ABF1F1AC6C /* ProcessingTraceTests.swift */,
+				0BCEE85686A0D72974233370 /* SampleRegressionTests.swift */,
 				3817293121985A50BE799780 /* ShareCardRendererTests.swift */,
 				316737292FE33E782DAD2887 /* SharedImageInboxTests.swift */,
 				F3A9C1588A5A38E96E7EA650 /* SharedWardrobeImportCoordinatorTests.swift */,
@@ -543,6 +549,7 @@
 			files = (
 				A2EE6457FD6A5063FF426A21 /* Assets.xcassets in Resources */,
 				153086CAF11ADC89B572AC57 /* README.md in Resources */,
+				AF2F7F5C8C190F1FE8B1B9B5 /* regression-baseline.json in Resources */,
 				753A1D4111D6DA78C35A12B4 /* sample-01-sticker.png in Resources */,
 				17E549E80F389BD3C90C24D4 /* sample-01.png in Resources */,
 				6E01162835B4CAB93893D08D /* sample-02-sticker.png in Resources */,
@@ -583,6 +590,7 @@
 				1D66DB546BDE1410DD5C83B8 /* OutfitGarmentObserverTests.swift in Sources */,
 				F4578113E65A439E817E8886 /* PersonalDataControlTests.swift in Sources */,
 				C30CBEFC83833D8261D3C7C2 /* ProcessingTraceTests.swift in Sources */,
+				794A006056BB5F4413ABAACF /* SampleRegressionTests.swift in Sources */,
 				6CC04A5970B49E77F75BF5C3 /* ShareCardRendererTests.swift in Sources */,
 				1E771E07BF3146CEE74A025F /* SharedImageInboxTests.swift in Sources */,
 				72CE834B10BE56C4FFA4C882 /* SharedWardrobeImportCoordinatorTests.swift in Sources */,

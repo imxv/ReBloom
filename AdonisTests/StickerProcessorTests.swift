@@ -3,6 +3,28 @@ import XCTest
 @testable import Adonis
 
 final class StickerProcessorTests: XCTestCase {
+  func testLiveProcessorUsesRealVisionOrReportsKnownSimulatorBoundary() async throws {
+    #if targetEnvironment(simulator)
+      let sample = try XCTUnwrap(SampleCatalog.photos.first)
+      let source = try XCTUnwrap(sample.image(), "无法读取 \(sample.resourceName)")
+
+      do {
+        let result = try await StickerProcessor().process(source)
+        try assertShareReadySticker(result.image, sampleName: sample.resourceName)
+      } catch let error as StickerProcessingError {
+        guard case .simulatorVisionUnavailable = error else {
+          return XCTFail("模拟器应真实生成贴纸或报告 Vision 能力边界，实际为 \(error)")
+        }
+      }
+    #else
+      for sample in SampleCatalog.photos {
+        let source = try XCTUnwrap(sample.image(), "无法读取 \(sample.resourceName)")
+        let result = try await StickerProcessor().process(source)
+        try assertShareReadySticker(result.image, sampleName: sample.resourceName)
+      }
+    #endif
+  }
+
   func testAllBundledPreparedSamplesProduceRealTransparency() throws {
     for sample in SampleCatalog.photos {
       let source = try XCTUnwrap(sample.image(), "无法读取 \(sample.resourceName)")
@@ -51,6 +73,22 @@ final class StickerProcessorTests: XCTestCase {
   private func hasAlphaChannel(_ image: UIImage) -> Bool {
     guard let alphaInfo = image.cgImage?.alphaInfo else { return false }
     return [.first, .last, .premultipliedFirst, .premultipliedLast].contains(alphaInfo)
+  }
+
+  private func assertShareReadySticker(_ image: UIImage, sampleName: String) throws {
+    let alpha = try alphaStatistics(of: image)
+
+    XCTAssertGreaterThanOrEqual(
+      max(image.size.width, image.size.height),
+      1_536,
+      "\(sampleName) 实时输出未达到独立分享规格"
+    )
+    XCTAssertGreaterThan(
+      alpha.transparentRatio,
+      0.1,
+      "\(sampleName) 实时输出仍像完整背景矩形"
+    )
+    XCTAssertGreaterThan(alpha.opaqueRatio, 0.05, "\(sampleName) 实时输出没有可见主体")
   }
 
   private func alphaStatistics(of image: UIImage) throws -> (

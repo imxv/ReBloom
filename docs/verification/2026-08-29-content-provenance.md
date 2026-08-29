@@ -48,7 +48,7 @@
 
 - 来源契约与个人数据导出的 7 个专项单元测试通过，0 失败；结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.29_23-43-07-+0800.xcresult`。
 - 结果、历史和衣橱的 2 个专项 UI 流程测试通过，0 失败；结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.29_23-43-54-+0800.xcresult`。
-- 最终执行 `make check`，严格 `swift-format` 与通用 iOS 设备静态分析通过；执行 `make test`，38 个单元测试与 9 个 UI 流程测试共 47 项全部通过、0 失败。最终结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.29_23-49-15-+0800.xcresult`。
+- 最新完整执行 `make check`，严格 `swift-format` 与通用 iOS 设备静态分析通过；执行 `make test`，42 个单元测试与 9 个 UI 流程测试共 51 项全部通过、0 失败。结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_00-16-27-+0800.xcresult`。
 - 最终 XCTest 生成的 TAR 已从结果包导出，再由 macOS `tar -tf`、`tar -xOf` 与 `jq` 独立读取。归档包含清单、5 个媒体文件和 1 张待导入图片；`visualAssets` 实际为 6 项，当前各项 `containsAIGeneratedPixels` 均为 `false`，只有 `garment_observation_preview` 的 `requiresUserConfirmation` 为 `true`。
 
 ## 界面证据

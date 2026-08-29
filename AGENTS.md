@@ -16,6 +16,8 @@
 
 修改抠图、收藏卡、图片识别、补全、生成、试穿、风格创作、结果分享或图片导出清单前，还必须完整阅读 [生成内容来源标识验证记录](docs/verification/2026-08-29-content-provenance.md)。当前透明贴纸属于“原图处理”，收藏卡属于“程序排版”，衣橱分析属于“识别建议”；它们都不含 AI 生成像素，不得描述成 AI 生成。未来的 AI 补全与 AI 生成必须使用既定来源类型，并在结果和历史中提供可见说明。
 
+修改模型、提示、Vision 请求、蒙版、裁切、白边、缩放、样片资产或收藏卡渲染前，还必须完整阅读 [固定样片回归基线验证记录](docs/verification/2026-08-30-sample-regression-baseline.md)，并运行 `make sample-regression`。候选输出先生成到临时目录并逐张对照原图目检；不得只为让测试变绿而覆盖贴纸、重录指标或删除困难样本。
+
 修改 OOTD 衣物发现、候选排序、自动关联或历史回填前，还必须完整阅读 [OOTD 衣物线索与确认验证记录](docs/verification/2026-08-29-ootd-garment-observations.md)。当前类别与颜色候选只是待确认建议，不是同款识别证据。
 
 修改 OOTD 单品的商品图补充、图片替换、重复判断或历史回填前，还必须完整阅读 [OOTD 单品补商品图验证记录](docs/verification/2026-08-29-ootd-product-image-upgrade.md)。补图必须原地升级同一个衣物实体，保留用户命名、备注与已确认分类；重复图片不得在没有用户确认的情况下自动合并两个单品。
@@ -54,4 +56,5 @@
 
 - 修改 Swift 源码后运行 `make check`，执行严格 `swift-format` 检查与通用 iOS 设备静态分析。
 - 修改用户主链路、数据模型或图像处理后运行 `make test`；不能用单次编译代替 UI 与像素证据。
+- 修改模型、提示、分割或贴纸/收藏卡后处理时，额外运行 `make sample-regression`；它同时校验仓库哈希、macOS Vision 字节级重生成、iOS 像素结构和四张收藏卡。
 - 当前 iOS 26.5 模拟器的 Vision 推理上下文不可用。不得用假蒙版伪装成功；先阅读 [2026-08-29 iOS 本地 Demo 验证记录](docs/verification/2026-08-29-ios-local-demo.md)，并在可用真机上补做实时分割回归。

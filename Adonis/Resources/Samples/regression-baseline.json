@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "name": "adonis-authorized-sample-regression",
+  "authorization": {
+    "kind": "user_provided",
+    "receivedOn": "2026-08-29",
+    "externalSocialPlatformImagesIncluded": false
+  },
+  "processing": {
+    "version": "sticker-vision-v1",
+    "generator": "scripts/generate_sample_stickers.swift",
+    "platform": "macOS Vision VNGeneratePersonSegmentationRequest + Core Image",
+    "minimumLongEdgePixels": 1536
+  },
+  "samples": [
+    {
+      "id": "sample-01",
+      "source": {
+        "resourceName": "sample-01.png",
+        "sha256": "eeab59ff1e4b4ef9e8413bdd6a6f0a0b823aef520c09d39a1321a23d67759829",
+        "width": 1080,
+        "height": 1440
+      },
+      "sticker": {
+        "resourceName": "sample-01-sticker.png",
+        "sha256": "d955397f25f7bf0b847d1f608a2423c91a820738a1989bbba8463148af029344",
+        "width": 846,
+        "height": 1536,
+        "metrics": {
+          "transparentRatio": 0.634445,
+          "opaqueRatio": 0.339869,
+          "semiTransparentRatio": 0.025685,
+          "cornerTransparentRatio": 1.0,
+          "largestComponentRatio": 0.999949,
+          "whiteBoundaryRatio": 1.0,
+          "nonWhiteOpaqueRatio": 0.255346
+        }
+      },
+      "coverageTags": ["standing", "light_clothing", "handheld_drink", "handbag"],
+      "knownLimitations": [
+        "左手饮料与发丝周围仍有少量灰白分割残留，作为边缘噪声基线保留。"
+      ]
+    },
+    {
+      "id": "sample-02",
+      "source": {
+        "resourceName": "sample-02.png",
+        "sha256": "5899d410fe7f0c39a7f8225e5db8ce231755eeee154fe1bb453f227bd967bcdd",
+        "width": 1080,
+        "height": 1440
+      },
+      "sticker": {
+        "resourceName": "sample-02-sticker.png",
+        "sha256": "5ce0d85742ffa585bb36da7d846ae073c28f6ef34a8e05fbc60e5657c578ea27",
+        "width": 548,
+        "height": 1536,
+        "metrics": {
+          "transparentRatio": 0.443072,
+          "opaqueRatio": 0.470063,
+          "semiTransparentRatio": 0.086865,
+          "cornerTransparentRatio": 1.0,
+          "largestComponentRatio": 1.0,
+          "whiteBoundaryRatio": 1.0,
+          "nonWhiteOpaqueRatio": 0.367591
+        }
+      },
+      "coverageTags": ["standing", "dark_clothing", "large_blank_background", "metallic_bag"],
+      "knownLimitations": [
+        "金属包、左侧身体与长椅接触处仍夹带墙面和座椅残留。"
+      ]
+    },
+    {
+      "id": "sample-03",
+      "source": {
+        "resourceName": "sample-03.png",
+        "sha256": "34bf69017581655fe7bfacce63d935fbcbd05af3bb2857f9f06ac00f7dd0ae74",
+        "width": 1080,
+        "height": 1440
+      },
+      "sticker": {
+        "resourceName": "sample-03-sticker.png",
+        "sha256": "62cfa4d8105d017eabd7e6e3548bd6735f98cc7c45fb3a5eb6ccfda63e5fe156",
+        "width": 530,
+        "height": 1536,
+        "metrics": {
+          "transparentRatio": 0.317574,
+          "opaqueRatio": 0.652610,
+          "semiTransparentRatio": 0.029815,
+          "cornerTransparentRatio": 1.0,
+          "largestComponentRatio": 0.999976,
+          "whiteBoundaryRatio": 1.0,
+          "nonWhiteOpaqueRatio": 0.561990
+        }
+      },
+      "coverageTags": ["standing", "complex_background", "wide_leg_pants", "face_occlusion"],
+      "knownLimitations": [
+        "头发、肩部与店内复杂背景交界处仍有少量灰白残留。"
+      ]
+    },
+    {
+      "id": "sample-04",
+      "source": {
+        "resourceName": "sample-04.png",
+        "sha256": "ff47e939b5cd42f479182e5ecd81e00fc6ff9f06b119e822f8edba4485efba19",
+        "width": 1080,
+        "height": 1440
+      },
+      "sticker": {
+        "resourceName": "sample-04-sticker.png",
+        "sha256": "893626428ebf7e8b9414f8d61dc409681cf994568d6d7ad6ddf2b11869fb566d",
+        "width": 1174,
+        "height": 1536,
+        "metrics": {
+          "transparentRatio": 0.505384,
+          "opaqueRatio": 0.361590,
+          "semiTransparentRatio": 0.133025,
+          "cornerTransparentRatio": 1.0,
+          "largestComponentRatio": 0.995040,
+          "whiteBoundaryRatio": 1.0,
+          "nonWhiteOpaqueRatio": 0.328369
+        }
+      },
+      "coverageTags": ["seated", "dark_clothing", "dark_background", "crossed_legs"],
+      "knownLimitations": [
+        "抬腿与浅色软垫紧邻，当前会把大块软垫并入主体；这是明确失败边界，不是合格抠图示例。"
+      ]
+    }
+  ]
+}
