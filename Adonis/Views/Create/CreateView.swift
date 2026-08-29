@@ -7,6 +7,7 @@ struct CreateView: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @Environment(\.modelContext) private var modelContext
+  @Environment(\.openURL) private var openURL
   @Query(sort: \OutfitRecord.createdAt, order: .reverse) private var records: [OutfitRecord]
 
   @State private var selectedPhotoItem: PhotosPickerItem?
@@ -19,8 +20,9 @@ struct CreateView: View {
   @State private var retryInput: GenerationRetryInput?
   @State private var retryPhotoItem: PhotosPickerItem?
   @State private var activeFallbackCandidate: GenerationFallbackCandidate?
-  @State private var showCamera = false
-  @State private var showCameraUnavailable = false
+  @State private var cameraSheet: CameraSheet?
+  @State private var cameraAlert: CameraAccessAlert?
+  @State private var isResolvingCameraAccess = false
   @State private var showSettings = false
   @State private var activeGenerationID: UUID?
   @State private var activeInputSource: EventInputSource?
@@ -31,6 +33,12 @@ struct CreateView: View {
   private let qualityAssessor = StickerQualityAssessor()
   private let cardRenderer = ShareCardRenderer()
   private let garmentObserver = OutfitGarmentObserver()
+  private let cameraAccessService: CameraAccessService
+
+  @MainActor
+  init(cameraAccessService: CameraAccessService? = nil) {
+    self.cameraAccessService = cameraAccessService ?? .live
+  }
 
   var body: some View {
     ZStack {
@@ -76,11 +84,12 @@ struct CreateView: View {
         onReset: { self.draft = nil }
       )
     }
-    .sheet(isPresented: $showCamera) {
+    .sheet(item: $cameraSheet) { _ in
       CameraPicker { image in
         Task { await generate(from: image, inputSource: .camera) }
       }
       .ignoresSafeArea()
+      .accessibilityIdentifier("camera-picker")
     }
     .sheet(isPresented: $showSettings) {
       NavigationStack {
@@ -105,11 +114,7 @@ struct CreateView: View {
     } message: {
       Text(errorMessage ?? "请换一张照片再试。")
     }
-    .alert("模拟器没有相机", isPresented: $showCameraUnavailable) {
-      Button("知道了", role: .cancel) {}
-    } message: {
-      Text("可以选择相册照片，或先用下面的四张样片体验完整流程。")
-    }
+    .alert(item: $cameraAlert, content: cameraAccessAlert)
   }
 
   private var header: some View {
@@ -181,11 +186,7 @@ struct CreateView: View {
       .accessibilityIdentifier("choose-photo")
 
       Button {
-        if UIImagePickerController.isSourceTypeAvailable(.camera) {
-          showCamera = true
-        } else {
-          showCameraUnavailable = true
-        }
+        requestCamera()
       } label: {
         Label("现在拍一张", systemImage: "camera.fill")
           .font(.system(.headline, design: .rounded, weight: .bold))
@@ -195,6 +196,7 @@ struct CreateView: View {
             .white.opacity(0.72), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
       }
       .buttonStyle(StickerButtonStyle())
+      .disabled(isResolvingCameraAccess)
       .accessibilityIdentifier("take-photo")
     }
   }
@@ -269,6 +271,50 @@ struct CreateView: View {
       AdonisTheme.leaf.opacity(0.11), in: RoundedRectangle(cornerRadius: 18, style: .continuous)
     )
     .accessibilityElement(children: .combine)
+  }
+
+  @MainActor
+  private func requestCamera() {
+    guard !isResolvingCameraAccess else { return }
+    isResolvingCameraAccess = true
+    Task { @MainActor in
+      let outcome = await cameraAccessService.resolveLaunchOutcome()
+      isResolvingCameraAccess = false
+      switch outcome {
+      case .openCamera:
+        cameraAlert = nil
+        cameraSheet = .picker
+      case .unavailable:
+        cameraAlert = .unavailable
+      case .permissionDenied:
+        cameraAlert = .permissionDenied
+      case .restricted:
+        cameraAlert = .restricted
+      }
+    }
+  }
+
+  private func cameraAccessAlert(for issue: CameraAccessAlert) -> Alert {
+    switch issue {
+    case .permissionDenied:
+      return Alert(
+        title: Text(issue.title),
+        message: Text(issue.message),
+        primaryButton: .default(Text("打开系统设置"), action: openCameraSettings),
+        secondaryButton: .cancel(Text("先不用"))
+      )
+    case .unavailable, .restricted:
+      return Alert(
+        title: Text(issue.title),
+        message: Text(issue.message),
+        dismissButton: .cancel(Text("知道了"))
+      )
+    }
+  }
+
+  private func openCameraSettings() {
+    guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+    openURL(settingsURL)
   }
 
   @MainActor
@@ -724,6 +770,39 @@ private struct GenerationRetryInput {
   let image: UIImage
   let preparedSticker: UIImage?
   let inputSource: EventInputSource
+}
+
+private enum CameraSheet: String, Identifiable {
+  case picker
+
+  var id: String { rawValue }
+}
+
+private enum CameraAccessAlert: String, Identifiable {
+  case unavailable
+  case permissionDenied
+  case restricted
+
+  var id: String { rawValue }
+
+  var title: String {
+    switch self {
+    case .unavailable: "这里暂时不能拍照"
+    case .permissionDenied: "需要相机权限"
+    case .restricted: "这台 iPhone 限制了相机"
+    }
+  }
+
+  var message: String {
+    switch self {
+    case .unavailable:
+      "可以选择相册照片，或先用下面的四张样片体验完整流程。"
+    case .permissionDenied:
+      "要拍一张新照片，请先在系统设置里允许 Adonis 使用相机。你也可以继续从相册选择。"
+    case .restricted:
+      "当前系统限制不允许 Adonis 使用相机。你仍然可以从相册选择照片。"
+    }
+  }
 }
 
 private struct GenerationFallbackCandidate {

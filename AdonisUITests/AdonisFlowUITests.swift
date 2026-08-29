@@ -2,6 +2,50 @@ import XCTest
 
 final class AdonisFlowUITests: XCTestCase {
   @MainActor
+  func testDeniedCameraPermissionOffersSettingsWithoutOpeningCamera() {
+    let app = XCUIApplication()
+    app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-camera-denied"])
+    app.launch()
+
+    let camera = app.buttons["take-photo"]
+    XCTAssertTrue(camera.waitForExistence(timeout: 8))
+    camera.tap()
+
+    let alert = app.alerts["需要相机权限"]
+    XCTAssertTrue(alert.waitForExistence(timeout: 4))
+    XCTAssertTrue(
+      app.staticTexts[
+        "要拍一张新照片，请先在系统设置里允许 Adonis 使用相机。你也可以继续从相册选择。"
+      ].exists
+    )
+    XCTAssertTrue(alert.buttons["打开系统设置"].exists)
+    XCTAssertTrue(alert.buttons["先不用"].exists)
+    XCTAssertFalse(app.descendants(matching: .any)["camera-picker"].exists)
+    keepScreenshot(named: "Adonis-camera-permission-denied")
+  }
+
+  @MainActor
+  func testRestrictedCameraPermissionKeepsAlbumAlternativeWithoutSettingsShortcut() {
+    let app = XCUIApplication()
+    app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-camera-restricted"])
+    app.launch()
+
+    let camera = app.buttons["take-photo"]
+    XCTAssertTrue(camera.waitForExistence(timeout: 8))
+    camera.tap()
+
+    let alert = app.alerts["这台 iPhone 限制了相机"]
+    XCTAssertTrue(alert.waitForExistence(timeout: 4))
+    XCTAssertTrue(
+      app.staticTexts["当前系统限制不允许 Adonis 使用相机。你仍然可以从相册选择照片。"].exists
+    )
+    XCTAssertTrue(alert.buttons["知道了"].exists)
+    XCTAssertFalse(alert.buttons["打开系统设置"].exists)
+    XCTAssertFalse(app.descendants(matching: .any)["camera-picker"].exists)
+    keepScreenshot(named: "Adonis-camera-permission-restricted")
+  }
+
+  @MainActor
   func testAccessibleCoreFlowSurvivesBackgroundAndKeepsActionsReachable() {
     let app = XCUIApplication()
     app.launchArguments.append("-ui-testing")

@@ -22,6 +22,8 @@
 
 修改布局、文案、颜色、动效、导航、无障碍语义、处理浮层或前后台状态恢复前，还必须完整阅读 [无障碍与前后台恢复验证记录](docs/verification/2026-08-30-accessibility-and-lifecycle.md)，并运行 `make accessibility-regression`。当前门禁证明最大辅助字号、增强对比度、关键操作可达、处理取消和一次前后台往返；它不替代真实 VoiceOver、权限流程或真实 iPhone 验证。
 
+修改相机入口、相机权限判断、权限文案、系统设置恢复入口或相机弹窗状态前，还必须完整阅读 [相机权限恢复验证记录](docs/verification/2026-08-30-camera-permission-recovery.md)，并运行 `make permission-regression`。当前门禁使用可注入权限状态证明拒绝与系统限制的本地恢复界面，不替代真实系统授权弹窗、设置往返、实际拍摄或真实 iPhone 验证。
+
 修改生成阶段、耗时口径、45 秒目标、重试、外部请求、费用字段、处理事件、性能设置页或导出中的性能数据前，还必须完整阅读 [生成性能与预算验证记录](docs/verification/2026-08-30-generation-performance-budget.md)，并运行 `make performance-regression`。45 秒当前只是端到端测量目标，不是供应商 SLA；内置样片跳过实时 Vision，不能用它的速度代替真实照片、真机或联网供应商证据。
 
 修改 90 秒截止、截止任务、同图重试、迟到结果隔离、基础贴纸降级、降级持久化或超时文案前，还必须完整阅读 [生成超时与基础贴纸降级验证记录](docs/verification/2026-08-30-generation-timeout-fallback.md)，并运行 `make performance-regression`。超时降级只能使用已经通过结构检查且完成收藏卡排版的中间产物；当前已强制退出用户等待并隔离迟到结果，但不得宣称底层 Vision 一定立即停止。
@@ -70,5 +72,6 @@
 - 修改用户主链路、数据模型或图像处理后运行 `make test`；不能用单次编译代替 UI 与像素证据。
 - 修改模型、提示、分割或贴纸/收藏卡后处理时，额外运行 `make sample-regression`；它同时校验仓库哈希、macOS Vision 字节级重生成、iOS 像素结构和四张收藏卡。
 - 修改布局、文案、颜色、动效、无障碍语义或生命周期状态时，额外运行 `make accessibility-regression`；脚本会临时启用最大辅助字号与增强对比度，并在退出时恢复模拟器设置。
+- 修改相机入口、权限状态、权限文案或设置恢复路径时，额外运行 `make permission-regression`；拒绝态必须提供系统设置入口，系统限制态不得承诺用户能在 App 设置中解除。
 - 修改生成计时、截止任务、处理事件、预算、重试、超时降级、外部请求、设置页性能摘要或性能导出字段时，额外运行 `make performance-regression`；它覆盖成功、失败、取消、超时、迟到结果隔离、基础贴纸持久化、超预算、结构化导出和可见诊断。
 - 当前 iOS 26.5 模拟器的 Vision 推理上下文不可用。不得用假蒙版伪装成功；先阅读 [2026-08-29 iOS 本地 Demo 验证记录](docs/verification/2026-08-29-ios-local-demo.md)，并在可用真机上补做实时分割回归。
