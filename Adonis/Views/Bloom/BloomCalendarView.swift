@@ -9,6 +9,7 @@ struct BloomCalendarView: View {
   @State private var visibleMonth = Date.now
   @State private var selectedRecord: OutfitRecord?
   @State private var monthlyLookbook: MonthlyLookbookPresentation?
+  @State private var showDigitalCabinet = false
   @State private var deleteErrorMessage: String?
   @State private var lookbookErrorMessage: String?
 
@@ -24,6 +25,10 @@ struct BloomCalendarView: View {
         VStack(alignment: .leading, spacing: 24) {
           header
           monthCard
+
+          if !records.isEmpty {
+            digitalCabinetEntryCard
+          }
 
           if !visibleMonthRecords.isEmpty {
             monthlyLookbookCard
@@ -57,6 +62,11 @@ struct BloomCalendarView: View {
     }
     .sheet(item: $monthlyLookbook) { presentation in
       MonthlyLookbookView(presentation: presentation)
+    }
+    .sheet(isPresented: $showDigitalCabinet) {
+      DigitalCabinetView { record in
+        delete(record)
+      }
     }
     .alert(
       "删除失败",
@@ -171,6 +181,91 @@ struct BloomCalendarView: View {
         .accessibilityIdentifier("bloom-record-card")
       }
     }
+  }
+
+  private var digitalCabinetEntryCard: some View {
+    Button {
+      EventLogger.log(
+        .digitalCabinetOpened,
+        processingVersion: AdonisProcessingVersion.digitalCabinet,
+        in: modelContext
+      )
+      showDigitalCabinet = true
+    } label: {
+      Group {
+        if dynamicTypeSize.isAccessibilitySize {
+          VStack(alignment: .leading, spacing: 14) {
+            cabinetStickerStack
+            cabinetEntryCopy
+            cabinetEntryAction
+          }
+        } else {
+          HStack(spacing: 16) {
+            cabinetStickerStack
+            cabinetEntryCopy
+            Spacer(minLength: 0)
+            cabinetEntryAction
+          }
+        }
+      }
+      .padding(16)
+      .background(
+        LinearGradient(
+          colors: [AdonisTheme.leaf.opacity(0.20), AdonisTheme.lavender.opacity(0.25)],
+          startPoint: .topLeading,
+          endPoint: .bottomTrailing
+        ),
+        in: RoundedRectangle(cornerRadius: 26, style: .continuous)
+      )
+      .overlay {
+        RoundedRectangle(cornerRadius: 26, style: .continuous)
+          .stroke(AdonisTheme.leaf.opacity(0.25), lineWidth: 1)
+      }
+    }
+    .buttonStyle(StickerButtonStyle())
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel(
+      "打开我的数字展柜，已自动收进 \(records.count) 个贴纸手办，可回看对应日期、OOTD 和衣物关系"
+    )
+    .accessibilityIdentifier("digital-cabinet-entry")
+  }
+
+  private var cabinetEntryCopy: some View {
+    VStack(alignment: .leading, spacing: 6) {
+      Text("我的数字展柜")
+        .font(.system(.title3, design: .rounded, weight: .black))
+        .foregroundStyle(AdonisTheme.ink)
+      Text("\(records.count) 个贴纸手办已自动站好，随时回到那天。")
+        .font(.subheadline)
+        .foregroundStyle(AdonisTheme.secondaryInk)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+  }
+
+  private var cabinetEntryAction: some View {
+    Image(systemName: "cabinet.fill")
+      .font(.system(size: 17, weight: .black))
+      .foregroundStyle(AdonisTheme.ink)
+      .frame(width: 42, height: 42)
+      .background(AdonisTheme.butter.opacity(0.70), in: Circle())
+      .accessibilityHidden(true)
+  }
+
+  private var cabinetStickerStack: some View {
+    ZStack {
+      ForEach(Array(records.prefix(3).enumerated()), id: \.element.id) { index, record in
+        DigitalCabinetStage(
+          stickerFilename: record.stickerImageFilename,
+          bloomNumber: record.bloomNumber,
+          compact: true
+        )
+        .frame(width: 54, height: 66)
+        .rotationEffect(.degrees(Double(index - 1) * 5))
+        .offset(x: CGFloat(index) * 13)
+      }
+    }
+    .frame(width: 84, height: 70, alignment: .leading)
+    .accessibilityHidden(true)
   }
 
   private var monthlyLookbookCard: some View {

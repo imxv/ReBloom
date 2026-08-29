@@ -122,6 +122,26 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(lookbookShare.isHittable)
     app.buttons["完成"].tap()
 
+    let cabinetEntry = app.buttons["digital-cabinet-entry"]
+    XCTAssertTrue(cabinetEntry.waitForExistence(timeout: 5))
+    for _ in 0..<5 where !cabinetEntry.isHittable {
+      app.swipeDown()
+    }
+    XCTAssertTrue(cabinetEntry.isHittable)
+    cabinetEntry.tap()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["digital-cabinet-screen"]
+        .waitForExistence(timeout: 5)
+    )
+    let cabinetBoundary = app.descendants(matching: .any)["digital-cabinet-boundary"]
+    XCTAssertTrue(scrollToHittable(cabinetBoundary, in: app, attempts: 8))
+    XCTAssertTrue(cabinetBoundary.label.contains("不是可旋转的 3D 模型"))
+    let cabinetOutfit = app.buttons.matching(identifier: "digital-cabinet-outfit").firstMatch
+    XCTAssertTrue(scrollToHittable(cabinetOutfit, in: app, attempts: 8))
+    XCTAssertTrue(cabinetOutfit.label.contains("Bloom No."))
+    app.buttons["close-digital-cabinet"].tap()
+
     app.tabBars.buttons["衣橱"].tap()
     let addFirstItem = app.buttons["add-first-wardrobe-item"]
     XCTAssertTrue(addFirstItem.waitForExistence(timeout: 5))
@@ -488,6 +508,77 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(scrollToHittable(share, in: app, attempts: 5))
     share.tap()
     XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
+  }
+
+  @MainActor
+  func testSavedOutfitAutomaticallyAppearsInTraceableDigitalCabinet() {
+    let app = XCUIApplication()
+    app.launchArguments.append("-ui-testing")
+    app.launch()
+
+    app.tabBars.buttons["花历"].tap()
+    XCTAssertTrue(app.otherElements["bloom-calendar"].waitForExistence(timeout: 5))
+    XCTAssertFalse(app.buttons["digital-cabinet-entry"].exists)
+
+    app.tabBars.buttons["创作"].tap()
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 5))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 8))
+
+    let save = app.buttons["save-today"]
+    XCTAssertTrue(scrollToHittable(save, in: app, attempts: 4))
+    save.tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 3))
+
+    let makeAnother = app.buttons["make-another"]
+    XCTAssertTrue(scrollToHittable(makeAnother, in: app, attempts: 4))
+    makeAnother.tap()
+
+    app.tabBars.buttons["花历"].tap()
+    let cabinetEntry = app.buttons["digital-cabinet-entry"]
+    XCTAssertTrue(cabinetEntry.waitForExistence(timeout: 5))
+    XCTAssertTrue(scrollToHittable(cabinetEntry, in: app, attempts: 4))
+    XCTAssertTrue(cabinetEntry.label.contains("已自动收进 1 个贴纸手办"))
+    cabinetEntry.tap()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["digital-cabinet-screen"]
+        .waitForExistence(timeout: 5)
+    )
+    let provenance = app.descendants(matching: .any)["digital-cabinet-provenance"]
+    XCTAssertTrue(provenance.waitForExistence(timeout: 4))
+    XCTAssertTrue(provenance.label.contains("人物、衣服、姿势与纯白边保持原样"))
+    let boundary = app.descendants(matching: .any)["digital-cabinet-boundary"]
+    XCTAssertTrue(boundary.waitForExistence(timeout: 4))
+    XCTAssertTrue(boundary.label.contains("待确认"))
+
+    let outfit = app.buttons.matching(identifier: "digital-cabinet-outfit").firstMatch
+    XCTAssertTrue(scrollToHittable(outfit, in: app, attempts: 5))
+    XCTAssertEqual(app.buttons.matching(identifier: "digital-cabinet-outfit").count, 1)
+    XCTAssertTrue(outfit.label.contains("Bloom No. 001"))
+    XCTAssertTrue(outfit.label.contains("今日穿搭"))
+    XCTAssertTrue(outfit.label.contains("衣物"))
+    keepScreenshot(named: "Adonis-digital-cabinet")
+
+    outfit.tap()
+    XCTAssertTrue(
+      app.segmentedControls["history-visual-picker"].waitForExistence(timeout: 5)
+    )
+    XCTAssertTrue(app.staticTexts["garment-observation-section"].waitForExistence(timeout: 5))
+
+    let deleteRecord = app.buttons["删除这条记录"]
+    XCTAssertTrue(scrollToHittable(deleteRecord, in: app, attempts: 8))
+    deleteRecord.tap()
+    let confirmDelete = app.buttons["删除"]
+    XCTAssertTrue(confirmDelete.waitForExistence(timeout: 4))
+    confirmDelete.tap()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["digital-cabinet-empty"]
+        .waitForExistence(timeout: 5)
+    )
+    XCTAssertEqual(app.buttons.matching(identifier: "digital-cabinet-outfit").count, 0)
   }
 
   @MainActor

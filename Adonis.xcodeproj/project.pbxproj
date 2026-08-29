@@ -14,6 +14,7 @@
 		0383F37EB4CD45A47D50D350 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5A96B162481D212E146A1 /* CameraPicker.swift */; };
 		05A102A14D5F8953BA875A93 /* CameraAccessServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1E63F7937FAF7439D6F7C8 /* CameraAccessServiceTests.swift */; };
 		083CDC61E99645D77389A7D5 /* sample-04.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A637377461748CC37830D9C /* sample-04.png */; };
+		08DF5267B88973D0A82557BE /* DigitalCabinetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E196866D055C4CF56DDF3E76 /* DigitalCabinetView.swift */; };
 		0D81BAFB9B079ECF42828A22 /* DigitalFigurineCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDCD90F138751C7EC752F214 /* DigitalFigurineCardView.swift */; };
 		0E6AFE4AA346781D0DBF4800 /* WardrobeImageAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDC07323E67E0A60762AF4 /* WardrobeImageAnalyzerTests.swift */; };
 		13B333A951423B115CF4FDE7 /* AdonisShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6FA56E47100150E8087EB527 /* AdonisShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -39,6 +40,7 @@
 		4AFB40403A8C7A8584F3CEE9 /* StickerProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4718CD6CE45E819A6AC83529 /* StickerProcessorTests.swift */; };
 		4B48F7FAFFDCDD0B60EEC4CA /* GenerationDeadlineControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB3F360F1CC6879BF491D66 /* GenerationDeadlineControllerTests.swift */; };
 		4C62C431C85643DBF75BE203 /* SharedWardrobeImportCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95059D5C09DEFB138D303EC /* SharedWardrobeImportCoordinator.swift */; };
+		4DAFEFC95C30F69D81FB03FA /* DigitalCabinetCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E8AFAA6F0C9A18F809F167 /* DigitalCabinetCatalog.swift */; };
 		4F75F5C23890C809B5B1EDA3 /* WardrobeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688A508B58F7C22C4FB354F0 /* WardrobeComponents.swift */; };
 		53E1BE68968D66539E749E22 /* MediaStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE29B87471D0B83F42701EE /* MediaStoreTests.swift */; };
 		54CC62F55AC3C5E101AD6FD0 /* GarmentObservationPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ACEBFD1D2E574D182EC23D3 /* GarmentObservationPersistenceTests.swift */; };
@@ -66,6 +68,7 @@
 		9E01DF7A621C13A85C8BC96F /* CreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F443048A8AB2396EC8490E /* CreateView.swift */; };
 		A2EE6457FD6A5063FF426A21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 110BE262F9946F560C99A9F5 /* Assets.xcassets */; };
 		A3C31C98F4B24DB19FBF59B0 /* ModelStorePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3F11BF77ECCA2BC7A4D5AB /* ModelStorePolicy.swift */; };
+		A64A74B96E4A6D9FB175E7DF /* DigitalCabinetCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB4C934A88EAE75FDD678AB /* DigitalCabinetCatalogTests.swift */; };
 		A67EBC4860384BA5C25DD016 /* WardrobeItemNaming.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA92A8DC891210E49433FF7 /* WardrobeItemNaming.swift */; };
 		A6BCE233749F8E06DE8D9CB4 /* StickerQualityAssessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E8A29F732DC9640A560F982 /* StickerQualityAssessor.swift */; };
 		A84CD8918099CFDDF3566BA1 /* GenerationFallbackNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25339ED234813E24E8BB84CA /* GenerationFallbackNotice.swift */; };
@@ -154,6 +157,7 @@
 		2184393E46216F0176D9DA58 /* StickerQualityAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerQualityAssessment.swift; sourceTree = "<group>"; };
 		25339ED234813E24E8BB84CA /* GenerationFallbackNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationFallbackNotice.swift; sourceTree = "<group>"; };
 		25E35A62405F04F4C91FD146 /* VisualContentProvenance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualContentProvenance.swift; sourceTree = "<group>"; };
+		25E8AFAA6F0C9A18F809F167 /* DigitalCabinetCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalCabinetCatalog.swift; sourceTree = "<group>"; };
 		27A8470E112FD06E2CDC338F /* AdonisTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisTheme.swift; sourceTree = "<group>"; };
 		290B068850AE398F3ACAC1A7 /* WardrobeItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemDetailView.swift; sourceTree = "<group>"; };
 		2ACEBFD1D2E574D182EC23D3 /* GarmentObservationPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarmentObservationPersistenceTests.swift; sourceTree = "<group>"; };
@@ -220,6 +224,8 @@
 		D545412EE2679B9A7070E13B /* Adonis.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Adonis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6CAE9A2C46336ABF1F1AC6C /* ProcessingTraceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingTraceTests.swift; sourceTree = "<group>"; };
 		DAE9700DD179F9FED5BD0771 /* AccessibilityContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityContractTests.swift; sourceTree = "<group>"; };
+		DFB4C934A88EAE75FDD678AB /* DigitalCabinetCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalCabinetCatalogTests.swift; sourceTree = "<group>"; };
+		E196866D055C4CF56DDF3E76 /* DigitalCabinetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalCabinetView.swift; sourceTree = "<group>"; };
 		E302C7B66FF3753821830A56 /* AdonisTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AdonisTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E84BF18B5CED9D834A195F7F /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		EC4C4240274B6A2FB8E050EC /* SampleCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleCatalog.swift; sourceTree = "<group>"; };
@@ -283,6 +289,7 @@
 			isa = PBXGroup;
 			children = (
 				5EA41B73134695077C4CA8B4 /* BloomCalendarView.swift */,
+				E196866D055C4CF56DDF3E76 /* DigitalCabinetView.swift */,
 				71F810B27C38C0AF79DF2426 /* MonthlyLookbookView.swift */,
 				646E1B8E7A4C66C109816B9A /* OutfitDetailView.swift */,
 				06D602C70C508E36FB89DD60 /* OutfitGarmentObservationsView.swift */,
@@ -337,6 +344,7 @@
 			isa = PBXGroup;
 			children = (
 				7C03A1F1A7D0EEB66DEFF4A0 /* CameraAccessService.swift */,
+				25E8AFAA6F0C9A18F809F167 /* DigitalCabinetCatalog.swift */,
 				78D0E210640D69DD211F1FBC /* DigitalFigurineCardRenderer.swift */,
 				B4FA337AA391BD2C538ADBC1 /* EventLogger.swift */,
 				2AECF3B88471C33864593324 /* GenerationDeadlineController.swift */,
@@ -447,6 +455,7 @@
 			children = (
 				DAE9700DD179F9FED5BD0771 /* AccessibilityContractTests.swift */,
 				9E1E63F7937FAF7439D6F7C8 /* CameraAccessServiceTests.swift */,
+				DFB4C934A88EAE75FDD678AB /* DigitalCabinetCatalogTests.swift */,
 				488238D5BC109C8E72A5B60F /* DigitalFigurineCardRendererTests.swift */,
 				2ACEBFD1D2E574D182EC23D3 /* GarmentObservationPersistenceTests.swift */,
 				3DB3F360F1CC6879BF491D66 /* GenerationDeadlineControllerTests.swift */,
@@ -638,6 +647,7 @@
 			files = (
 				4509285B952C40CC075B1C2B /* AccessibilityContractTests.swift in Sources */,
 				05A102A14D5F8953BA875A93 /* CameraAccessServiceTests.swift in Sources */,
+				A64A74B96E4A6D9FB175E7DF /* DigitalCabinetCatalogTests.swift in Sources */,
 				275E8B3C4CA4488AF3AD2CBA /* DigitalFigurineCardRendererTests.swift in Sources */,
 				54CC62F55AC3C5E101AD6FD0 /* GarmentObservationPersistenceTests.swift in Sources */,
 				4B48F7FAFFDCDD0B60EEC4CA /* GenerationDeadlineControllerTests.swift in Sources */,
@@ -676,6 +686,8 @@
 				0383F37EB4CD45A47D50D350 /* CameraPicker.swift in Sources */,
 				14BFCF74C380ED0981B92AFC /* Components.swift in Sources */,
 				9E01DF7A621C13A85C8BC96F /* CreateView.swift in Sources */,
+				4DAFEFC95C30F69D81FB03FA /* DigitalCabinetCatalog.swift in Sources */,
+				08DF5267B88973D0A82557BE /* DigitalCabinetView.swift in Sources */,
 				93DA4A90032C3C2D88A6A3BD /* DigitalFigurineCardRenderer.swift in Sources */,
 				0D81BAFB9B079ECF42828A22 /* DigitalFigurineCardView.swift in Sources */,
 				8D508A42988434FD1A130B52 /* EventLogger.swift in Sources */,
