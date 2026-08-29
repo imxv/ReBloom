@@ -22,6 +22,8 @@ struct OutfitDetailView: View {
             .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
             .shadow(color: AdonisTheme.ink.opacity(0.14), radius: 16, y: 9)
 
+          OutfitGarmentObservationsView(observations: record.garmentObservations)
+
           VStack(alignment: .leading, spacing: 12) {
             TextField("今日穿搭", text: $record.title)
               .font(.system(.title2, design: .rounded, weight: .black))

@@ -78,6 +78,66 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  func testOutfitCluesStayProvisionalUntilOneTapConfirmation() {
+    let app = XCUIApplication()
+    app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-wardrobe-import"])
+    app.launch()
+
+    app.tabBars.buttons["衣橱"].tap()
+    let addTestItem = app.buttons["add-test-wardrobe-item"]
+    XCTAssertTrue(addTestItem.waitForExistence(timeout: 5))
+    addTestItem.tap()
+    XCTAssertTrue(app.staticTexts["wardrobe-analysis-summary"].waitForExistence(timeout: 8))
+    app.buttons["wardrobe-category-上装"].tap()
+    XCTAssertTrue(app.staticTexts["棕色上装"].waitForExistence(timeout: 3))
+    app.buttons["完成"].tap()
+    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 1)
+
+    app.tabBars.buttons["创作"].tap()
+    let sample = app.buttons["sample-02"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 5))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 8))
+    XCTAssertTrue(app.descendants(matching: .any)["garment-observation-hint"].exists)
+    app.buttons["save-today"].tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 3))
+    app.buttons["make-another"].tap()
+
+    app.tabBars.buttons["衣橱"].tap()
+    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 1)
+
+    app.tabBars.buttons["花历"].tap()
+    let recordCard = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(recordCard.waitForExistence(timeout: 5))
+    recordCard.tap()
+
+    let section = app.staticTexts["garment-observation-section"]
+    XCTAssertTrue(section.waitForExistence(timeout: 5))
+    let candidate = app.buttons["garment-candidate-棕色上装"]
+    for _ in 0..<4 where !candidate.isHittable {
+      app.swipeUp()
+    }
+    XCTAssertTrue(candidate.waitForExistence(timeout: 3))
+    XCTAssertTrue(candidate.isHittable)
+    keepScreenshot(named: "Adonis-outfit-candidate")
+
+    candidate.tap()
+    XCTAssertTrue(app.staticTexts["garment-linked-upperBody"].waitForExistence(timeout: 3))
+    keepScreenshot(named: "Adonis-outfit-linked")
+
+    app.buttons["garment-reject-upperBody"].tap()
+    XCTAssertTrue(app.buttons["garment-new-upperBody"].waitForExistence(timeout: 3))
+    XCTAssertFalse(candidate.exists)
+    app.buttons["garment-new-upperBody"].tap()
+    XCTAssertTrue(app.staticTexts["garment-linked-upperBody"].waitForExistence(timeout: 3))
+    XCTAssertTrue(app.staticTexts["已收进衣橱"].exists)
+
+    app.buttons["完成"].tap()
+    app.tabBars.buttons["衣橱"].tap()
+    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 2)
+  }
+
+  @MainActor
   private func keepScreenshot(named name: String) {
     let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
     attachment.name = name

@@ -53,6 +53,11 @@ enum AppEventKind: String {
   case wardrobeImportStarted
   case wardrobeImportFailed
   case wardrobeImportCancelled
+  case garmentObservationsCreated
+  case garmentObservationLinked
+  case garmentObservationRejected
+  case garmentObservationDismissed
+  case garmentObservationCreatedItem
   case unknown
 
   var title: String {
@@ -70,6 +75,11 @@ enum AppEventKind: String {
     case .wardrobeImportStarted: "开始识别单品"
     case .wardrobeImportFailed: "单品识别失败"
     case .wardrobeImportCancelled: "取消识别单品"
+    case .garmentObservationsCreated: "发现穿搭线索"
+    case .garmentObservationLinked: "关联已有单品"
+    case .garmentObservationRejected: "排除候选单品"
+    case .garmentObservationDismissed: "暂放穿搭线索"
+    case .garmentObservationCreatedItem: "从穿搭加入单品"
     case .unknown: "未知事件"
     }
   }

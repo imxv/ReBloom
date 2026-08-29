@@ -279,7 +279,7 @@ struct WardrobeImageAnalyzer {
     return values.min() ?? 0 >= 232 && (values.max() ?? 0) - (values.min() ?? 0) <= 18
   }
 
-  private static func colorName(red: Int, green: Int, blue: Int) -> String {
+  static func colorName(red: Int, green: Int, blue: Int) -> String {
     let color = UIColor(
       red: CGFloat(red) / 255,
       green: CGFloat(green) / 255,

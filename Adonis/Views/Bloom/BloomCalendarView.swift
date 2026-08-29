@@ -169,6 +169,7 @@ struct BloomCalendarView: View {
           .shadow(color: AdonisTheme.ink.opacity(0.07), radius: 9, y: 4)
         }
         .buttonStyle(StickerButtonStyle())
+        .accessibilityIdentifier("bloom-record-card")
       }
     }
   }
@@ -243,11 +244,12 @@ struct BloomCalendarView: View {
 
   @MainActor
   private func delete(_ record: OutfitRecord) {
-    let filenames = [
-      record.sourceImageFilename,
-      record.stickerImageFilename,
-      record.cardImageFilename,
-    ]
+    let filenames =
+      [
+        record.sourceImageFilename,
+        record.stickerImageFilename,
+        record.cardImageFilename,
+      ] + record.garmentObservations.map(\.previewImageFilename)
     modelContext.delete(record)
     do {
       try modelContext.save()

@@ -11,6 +11,8 @@ final class OutfitRecord {
   var cardImageFilename: String
   var bloomNumber: Int
   var note: String
+  @Relationship(deleteRule: .cascade, inverse: \GarmentObservation.outfit)
+  var garmentObservations: [GarmentObservation] = []
 
   init(
     id: UUID = UUID(),
@@ -20,7 +22,8 @@ final class OutfitRecord {
     stickerImageFilename: String,
     cardImageFilename: String,
     bloomNumber: Int,
-    note: String = ""
+    note: String = "",
+    garmentObservations: [GarmentObservation] = []
   ) {
     self.id = id
     self.createdAt = createdAt
@@ -30,5 +33,6 @@ final class OutfitRecord {
     self.cardImageFilename = cardImageFilename
     self.bloomNumber = bloomNumber
     self.note = note
+    self.garmentObservations = garmentObservations
   }
 }

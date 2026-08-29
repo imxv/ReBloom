@@ -66,6 +66,10 @@ struct GenerationResultView: View {
             )
           }
 
+          if !draft.garmentObservations.isEmpty {
+            wardrobeObservationHint
+          }
+
           actionButtons
         }
         .padding(.horizontal, 20)
@@ -88,6 +92,41 @@ struct GenerationResultView: View {
     } message: {
       Text(saveError ?? "请稍后再试。")
     }
+  }
+
+  private var wardrobeObservationHint: some View {
+    HStack(alignment: .top, spacing: 12) {
+      ZStack {
+        Circle()
+          .fill(AdonisTheme.leaf.opacity(0.24))
+          .frame(width: 44, height: 44)
+        Image(systemName: "hanger")
+          .font(.system(size: 17, weight: .bold))
+          .foregroundStyle(AdonisTheme.ink)
+      }
+
+      VStack(alignment: .leading, spacing: 4) {
+        Text(isSaved ? "衣橱线索已经留好" : "还看到了穿搭里的衣服")
+          .font(.system(.subheadline, design: .rounded, weight: .bold))
+          .foregroundStyle(AdonisTheme.ink)
+        Text(
+          isSaved
+            ? "有 \(draft.garmentObservations.count) 个待确认线索，确认前不会变成衣橱单品。"
+            : "收藏今天后留下 \(draft.garmentObservations.count) 个线索，不需要现在整理。"
+        )
+        .font(.footnote)
+        .foregroundStyle(AdonisTheme.secondaryInk)
+        .lineSpacing(2)
+      }
+      Spacer(minLength: 0)
+    }
+    .padding(15)
+    .background(
+      AdonisTheme.leaf.opacity(0.1),
+      in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+    )
+    .accessibilityElement(children: .combine)
+    .accessibilityIdentifier("garment-observation-hint")
   }
 
   private var resultHeader: some View {

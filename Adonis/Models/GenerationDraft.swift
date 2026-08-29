@@ -12,6 +12,7 @@ struct GenerationDraft: Identifiable {
   let foregroundCoverage: Double
   let usesPreparedSample: Bool
   let inputSource: EventInputSource
+  let garmentObservations: [GarmentObservationDraft]
 
   init(
     id: UUID = UUID(),
@@ -23,7 +24,8 @@ struct GenerationDraft: Identifiable {
     processingMilliseconds: Int,
     foregroundCoverage: Double,
     usesPreparedSample: Bool = false,
-    inputSource: EventInputSource
+    inputSource: EventInputSource,
+    garmentObservations: [GarmentObservationDraft] = []
   ) {
     self.id = id
     self.createdAt = createdAt
@@ -35,6 +37,7 @@ struct GenerationDraft: Identifiable {
     self.foregroundCoverage = foregroundCoverage
     self.usesPreparedSample = usesPreparedSample
     self.inputSource = inputSource
+    self.garmentObservations = garmentObservations
   }
 }
 
@@ -43,4 +46,5 @@ enum ProcessingStage: String, CaseIterable {
   case separating = "正在沿轮廓裁出你"
   case outlining = "正在加上纯白贴纸边"
   case composing = "正在装进收藏卡"
+  case observing = "正在看看今天穿了什么"
 }

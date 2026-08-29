@@ -20,6 +20,7 @@ struct CreateView: View {
 
   private let processor = StickerProcessor()
   private let cardRenderer = ShareCardRenderer()
+  private let garmentObserver = OutfitGarmentObserver()
 
   var body: some View {
     ZStack {
@@ -325,6 +326,9 @@ struct CreateView: View {
         bloomNumber: bloomNumber,
         date: date
       )
+      processingStage = .observing
+      let garmentObservations = await garmentObserver.observe(sticker: processed.image)
+      guard activeGenerationID == generationID else { return }
 
       EventLogger.log(
         .generationSucceeded,
@@ -348,7 +352,8 @@ struct CreateView: View {
         processingMilliseconds: processed.elapsedMilliseconds,
         foregroundCoverage: processed.foregroundCoverage,
         usesPreparedSample: preparedSticker != nil,
-        inputSource: inputSource
+        inputSource: inputSource,
+        garmentObservations: garmentObservations
       )
     } catch {
       guard activeGenerationID == generationID else { return }
@@ -405,15 +410,37 @@ struct CreateView: View {
       )
       savedFilenames.append(cardFilename)
 
-      modelContext.insert(
-        OutfitRecord(
-          id: draft.id,
+      let record = OutfitRecord(
+        id: draft.id,
+        createdAt: draft.createdAt,
+        sourceImageFilename: sourceFilename,
+        stickerImageFilename: stickerFilename,
+        cardImageFilename: cardFilename,
+        bloomNumber: draft.bloomNumber
+      )
+      modelContext.insert(record)
+
+      for draftObservation in draft.garmentObservations {
+        let previewFilename = try MediaStore.shared.savePNG(
+          draftObservation.previewImage,
+          filename: "\(draftObservation.id.uuidString.lowercased())-observation.png"
+        )
+        savedFilenames.append(previewFilename)
+        let observation = GarmentObservation(
+          id: draftObservation.id,
           createdAt: draft.createdAt,
-          sourceImageFilename: sourceFilename,
-          stickerImageFilename: stickerFilename,
-          cardImageFilename: cardFilename,
-          bloomNumber: draft.bloomNumber
-        ))
+          slot: draftObservation.slot,
+          suggestedCategory: draftObservation.suggestedCategory,
+          dominantColorName: draftObservation.dominantColorName,
+          dominantColorHex: draftObservation.dominantColorHex,
+          confidence: draftObservation.confidence,
+          previewImageFilename: previewFilename,
+          observerVersion: draftObservation.observerVersion,
+          outfit: record
+        )
+        modelContext.insert(observation)
+        record.garmentObservations.append(observation)
+      }
       try modelContext.save()
     } catch {
       modelContext.rollback()
@@ -426,6 +453,15 @@ struct CreateView: View {
       processingVersion: AdonisProcessingVersion.generationPipeline,
       in: modelContext
     )
+    if !draft.garmentObservations.isEmpty {
+      EventLogger.log(
+        .garmentObservationsCreated,
+        detail: "count=\(draft.garmentObservations.count)",
+        inputSource: draft.inputSource,
+        processingVersion: OutfitGarmentObserver.version,
+        in: modelContext
+      )
+    }
   }
 }
 

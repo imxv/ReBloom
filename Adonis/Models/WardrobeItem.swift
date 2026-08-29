@@ -101,6 +101,7 @@ enum WardrobeCategory: String, CaseIterable, Identifiable, Sendable {
 enum WardrobeSourceKind: String, CaseIterable, Identifiable, Sendable {
   case catalogImage
   case flatLay
+  case outfitObservation
   case unknown
 
   var id: String { rawValue }
@@ -109,6 +110,7 @@ enum WardrobeSourceKind: String, CaseIterable, Identifiable, Sendable {
     switch self {
     case .catalogImage: "像商品图"
     case .flatLay: "像实拍 / 平铺"
+    case .outfitObservation: "来自 OOTD"
     case .unknown: "图片"
     }
   }
@@ -117,6 +119,7 @@ enum WardrobeSourceKind: String, CaseIterable, Identifiable, Sendable {
     switch self {
     case .catalogImage: "bag.fill"
     case .flatLay: "camera.fill"
+    case .outfitObservation: "person.crop.rectangle"
     case .unknown: "photo.fill"
     }
   }

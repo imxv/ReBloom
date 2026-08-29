@@ -7,6 +7,7 @@ struct LocalSettingsView: View {
   @Query(sort: \AppEvent.createdAt, order: .reverse) private var events: [AppEvent]
   @Query private var records: [OutfitRecord]
   @Query private var items: [WardrobeItem]
+  @Query private var observations: [GarmentObservation]
 
   @State private var showClearConfirmation = false
   @State private var clearError: String?
@@ -30,6 +31,7 @@ struct LocalSettingsView: View {
       Section("本地内容") {
         LabeledContent("穿搭记录", value: "\(records.count)")
         LabeledContent("衣橱单品", value: "\(items.count)")
+        LabeledContent("待确认线索", value: "\(pendingObservations.count)")
         LabeledContent("处理事件", value: "\(events.count)")
       }
 
@@ -115,6 +117,10 @@ struct LocalSettingsView: View {
 
   private var successfulEvents: [AppEvent] {
     events.filter { $0.kind == .generationSucceeded }
+  }
+
+  private var pendingObservations: [GarmentObservation] {
+    observations.filter { $0.state == .pending }
   }
 
   private var failedEvents: [AppEvent] {
