@@ -15,6 +15,7 @@
 		083CDC61E99645D77389A7D5 /* sample-04.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A637377461748CC37830D9C /* sample-04.png */; };
 		0E6AFE4AA346781D0DBF4800 /* WardrobeImageAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDC07323E67E0A60762AF4 /* WardrobeImageAnalyzerTests.swift */; };
 		13B333A951423B115CF4FDE7 /* AdonisShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6FA56E47100150E8087EB527 /* AdonisShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		148602CF072B947FCFB05C98 /* StickerQualityAssessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2184393E46216F0176D9DA58 /* StickerQualityAssessment.swift */; };
 		14BFCF74C380ED0981B92AFC /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84BF18B5CED9D834A195F7F /* Components.swift */; };
 		153086CAF11ADC89B572AC57 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1616941BE0EAB40F74A088AA /* README.md */; };
 		17E549E80F389BD3C90C24D4 /* sample-01.png in Resources */ = {isa = PBXBuildFile; fileRef = 94AFB89D4E0698D5253B8179 /* sample-01.png */; };
@@ -23,6 +24,7 @@
 		1E771E07BF3146CEE74A025F /* SharedImageInboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316737292FE33E782DAD2887 /* SharedImageInboxTests.swift */; };
 		212E902D6EFF97FB6AC0FE1C /* StoredImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B19E79DC35ECB753DE22B9 /* StoredImageView.swift */; };
 		23309718D6FDAAFF470997CF /* WardrobeItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290B068850AE398F3ACAC1A7 /* WardrobeItemDetailView.swift */; };
+		32CA5F7642FEEC25E743F46E /* StickerQualityAssessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84136BBEA95D26BF94F117B2 /* StickerQualityAssessorTests.swift */; };
 		38385A8843FD7D39731262D1 /* StickerProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */; };
 		3C9A8154794D56761BF03D4A /* WardrobeHistorySuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1AC57D0B3CE409AF9AA3B0 /* WardrobeHistorySuggestionsView.swift */; };
 		423AEFB97294ADDACA708B53 /* SharedImageInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9C4FA8A91B8CCA08F29DBB /* SharedImageInbox.swift */; };
@@ -54,6 +56,7 @@
 		9E01DF7A621C13A85C8BC96F /* CreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F443048A8AB2396EC8490E /* CreateView.swift */; };
 		A2EE6457FD6A5063FF426A21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 110BE262F9946F560C99A9F5 /* Assets.xcassets */; };
 		A67EBC4860384BA5C25DD016 /* WardrobeItemNaming.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA92A8DC891210E49433FF7 /* WardrobeItemNaming.swift */; };
+		A6BCE233749F8E06DE8D9CB4 /* StickerQualityAssessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E8A29F732DC9640A560F982 /* StickerQualityAssessor.swift */; };
 		A9A9F6F7D289FC8856D4D3A1 /* AdonisTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A8470E112FD06E2CDC338F /* AdonisTheme.swift */; };
 		AA09CC345698764168BFAD0F /* WardrobeItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A0AC80513194F13CBD6154 /* WardrobeItem.swift */; };
 		AA7616F94BC57247CB84EB02 /* WardrobeItemImageUpgradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41C63FE0943B218F96DECA0 /* WardrobeItemImageUpgradeView.swift */; };
@@ -134,6 +137,7 @@
 		1616941BE0EAB40F74A088AA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1AF0F87BBB9C1CD0572BDB60 /* GenerationDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationDraft.swift; sourceTree = "<group>"; };
 		2153A825703E5C59A02F6A3D /* AdonisFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisFlowUITests.swift; sourceTree = "<group>"; };
+		2184393E46216F0176D9DA58 /* StickerQualityAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerQualityAssessment.swift; sourceTree = "<group>"; };
 		25E35A62405F04F4C91FD146 /* VisualContentProvenance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualContentProvenance.swift; sourceTree = "<group>"; };
 		27A8470E112FD06E2CDC338F /* AdonisTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisTheme.swift; sourceTree = "<group>"; };
 		290B068850AE398F3ACAC1A7 /* WardrobeItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemDetailView.swift; sourceTree = "<group>"; };
@@ -167,6 +171,7 @@
 		77F83D427A76B9EAE21B0876 /* sample-01-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-01-sticker.png"; sourceTree = "<group>"; };
 		7C1B423C8D9B768E0AB09434 /* sample-03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03.png"; sourceTree = "<group>"; };
 		81B62D5D132AC85E01784E17 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		84136BBEA95D26BF94F117B2 /* StickerQualityAssessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerQualityAssessorTests.swift; sourceTree = "<group>"; };
 		8B8DB8DEFCD7D0A3C1AE2C1E /* sample-03-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03-sticker.png"; sourceTree = "<group>"; };
 		8C79187C672D6932F46FD1BC /* AdonisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisApp.swift; sourceTree = "<group>"; };
 		93561339C973C07D4E699E67 /* Adonis.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Adonis.entitlements; sourceTree = "<group>"; };
@@ -174,6 +179,7 @@
 		94E389967339AE810B636BC5 /* AdonisUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AdonisUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C9C4FA8A91B8CCA08F29DBB /* SharedImageInbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedImageInbox.swift; sourceTree = "<group>"; };
 		9E2ED59B556B639C01144CF3 /* WardrobeCandidateMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeCandidateMatcherTests.swift; sourceTree = "<group>"; };
+		9E8A29F732DC9640A560F982 /* StickerQualityAssessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerQualityAssessor.swift; sourceTree = "<group>"; };
 		A4D6165666D17D32A05ABAF6 /* sample-02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-02.png"; sourceTree = "<group>"; };
 		B2008CD53DE2CE10DC6E70C6 /* AppEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEvent.swift; sourceTree = "<group>"; };
 		B4FA337AA391BD2C538ADBC1 /* EventLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLogger.swift; sourceTree = "<group>"; };
@@ -221,6 +227,7 @@
 				1AF0F87BBB9C1CD0572BDB60 /* GenerationDraft.swift */,
 				5D0994A465AE03BD4840F048 /* OutfitRecord.swift */,
 				4D05F8A9D74EA80804DC6A13 /* ProcessingTrace.swift */,
+				2184393E46216F0176D9DA58 /* StickerQualityAssessment.swift */,
 				25E35A62405F04F4C91FD146 /* VisualContentProvenance.swift */,
 				F3A0AC80513194F13CBD6154 /* WardrobeItem.swift */,
 			);
@@ -309,6 +316,7 @@
 				0AE5FB9960887C789F813E51 /* ShareCardRenderer.swift */,
 				C95059D5C09DEFB138D303EC /* SharedWardrobeImportCoordinator.swift */,
 				5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */,
+				9E8A29F732DC9640A560F982 /* StickerQualityAssessor.swift */,
 				C7465AE6ACD185AA0E329EA9 /* WardrobeCandidateMatcher.swift */,
 				35D054A4D8ABBFB0B58A60EB /* WardrobeHistoryMatcher.swift */,
 				344C0FB1909A7A7BC018E316 /* WardrobeImageAnalyzer.swift */,
@@ -412,6 +420,7 @@
 				316737292FE33E782DAD2887 /* SharedImageInboxTests.swift */,
 				F3A9C1588A5A38E96E7EA650 /* SharedWardrobeImportCoordinatorTests.swift */,
 				4718CD6CE45E819A6AC83529 /* StickerProcessorTests.swift */,
+				84136BBEA95D26BF94F117B2 /* StickerQualityAssessorTests.swift */,
 				75B8591003804E662E9435F6 /* VisualContentProvenanceTests.swift */,
 				9E2ED59B556B639C01144CF3 /* WardrobeCandidateMatcherTests.swift */,
 				51B14671AF376DB8E9B11E1E /* WardrobeHistoryMatcherTests.swift */,
@@ -595,6 +604,7 @@
 				1E771E07BF3146CEE74A025F /* SharedImageInboxTests.swift in Sources */,
 				72CE834B10BE56C4FFA4C882 /* SharedWardrobeImportCoordinatorTests.swift in Sources */,
 				4AFB40403A8C7A8584F3CEE9 /* StickerProcessorTests.swift in Sources */,
+				32CA5F7642FEEC25E743F46E /* StickerQualityAssessorTests.swift in Sources */,
 				1CCF473DA8BAD7E4925CADF6 /* VisualContentProvenanceTests.swift in Sources */,
 				833D591989DF8A521A68D1C1 /* WardrobeCandidateMatcherTests.swift in Sources */,
 				9A95DEEA282092ED4CB0DA28 /* WardrobeHistoryMatcherTests.swift in Sources */,
@@ -635,6 +645,8 @@
 				84E550994C1DD4E25B25F5D6 /* SharedImageInbox.swift in Sources */,
 				4C62C431C85643DBF75BE203 /* SharedWardrobeImportCoordinator.swift in Sources */,
 				38385A8843FD7D39731262D1 /* StickerProcessor.swift in Sources */,
+				148602CF072B947FCFB05C98 /* StickerQualityAssessment.swift in Sources */,
+				A6BCE233749F8E06DE8D9CB4 /* StickerQualityAssessor.swift in Sources */,
 				212E902D6EFF97FB6AC0FE1C /* StoredImageView.swift in Sources */,
 				B025F76F64788BA52A25BFBE /* VisualContentProvenance.swift in Sources */,
 				72679204352E432C70016FBA /* WardrobeCandidateMatcher.swift in Sources */,

@@ -7,9 +7,17 @@ struct OutfitDetailView: View {
 
   @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var modelContext
-  @State private var visualAsset: OutfitVisualAsset = .shareCard
+  @State private var visualAsset: OutfitVisualAsset
   @State private var showShare = false
   @State private var showDeleteConfirmation = false
+
+  init(record: OutfitRecord, onDelete: @escaping () -> Void) {
+    self.record = record
+    self.onDelete = onDelete
+    _visualAsset = State(
+      initialValue: record.stickerQualityAssessment.requiresReview ? .sticker : .shareCard
+    )
+  }
 
   var body: some View {
     ZStack {
@@ -28,6 +36,13 @@ struct OutfitDetailView: View {
           .accessibilityIdentifier("history-visual-picker")
 
           visualPreview
+
+          if record.stickerQualityAssessment.requiresReview {
+            StickerQualityNotice(
+              assessment: record.stickerQualityAssessment,
+              detail: "这条收藏保留了当时的贴纸；边缘如果不合心意，可以回到“创作”换一张照片再做。"
+            )
+          }
 
           ContentProvenanceNotice(provenance: visualAsset.provenance)
 

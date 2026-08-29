@@ -24,7 +24,11 @@ final class PersonalDataControlTests: XCTestCase {
       stickerImageFilename: stickerFilename,
       cardImageFilename: cardFilename,
       bloomNumber: 7,
-      note: "公园"
+      note: "公园",
+      stickerQualityAssessment: StickerQualityAssessment(
+        level: .reviewRecommended,
+        issues: [.edgeMayIncludeBackground]
+      )
     )
     let observation = GarmentObservation(
       createdAt: record.createdAt,
@@ -86,6 +90,19 @@ final class PersonalDataControlTests: XCTestCase {
     XCTAssertEqual(outfits.first?["originalPhotoPath"] as? String, "media/\(sourceFilename)")
     XCTAssertEqual(outfits.first?["derivedStickerPath"] as? String, "media/\(stickerFilename)")
     XCTAssertEqual(outfits.first?["derivedShareCardPath"] as? String, "media/\(cardFilename)")
+    XCTAssertEqual(
+      outfits.first?["stickerQualityLevel"] as? String,
+      StickerQualityLevel.reviewRecommended.rawValue
+    )
+    XCTAssertEqual(
+      outfits.first?["stickerQualityIssues"] as? [String],
+      [StickerQualityIssue.edgeMayIncludeBackground.rawValue]
+    )
+    XCTAssertEqual(outfits.first?["stickerQualityRequiresReview"] as? Bool, true)
+    XCTAssertEqual(
+      outfits.first?["stickerQualityVersion"] as? String,
+      StickerQualityAssessor.version
+    )
     let wardrobeItems = try XCTUnwrap(manifest["wardrobeItems"] as? [[String: Any]])
     XCTAssertEqual(
       wardrobeItems.first?["sourceImagePath"] as? String,
@@ -112,6 +129,22 @@ final class PersonalDataControlTests: XCTestCase {
       provenance(for: "media/\(cardFilename)", in: visualAssets),
       VisualContentProvenance.programmaticComposition.rawValue
     )
+    let stickerAsset = try XCTUnwrap(
+      visualAssets.first { $0["path"] as? String == "media/\(stickerFilename)" }
+    )
+    XCTAssertEqual(
+      stickerAsset["qualityLevel"] as? String,
+      StickerQualityLevel.reviewRecommended.rawValue
+    )
+    XCTAssertEqual(stickerAsset["qualityRequiresReview"] as? Bool, true)
+    XCTAssertEqual(
+      stickerAsset["qualityAssessmentVersion"] as? String,
+      StickerQualityAssessor.version
+    )
+    let sourceAsset = try XCTUnwrap(
+      visualAssets.first { $0["path"] as? String == "media/\(sourceFilename)" }
+    )
+    XCTAssertNil(sourceAsset["qualityLevel"])
     XCTAssertEqual(
       provenance(for: "media/\(wardrobeFilename)", in: visualAssets),
       VisualContentProvenance.userProvided.rawValue

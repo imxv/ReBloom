@@ -88,7 +88,7 @@ M0 退出条件：
 - [x] **ADO-107：实现最小历史视图。** 花历按日期显示记录，并能再次打开、分享或删除。
 - [ ] **ADO-108：完成真实设备或目标浏览器回归。** 验证上传、生成、保存、重试和删除的完整链路。
 
-  模拟器当前 51 项测试（42 个单元测试与 9 个 UI 流程测试）、界面像素检查和通用 iOS 真机构建已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[固定样片回归基线](docs/verification/2026-08-30-sample-regression-baseline.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)与 [生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)。
+  模拟器当前 58 项测试（48 个单元测试与 10 个 UI 流程测试）、界面像素检查和通用 iOS 真机构建已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[固定样片回归基线](docs/verification/2026-08-30-sample-regression-baseline.md)、[贴纸低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)与 [生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)。
 
 M1 退出条件：新用户无需建立衣橱即可完成一次真实 OOTD 记录，并能再次找到或删除它。
 
@@ -148,6 +148,8 @@ M4 退出条件：历史数据可以生成用户愿意再次打开、保存或�
 - [x] **ADO-Q02：生成内容标识。** 已建立“原始图片 / 原图处理 / 程序排版 / 识别建议 / AI 补全 / AI 生成”六类稳定契约；当前结果、历史、衣橱识别、OOTD 线索、分享收藏卡与个人数据导出均按实际来源标识，且没有把本机抠图或排版描述为 AI 生成。AI 补全与 AI 生成类型已预留，但因当前没有真实供应商输出，不宣称其质量已经验证。证据见 [生成内容来源标识验证记录](docs/verification/2026-08-29-content-provenance.md)。
 - [x] **ADO-Q03：固定回归样本集。** 四张用户授权原图、透明贴纸、处理版本、哈希、像素指标、覆盖标签和已知缺陷已进入统一清单；`make sample-regression` 会执行宿主机字节级重生成、iOS 像素门槛、四张收藏卡和模拟器/真机 Vision 边界测试。基线可防止静默退化，但不替代 ADO-005 的素材扩充或 ADO-006 的泛化与用户价值验证。证据见 [固定样片回归基线验证记录](docs/verification/2026-08-30-sample-regression-baseline.md)。
 - [ ] **ADO-Q04：失败与降级。** 为超时、低质量、识别不确定和供应商不可用提供用户可理解的结果。
+
+  已完成贴纸低质量纵向切片：正常结果不打扰；结构可疑结果默认打开透明贴纸，提供无分数轻提示、“这样也收藏”和“再做一张”，并把质量状态持久化到花历、事件与个人数据导出；透明背景未分离、主体缺失或严重碎裂时不再生成收藏卡。第 4 张困难样片会稳定进入“建议复查”，前三张保持正常。硬超时、真实供应商不可用与联网重试尚未实现，因此任务保持未完成。证据见 [贴纸低质量降级验证记录](docs/verification/2026-08-30-sticker-quality-degradation.md)。
 - [ ] **ADO-Q05：成本与时延预算。** 在选定供应方案前记录真实请求成本、重试和后处理开销。
 - [x] **ADO-Q06：可观测性。** 本地 Demo 记录不含图片内容的开始、成功、失败、取消、保存、删除、复用、纠正、线索创建、关联、排除、暂放和补商品图事件，并追踪相册/相机/样片/其他 App 输入来源及贴纸、卡片、衣橱分析、共享收件箱、OOTD 观察、候选排序、补图事务和历史回填版本。
 - [ ] **ADO-Q07：可访问性与真实设备体验。** 覆盖相册权限、相机权限、弱网、前后台切换和辅助功能。

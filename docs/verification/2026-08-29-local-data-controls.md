@@ -28,7 +28,7 @@
 - `sourceImagePath`
 - `derivedPreviewPath`
 
-清单还包含 `visualAssets` 数组，为每个图片路径记录 `role`、`provenance`、`ownerID`、面向用户的 `disclosure`、`containsAIGeneratedPixels` 和 `requiresUserConfirmation`。当前 OOTD 原图、商品图与待导入图片标为 `user_provided`，透明贴纸标为 `derived_from_original`，收藏卡标为 `programmatic_composition`，衣物线索预览标为 `recognition_suggestion`；当前资产的 `containsAIGeneratedPixels` 均为 `false`。详细规则见 [生成内容来源标识验证记录](2026-08-29-content-provenance.md)。
+当前清单格式为 `adonis-personal-data-v2`。它还包含 `visualAssets` 数组，为每个图片路径记录 `role`、`provenance`、`ownerID`、面向用户的 `disclosure`、`containsAIGeneratedPixels` 和 `requiresUserConfirmation`。当前 OOTD 原图、商品图与待导入图片标为 `user_provided`，透明贴纸标为 `derived_from_original`，收藏卡标为 `programmatic_composition`，衣物线索预览标为 `recognition_suggestion`；当前资产的 `containsAIGeneratedPixels` 均为 `false`。透明贴纸与收藏卡还保存 `qualityLevel`、`qualityIssues`、`qualityRequiresReview` 和 `qualityAssessmentVersion`，原始照片不伪造贴纸质量字段。详细规则见 [生成内容来源标识验证记录](2026-08-29-content-provenance.md)与 [贴纸低质量降级验证记录](2026-08-30-sticker-quality-degradation.md)。
 
 清单同时写明 `storage = local_app_storage`、`adonisAutomaticNetworkUpload = false` 和 `systemBackupControlledByIOS = true`。这表示 Adonis 本身没有自动网络上传；用户在下一步系统分享面板选择的 App 或位置仍可能接收该副本。
 
@@ -74,7 +74,7 @@
 - 删除单元测试验证四类模型计数归零、媒体目录为空、共享收件箱为空、陈旧临时 TAR 消失。
 - UI 测试分别覆盖：查看非零数据计数并打开带 TAR 的系统分享面板；二次确认删除后看到成功反馈，并验证衣橱与待导入图片计数从 1 变成 0。
 - `make check` 的严格 `swift-format` 与通用 iOS 真机静态分析通过。
-- 当前完整结果：42 个单元测试与 9 个 UI 流程测试，共 51 项通过、0 失败；结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_00-16-27-+0800.xcresult`。完整测试范围也记录在 [iOS 本地 Demo 验证记录](2026-08-29-ios-local-demo.md)。
+- 当前完整结果：48 个单元测试与 10 个 UI 流程测试，共 58 项通过、0 失败；结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_00-54-14-+0800.xcresult`。完整测试范围也记录在 [iOS 本地 Demo 验证记录](2026-08-29-ios-local-demo.md)。
 
 ## 界面证据
 

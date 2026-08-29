@@ -120,6 +120,51 @@ struct ContentProvenanceNotice: View {
   }
 }
 
+struct StickerQualityNotice: View {
+  let assessment: StickerQualityAssessment
+  var detail: String?
+
+  var body: some View {
+    HStack(alignment: .top, spacing: 12) {
+      Image(systemName: assessment.isRejected ? "xmark" : "eye.fill")
+        .font(.system(size: 15, weight: .bold))
+        .foregroundStyle(AdonisTheme.ink)
+        .frame(width: 40, height: 40)
+        .background(tint.opacity(0.65), in: Circle())
+
+      VStack(alignment: .leading, spacing: 4) {
+        Text(assessment.userTitle)
+          .font(.system(.subheadline, design: .rounded, weight: .black))
+          .foregroundStyle(AdonisTheme.ink)
+
+        Text(detail ?? assessment.userDetail)
+          .font(.footnote)
+          .foregroundStyle(AdonisTheme.secondaryInk)
+          .lineSpacing(2)
+          .fixedSize(horizontal: false, vertical: true)
+      }
+
+      Spacer(minLength: 0)
+    }
+    .padding(14)
+    .background(
+      tint.opacity(0.17),
+      in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+    )
+    .overlay {
+      RoundedRectangle(cornerRadius: 18, style: .continuous)
+        .stroke(tint.opacity(0.48), lineWidth: 1)
+    }
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel("\(assessment.userTitle)。\(detail ?? assessment.userDetail)")
+    .accessibilityIdentifier("sticker-quality-\(assessment.level.rawValue)")
+  }
+
+  private var tint: Color {
+    assessment.isRejected ? AdonisTheme.pomegranate : AdonisTheme.butter
+  }
+}
+
 struct TransparencyGridBackground: View {
   private let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: 10)
 

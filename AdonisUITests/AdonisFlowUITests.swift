@@ -26,6 +26,9 @@ final class AdonisFlowUITests: XCTestCase {
     firstSample.tap()
 
     XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 8))
+    XCTAssertFalse(
+      app.descendants(matching: .any)["sticker-quality-review_recommended"].exists
+    )
     XCTAssertTrue(
       app.descendants(matching: .any)["content-provenance-programmatic_composition"]
         .waitForExistence(timeout: 3)
@@ -89,6 +92,64 @@ final class AdonisFlowUITests: XCTestCase {
     }
     XCTAssertTrue(historyProvenance.isHittable)
     keepScreenshot(named: "Adonis-content-provenance-history")
+  }
+
+  @MainActor
+  func testReviewRecommendedStickerStartsInspectableAndKeepsWarningInHistory() {
+    let app = XCUIApplication()
+    app.launchArguments.append("-ui-testing")
+    app.launch()
+
+    let sample = app.buttons["sample-04"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    sample.tap()
+
+    let title = app.staticTexts["result-title"]
+    XCTAssertTrue(title.waitForExistence(timeout: 10))
+    XCTAssertEqual(title.label, "先看看这张贴纸")
+    let modes = app.segmentedControls["result-mode-picker"]
+    XCTAssertTrue(modes.buttons["透明贴纸"].isSelected)
+
+    let notice = app.descendants(matching: .any)["sticker-quality-review_recommended"]
+    XCTAssertTrue(notice.waitForExistence(timeout: 5))
+    for _ in 0..<3 where !notice.isHittable {
+      app.swipeUp()
+    }
+    XCTAssertTrue(notice.isHittable)
+    XCTAssertFalse(notice.label.contains("%"))
+    keepScreenshot(named: "Adonis-sticker-quality-review-result")
+
+    let saveButton = app.buttons["save-today"]
+    for _ in 0..<3 where !saveButton.isHittable {
+      app.swipeUp()
+    }
+    XCTAssertTrue(saveButton.waitForExistence(timeout: 3))
+    XCTAssertTrue(saveButton.label.contains("这样也收藏"))
+    saveButton.tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 3))
+
+    let makeAnother = app.buttons["make-another"]
+    for _ in 0..<2 where !makeAnother.isHittable {
+      app.swipeUp()
+    }
+    makeAnother.tap()
+
+    app.tabBars.buttons["花历"].tap()
+    let recordCard = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(recordCard.waitForExistence(timeout: 5))
+    recordCard.tap()
+
+    let historyModes = app.segmentedControls["history-visual-picker"]
+    XCTAssertTrue(historyModes.buttons["透明贴纸"].waitForExistence(timeout: 5))
+    XCTAssertTrue(historyModes.buttons["透明贴纸"].isSelected)
+    let historyNotice =
+      app.descendants(matching: .any)["sticker-quality-review_recommended"]
+    XCTAssertTrue(historyNotice.waitForExistence(timeout: 4))
+    for _ in 0..<3 where !historyNotice.isHittable {
+      app.swipeUp()
+    }
+    XCTAssertTrue(historyNotice.isHittable)
+    keepScreenshot(named: "Adonis-sticker-quality-review-history")
   }
 
   @MainActor

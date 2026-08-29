@@ -7,7 +7,7 @@ struct GenerationResultView: View {
   let onReset: () -> Void
 
   @Environment(\.dismiss) private var dismiss
-  @State private var mode: OutfitVisualAsset = .shareCard
+  @State private var mode: OutfitVisualAsset
   @State private var isSaved: Bool
   @State private var showShare = false
   @State private var saveError: String?
@@ -22,6 +22,9 @@ struct GenerationResultView: View {
     self.initiallySaved = initiallySaved
     self.onSave = onSave
     self.onReset = onReset
+    _mode = State(
+      initialValue: draft.qualityAssessment.requiresReview ? .sticker : .shareCard
+    )
     _isSaved = State(initialValue: initiallySaved)
   }
 
@@ -44,6 +47,10 @@ struct GenerationResultView: View {
           .accessibilityIdentifier("result-mode-picker")
 
           preview
+
+          if draft.qualityAssessment.requiresReview {
+            StickerQualityNotice(assessment: draft.qualityAssessment)
+          }
 
           HStack(spacing: 8) {
             StickerTag(
@@ -126,7 +133,7 @@ struct GenerationResultView: View {
   private var resultHeader: some View {
     HStack {
       VStack(alignment: .leading, spacing: 4) {
-        Text("今天开了一朵花")
+        Text(draft.qualityAssessment.requiresReview ? "先看看这张贴纸" : "今天开了一朵花")
           .font(.system(.title2, design: .rounded, weight: .black))
           .foregroundStyle(AdonisTheme.ink)
           .accessibilityIdentifier("result-title")
@@ -232,7 +239,7 @@ struct GenerationResultView: View {
         }
       } label: {
         PrimaryActionLabel(
-          title: isSaved ? "今天已经收藏" : "收藏今天",
+          title: saveButtonTitle,
           systemImage: isSaved ? "checkmark.circle.fill" : "heart.fill"
         )
       }
@@ -270,5 +277,10 @@ struct GenerationResultView: View {
         .accessibilityIdentifier("make-another")
       }
     }
+  }
+
+  private var saveButtonTitle: String {
+    if isSaved { return "今天已经收藏" }
+    return draft.qualityAssessment.requiresReview ? "这样也收藏" : "收藏今天"
   }
 }

@@ -8,7 +8,7 @@ struct PersonalDataArchive: Identifiable, Sendable {
 }
 
 struct PersonalDataArchiveService {
-  static let formatVersion = "adonis-personal-data-v1"
+  static let formatVersion = "adonis-personal-data-v2"
   static let exportDirectoryName = "AdonisExports"
 
   private let mediaStore: MediaStore
@@ -254,13 +254,17 @@ private struct PersonalDataManifest: Encodable, Sendable {
             path: "media/\(record.stickerImageFilename)",
             role: "outfit_sticker",
             provenance: .derivedFromOriginal,
-            ownerID: record.id
+            ownerID: record.id,
+            qualityAssessment: record.stickerQualityAssessment,
+            qualityAssessmentVersion: record.stickerQualityVersion
           ),
           ExportedVisualAsset(
             path: "media/\(record.cardImageFilename)",
             role: "outfit_share_card",
             provenance: .programmaticComposition,
-            ownerID: record.id
+            ownerID: record.id,
+            qualityAssessment: record.stickerQualityAssessment,
+            qualityAssessmentVersion: record.stickerQualityVersion
           ),
         ]
       }
@@ -305,12 +309,18 @@ private struct ExportedVisualAsset: Encodable, Sendable {
   let disclosure: String
   let containsAIGeneratedPixels: Bool
   let requiresUserConfirmation: Bool
+  let qualityLevel: String?
+  let qualityIssues: [String]?
+  let qualityRequiresReview: Bool?
+  let qualityAssessmentVersion: String?
 
   init(
     path: String,
     role: String,
     provenance: VisualContentProvenance,
-    ownerID: UUID?
+    ownerID: UUID?,
+    qualityAssessment: StickerQualityAssessment? = nil,
+    qualityAssessmentVersion: String? = nil
   ) {
     self.path = path
     self.role = role
@@ -319,6 +329,10 @@ private struct ExportedVisualAsset: Encodable, Sendable {
     self.disclosure = provenance.detail
     self.containsAIGeneratedPixels = provenance.containsAIGeneratedPixels
     self.requiresUserConfirmation = provenance.requiresUserConfirmation
+    self.qualityLevel = qualityAssessment?.level.rawValue
+    self.qualityIssues = qualityAssessment?.issues.map(\.rawValue)
+    self.qualityRequiresReview = qualityAssessment?.requiresReview
+    self.qualityAssessmentVersion = qualityAssessmentVersion
   }
 }
 
@@ -331,6 +345,10 @@ private struct ExportedOutfit: Encodable, Sendable {
   let derivedShareCardPath: String
   let bloomNumber: Int
   let note: String
+  let stickerQualityLevel: String
+  let stickerQualityIssues: [String]
+  let stickerQualityRequiresReview: Bool
+  let stickerQualityVersion: String
 
   @MainActor
   init(_ record: OutfitRecord) {
@@ -342,6 +360,10 @@ private struct ExportedOutfit: Encodable, Sendable {
     derivedShareCardPath = "media/\(record.cardImageFilename)"
     bloomNumber = record.bloomNumber
     note = record.note
+    stickerQualityLevel = record.stickerQualityAssessment.level.rawValue
+    stickerQualityIssues = record.stickerQualityAssessment.issues.map(\.rawValue)
+    stickerQualityRequiresReview = record.stickerQualityAssessment.requiresReview
+    stickerQualityVersion = record.stickerQualityVersion
   }
 }
 

@@ -11,8 +11,18 @@ final class OutfitRecord {
   var cardImageFilename: String
   var bloomNumber: Int
   var note: String
+  var stickerQualityLevelRawValue: String = StickerQualityLevel.acceptable.rawValue
+  var stickerQualityIssueRawValues: String = ""
+  var stickerQualityVersion: String = AdonisProcessingVersion.stickerQuality
   @Relationship(deleteRule: .cascade, inverse: \GarmentObservation.outfit)
   var garmentObservations: [GarmentObservation] = []
+
+  var stickerQualityAssessment: StickerQualityAssessment {
+    StickerQualityAssessment(
+      levelRawValue: stickerQualityLevelRawValue,
+      issueRawValues: stickerQualityIssueRawValues
+    )
+  }
 
   init(
     id: UUID = UUID(),
@@ -23,6 +33,8 @@ final class OutfitRecord {
     cardImageFilename: String,
     bloomNumber: Int,
     note: String = "",
+    stickerQualityAssessment: StickerQualityAssessment = .acceptable,
+    stickerQualityVersion: String = AdonisProcessingVersion.stickerQuality,
     garmentObservations: [GarmentObservation] = []
   ) {
     self.id = id
@@ -33,6 +45,9 @@ final class OutfitRecord {
     self.cardImageFilename = cardImageFilename
     self.bloomNumber = bloomNumber
     self.note = note
+    self.stickerQualityLevelRawValue = stickerQualityAssessment.level.rawValue
+    self.stickerQualityIssueRawValues = stickerQualityAssessment.issueRawValues
+    self.stickerQualityVersion = stickerQualityVersion
     self.garmentObservations = garmentObservations
   }
 }

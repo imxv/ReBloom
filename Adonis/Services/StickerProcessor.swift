@@ -336,6 +336,7 @@ enum StickerProcessingError: LocalizedError {
   case personNotFound
   case renderFailed
   case simulatorVisionUnavailable
+  case outputQualityTooLow
 
   var errorDescription: String? {
     switch self {
@@ -349,6 +350,8 @@ enum StickerProcessingError: LocalizedError {
       "贴纸生成到最后一步时失败了，请再试一次。"
     case .simulatorVisionUnavailable:
       "当前模拟器无法运行本机人像模型。请先用内置样片体验完整流程，或在 iPhone 上选择自己的照片。"
+    case .outputQualityTooLow:
+      "人物轮廓没有分干净。换一张人物更完整、与背景颜色更分开的照片吧。原图不会被修改。"
     }
   }
 }

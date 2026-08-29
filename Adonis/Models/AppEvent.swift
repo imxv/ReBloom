@@ -44,6 +44,8 @@ enum AppEventKind: String {
   case generationSucceeded
   case generationFailed
   case generationCancelled
+  case generationQualityWarning
+  case generationQualityRejected
   case outfitSaved
   case outfitDeleted
   case wardrobeItemAdded
@@ -69,6 +71,8 @@ enum AppEventKind: String {
     case .generationSucceeded: "处理成功"
     case .generationFailed: "处理失败"
     case .generationCancelled: "取消处理"
+    case .generationQualityWarning: "贴纸建议复查"
+    case .generationQualityRejected: "贴纸质量未通过"
     case .outfitSaved: "保存穿搭"
     case .outfitDeleted: "删除穿搭"
     case .wardrobeItemAdded: "添加单品"

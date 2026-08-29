@@ -19,7 +19,8 @@ sample-regression: project
 	./scripts/verify_sample_regression.sh
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
 		-only-testing:AdonisTests/SampleRegressionTests \
-		-only-testing:AdonisTests/StickerProcessorTests
+		-only-testing:AdonisTests/StickerProcessorTests \
+		-only-testing:AdonisTests/StickerQualityAssessorTests
 
 lint:
 	xcrun swift-format lint --recursive --parallel --strict Adonis AdonisShared AdonisShareExtension AdonisTests AdonisUITests

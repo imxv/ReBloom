@@ -19,6 +19,7 @@ struct CreateView: View {
   @State private var activeInputSource: EventInputSource?
 
   private let processor = StickerProcessor()
+  private let qualityAssessor = StickerQualityAssessor()
   private let cardRenderer = ShareCardRenderer()
   private let garmentObserver = OutfitGarmentObserver()
 
@@ -315,9 +316,36 @@ struct CreateView: View {
         processed = try await processor.process(image)
       }
       guard activeGenerationID == generationID else { return }
+
       processingStage = .outlining
       await Task.yield()
       guard activeGenerationID == generationID else { return }
+      processingStage = .checking
+      let qualityAssessment = await qualityAssessor.assess(
+        sticker: processed.image,
+        foregroundCoverage: processed.foregroundCoverage
+      )
+      guard activeGenerationID == generationID else { return }
+      if qualityAssessment.isRejected {
+        EventLogger.log(
+          .generationQualityRejected,
+          detail: qualityAssessment.eventDetail,
+          inputSource: inputSource,
+          processingVersion: StickerQualityAssessor.version,
+          in: modelContext
+        )
+        throw StickerProcessingError.outputQualityTooLow
+      }
+      if qualityAssessment.requiresReview {
+        EventLogger.log(
+          .generationQualityWarning,
+          detail: qualityAssessment.eventDetail,
+          inputSource: inputSource,
+          processingVersion: StickerQualityAssessor.version,
+          in: modelContext
+        )
+      }
+
       processingStage = .composing
       let bloomNumber = (records.map(\.bloomNumber).max() ?? 0) + 1
       let date = Date.now
@@ -353,6 +381,7 @@ struct CreateView: View {
         foregroundCoverage: processed.foregroundCoverage,
         usesPreparedSample: preparedSticker != nil,
         inputSource: inputSource,
+        qualityAssessment: qualityAssessment,
         garmentObservations: garmentObservations
       )
     } catch {
@@ -416,7 +445,9 @@ struct CreateView: View {
         sourceImageFilename: sourceFilename,
         stickerImageFilename: stickerFilename,
         cardImageFilename: cardFilename,
-        bloomNumber: draft.bloomNumber
+        bloomNumber: draft.bloomNumber,
+        stickerQualityAssessment: draft.qualityAssessment,
+        stickerQualityVersion: StickerQualityAssessor.version
       )
       modelContext.insert(record)
 

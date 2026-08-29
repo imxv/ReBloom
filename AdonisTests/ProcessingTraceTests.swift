@@ -37,4 +37,16 @@ final class ProcessingTraceTests: XCTestCase {
       "wardrobe-share-inbox-v1"
     )
   }
+
+  func testGenerationPipelineIncludesStructuralQualityAssessment() {
+    XCTAssertEqual(
+      StickerQualityAssessor.version,
+      "sticker-quality-structural-v1"
+    )
+    XCTAssertTrue(
+      AdonisProcessingVersion.generationPipeline.contains(StickerQualityAssessor.version)
+    )
+    XCTAssertEqual(AppEventKind.generationQualityWarning.title, "贴纸建议复查")
+    XCTAssertEqual(AppEventKind.generationQualityRejected.title, "贴纸质量未通过")
+  }
 }

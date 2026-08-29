@@ -79,15 +79,17 @@ make sample-regression
 
 - 四张原图与四张贴纸哈希校验通过。
 - 四张贴纸在 macOS Vision 链路中重新生成，全部与仓库结果逐字节一致。
-- 6 个专项 XCTest 通过，0 失败。
-- 专项结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_00-11-56-+0800.xcresult`。
+- 11 个专项 XCTest 通过，0 失败；其中新增 5 个结构质量检查测试，确保前三张正常、第 4 张建议复查，并覆盖背景未分离与空主体拒绝。
+- 专项结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_00-53-26-+0800.xcresult`。
 - 从完整结果包导出的四张收藏卡附件已逐张目检：尺寸、标题、编号、日期、来源声明和主体排版均可读；sample-04 的浅色软垫误并入也在卡面中如实可见。
 
 - `make check` 通过：严格 `swift-format` 与通用 iOS 设备静态分析均成功。
-- `make test` 通过：42 个单元测试与 9 个 UI 流程测试，共 51 项、0 失败。
-- 完整结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_00-16-27-+0800.xcresult`。
+- `make test` 通过：48 个单元测试与 10 个 UI 流程测试，共 58 项、0 失败。
+- 完整结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_00-54-14-+0800.xcresult`。
 
 专项门禁与完整产品回归都已执行；两者仍不能代替真实 iPhone 证据。
+
+困难样片目前会触发可见但不阻断收藏的质量提示，详见 [贴纸低质量降级验证记录](2026-08-30-sticker-quality-degradation.md)。
 
 ## 5. 基线更新规则
 
