@@ -16,6 +16,7 @@ struct CreateView: View {
   @State private var showCameraUnavailable = false
   @State private var showSettings = false
   @State private var activeGenerationID: UUID?
+  @State private var activeInputSource: EventInputSource?
 
   private let processor = StickerProcessor()
   private let cardRenderer = ShareCardRenderer()
@@ -64,7 +65,7 @@ struct CreateView: View {
     }
     .sheet(isPresented: $showCamera) {
       CameraPicker { image in
-        Task { await generate(from: image) }
+        Task { await generate(from: image, inputSource: .camera) }
       }
       .ignoresSafeArea()
     }
@@ -203,7 +204,8 @@ struct CreateView: View {
               Task {
                 await generate(
                   from: image,
-                  preparedSticker: sticker
+                  preparedSticker: sticker,
+                  inputSource: .preparedSample
                 )
               }
             }
@@ -234,6 +236,7 @@ struct CreateView: View {
   private func loadPhoto(from item: PhotosPickerItem) async {
     let loadID = UUID()
     activeGenerationID = loadID
+    activeInputSource = .photoLibrary
     do {
       processingStage = .reading
       isProcessing = true
@@ -243,20 +246,37 @@ struct CreateView: View {
         throw StickerProcessingError.unreadableImage
       }
       guard activeGenerationID == loadID else { return }
-      await generate(from: image, alreadyShowingProgress: true)
+      await generate(
+        from: image,
+        inputSource: .photoLibrary,
+        alreadyShowingProgress: true
+      )
     } catch {
       guard activeGenerationID == loadID else { return }
+      EventLogger.log(
+        .generationFailed,
+        detail: error.localizedDescription,
+        inputSource: .photoLibrary,
+        processingVersion: AdonisProcessingVersion.generationPipeline,
+        in: modelContext
+      )
       activeGenerationID = nil
+      activeInputSource = nil
       isProcessing = false
       errorMessage = error.localizedDescription
     }
   }
 
   @MainActor
-  private func generate(from image: UIImage, alreadyShowingProgress: Bool = false) async {
+  private func generate(
+    from image: UIImage,
+    inputSource: EventInputSource,
+    alreadyShowingProgress: Bool = false
+  ) async {
     await generate(
       from: image,
       preparedSticker: nil,
+      inputSource: inputSource,
       alreadyShowingProgress: alreadyShowingProgress
     )
   }
@@ -265,15 +285,22 @@ struct CreateView: View {
   private func generate(
     from image: UIImage,
     preparedSticker: UIImage?,
+    inputSource: EventInputSource,
     alreadyShowingProgress: Bool = false
   ) async {
     let generationID = UUID()
     activeGenerationID = generationID
+    activeInputSource = inputSource
     if !alreadyShowingProgress {
       isProcessing = true
     }
     processingStage = .separating
-    EventLogger.log(.generationStarted, in: modelContext)
+    EventLogger.log(
+      .generationStarted,
+      inputSource: inputSource,
+      processingVersion: AdonisProcessingVersion.generationPipeline,
+      in: modelContext
+    )
 
     do {
       let processed: StickerProcessingResult
@@ -305,9 +332,12 @@ struct CreateView: View {
           ? processed.elapsedMilliseconds
           : nil,
         detail: preparedSticker == nil ? nil : "prepared_sample",
+        inputSource: inputSource,
+        processingVersion: AdonisProcessingVersion.generationPipeline,
         in: modelContext
       )
       activeGenerationID = nil
+      activeInputSource = nil
       isProcessing = false
       draft = GenerationDraft(
         createdAt: date,
@@ -317,12 +347,20 @@ struct CreateView: View {
         bloomNumber: bloomNumber,
         processingMilliseconds: processed.elapsedMilliseconds,
         foregroundCoverage: processed.foregroundCoverage,
-        usesPreparedSample: preparedSticker != nil
+        usesPreparedSample: preparedSticker != nil,
+        inputSource: inputSource
       )
     } catch {
       guard activeGenerationID == generationID else { return }
-      EventLogger.log(.generationFailed, detail: error.localizedDescription, in: modelContext)
+      EventLogger.log(
+        .generationFailed,
+        detail: error.localizedDescription,
+        inputSource: inputSource,
+        processingVersion: AdonisProcessingVersion.generationPipeline,
+        in: modelContext
+      )
       activeGenerationID = nil
+      activeInputSource = nil
       isProcessing = false
       errorMessage = error.localizedDescription
     }
@@ -334,7 +372,13 @@ struct CreateView: View {
     activeGenerationID = nil
     selectedPhotoItem = nil
     isProcessing = false
-    EventLogger.log(.generationCancelled, in: modelContext)
+    EventLogger.log(
+      .generationCancelled,
+      inputSource: activeInputSource,
+      processingVersion: AdonisProcessingVersion.generationPipeline,
+      in: modelContext
+    )
+    activeInputSource = nil
   }
 
   @MainActor
@@ -376,7 +420,12 @@ struct CreateView: View {
       MediaStore.shared.delete(filenames: savedFilenames)
       throw error
     }
-    EventLogger.log(.outfitSaved, in: modelContext)
+    EventLogger.log(
+      .outfitSaved,
+      inputSource: draft.inputSource,
+      processingVersion: AdonisProcessingVersion.generationPipeline,
+      in: modelContext
+    )
   }
 }
 

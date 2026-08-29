@@ -10,10 +10,10 @@
 
 - Xcode：26.6，Build 17F113。
 - 视觉截图：独立创建的 iPhone 17 Pro，iOS 26.5，设备名 `Adonis Test`。
-- 最终完整测试：命名为 `iPhone 17 Pro` 的 iOS 26.5 模拟器，6 个测试全部通过。
+- 最终完整测试：命名为 `iPhone 17 Pro` 的 iOS 26.5 模拟器，当前 13 个测试全部通过；包含 10 个单元测试与 3 个 UI 流程测试。
 - 通用 iOS 设备构建：`xcodebuild ... -destination 'generic/platform=iOS' ... build CODE_SIGNING_ALLOWED=NO`，退出码 0。
 - 静态分析：`xcodebuild ... -destination 'generic/platform=iOS' ... analyze CODE_SIGNING_ALLOWED=NO`，退出码 0。
-- 完整测试计划：6 个测试通过，0 失败，包含 4 个单元测试与 2 个 UI 流程测试。
+- 完整测试计划：13 个测试通过，0 失败；原有贴纸主链路和新增衣橱轻量导入链路均已覆盖。
 - UI 主链路：样片 → 收藏卡 → 收藏今天 → 返回创作 → 花历出现记录，通过。
 - 文件链路：PNG 写入、读取、删除与清空均限制在注入的媒体目录内，通过。
 - 收藏卡：固定为 1080 × 1440，所有像素 Alpha 为 255，通过。

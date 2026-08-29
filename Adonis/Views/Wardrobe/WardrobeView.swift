@@ -1,6 +1,7 @@
 import PhotosUI
 import SwiftData
 import SwiftUI
+import UIKit
 
 struct WardrobeView: View {
   @Environment(\.modelContext) private var modelContext
@@ -9,6 +10,12 @@ struct WardrobeView: View {
   @State private var selectedPhotoItem: PhotosPickerItem?
   @State private var selectedItem: WardrobeItem?
   @State private var errorMessage: String?
+  @State private var isImporting = false
+  @State private var importStage: WardrobeImportStage = .reading
+  @State private var activeImportID: UUID?
+  @State private var activeInputSource: EventInputSource?
+
+  private let analyzer = WardrobeImageAnalyzer()
 
   private let columns = [
     GridItem(.flexible(), spacing: 14),
@@ -36,6 +43,13 @@ struct WardrobeView: View {
         .padding(.bottom, 36)
       }
       .scrollIndicators(.hidden)
+      .disabled(isImporting)
+
+      if isImporting {
+        WardrobeImportOverlay(stage: importStage, onCancel: cancelImport)
+          .transition(.opacity.combined(with: .scale(scale: 0.98)))
+          .zIndex(2)
+      }
     }
     .toolbar(.hidden, for: .navigationBar)
     .onChange(of: selectedPhotoItem) { _, newItem in
@@ -85,6 +99,7 @@ struct WardrobeView: View {
           .shadow(color: AdonisTheme.ink.opacity(0.15), radius: 10, y: 5)
       }
       .buttonStyle(StickerButtonStyle())
+      .disabled(isImporting)
       .accessibilityLabel("添加衣服图片")
       .accessibilityIdentifier("add-wardrobe-item")
     }
@@ -102,7 +117,25 @@ struct WardrobeView: View {
         PrimaryActionLabel(title: "添加第一件", systemImage: "plus")
       }
       .buttonStyle(StickerButtonStyle())
+      .disabled(isImporting)
       .accessibilityIdentifier("add-first-wardrobe-item")
+
+      if isUITestingWardrobeImport {
+        Button {
+          Task { await addUITestingCatalogItem() }
+        } label: {
+          Label("添加测试商品图", systemImage: "tshirt.fill")
+            .font(.system(.subheadline, design: .rounded, weight: .bold))
+            .foregroundStyle(AdonisTheme.ink)
+            .frame(maxWidth: .infinity, minHeight: 48)
+            .background(
+              AdonisTheme.butter.opacity(0.72),
+              in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+            )
+        }
+        .buttonStyle(StickerButtonStyle())
+        .accessibilityIdentifier("add-test-wardrobe-item")
+      }
     }
     .padding(22)
     .paperSurface()
@@ -112,6 +145,20 @@ struct WardrobeView: View {
     ScrollView(.horizontal) {
       HStack(spacing: 9) {
         StickerTag(title: "\(items.count) 件", color: AdonisTheme.butter, icon: "hanger")
+        if isUITestingWardrobeImport {
+          Button {
+            Task { await addUITestingCatalogItem() }
+          } label: {
+            Label("再次导入测试图", systemImage: "arrow.clockwise")
+              .font(.system(.caption, design: .rounded, weight: .bold))
+              .foregroundStyle(AdonisTheme.ink)
+              .padding(.horizontal, 12)
+              .frame(minHeight: 36)
+              .background(AdonisTheme.lavender.opacity(0.3), in: Capsule())
+          }
+          .buttonStyle(StickerButtonStyle())
+          .accessibilityIdentifier("reimport-test-wardrobe-item")
+        }
         ForEach(WardrobeCategory.allCases.filter { $0 != .uncategorized }) { category in
           let count = items.filter { $0.category == category }.count
           if count > 0 {
@@ -138,20 +185,84 @@ struct WardrobeView: View {
         }
         .buttonStyle(StickerButtonStyle())
         .accessibilityLabel("\(item.name)，\(item.category.rawValue)")
+        .accessibilityIdentifier("wardrobe-item-card")
       }
     }
   }
 
   @MainActor
   private func addItem(from photoItem: PhotosPickerItem) async {
-    var savedFilename: String?
+    let importID = beginImport(source: .photoLibrary)
     do {
-      guard let data = try await photoItem.loadTransferable(type: Data.self),
-        let image = UIImage(data: data)
-      else {
+      guard let data = try await photoItem.loadTransferable(type: Data.self) else {
+        throw WardrobeImageAnalysisError.unreadableImage
+      }
+      guard activeImportID == importID else { return }
+      try await importItem(data: data, source: .photoLibrary, importID: importID)
+    } catch {
+      handleImportFailure(error, source: .photoLibrary, importID: importID)
+    }
+  }
+
+  @MainActor
+  private func addUITestingCatalogItem() async {
+    let importID = beginImport(source: .testFixture)
+    do {
+      guard let data = makeUITestingCatalogImage().pngData() else {
         throw MediaStoreError.encodingFailed
       }
+      try await importItem(data: data, source: .testFixture, importID: importID)
+    } catch {
+      handleImportFailure(error, source: .testFixture, importID: importID)
+    }
+  }
 
+  @MainActor
+  private func beginImport(source: EventInputSource) -> UUID {
+    let importID = UUID()
+    activeImportID = importID
+    activeInputSource = source
+    isImporting = true
+    importStage = .reading
+    EventLogger.log(
+      .wardrobeImportStarted,
+      inputSource: source,
+      processingVersion: WardrobeImageAnalyzer.version,
+      in: modelContext
+    )
+    return importID
+  }
+
+  @MainActor
+  private func importItem(
+    data: Data,
+    source: EventInputSource,
+    importID: UUID
+  ) async throws {
+    var savedFilename: String?
+    do {
+      guard activeImportID == importID else { return }
+      importStage = .understanding
+      let analysis = try await analyzer.analyze(data: data)
+      guard activeImportID == importID else { return }
+      if let existingItem = items.first(where: {
+        $0.imageFingerprint == analysis.imageFingerprint
+      }) {
+        EventLogger.log(
+          .wardrobeItemReused,
+          durationMilliseconds: analysis.processingMilliseconds,
+          detail: "duplicate_fingerprint",
+          inputSource: source,
+          processingVersion: analysis.analysisVersion,
+          in: modelContext
+        )
+        finishImport()
+        selectedItem = existingItem
+        return
+      }
+      guard let image = UIImage(data: data) else { throw MediaStoreError.encodingFailed }
+
+      importStage = .saving
       let id = UUID()
       let filename = try MediaStore.shared.savePNG(
         image,
@@ -160,31 +271,138 @@ struct WardrobeView: View {
       savedFilename = filename
       let item = WardrobeItem(
         id: id,
-        name: "新单品 \(items.count + 1)",
-        imageFilename: filename
+        name: analysis.suggestedName,
+        category: analysis.automaticallyAssignedCategory,
+        imageFilename: filename,
+        sourceKind: analysis.sourceKind,
+        dominantColorName: analysis.dominantColorName,
+        dominantColorHex: analysis.dominantColorHex,
+        suggestedCategory: analysis.suggestedCategory,
+        categoryConfidence: analysis.categoryConfidence,
+        cleanBackgroundScore: analysis.cleanBackgroundScore,
+        imageWidth: analysis.imageWidth,
+        imageHeight: analysis.imageHeight,
+        imageFingerprint: analysis.imageFingerprint,
+        analysisVersion: analysis.analysisVersion
       )
       modelContext.insert(item)
       try modelContext.save()
-      EventLogger.log(.wardrobeItemAdded, in: modelContext)
+      EventLogger.log(
+        .wardrobeItemAdded,
+        durationMilliseconds: analysis.processingMilliseconds,
+        detail: importSummary(for: item),
+        inputSource: source,
+        processingVersion: analysis.analysisVersion,
+        in: modelContext
+      )
+      finishImport()
       selectedItem = item
-      selectedPhotoItem = nil
     } catch {
       modelContext.rollback()
       if let savedFilename {
         MediaStore.shared.delete(filename: savedFilename)
       }
-      errorMessage = error.localizedDescription
+      throw error
+    }
+  }
+
+  @MainActor
+  private func handleImportFailure(
+    _ error: Error,
+    source: EventInputSource,
+    importID: UUID
+  ) {
+    guard activeImportID == importID else { return }
+    modelContext.rollback()
+    EventLogger.log(
+      .wardrobeImportFailed,
+      detail: error.localizedDescription,
+      inputSource: source,
+      processingVersion: WardrobeImageAnalyzer.version,
+      in: modelContext
+    )
+    finishImport()
+    errorMessage = error.localizedDescription
+  }
+
+  @MainActor
+  private func cancelImport() {
+    guard activeImportID != nil else { return }
+    activeImportID = nil
+    isImporting = false
+    selectedPhotoItem = nil
+    EventLogger.log(
+      .wardrobeImportCancelled,
+      inputSource: activeInputSource,
+      processingVersion: WardrobeImageAnalyzer.version,
+      in: modelContext
+    )
+    activeInputSource = nil
+  }
+
+  @MainActor
+  private func finishImport() {
+    activeImportID = nil
+    activeInputSource = nil
+    isImporting = false
+    selectedPhotoItem = nil
+  }
+
+  private func importSummary(for item: WardrobeItem) -> String {
+    let color = item.dominantColorName ?? "unknown"
+    return "source=\(item.sourceKind.rawValue);color=\(color);category=\(item.category.rawValue)"
+  }
+
+  private var isUITestingWardrobeImport: Bool {
+    ProcessInfo.processInfo.arguments.contains("-ui-testing-wardrobe-import")
+  }
+
+  private func makeUITestingCatalogImage() -> UIImage {
+    let format = UIGraphicsImageRendererFormat()
+    format.scale = 1
+    format.opaque = true
+    return UIGraphicsImageRenderer(size: CGSize(width: 480, height: 640), format: format).image {
+      context in
+      UIColor.white.setFill()
+      context.fill(CGRect(x: 0, y: 0, width: 480, height: 640))
+
+      let shirt = UIBezierPath()
+      shirt.move(to: CGPoint(x: 175, y: 135))
+      shirt.addLine(to: CGPoint(x: 110, y: 170))
+      shirt.addLine(to: CGPoint(x: 52, y: 270))
+      shirt.addLine(to: CGPoint(x: 130, y: 315))
+      shirt.addLine(to: CGPoint(x: 155, y: 275))
+      shirt.addLine(to: CGPoint(x: 155, y: 520))
+      shirt.addLine(to: CGPoint(x: 325, y: 520))
+      shirt.addLine(to: CGPoint(x: 325, y: 275))
+      shirt.addLine(to: CGPoint(x: 350, y: 315))
+      shirt.addLine(to: CGPoint(x: 428, y: 270))
+      shirt.addLine(to: CGPoint(x: 370, y: 170))
+      shirt.addLine(to: CGPoint(x: 305, y: 135))
+      shirt.addCurve(
+        to: CGPoint(x: 175, y: 135),
+        controlPoint1: CGPoint(x: 286, y: 210),
+        controlPoint2: CGPoint(x: 194, y: 210)
+      )
+      shirt.close()
+      UIColor(red: 0.42, green: 0.24, blue: 0.12, alpha: 1).setFill()
+      shirt.fill()
     }
   }
 
   @MainActor
   private func delete(_ item: WardrobeItem) {
     let filename = item.imageFilename
+    let analysisVersion = item.analysisVersion
     modelContext.delete(item)
     do {
       try modelContext.save()
       MediaStore.shared.delete(filename: filename)
-      EventLogger.log(.wardrobeItemDeleted, in: modelContext)
+      EventLogger.log(
+        .wardrobeItemDeleted,
+        processingVersion: analysisVersion,
+        in: modelContext
+      )
       selectedItem = nil
     } catch {
       modelContext.rollback()
@@ -211,13 +429,75 @@ private struct WardrobeItemCard: View {
         .foregroundStyle(AdonisTheme.ink)
         .lineLimit(1)
 
-      Label(item.category.rawValue, systemImage: item.category.symbol)
-        .font(.caption)
-        .foregroundStyle(AdonisTheme.secondaryInk)
-        .lineLimit(1)
+      HStack(spacing: 6) {
+        WardrobeColorDot(hex: item.dominantColorHex)
+        Text(itemMetadata)
+        Spacer(minLength: 4)
+        Image(systemName: item.sourceKind.symbol)
+      }
+      .font(.caption)
+      .foregroundStyle(AdonisTheme.secondaryInk)
+      .lineLimit(1)
     }
     .padding(9)
     .background(AdonisTheme.paper, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
     .shadow(color: AdonisTheme.ink.opacity(0.08), radius: 10, y: 5)
+  }
+
+  private var itemMetadata: String {
+    var parts: [String] = []
+    if let color = item.dominantColorName { parts.append(color) }
+    if item.category != .uncategorized { parts.append(item.category.rawValue) }
+    return parts.isEmpty ? item.category.rawValue : parts.joined(separator: " · ")
+  }
+}
+
+private enum WardrobeImportStage: String {
+  case reading = "正在读取衣服图片"
+  case understanding = "正在记住颜色与款式"
+  case saving = "正在收进衣橱"
+}
+
+private struct WardrobeImportOverlay: View {
+  let stage: WardrobeImportStage
+  let onCancel: () -> Void
+
+  var body: some View {
+    ZStack {
+      Color.black.opacity(0.22)
+        .ignoresSafeArea()
+
+      VStack(spacing: 18) {
+        ZStack {
+          Circle()
+            .fill(AdonisTheme.leaf.opacity(0.3))
+            .frame(width: 82, height: 82)
+          Image(systemName: "hanger")
+            .font(.system(size: 32, weight: .bold))
+            .foregroundStyle(AdonisTheme.ink)
+        }
+
+        VStack(spacing: 7) {
+          Text(stage.rawValue)
+            .font(.system(.headline, design: .rounded, weight: .bold))
+            .foregroundStyle(AdonisTheme.ink)
+          Text("不确定的内容会留给你以后再改")
+            .font(.footnote)
+            .foregroundStyle(AdonisTheme.secondaryInk)
+        }
+
+        Button("取消", action: onCancel)
+          .font(.system(.subheadline, design: .rounded, weight: .bold))
+          .foregroundStyle(AdonisTheme.secondaryInk)
+          .frame(minWidth: 88, minHeight: 44)
+          .buttonStyle(StickerButtonStyle())
+      }
+      .padding(.horizontal, 30)
+      .frame(width: 304, height: 262)
+      .paperSurface()
+    }
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel(stage.rawValue)
+    .accessibilityIdentifier("wardrobe-import-overlay")
   }
 }

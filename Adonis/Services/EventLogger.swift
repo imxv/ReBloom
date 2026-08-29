@@ -6,13 +6,17 @@ enum EventLogger {
     _ kind: AppEventKind,
     durationMilliseconds: Int? = nil,
     detail: String? = nil,
+    inputSource: EventInputSource? = nil,
+    processingVersion: String? = nil,
     in context: ModelContext
   ) {
     context.insert(
       AppEvent(
         kind: kind,
         durationMilliseconds: durationMilliseconds,
-        detail: detail
+        detail: detail,
+        inputSource: inputSource,
+        processingVersion: processingVersion
       ))
     try? context.save()
   }

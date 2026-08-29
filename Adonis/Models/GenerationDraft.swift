@@ -11,6 +11,7 @@ struct GenerationDraft: Identifiable {
   let processingMilliseconds: Int
   let foregroundCoverage: Double
   let usesPreparedSample: Bool
+  let inputSource: EventInputSource
 
   init(
     id: UUID = UUID(),
@@ -21,7 +22,8 @@ struct GenerationDraft: Identifiable {
     bloomNumber: Int,
     processingMilliseconds: Int,
     foregroundCoverage: Double,
-    usesPreparedSample: Bool = false
+    usesPreparedSample: Bool = false,
+    inputSource: EventInputSource
   ) {
     self.id = id
     self.createdAt = createdAt
@@ -32,6 +34,7 @@ struct GenerationDraft: Identifiable {
     self.processingMilliseconds = processingMilliseconds
     self.foregroundCoverage = foregroundCoverage
     self.usesPreparedSample = usesPreparedSample
+    self.inputSource = inputSource
   }
 }
 

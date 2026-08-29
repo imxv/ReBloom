@@ -44,6 +44,40 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  func testCatalogImageCanBeRememberedAndCorrectedWithOneTap() {
+    let app = XCUIApplication()
+    app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-wardrobe-import"])
+    app.launch()
+
+    app.tabBars.buttons["衣橱"].tap()
+    let addTestItem = app.buttons["add-test-wardrobe-item"]
+    XCTAssertTrue(addTestItem.waitForExistence(timeout: 5))
+    addTestItem.tap()
+
+    XCTAssertTrue(app.staticTexts["wardrobe-analysis-summary"].waitForExistence(timeout: 8))
+    XCTAssertTrue(app.staticTexts["棕色单品"].exists)
+    XCTAssertTrue(app.staticTexts["像商品图"].exists)
+    keepScreenshot(named: "Adonis-wardrobe-analysis")
+
+    let topCategory = app.buttons["wardrobe-category-上装"]
+    XCTAssertTrue(topCategory.waitForExistence(timeout: 3))
+    topCategory.tap()
+    XCTAssertTrue(app.staticTexts["棕色上装"].waitForExistence(timeout: 3))
+    keepScreenshot(named: "Adonis-wardrobe-corrected")
+
+    app.buttons["完成"].tap()
+    XCTAssertTrue(app.staticTexts["棕色上装"].waitForExistence(timeout: 3))
+    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 1)
+
+    let reimport = app.buttons["reimport-test-wardrobe-item"]
+    XCTAssertTrue(reimport.waitForExistence(timeout: 3))
+    reimport.tap()
+    XCTAssertTrue(app.staticTexts["wardrobe-analysis-summary"].waitForExistence(timeout: 5))
+    app.buttons["完成"].tap()
+    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 1)
+  }
+
+  @MainActor
   private func keepScreenshot(named name: String) {
     let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
     attachment.name = name

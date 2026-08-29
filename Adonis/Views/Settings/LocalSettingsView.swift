@@ -61,6 +61,12 @@ struct LocalSettingsView: View {
                 Text(AdonisDateText.eventTime(event.createdAt))
                   .font(.caption2)
                   .foregroundStyle(.secondary)
+                if let trace = traceText(for: event) {
+                  Text(trace)
+                    .font(.system(.caption2, design: .monospaced))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                }
               }
               Spacer()
               if let duration = event.durationMilliseconds {
@@ -119,6 +125,11 @@ struct LocalSettingsView: View {
     let durations = successfulEvents.compactMap(\.durationMilliseconds)
     guard !durations.isEmpty else { return "—" }
     return "\(durations.reduce(0, +) / durations.count) ms"
+  }
+
+  private func traceText(for event: AppEvent) -> String? {
+    let parts = [event.inputSource?.title, event.processingVersion].compactMap { $0 }
+    return parts.isEmpty ? nil : parts.joined(separator: " · ")
   }
 
   @MainActor

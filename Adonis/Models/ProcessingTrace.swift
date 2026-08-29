@@ -1,0 +1,24 @@
+import Foundation
+
+enum EventInputSource: String, Sendable {
+  case photoLibrary
+  case camera
+  case preparedSample
+  case testFixture
+
+  var title: String {
+    switch self {
+    case .photoLibrary: "相册"
+    case .camera: "相机"
+    case .preparedSample: "内置样片"
+    case .testFixture: "测试样片"
+    }
+  }
+}
+
+enum AdonisProcessingVersion {
+  static let sticker = "sticker-vision-v1"
+  static let shareCard = "share-card-v1"
+  static let wardrobeAnalysis = "wardrobe-local-v1"
+  static let generationPipeline = "\(sticker)+\(shareCard)"
+}
