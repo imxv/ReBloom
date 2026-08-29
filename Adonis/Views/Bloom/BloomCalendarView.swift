@@ -8,7 +8,9 @@ struct BloomCalendarView: View {
 
   @State private var visibleMonth = Date.now
   @State private var selectedRecord: OutfitRecord?
+  @State private var monthlyLookbook: MonthlyLookbookPresentation?
   @State private var deleteErrorMessage: String?
+  @State private var lookbookErrorMessage: String?
 
   private let calendar = Calendar.current
   private let weekdayTitles = ["日", "一", "二", "三", "四", "五", "六"]
@@ -22,6 +24,10 @@ struct BloomCalendarView: View {
         VStack(alignment: .leading, spacing: 24) {
           header
           monthCard
+
+          if !visibleMonthRecords.isEmpty {
+            monthlyLookbookCard
+          }
 
           if records.isEmpty {
             EmptyGardenView(
@@ -49,6 +55,9 @@ struct BloomCalendarView: View {
         }
       }
     }
+    .sheet(item: $monthlyLookbook) { presentation in
+      MonthlyLookbookView(presentation: presentation)
+    }
     .alert(
       "删除失败",
       isPresented: Binding(
@@ -59,6 +68,17 @@ struct BloomCalendarView: View {
       Button("知道了", role: .cancel) {}
     } message: {
       Text(deleteErrorMessage ?? "请稍后再试。")
+    }
+    .alert(
+      "画册还没拼好",
+      isPresented: Binding(
+        get: { lookbookErrorMessage != nil },
+        set: { if !$0 { lookbookErrorMessage = nil } }
+      )
+    ) {
+      Button("知道了", role: .cancel) {}
+    } message: {
+      Text(lookbookErrorMessage ?? "请稍后再试。")
     }
   }
 
@@ -151,6 +171,72 @@ struct BloomCalendarView: View {
         .accessibilityIdentifier("bloom-record-card")
       }
     }
+  }
+
+  private var monthlyLookbookCard: some View {
+    Button {
+      makeMonthlyLookbook()
+    } label: {
+      HStack(spacing: 16) {
+        lookbookStickerStack
+
+        VStack(alignment: .leading, spacing: 6) {
+          Text("本月贴纸画册")
+            .font(.system(.title3, design: .rounded, weight: .black))
+            .foregroundStyle(AdonisTheme.ink)
+          Text("一键把 \(visibleMonthRecords.count) 次盛开排好，直接分享。")
+            .font(.subheadline)
+            .foregroundStyle(AdonisTheme.secondaryInk)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+
+        Spacer(minLength: 0)
+
+        Image(systemName: "arrow.up.right")
+          .font(.system(size: 16, weight: .black))
+          .foregroundStyle(AdonisTheme.pomegranateInk)
+          .frame(width: 40, height: 40)
+          .background(AdonisTheme.butter.opacity(0.56), in: Circle())
+      }
+      .padding(16)
+      .background(
+        LinearGradient(
+          colors: [AdonisTheme.lavender.opacity(0.23), AdonisTheme.butter.opacity(0.24)],
+          startPoint: .topLeading,
+          endPoint: .bottomTrailing
+        ),
+        in: RoundedRectangle(cornerRadius: 26, style: .continuous)
+      )
+      .overlay {
+        RoundedRectangle(cornerRadius: 26, style: .continuous)
+          .stroke(AdonisTheme.pomegranate.opacity(0.16), lineWidth: 1)
+      }
+    }
+    .buttonStyle(StickerButtonStyle())
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel(
+      "制作本月贴纸画册，\(monthTitle)，共 \(visibleMonthRecords.count) 次盛开"
+    )
+    .accessibilityIdentifier("monthly-lookbook-entry")
+  }
+
+  private var lookbookStickerStack: some View {
+    ZStack {
+      ForEach(Array(visibleMonthRecords.prefix(3).enumerated()), id: \.offset) { index, record in
+        StoredImageView(filename: record.stickerImageFilename, contentMode: .fit)
+          .padding(7)
+          .frame(width: 68, height: 82)
+          .background(
+            [AdonisTheme.butter, AdonisTheme.leaf, AdonisTheme.lavender][index]
+              .opacity(0.48),
+            in: RoundedRectangle(cornerRadius: 15, style: .continuous)
+          )
+          .rotationEffect(.degrees(Double(index - 1) * 6))
+          .offset(x: CGFloat(index - 1) * 8)
+      }
+    }
+    .frame(width: 84, height: 88)
+    .accessibilityHidden(true)
   }
 
   @ViewBuilder
@@ -263,6 +349,48 @@ struct BloomCalendarView: View {
     formatter.locale = Locale(identifier: "zh_CN")
     formatter.dateFormat = "yyyy 年 M 月"
     return formatter.string(from: visibleMonth)
+  }
+
+  private var visibleMonthRecords: [OutfitRecord] {
+    records.filter {
+      calendar.isDate($0.createdAt, equalTo: visibleMonth, toGranularity: .month)
+    }
+  }
+
+  private func makeMonthlyLookbook() {
+    let monthRecords = visibleMonthRecords
+    var entries: [MonthlyLookbookEntry] = []
+    entries.reserveCapacity(monthRecords.count)
+
+    for record in monthRecords {
+      guard let sticker = MediaStore.shared.image(filename: record.stickerImageFilename) else {
+        lookbookErrorMessage = "有一张已收藏贴纸暂时无法读取。原记录没有丢失，可以稍后再试。"
+        return
+      }
+      entries.append(
+        MonthlyLookbookEntry(
+          sticker: sticker,
+          bloomNumber: record.bloomNumber,
+          date: record.createdAt
+        ))
+    }
+
+    guard
+      let image = MonthlyLookbookRenderer().render(
+        entries: entries,
+        month: visibleMonth,
+        calendar: calendar
+      )
+    else {
+      lookbookErrorMessage = "这个月还没有可以排进画册的贴纸。"
+      return
+    }
+
+    monthlyLookbook = MonthlyLookbookPresentation(
+      image: image,
+      month: visibleMonth,
+      entryCount: visibleMonthRecords.count
+    )
   }
 
   private var monthCells: [Date?] {

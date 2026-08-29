@@ -1,6 +1,6 @@
 # Adonis TODO
 
-> 当前阶段：M0 验证、M1 本地闭环与 M2 衣橱纵向切片
+> 当前阶段：M0 验证、M1 本地闭环、M2 衣橱纵向切片与 M4 首条长期收藏切片
 >
 > 产品原则与范围以 [Adonis 产品方向](docs/product-direction.md) 为准。本清单负责安排工作顺序，不替代产品方向文档。
 
@@ -88,7 +88,7 @@ M0 退出条件：
 - [x] **ADO-107：实现最小历史视图。** 花历按日期显示记录，并能再次打开、分享或删除。
 - [ ] **ADO-108：完成真实设备或目标浏览器回归。** 验证上传、生成、保存、重试和删除的完整链路。
 
-  模拟器当前 85 项测试（67 个单元测试与 18 个 UI 流程测试）、最大辅助字号与增强对比度界面检查、前后台恢复、已收藏记录进程终止后重新启动恢复、图片像素检查、90 秒超时降级、生成性能诊断和通用 iOS 真机静态分析已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[冷启动持久化验证](docs/verification/2026-08-30-cold-launch-persistence.md)、[无障碍与前后台恢复验证](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[固定样片回归基线](docs/verification/2026-08-30-sample-regression-baseline.md)、[贴纸低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)、[生成超时与基础贴纸降级验证](docs/verification/2026-08-30-generation-timeout-fallback.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)、[生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)与 [生成性能和预算验证](docs/verification/2026-08-30-generation-performance-budget.md)。
+  模拟器当前 90 项测试（71 个单元测试与 19 个 UI 流程测试）、最大辅助字号与增强对比度界面检查、前后台恢复、已收藏记录进程终止后重新启动恢复、图片像素检查、90 秒超时降级、月度贴纸 Lookbook、生成性能诊断和通用 iOS 真机静态分析已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[冷启动持久化验证](docs/verification/2026-08-30-cold-launch-persistence.md)、[无障碍与前后台恢复验证](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[月度贴纸 Lookbook 验证](docs/verification/2026-08-30-monthly-lookbook.md)、[固定样片回归基线](docs/verification/2026-08-30-sample-regression-baseline.md)、[贴纸低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)、[生成超时与基础贴纸降级验证](docs/verification/2026-08-30-generation-timeout-fallback.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)、[生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)与 [生成性能和预算验证](docs/verification/2026-08-30-generation-performance-budget.md)。
 
 M1 退出条件：新用户无需建立衣橱即可完成一次真实 OOTD 记录，并能再次找到或删除它。
 
@@ -133,7 +133,7 @@ M3 退出条件：试穿和创作在固定样本上有清楚的保真边界，�
 
 - [ ] **ADO-401：设计第一版“再次盛开”。** 从长期未穿的单品或过去 OOTD 中生成可直接采用的新搭配。
 - [ ] **ADO-402：实现基础花历。** 已完成按月和日期查看真实 OOTD 记录；季节聚合尚未实现，因此任务保持未完成。
-- [ ] **ADO-403：生成月度 Lookbook。** 明确哪些内容来自真实记录，哪些经过 AI 创作。
+- [x] **ADO-403：生成月度 Lookbook。** 花历在当前月份存在收藏时提供一次点击入口，把已收藏 OOTD 的透明贴纸、日期与 Bloom 编号程序化排成 1080 × 1440 静态贴纸画册；按日期倒序最多展示最近 6 条，空月份不出现入口。预览与图片页脚都明确人物和衣物来自已收藏原图、画册由 Adonis 排版，当前不含 AI 像素，也不要求 Prompt、模型或模板选择。自动回归、系统分享入口与真实界面证据见 [月度贴纸 Lookbook 验证记录](docs/verification/2026-08-30-monthly-lookbook.md)。动态 Lookbook 与真实用户分享意愿仍需后续验证，但不扩张本任务的第一版静态交付。
 - [ ] **ADO-404：实现第一版数字手办。** 优先验证手办渲染图、旋转视频或 2.5D 收藏卡。
 - [ ] **ADO-405：建立数字展柜。** 让手办与对应日期、OOTD 和衣物存在可追溯关系。
 - [ ] **ADO-406：验证长期提醒。** 提醒应带来具体可用结果，不制造打卡压力。

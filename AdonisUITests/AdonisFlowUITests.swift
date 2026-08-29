@@ -90,6 +90,23 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(scrollToHittable(makeAnother, in: app, attempts: 4))
     makeAnother.tap()
 
+    app.tabBars.buttons["花历"].tap()
+    let lookbookEntry = app.buttons["monthly-lookbook-entry"]
+    XCTAssertTrue(lookbookEntry.waitForExistence(timeout: 5))
+    XCTAssertTrue(scrollToHittable(lookbookEntry, in: app, attempts: 8))
+    lookbookEntry.tap()
+
+    let lookbookPreview = app.descendants(matching: .any)["monthly-lookbook-preview"]
+    XCTAssertTrue(lookbookPreview.waitForExistence(timeout: 5))
+    let lookbookProvenance =
+      app.descendants(matching: .any)["content-provenance-programmatic_composition"]
+    XCTAssertTrue(scrollToHittable(lookbookProvenance, in: app, attempts: 8))
+    XCTAssertTrue(lookbookProvenance.label.contains("没有补画人物或衣物"))
+    let lookbookShare = app.buttons["share-monthly-lookbook"]
+    XCTAssertTrue(scrollToHittable(lookbookShare, in: app, attempts: 5))
+    XCTAssertTrue(lookbookShare.isHittable)
+    app.buttons["完成"].tap()
+
     app.tabBars.buttons["衣橱"].tap()
     let addFirstItem = app.buttons["add-first-wardrobe-item"]
     XCTAssertTrue(addFirstItem.waitForExistence(timeout: 5))
@@ -365,6 +382,53 @@ final class AdonisFlowUITests: XCTestCase {
     }
     XCTAssertTrue(historyProvenance.isHittable)
     keepScreenshot(named: "Adonis-content-provenance-history")
+  }
+
+  @MainActor
+  func testSavedOutfitCreatesMonthlyStickerLookbookReadyToShare() {
+    let app = XCUIApplication()
+    app.launchArguments.append("-ui-testing")
+    app.launch()
+
+    app.tabBars.buttons["花历"].tap()
+    XCTAssertTrue(app.otherElements["bloom-calendar"].waitForExistence(timeout: 5))
+    XCTAssertFalse(app.buttons["monthly-lookbook-entry"].exists)
+
+    app.tabBars.buttons["创作"].tap()
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 5))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 8))
+
+    let saveButton = app.buttons["save-today"]
+    XCTAssertTrue(scrollToHittable(saveButton, in: app, attempts: 4))
+    saveButton.tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 3))
+
+    let makeAnother = app.buttons["make-another"]
+    XCTAssertTrue(scrollToHittable(makeAnother, in: app, attempts: 4))
+    makeAnother.tap()
+
+    app.tabBars.buttons["花历"].tap()
+    let entry = app.buttons["monthly-lookbook-entry"]
+    XCTAssertTrue(entry.waitForExistence(timeout: 5))
+    XCTAssertTrue(scrollToHittable(entry, in: app, attempts: 4))
+    XCTAssertTrue(entry.label.contains("共 1 次盛开"))
+    entry.tap()
+
+    let preview = app.descendants(matching: .any)["monthly-lookbook-preview"]
+    XCTAssertTrue(preview.waitForExistence(timeout: 6))
+    XCTAssertTrue(preview.label.contains("包含 1 次盛开"))
+    let provenance =
+      app.descendants(matching: .any)["content-provenance-programmatic_composition"]
+    XCTAssertTrue(provenance.waitForExistence(timeout: 4))
+    XCTAssertTrue(provenance.label.contains("没有补画人物或衣物"))
+    keepScreenshot(named: "Adonis-monthly-lookbook")
+
+    let share = app.buttons["share-monthly-lookbook"]
+    XCTAssertTrue(scrollToHittable(share, in: app, attempts: 5))
+    share.tap()
+    XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
   }
 
   @MainActor
