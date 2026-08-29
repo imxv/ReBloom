@@ -29,4 +29,12 @@ final class ProcessingTraceTests: XCTestCase {
     XCTAssertEqual(event.processingVersion, AdonisProcessingVersion.generationPipeline)
     XCTAssertEqual(event.detail, "prepared_sample")
   }
+
+  func testShareExtensionHasAUserFacingInputSourceAndStableVersion() {
+    XCTAssertEqual(EventInputSource.shareExtension.title, "其他 App")
+    XCTAssertEqual(
+      AdonisProcessingVersion.sharedWardrobeInbox,
+      "wardrobe-share-inbox-v1"
+    )
+  }
 }

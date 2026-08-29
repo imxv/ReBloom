@@ -78,6 +78,51 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  func testImageSharedFromAnotherAppAutomaticallyJoinsWardrobe() {
+    let app = XCUIApplication()
+    app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-shared-import"])
+    app.launch()
+
+    let notice = app.staticTexts["shared-import-notice"]
+    XCTAssertTrue(notice.waitForExistence(timeout: 10))
+    XCTAssertEqual(notice.label, "已收进衣橱 · 1 件")
+    XCTAssertTrue(app.tabBars.buttons["衣橱"].isSelected)
+    XCTAssertTrue(app.staticTexts["棕色单品"].exists)
+    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 1)
+    keepScreenshot(named: "Adonis-shared-wardrobe-import")
+  }
+
+  @MainActor
+  func testSystemShareExtensionCarriesImageAcrossAppGroupBoundary() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: ["-ui-testing", "-ui-testing-system-share-extension"]
+    )
+    app.launch()
+
+    app.tabBars.buttons["衣橱"].tap()
+    let openShare = app.buttons["open-system-share-test"]
+    XCTAssertTrue(openShare.waitForExistence(timeout: 6))
+    openShare.tap()
+
+    let shareAction = app.cells["Adonis"]
+    XCTAssertTrue(shareAction.waitForExistence(timeout: 8))
+    shareAction.tap()
+
+    let extensionFailure = app.staticTexts["这次没有收好"]
+    if extensionFailure.waitForExistence(timeout: 4) {
+      XCTFail(app.staticTexts["share-extension-detail"].label)
+      return
+    }
+
+    let notice = app.staticTexts["shared-import-notice"]
+    XCTAssertTrue(notice.waitForExistence(timeout: 12))
+    XCTAssertEqual(notice.label, "已收进衣橱 · 1 件")
+    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 1)
+    keepScreenshot(named: "Adonis-system-share-extension-result")
+  }
+
+  @MainActor
   func testOutfitCluesStayProvisionalUntilOneTapConfirmation() {
     let app = XCUIApplication()
     app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-wardrobe-import"])

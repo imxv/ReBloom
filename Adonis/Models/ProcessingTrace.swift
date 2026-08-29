@@ -4,6 +4,7 @@ enum EventInputSource: String, Sendable {
   case photoLibrary
   case camera
   case preparedSample
+  case shareExtension
   case testFixture
 
   var title: String {
@@ -11,6 +12,7 @@ enum EventInputSource: String, Sendable {
     case .photoLibrary: "相册"
     case .camera: "相机"
     case .preparedSample: "内置样片"
+    case .shareExtension: "其他 App"
     case .testFixture: "测试样片"
     }
   }
@@ -24,5 +26,6 @@ enum AdonisProcessingVersion {
   static let outfitObservation = "ootd-observation-local-v1"
   static let candidateMatching = "wardrobe-candidate-local-v1"
   static let wardrobeHistoryMatching = "wardrobe-history-backfill-v1"
+  static let sharedWardrobeInbox = SharedImageInbox.version
   static let generationPipeline = "\(sticker)+\(shareCard)+\(outfitObservation)"
 }

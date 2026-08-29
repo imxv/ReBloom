@@ -16,10 +16,10 @@ test: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test
 
 lint:
-	xcrun swift-format lint --recursive --parallel --strict Adonis AdonisTests AdonisUITests
+	xcrun swift-format lint --recursive --parallel --strict Adonis AdonisShared AdonisShareExtension AdonisTests AdonisUITests
 
 format:
-	xcrun swift-format format --in-place --recursive --parallel Adonis AdonisTests AdonisUITests
+	xcrun swift-format format --in-place --recursive --parallel Adonis AdonisShared AdonisShareExtension AdonisTests AdonisUITests
 
 analyze: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination 'generic/platform=iOS' -derivedDataPath $(DERIVED_DATA)-analyze analyze CODE_SIGNING_ALLOWED=NO

@@ -2,6 +2,7 @@ import PhotosUI
 import SwiftData
 import SwiftUI
 import UIKit
+import UniformTypeIdentifiers
 
 struct WardrobeView: View {
   @Environment(\.modelContext) private var modelContext
@@ -14,13 +15,29 @@ struct WardrobeView: View {
   @State private var importStage: WardrobeImportStage = .reading
   @State private var activeImportID: UUID?
   @State private var activeInputSource: EventInputSource?
+  @State private var systemShareTestItem: SystemShareTestItem?
+
+  let sharedImportNotice: SharedWardrobeImportNotice?
+  let onDismissSharedImportNotice: () -> Void
+  let onRetrySharedImport: () -> Void
 
   private let analyzer = WardrobeImageAnalyzer()
+  private let importer = WardrobeItemImportService()
 
   private let columns = [
     GridItem(.flexible(), spacing: 14),
     GridItem(.flexible(), spacing: 14),
   ]
+
+  init(
+    sharedImportNotice: SharedWardrobeImportNotice? = nil,
+    onDismissSharedImportNotice: @escaping () -> Void = {},
+    onRetrySharedImport: @escaping () -> Void = {}
+  ) {
+    self.sharedImportNotice = sharedImportNotice
+    self.onDismissSharedImportNotice = onDismissSharedImportNotice
+    self.onRetrySharedImport = onRetrySharedImport
+  }
 
   var body: some View {
     ZStack {
@@ -30,6 +47,14 @@ struct WardrobeView: View {
       ScrollView {
         VStack(alignment: .leading, spacing: 24) {
           header
+
+          if let sharedImportNotice {
+            SharedWardrobeImportBanner(
+              notice: sharedImportNotice,
+              onDismiss: onDismissSharedImportNotice,
+              onRetry: onRetrySharedImport
+            )
+          }
 
           if items.isEmpty {
             emptyState
@@ -62,6 +87,12 @@ struct WardrobeView: View {
           delete(item)
         }
       }
+    }
+    .sheet(
+      item: $systemShareTestItem,
+      onDismiss: onRetrySharedImport
+    ) { item in
+      ActivityView(itemProviders: [pngItemProvider(data: item.data)])
     }
     .alert(
       "没有添加成功",
@@ -135,6 +166,23 @@ struct WardrobeView: View {
         }
         .buttonStyle(StickerButtonStyle())
         .accessibilityIdentifier("add-test-wardrobe-item")
+      }
+
+      if isUITestingSystemShareExtension {
+        Button {
+          openSystemShareTest()
+        } label: {
+          Label("打开系统分享测试", systemImage: "square.and.arrow.up")
+            .font(.system(.subheadline, design: .rounded, weight: .bold))
+            .foregroundStyle(AdonisTheme.ink)
+            .frame(maxWidth: .infinity, minHeight: 48)
+            .background(
+              AdonisTheme.leaf.opacity(0.28),
+              in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+            )
+        }
+        .buttonStyle(StickerButtonStyle())
+        .accessibilityIdentifier("open-system-share-test")
       }
     }
     .padding(22)
@@ -239,69 +287,42 @@ struct WardrobeView: View {
     source: EventInputSource,
     importID: UUID
   ) async throws {
-    var savedFilename: String?
     do {
       guard activeImportID == importID else { return }
       importStage = .understanding
       let analysis = try await analyzer.analyze(data: data)
       guard activeImportID == importID else { return }
-      if let existingItem = items.first(where: {
-        $0.imageFingerprint == analysis.imageFingerprint
-      }) {
+      importStage = .saving
+      let outcome = try importer.persist(
+        data: data,
+        analysis: analysis,
+        in: modelContext
+      )
+
+      switch outcome.disposition {
+      case .reused:
         EventLogger.log(
           .wardrobeItemReused,
           durationMilliseconds: analysis.processingMilliseconds,
-          detail: "duplicate_fingerprint",
+          detail: outcome.eventDetail,
           inputSource: source,
           processingVersion: analysis.analysisVersion,
           in: modelContext
         )
-        finishImport()
-        selectedItem = existingItem
-        return
+      case .added:
+        EventLogger.log(
+          .wardrobeItemAdded,
+          durationMilliseconds: analysis.processingMilliseconds,
+          detail: outcome.eventDetail,
+          inputSource: source,
+          processingVersion: analysis.analysisVersion,
+          in: modelContext
+        )
       }
-      guard let image = UIImage(data: data) else { throw MediaStoreError.encodingFailed }
-
-      importStage = .saving
-      let id = UUID()
-      let filename = try MediaStore.shared.savePNG(
-        image,
-        filename: "\(id.uuidString.lowercased())-wardrobe.png"
-      )
-      savedFilename = filename
-      let item = WardrobeItem(
-        id: id,
-        name: analysis.suggestedName,
-        category: analysis.automaticallyAssignedCategory,
-        imageFilename: filename,
-        sourceKind: analysis.sourceKind,
-        dominantColorName: analysis.dominantColorName,
-        dominantColorHex: analysis.dominantColorHex,
-        suggestedCategory: analysis.suggestedCategory,
-        categoryConfidence: analysis.categoryConfidence,
-        cleanBackgroundScore: analysis.cleanBackgroundScore,
-        imageWidth: analysis.imageWidth,
-        imageHeight: analysis.imageHeight,
-        imageFingerprint: analysis.imageFingerprint,
-        analysisVersion: analysis.analysisVersion
-      )
-      modelContext.insert(item)
-      try modelContext.save()
-      EventLogger.log(
-        .wardrobeItemAdded,
-        durationMilliseconds: analysis.processingMilliseconds,
-        detail: importSummary(for: item),
-        inputSource: source,
-        processingVersion: analysis.analysisVersion,
-        in: modelContext
-      )
       finishImport()
-      selectedItem = item
+      selectedItem = outcome.item
     } catch {
       modelContext.rollback()
-      if let savedFilename {
-        MediaStore.shared.delete(filename: savedFilename)
-      }
       throw error
     }
   }
@@ -348,13 +369,29 @@ struct WardrobeView: View {
     selectedPhotoItem = nil
   }
 
-  private func importSummary(for item: WardrobeItem) -> String {
-    let color = item.dominantColorName ?? "unknown"
-    return "source=\(item.sourceKind.rawValue);color=\(color);category=\(item.category.rawValue)"
-  }
-
   private var isUITestingWardrobeImport: Bool {
     ProcessInfo.processInfo.arguments.contains("-ui-testing-wardrobe-import")
+  }
+
+  private var isUITestingSystemShareExtension: Bool {
+    ProcessInfo.processInfo.arguments.contains("-ui-testing-system-share-extension")
+  }
+
+  private func openSystemShareTest() {
+    guard let data = WardrobeTestImageFactory.brownCatalogShirt().pngData() else { return }
+    systemShareTestItem = SystemShareTestItem(data: data)
+  }
+
+  private func pngItemProvider(data: Data) -> NSItemProvider {
+    let provider = NSItemProvider()
+    provider.registerDataRepresentation(
+      forTypeIdentifier: UTType.png.identifier,
+      visibility: .all
+    ) { completion in
+      completion(data, nil)
+      return nil
+    }
+    return provider
   }
 
   @MainActor
@@ -376,6 +413,11 @@ struct WardrobeView: View {
       errorMessage = error.localizedDescription
     }
   }
+}
+
+private struct SystemShareTestItem: Identifiable {
+  let id = UUID()
+  let data: Data
 }
 
 private struct WardrobeItemCard: View {
@@ -416,6 +458,62 @@ private struct WardrobeItemCard: View {
     if let color = item.dominantColorName { parts.append(color) }
     if item.category != .uncategorized { parts.append(item.category.rawValue) }
     return parts.isEmpty ? item.category.rawValue : parts.joined(separator: " · ")
+  }
+}
+
+private struct SharedWardrobeImportBanner: View {
+  let notice: SharedWardrobeImportNotice
+  let onDismiss: () -> Void
+  let onRetry: () -> Void
+
+  var body: some View {
+    HStack(alignment: .top, spacing: 13) {
+      Image(systemName: "shippingbox.and.arrow.backward.fill")
+        .font(.system(size: 20, weight: .bold))
+        .foregroundStyle(AdonisTheme.pomegranate)
+        .frame(width: 42, height: 42)
+        .background(AdonisTheme.paper.opacity(0.82), in: Circle())
+
+      VStack(alignment: .leading, spacing: 7) {
+        Text(notice.title)
+          .font(.system(.headline, design: .rounded, weight: .black))
+          .foregroundStyle(AdonisTheme.ink)
+          .accessibilityIdentifier("shared-import-notice")
+
+        Text(notice.detail)
+          .font(.footnote)
+          .foregroundStyle(AdonisTheme.secondaryInk)
+          .fixedSize(horizontal: false, vertical: true)
+
+        if notice.failedCount > 0 {
+          Button("再试一次", action: onRetry)
+            .font(.system(.subheadline, design: .rounded, weight: .bold))
+            .foregroundStyle(AdonisTheme.ink)
+            .frame(minHeight: 44)
+            .accessibilityIdentifier("shared-import-retry")
+        }
+      }
+
+      Spacer(minLength: 2)
+
+      Button(action: onDismiss) {
+        Image(systemName: "xmark")
+          .font(.system(size: 12, weight: .black))
+          .foregroundStyle(AdonisTheme.secondaryInk)
+          .frame(width: 44, height: 44)
+      }
+      .buttonStyle(StickerButtonStyle())
+      .accessibilityLabel("关闭分享提示")
+    }
+    .padding(16)
+    .background(
+      AdonisTheme.leaf.opacity(0.2),
+      in: RoundedRectangle(cornerRadius: 24, style: .continuous)
+    )
+    .overlay {
+      RoundedRectangle(cornerRadius: 24, style: .continuous)
+        .stroke(AdonisTheme.leaf.opacity(0.48), lineWidth: 1)
+    }
   }
 }
 

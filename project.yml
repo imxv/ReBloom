@@ -21,8 +21,13 @@ targets:
     platform: iOS
     sources:
       - path: Adonis
+      - path: AdonisShared
+    dependencies:
+      - target: AdonisShareExtension
+        embed: true
     settings:
       base:
+        CODE_SIGN_ENTITLEMENTS: Adonis/Resources/Adonis.entitlements
         PRODUCT_BUNDLE_IDENTIFIER: studio.adonis.localdemo
         PRODUCT_NAME: Adonis
         INFOPLIST_KEY_CFBundleDisplayName: Adonis
@@ -39,6 +44,33 @@ targets:
       testTargets:
         - AdonisTests
         - AdonisUITests
+
+  AdonisShareExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: AdonisShareExtension
+      - path: AdonisShared
+    settings:
+      base:
+        APPLICATION_EXTENSION_API_ONLY: true
+        CODE_SIGN_ENTITLEMENTS: AdonisShareExtension/AdonisShareExtension.entitlements
+        PRODUCT_BUNDLE_IDENTIFIER: studio.adonis.localdemo.share
+        PRODUCT_NAME: AdonisShareExtension
+        SKIP_INSTALL: true
+        TARGETED_DEVICE_FAMILY: "1"
+    info:
+      path: AdonisShareExtension/Info.plist
+      properties:
+        CFBundleDisplayName: 收进 Adonis
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController"
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsImageWithMaxCount: 5
 
   AdonisTests:
     type: bundle.unit-test

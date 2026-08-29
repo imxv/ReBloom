@@ -14,16 +14,20 @@
 		0383F37EB4CD45A47D50D350 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5A96B162481D212E146A1 /* CameraPicker.swift */; };
 		083CDC61E99645D77389A7D5 /* sample-04.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A637377461748CC37830D9C /* sample-04.png */; };
 		0E6AFE4AA346781D0DBF4800 /* WardrobeImageAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDC07323E67E0A60762AF4 /* WardrobeImageAnalyzerTests.swift */; };
+		13B333A951423B115CF4FDE7 /* AdonisShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6FA56E47100150E8087EB527 /* AdonisShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		14BFCF74C380ED0981B92AFC /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84BF18B5CED9D834A195F7F /* Components.swift */; };
 		153086CAF11ADC89B572AC57 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1616941BE0EAB40F74A088AA /* README.md */; };
 		17E549E80F389BD3C90C24D4 /* sample-01.png in Resources */ = {isa = PBXBuildFile; fileRef = 94AFB89D4E0698D5253B8179 /* sample-01.png */; };
 		1D66DB546BDE1410DD5C83B8 /* OutfitGarmentObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0297B7A729F4B3D757F6A0A3 /* OutfitGarmentObserverTests.swift */; };
+		1E771E07BF3146CEE74A025F /* SharedImageInboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316737292FE33E782DAD2887 /* SharedImageInboxTests.swift */; };
 		212E902D6EFF97FB6AC0FE1C /* StoredImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B19E79DC35ECB753DE22B9 /* StoredImageView.swift */; };
 		23309718D6FDAAFF470997CF /* WardrobeItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290B068850AE398F3ACAC1A7 /* WardrobeItemDetailView.swift */; };
 		38385A8843FD7D39731262D1 /* StickerProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */; };
 		3C9A8154794D56761BF03D4A /* WardrobeHistorySuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1AC57D0B3CE409AF9AA3B0 /* WardrobeHistorySuggestionsView.swift */; };
+		423AEFB97294ADDACA708B53 /* SharedImageInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9C4FA8A91B8CCA08F29DBB /* SharedImageInbox.swift */; };
 		444C652105F7620F3A0DBDD3 /* MediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 715F9375B113CB2BBE597E7F /* MediaStore.swift */; };
 		4AFB40403A8C7A8584F3CEE9 /* StickerProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4718CD6CE45E819A6AC83529 /* StickerProcessorTests.swift */; };
+		4C62C431C85643DBF75BE203 /* SharedWardrobeImportCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95059D5C09DEFB138D303EC /* SharedWardrobeImportCoordinator.swift */; };
 		4F75F5C23890C809B5B1EDA3 /* WardrobeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688A508B58F7C22C4FB354F0 /* WardrobeComponents.swift */; };
 		53E1BE68968D66539E749E22 /* MediaStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE29B87471D0B83F42701EE /* MediaStoreTests.swift */; };
 		54CC62F55AC3C5E101AD6FD0 /* GarmentObservationPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ACEBFD1D2E574D182EC23D3 /* GarmentObservationPersistenceTests.swift */; };
@@ -33,10 +37,12 @@
 		6CC04A5970B49E77F75BF5C3 /* ShareCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3817293121985A50BE799780 /* ShareCardRendererTests.swift */; };
 		6E01162835B4CAB93893D08D /* sample-02-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 770A0820A3D2A9292070667E /* sample-02-sticker.png */; };
 		72679204352E432C70016FBA /* WardrobeCandidateMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7465AE6ACD185AA0E329EA9 /* WardrobeCandidateMatcher.swift */; };
+		72CE834B10BE56C4FFA4C882 /* SharedWardrobeImportCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A9C1588A5A38E96E7EA650 /* SharedWardrobeImportCoordinatorTests.swift */; };
 		753A1D4111D6DA78C35A12B4 /* sample-01-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 77F83D427A76B9EAE21B0876 /* sample-01-sticker.png */; };
 		756BD9C49D13F4E62E447528 /* AdonisFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2153A825703E5C59A02F6A3D /* AdonisFlowUITests.swift */; };
 		7648F7094EA366551F43714F /* AdonisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C79187C672D6932F46FD1BC /* AdonisApp.swift */; };
 		833D591989DF8A521A68D1C1 /* WardrobeCandidateMatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2ED59B556B639C01144CF3 /* WardrobeCandidateMatcherTests.swift */; };
+		84E550994C1DD4E25B25F5D6 /* SharedImageInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9C4FA8A91B8CCA08F29DBB /* SharedImageInbox.swift */; };
 		8A92C00F7CF1C1DE1976C59F /* sample-03.png in Resources */ = {isa = PBXBuildFile; fileRef = 7C1B423C8D9B768E0AB09434 /* sample-03.png */; };
 		8D508A42988434FD1A130B52 /* EventLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FA337AA391BD2C538ADBC1 /* EventLogger.swift */; };
 		9842AA7B154D80427C2585C1 /* WardrobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB469AA7A56D82430C566D6 /* WardrobeView.swift */; };
@@ -49,6 +55,7 @@
 		AA09CC345698764168BFAD0F /* WardrobeItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A0AC80513194F13CBD6154 /* WardrobeItem.swift */; };
 		AA7616F94BC57247CB84EB02 /* WardrobeItemImageUpgradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41C63FE0943B218F96DECA0 /* WardrobeItemImageUpgradeView.swift */; };
 		B8E00E8E01CF44D38A6F50C0 /* WardrobeImageAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344C0FB1909A7A7BC018E316 /* WardrobeImageAnalyzer.swift */; };
+		B9540D2F881B8B9964CA15EC /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12FE82838AC414CFC2DB702A /* ShareViewController.swift */; };
 		BD88A01D52A457191971F5FD /* WardrobeItemImageUpgradeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD41588E828E23AB762808A7 /* WardrobeItemImageUpgradeTests.swift */; };
 		C30CBEFC83833D8261D3C7C2 /* ProcessingTraceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CAE9A2C46336ABF1F1AC6C /* ProcessingTraceTests.swift */; };
 		C4DBF14E9D9D2C87BE1D824B /* ProcessingTrace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D05F8A9D74EA80804DC6A13 /* ProcessingTrace.swift */; };
@@ -58,6 +65,7 @@
 		D8A25C85A06194D845F6AB0F /* ShareCardRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE5FB9960887C789F813E51 /* ShareCardRenderer.swift */; };
 		DA1A1F32C4890631A6F52D5E /* AdonisDateText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F649CD7BB71A5A6E7ECFD77 /* AdonisDateText.swift */; };
 		DFC1900DF99A5B95BAD68800 /* LocalSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88F3E9DA33A9CF6B2A875C1 /* LocalSettingsView.swift */; };
+		E22BC9E73A21FE1695AB855D /* WardrobeItemImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4280E13261BA41BB7A71D75B /* WardrobeItemImportService.swift */; };
 		E27687894E2632B60816F221 /* BloomCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA41B73134695077C4CA8B4 /* BloomCalendarView.swift */; };
 		E7CD31E84502D5CFB742EE81 /* GenerationResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7227972E1BB092B766EEF3 /* GenerationResultView.swift */; };
 		F3F6BB82F1BBE8C09DDD59BB /* PhotoLibrarySaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04175832BBE55E7FE3292FE9 /* PhotoLibrarySaver.swift */; };
@@ -83,15 +91,39 @@
 			remoteGlobalIDString = 5DD80AB492E229CC181C91E6;
 			remoteInfo = Adonis;
 		};
+		FBDD08513604DBC715E49635 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9FAC52ADF60DAA6037ACCA7A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9345DCC8CC9122EB5E968568;
+			remoteInfo = AdonisShareExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		40FE616C44CFFAD9B97D426C /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				13B333A951423B115CF4FDE7 /* AdonisShareExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0297B7A729F4B3D757F6A0A3 /* OutfitGarmentObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitGarmentObserverTests.swift; sourceTree = "<group>"; };
 		04175832BBE55E7FE3292FE9 /* PhotoLibrarySaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibrarySaver.swift; sourceTree = "<group>"; };
+		05DBA0C9DB94BDE4B6AA5635 /* AdonisShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AdonisShareExtension.entitlements; sourceTree = "<group>"; };
 		06D602C70C508E36FB89DD60 /* OutfitGarmentObservationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitGarmentObservationsView.swift; sourceTree = "<group>"; };
 		0AE5FB9960887C789F813E51 /* ShareCardRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRenderer.swift; sourceTree = "<group>"; };
+		0F44F8DBF49B6179FC299C61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		110BE262F9946F560C99A9F5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		129CE264359B0015C452A7D5 /* WardrobeItemImageUpgradeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemImageUpgradeService.swift; sourceTree = "<group>"; };
+		12FE82838AC414CFC2DB702A /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		1616941BE0EAB40F74A088AA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1AF0F87BBB9C1CD0572BDB60 /* GenerationDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationDraft.swift; sourceTree = "<group>"; };
 		2153A825703E5C59A02F6A3D /* AdonisFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisFlowUITests.swift; sourceTree = "<group>"; };
@@ -99,9 +131,11 @@
 		290B068850AE398F3ACAC1A7 /* WardrobeItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemDetailView.swift; sourceTree = "<group>"; };
 		2ACEBFD1D2E574D182EC23D3 /* GarmentObservationPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarmentObservationPersistenceTests.swift; sourceTree = "<group>"; };
 		2DD490D9A72639AF6EB7DC17 /* sample-04-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-04-sticker.png"; sourceTree = "<group>"; };
+		316737292FE33E782DAD2887 /* SharedImageInboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedImageInboxTests.swift; sourceTree = "<group>"; };
 		344C0FB1909A7A7BC018E316 /* WardrobeImageAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeImageAnalyzer.swift; sourceTree = "<group>"; };
 		35D054A4D8ABBFB0B58A60EB /* WardrobeHistoryMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeHistoryMatcher.swift; sourceTree = "<group>"; };
 		3817293121985A50BE799780 /* ShareCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRendererTests.swift; sourceTree = "<group>"; };
+		4280E13261BA41BB7A71D75B /* WardrobeItemImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemImportService.swift; sourceTree = "<group>"; };
 		4718CD6CE45E819A6AC83529 /* StickerProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerProcessorTests.swift; sourceTree = "<group>"; };
 		4A637377461748CC37830D9C /* sample-04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-04.png"; sourceTree = "<group>"; };
 		4D05F8A9D74EA80804DC6A13 /* ProcessingTrace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingTrace.swift; sourceTree = "<group>"; };
@@ -117,6 +151,7 @@
 		65BC92B2A208B568F489767D /* OutfitGarmentObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitGarmentObserver.swift; sourceTree = "<group>"; };
 		688A508B58F7C22C4FB354F0 /* WardrobeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeComponents.swift; sourceTree = "<group>"; };
 		6D1AC57D0B3CE409AF9AA3B0 /* WardrobeHistorySuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeHistorySuggestionsView.swift; sourceTree = "<group>"; };
+		6FA56E47100150E8087EB527 /* AdonisShareExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = AdonisShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		715F9375B113CB2BBE597E7F /* MediaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStore.swift; sourceTree = "<group>"; };
 		770A0820A3D2A9292070667E /* sample-02-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-02-sticker.png"; sourceTree = "<group>"; };
 		77F83D427A76B9EAE21B0876 /* sample-01-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-01-sticker.png"; sourceTree = "<group>"; };
@@ -124,8 +159,10 @@
 		81B62D5D132AC85E01784E17 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		8B8DB8DEFCD7D0A3C1AE2C1E /* sample-03-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03-sticker.png"; sourceTree = "<group>"; };
 		8C79187C672D6932F46FD1BC /* AdonisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisApp.swift; sourceTree = "<group>"; };
+		93561339C973C07D4E699E67 /* Adonis.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Adonis.entitlements; sourceTree = "<group>"; };
 		94AFB89D4E0698D5253B8179 /* sample-01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-01.png"; sourceTree = "<group>"; };
 		94E389967339AE810B636BC5 /* AdonisUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AdonisUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C9C4FA8A91B8CCA08F29DBB /* SharedImageInbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedImageInbox.swift; sourceTree = "<group>"; };
 		9E2ED59B556B639C01144CF3 /* WardrobeCandidateMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeCandidateMatcherTests.swift; sourceTree = "<group>"; };
 		A4D6165666D17D32A05ABAF6 /* sample-02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-02.png"; sourceTree = "<group>"; };
 		B2008CD53DE2CE10DC6E70C6 /* AppEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEvent.swift; sourceTree = "<group>"; };
@@ -136,6 +173,7 @@
 		C7465AE6ACD185AA0E329EA9 /* WardrobeCandidateMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeCandidateMatcher.swift; sourceTree = "<group>"; };
 		C84B9E71530DDF935E512FE1 /* GarmentObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarmentObservation.swift; sourceTree = "<group>"; };
 		C88F3E9DA33A9CF6B2A875C1 /* LocalSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSettingsView.swift; sourceTree = "<group>"; };
+		C95059D5C09DEFB138D303EC /* SharedWardrobeImportCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedWardrobeImportCoordinator.swift; sourceTree = "<group>"; };
 		CB7227972E1BB092B766EEF3 /* GenerationResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationResultView.swift; sourceTree = "<group>"; };
 		D545412EE2679B9A7070E13B /* Adonis.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Adonis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6CAE9A2C46336ABF1F1AC6C /* ProcessingTraceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingTraceTests.swift; sourceTree = "<group>"; };
@@ -147,6 +185,7 @@
 		EEA92A8DC891210E49433FF7 /* WardrobeItemNaming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemNaming.swift; sourceTree = "<group>"; };
 		EEBDC07323E67E0A60762AF4 /* WardrobeImageAnalyzerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeImageAnalyzerTests.swift; sourceTree = "<group>"; };
 		F3A0AC80513194F13CBD6154 /* WardrobeItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItem.swift; sourceTree = "<group>"; };
+		F3A9C1588A5A38E96E7EA650 /* SharedWardrobeImportCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedWardrobeImportCoordinatorTests.swift; sourceTree = "<group>"; };
 		FAD5A96B162481D212E146A1 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -224,6 +263,7 @@
 		3C28B0C10EA7023C9683014B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				93561339C973C07D4E699E67 /* Adonis.entitlements */,
 				1DE3B998912D8490FDA4D823 /* Samples */,
 			);
 			path = Resources;
@@ -252,11 +292,13 @@
 				04175832BBE55E7FE3292FE9 /* PhotoLibrarySaver.swift */,
 				EC4C4240274B6A2FB8E050EC /* SampleCatalog.swift */,
 				0AE5FB9960887C789F813E51 /* ShareCardRenderer.swift */,
+				C95059D5C09DEFB138D303EC /* SharedWardrobeImportCoordinator.swift */,
 				5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */,
 				C7465AE6ACD185AA0E329EA9 /* WardrobeCandidateMatcher.swift */,
 				35D054A4D8ABBFB0B58A60EB /* WardrobeHistoryMatcher.swift */,
 				344C0FB1909A7A7BC018E316 /* WardrobeImageAnalyzer.swift */,
 				129CE264359B0015C452A7D5 /* WardrobeItemImageUpgradeService.swift */,
+				4280E13261BA41BB7A71D75B /* WardrobeItemImportService.swift */,
 				EEA92A8DC891210E49433FF7 /* WardrobeItemNaming.swift */,
 				63C068922FF4E44027CEB933 /* WardrobeTestImageFactory.swift */,
 			);
@@ -275,6 +317,7 @@
 			isa = PBXGroup;
 			children = (
 				D545412EE2679B9A7070E13B /* Adonis.app */,
+				6FA56E47100150E8087EB527 /* AdonisShareExtension.appex */,
 				E302C7B66FF3753821830A56 /* AdonisTests.xctest */,
 				94E389967339AE810B636BC5 /* AdonisUITests.xctest */,
 			);
@@ -293,10 +336,20 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		95449DC8561EB73D6337F225 /* AdonisShared */ = {
+			isa = PBXGroup;
+			children = (
+				9C9C4FA8A91B8CCA08F29DBB /* SharedImageInbox.swift */,
+			);
+			path = AdonisShared;
+			sourceTree = "<group>";
+		};
 		A1A4134866202E6AFFE1E1DE = {
 			isa = PBXGroup;
 			children = (
 				424DB438D2C37A3DACD70564 /* Adonis */,
+				95449DC8561EB73D6337F225 /* AdonisShared */,
+				A86C43B6FDFC141698BD2F03 /* AdonisShareExtension */,
 				D0C0C14446A3F4F40F62F033 /* AdonisTests */,
 				5869BCCCF692F5A4FD98F5D6 /* AdonisUITests */,
 				6983FAAE88F76DB468F2F55F /* Products */,
@@ -309,6 +362,16 @@
 				C88F3E9DA33A9CF6B2A875C1 /* LocalSettingsView.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		A86C43B6FDFC141698BD2F03 /* AdonisShareExtension */ = {
+			isa = PBXGroup;
+			children = (
+				05DBA0C9DB94BDE4B6AA5635 /* AdonisShareExtension.entitlements */,
+				0F44F8DBF49B6179FC299C61 /* Info.plist */,
+				12FE82838AC414CFC2DB702A /* ShareViewController.swift */,
+			);
+			path = AdonisShareExtension;
 			sourceTree = "<group>";
 		};
 		BF8C362BD44176DF45C3CA34 /* Shared */ = {
@@ -329,6 +392,8 @@
 				0297B7A729F4B3D757F6A0A3 /* OutfitGarmentObserverTests.swift */,
 				D6CAE9A2C46336ABF1F1AC6C /* ProcessingTraceTests.swift */,
 				3817293121985A50BE799780 /* ShareCardRendererTests.swift */,
+				316737292FE33E782DAD2887 /* SharedImageInboxTests.swift */,
+				F3A9C1588A5A38E96E7EA650 /* SharedWardrobeImportCoordinatorTests.swift */,
 				4718CD6CE45E819A6AC83529 /* StickerProcessorTests.swift */,
 				9E2ED59B556B639C01144CF3 /* WardrobeCandidateMatcherTests.swift */,
 				51B14671AF376DB8E9B11E1E /* WardrobeHistoryMatcherTests.swift */,
@@ -356,10 +421,12 @@
 			buildPhases = (
 				8D3F57E3FD0E2374AAD93574 /* Sources */,
 				C0FC9CCD2762042821788D1B /* Resources */,
+				40FE616C44CFFAD9B97D426C /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A27308806F32723E44C74632 /* PBXTargetDependency */,
 			);
 			name = Adonis;
 			packageProductDependencies = (
@@ -404,6 +471,23 @@
 			productReference = 94E389967339AE810B636BC5 /* AdonisUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		9345DCC8CC9122EB5E968568 /* AdonisShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 906C752875E75A139283C7ED /* Build configuration list for PBXNativeTarget "AdonisShareExtension" */;
+			buildPhases = (
+				16F4FF07F02DC4F8840EA94A /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AdonisShareExtension;
+			packageProductDependencies = (
+			);
+			productName = AdonisShareExtension;
+			productReference = 6FA56E47100150E8087EB527 /* AdonisShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -433,6 +517,7 @@
 			projectRoot = "";
 			targets = (
 				5DD80AB492E229CC181C91E6 /* Adonis */,
+				9345DCC8CC9122EB5E968568 /* AdonisShareExtension */,
 				5E3120DDE7A5A5F2FED1F377 /* AdonisTests */,
 				7681C0B838837683D78A284D /* AdonisUITests */,
 			);
@@ -460,6 +545,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		16F4FF07F02DC4F8840EA94A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B9540D2F881B8B9964CA15EC /* ShareViewController.swift in Sources */,
+				423AEFB97294ADDACA708B53 /* SharedImageInbox.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1DDD80D0A3F3DCC40BAF030D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -477,6 +571,8 @@
 				1D66DB546BDE1410DD5C83B8 /* OutfitGarmentObserverTests.swift in Sources */,
 				C30CBEFC83833D8261D3C7C2 /* ProcessingTraceTests.swift in Sources */,
 				6CC04A5970B49E77F75BF5C3 /* ShareCardRendererTests.swift in Sources */,
+				1E771E07BF3146CEE74A025F /* SharedImageInboxTests.swift in Sources */,
+				72CE834B10BE56C4FFA4C882 /* SharedWardrobeImportCoordinatorTests.swift in Sources */,
 				4AFB40403A8C7A8584F3CEE9 /* StickerProcessorTests.swift in Sources */,
 				833D591989DF8A521A68D1C1 /* WardrobeCandidateMatcherTests.swift in Sources */,
 				9A95DEEA282092ED4CB0DA28 /* WardrobeHistoryMatcherTests.swift in Sources */,
@@ -513,6 +609,8 @@
 				C4DBF14E9D9D2C87BE1D824B /* ProcessingTrace.swift in Sources */,
 				00D42A70279CDBBA73D491E5 /* SampleCatalog.swift in Sources */,
 				D8A25C85A06194D845F6AB0F /* ShareCardRenderer.swift in Sources */,
+				84E550994C1DD4E25B25F5D6 /* SharedImageInbox.swift in Sources */,
+				4C62C431C85643DBF75BE203 /* SharedWardrobeImportCoordinator.swift in Sources */,
 				38385A8843FD7D39731262D1 /* StickerProcessor.swift in Sources */,
 				212E902D6EFF97FB6AC0FE1C /* StoredImageView.swift in Sources */,
 				72679204352E432C70016FBA /* WardrobeCandidateMatcher.swift in Sources */,
@@ -524,6 +622,7 @@
 				23309718D6FDAAFF470997CF /* WardrobeItemDetailView.swift in Sources */,
 				C9686C1B55BEBDEE658B3F66 /* WardrobeItemImageUpgradeService.swift in Sources */,
 				AA7616F94BC57247CB84EB02 /* WardrobeItemImageUpgradeView.swift in Sources */,
+				E22BC9E73A21FE1695AB855D /* WardrobeItemImportService.swift in Sources */,
 				A67EBC4860384BA5C25DD016 /* WardrobeItemNaming.swift in Sources */,
 				CD9DB5DC4F2A2C2B5BD7879E /* WardrobeTestImageFactory.swift in Sources */,
 				9842AA7B154D80427C2585C1 /* WardrobeView.swift in Sources */,
@@ -542,6 +641,11 @@
 			isa = PBXTargetDependency;
 			target = 5DD80AB492E229CC181C91E6 /* Adonis */;
 			targetProxy = 617B2AB14C58595A90AE39B7 /* PBXContainerItemProxy */;
+		};
+		A27308806F32723E44C74632 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9345DCC8CC9122EB5E968568 /* AdonisShareExtension */;
+			targetProxy = FBDD08513604DBC715E49635 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -568,6 +672,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Adonis/Resources/Adonis.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Adonis;
@@ -688,6 +793,25 @@
 			};
 			name = Release;
 		};
+		AE027E970EFB326F81E12021 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = AdonisShareExtension/AdonisShareExtension.entitlements;
+				INFOPLIST_FILE = AdonisShareExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo.share;
+				PRODUCT_NAME = AdonisShareExtension;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 		B618EA1784F11622FADD724C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -705,11 +829,31 @@
 			};
 			name = Release;
 		};
+		D045B65BDA03CA6A727906EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = AdonisShareExtension/AdonisShareExtension.entitlements;
+				INFOPLIST_FILE = AdonisShareExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo.share;
+				PRODUCT_NAME = AdonisShareExtension;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 		E378D78DA610F3A8B549149A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Adonis/Resources/Adonis.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Adonis;
@@ -815,6 +959,15 @@
 			buildConfigurations = (
 				9F1DE00CEF2127B6663BEB68 /* Debug */,
 				EC1108C0B8EAA710D981D14F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		906C752875E75A139283C7ED /* Build configuration list for PBXNativeTarget "AdonisShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D045B65BDA03CA6A727906EE /* Debug */,
+				AE027E970EFB326F81E12021 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
