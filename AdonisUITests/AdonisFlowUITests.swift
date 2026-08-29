@@ -122,6 +122,26 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(lookbookShare.isHittable)
     app.buttons["完成"].tap()
 
+    let seasonalEntry = app.buttons["seasonal-bloom-entry"]
+    XCTAssertTrue(seasonalEntry.waitForExistence(timeout: 5))
+    for _ in 0..<6 where !seasonalEntry.isHittable {
+      app.swipeDown()
+    }
+    XCTAssertTrue(seasonalEntry.isHittable)
+    seasonalEntry.tap()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["seasonal-bloom-archive"]
+        .waitForExistence(timeout: 5)
+    )
+    let seasonalGroup = app.buttons.matching(identifier: "seasonal-bloom-group").firstMatch
+    XCTAssertTrue(scrollToHittable(seasonalGroup, in: app, attempts: 8))
+    seasonalGroup.tap()
+    let seasonalRecord = app.buttons.matching(identifier: "seasonal-bloom-record").firstMatch
+    XCTAssertTrue(scrollToHittable(seasonalRecord, in: app, attempts: 8))
+    XCTAssertTrue(seasonalRecord.label.contains("Bloom No."))
+    app.buttons["close-seasonal-bloom"].tap()
+
     let cabinetEntry = app.buttons["digital-cabinet-entry"]
     XCTAssertTrue(cabinetEntry.waitForExistence(timeout: 5))
     for _ in 0..<5 where !cabinetEntry.isHittable {
@@ -508,6 +528,82 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(scrollToHittable(share, in: app, attempts: 5))
     share.tap()
     XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
+  }
+
+  @MainActor
+  func testSavedOutfitAutomaticallyBuildsSeasonalBloomArchive() {
+    let app = XCUIApplication()
+    app.launchArguments.append("-ui-testing")
+    app.launch()
+
+    app.tabBars.buttons["花历"].tap()
+    XCTAssertTrue(app.otherElements["bloom-calendar"].waitForExistence(timeout: 5))
+    XCTAssertFalse(app.buttons["seasonal-bloom-entry"].exists)
+
+    app.tabBars.buttons["创作"].tap()
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 5))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 8))
+
+    let save = app.buttons["save-today"]
+    XCTAssertTrue(scrollToHittable(save, in: app, attempts: 4))
+    save.tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 3))
+
+    let makeAnother = app.buttons["make-another"]
+    XCTAssertTrue(scrollToHittable(makeAnother, in: app, attempts: 4))
+    makeAnother.tap()
+
+    app.tabBars.buttons["花历"].tap()
+    let seasonalEntry = app.buttons["seasonal-bloom-entry"]
+    XCTAssertTrue(seasonalEntry.waitForExistence(timeout: 5))
+    XCTAssertTrue(scrollToHittable(seasonalEntry, in: app, attempts: 4))
+    XCTAssertTrue(seasonalEntry.label.contains("1 个季节"))
+    seasonalEntry.tap()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["seasonal-bloom-archive"]
+        .waitForExistence(timeout: 5)
+    )
+    let provenance = app.descendants(matching: .any)["seasonal-bloom-provenance"]
+    XCTAssertTrue(provenance.waitForExistence(timeout: 4))
+    XCTAssertTrue(provenance.label.contains("只整理已收藏记录"))
+    let noPressure = app.descendants(matching: .any)["seasonal-bloom-no-pressure"]
+    XCTAssertTrue(noPressure.waitForExistence(timeout: 4))
+    XCTAssertTrue(noPressure.label.contains("不是打卡"))
+
+    let group = app.buttons.matching(identifier: "seasonal-bloom-group").firstMatch
+    XCTAssertTrue(scrollToHittable(group, in: app, attempts: 5))
+    XCTAssertTrue(group.label.contains("1 次盛开"))
+    group.tap()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["seasonal-bloom-detail"]
+        .waitForExistence(timeout: 5)
+    )
+    let record = app.buttons.matching(identifier: "seasonal-bloom-record").firstMatch
+    XCTAssertTrue(scrollToHittable(record, in: app, attempts: 5))
+    XCTAssertTrue(record.label.contains("Bloom No. 001"))
+    XCTAssertTrue(record.label.contains("今日穿搭"))
+    keepScreenshot(named: "Adonis-seasonal-bloom")
+
+    record.tap()
+    XCTAssertTrue(
+      app.segmentedControls["history-visual-picker"].waitForExistence(timeout: 5)
+    )
+    let deleteRecord = app.buttons["删除这条记录"]
+    XCTAssertTrue(scrollToHittable(deleteRecord, in: app, attempts: 8))
+    deleteRecord.tap()
+    let confirmDelete = app.buttons["删除"]
+    XCTAssertTrue(confirmDelete.waitForExistence(timeout: 4))
+    confirmDelete.tap()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["seasonal-bloom-empty"]
+        .waitForExistence(timeout: 5)
+    )
+    XCTAssertEqual(app.buttons.matching(identifier: "seasonal-bloom-record").count, 0)
   }
 
   @MainActor

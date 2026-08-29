@@ -10,6 +10,7 @@ struct BloomCalendarView: View {
   @State private var selectedRecord: OutfitRecord?
   @State private var monthlyLookbook: MonthlyLookbookPresentation?
   @State private var showDigitalCabinet = false
+  @State private var showSeasonalBloomArchive = false
   @State private var deleteErrorMessage: String?
   @State private var lookbookErrorMessage: String?
 
@@ -68,6 +69,11 @@ struct BloomCalendarView: View {
         delete(record)
       }
     }
+    .sheet(isPresented: $showSeasonalBloomArchive) {
+      SeasonalBloomArchiveView { record in
+        delete(record)
+      }
+    }
     .alert(
       "删除失败",
       isPresented: Binding(
@@ -108,31 +114,130 @@ struct BloomCalendarView: View {
 
   private var monthCard: some View {
     VStack(spacing: 18) {
-      monthNavigation
+      VStack(spacing: 18) {
+        monthNavigation
 
-      LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 7), spacing: 8)
-      {
-        ForEach(weekdayTitles, id: \.self) { title in
-          Text(title)
-            .font(.caption2.weight(.bold))
-            .foregroundStyle(AdonisTheme.secondaryInk)
-            .frame(maxWidth: .infinity)
-        }
+        LazyVGrid(
+          columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 7),
+          spacing: 8
+        ) {
+          ForEach(weekdayTitles, id: \.self) { title in
+            Text(title)
+              .font(.caption2.weight(.bold))
+              .foregroundStyle(AdonisTheme.secondaryInk)
+              .frame(maxWidth: .infinity)
+          }
 
-        ForEach(Array(monthCells.enumerated()), id: \.offset) { _, date in
-          if let date {
-            dayCell(for: date)
-          } else {
-            Color.clear
-              .frame(height: 48)
+          ForEach(Array(monthCells.enumerated()), id: \.offset) { _, date in
+            if let date {
+              dayCell(for: date)
+            } else {
+              Color.clear
+                .frame(height: 48)
+            }
           }
         }
+        .dynamicTypeSize(.xSmall ... .xxxLarge)
       }
-      .dynamicTypeSize(.xSmall ... .xxxLarge)
+      .accessibilityIdentifier("bloom-calendar")
+
+      if !records.isEmpty {
+        Divider()
+          .overlay(AdonisTheme.ink.opacity(0.08))
+
+        seasonalBloomEntry
+      }
     }
     .padding(18)
     .paperSurface()
-    .accessibilityIdentifier("bloom-calendar")
+  }
+
+  private var seasonalBloomGroups: [SeasonalBloomGroup] {
+    SeasonalBloomCatalog().groups(records: records, calendar: calendar)
+  }
+
+  private var seasonalBloomEntry: some View {
+    Button {
+      EventLogger.log(
+        .seasonalBloomArchiveOpened,
+        processingVersion: AdonisProcessingVersion.seasonalBloom,
+        in: modelContext
+      )
+      showSeasonalBloomArchive = true
+    } label: {
+      Group {
+        if dynamicTypeSize.isAccessibilitySize {
+          VStack(alignment: .leading, spacing: 12) {
+            seasonalBloomIconRow
+            seasonalBloomCopy
+          }
+        } else {
+          HStack(spacing: 14) {
+            seasonalBloomIconRow
+            seasonalBloomCopy
+            Spacer(minLength: 0)
+            Image(systemName: "chevron.right")
+              .font(.system(size: 15, weight: .black))
+              .foregroundStyle(AdonisTheme.pomegranateInk)
+              .accessibilityHidden(true)
+          }
+        }
+      }
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .padding(14)
+      .background(
+        LinearGradient(
+          colors: [AdonisTheme.leaf.opacity(0.13), AdonisTheme.lavender.opacity(0.16)],
+          startPoint: .topLeading,
+          endPoint: .bottomTrailing
+        ),
+        in: RoundedRectangle(cornerRadius: 20, style: .continuous)
+      )
+    }
+    .buttonStyle(StickerButtonStyle())
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel(
+      "打开穿过的四季，已自动归档 \(seasonalBloomGroups.count) 个季节、\(records.count) 次盛开"
+    )
+    .accessibilityHint("只展示真正收藏过的季节，不是打卡")
+    .accessibilityIdentifier("seasonal-bloom-entry")
+  }
+
+  private var seasonalBloomCopy: some View {
+    VStack(alignment: .leading, spacing: 4) {
+      Text("穿过的四季")
+        .font(.system(.headline, design: .rounded, weight: .black))
+        .foregroundStyle(AdonisTheme.ink)
+      Text("\(seasonalBloomGroups.count) 个季节已自己归档，不用补齐。")
+        .font(.caption)
+        .foregroundStyle(AdonisTheme.secondaryInk)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+  }
+
+  private var seasonalBloomIconRow: some View {
+    HStack(spacing: -5) {
+      ForEach(seasonalBloomGroups.prefix(4)) { group in
+        Text(group.season.title)
+          .font(.system(.caption, design: .rounded, weight: .black))
+          .foregroundStyle(AdonisTheme.ink)
+          .frame(width: 34, height: 34)
+          .background(seasonEntryColor(group.season), in: Circle())
+          .overlay {
+            Circle().stroke(AdonisTheme.paper, lineWidth: 2)
+          }
+      }
+    }
+    .accessibilityHidden(true)
+  }
+
+  private func seasonEntryColor(_ season: BloomSeason) -> Color {
+    switch season {
+    case .spring: AdonisTheme.leaf.opacity(0.58)
+    case .summer: AdonisTheme.butter.opacity(0.82)
+    case .autumn: AdonisTheme.pomegranate.opacity(0.42)
+    case .winter: AdonisTheme.lavender.opacity(0.72)
+    }
   }
 
   private var recentBlooms: some View {

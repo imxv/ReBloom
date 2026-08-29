@@ -30,6 +30,7 @@
 		230472B00FDC2CD8222BBD0D /* CameraAccessService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C03A1F1A7D0EEB66DEFF4A0 /* CameraAccessService.swift */; };
 		23309718D6FDAAFF470997CF /* WardrobeItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290B068850AE398F3ACAC1A7 /* WardrobeItemDetailView.swift */; };
 		275E8B3C4CA4488AF3AD2CBA /* DigitalFigurineCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 488238D5BC109C8E72A5B60F /* DigitalFigurineCardRendererTests.swift */; };
+		2B7D58916E4D410B778A9EEE /* SeasonalBloomCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B81EEAE568CAF877AFF6B8A /* SeasonalBloomCatalogTests.swift */; };
 		2BD67932C4F0FBD986AC5507 /* GenerationDeadlineController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECF3B88471C33864593324 /* GenerationDeadlineController.swift */; };
 		32CA5F7642FEEC25E743F46E /* StickerQualityAssessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84136BBEA95D26BF94F117B2 /* StickerQualityAssessorTests.swift */; };
 		38385A8843FD7D39731262D1 /* StickerProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */; };
@@ -60,6 +61,7 @@
 		84E550994C1DD4E25B25F5D6 /* SharedImageInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9C4FA8A91B8CCA08F29DBB /* SharedImageInbox.swift */; };
 		8A92C00F7CF1C1DE1976C59F /* sample-03.png in Resources */ = {isa = PBXBuildFile; fileRef = 7C1B423C8D9B768E0AB09434 /* sample-03.png */; };
 		8D508A42988434FD1A130B52 /* EventLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FA337AA391BD2C538ADBC1 /* EventLogger.swift */; };
+		9154C60A4F55C8762AD91614 /* SeasonalBloomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1572882174C9C65DB6792A /* SeasonalBloomView.swift */; };
 		93DA4A90032C3C2D88A6A3BD /* DigitalFigurineCardRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D0E210640D69DD211F1FBC /* DigitalFigurineCardRenderer.swift */; };
 		9842AA7B154D80427C2585C1 /* WardrobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB469AA7A56D82430C566D6 /* WardrobeView.swift */; };
 		9965AC61AB9082E9E0A19E85 /* ModelStorePolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC061181CA74103F996C69C /* ModelStorePolicyTests.swift */; };
@@ -80,6 +82,7 @@
 		B025F76F64788BA52A25BFBE /* VisualContentProvenance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E35A62405F04F4C91FD146 /* VisualContentProvenance.swift */; };
 		B35B3060779D997EAE415A31 /* MonthlyLookbookRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C9AA9D74B072D0D2B914D /* MonthlyLookbookRendererTests.swift */; };
 		B8E00E8E01CF44D38A6F50C0 /* WardrobeImageAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344C0FB1909A7A7BC018E316 /* WardrobeImageAnalyzer.swift */; };
+		B91099B5CE86DAFF6F01CD6E /* SeasonalBloomCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B770746CA1D17ADDA6BB6C0 /* SeasonalBloomCatalog.swift */; };
 		B9540D2F881B8B9964CA15EC /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12FE82838AC414CFC2DB702A /* ShareViewController.swift */; };
 		BD88A01D52A457191971F5FD /* WardrobeItemImageUpgradeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD41588E828E23AB762808A7 /* WardrobeItemImageUpgradeTests.swift */; };
 		C30CBEFC83833D8261D3C7C2 /* ProcessingTraceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CAE9A2C46336ABF1F1AC6C /* ProcessingTraceTests.swift */; };
@@ -176,7 +179,9 @@
 		4D05F8A9D74EA80804DC6A13 /* ProcessingTrace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingTrace.swift; sourceTree = "<group>"; };
 		51B14671AF376DB8E9B11E1E /* WardrobeHistoryMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeHistoryMatcherTests.swift; sourceTree = "<group>"; };
 		57F443048A8AB2396EC8490E /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
+		5B81EEAE568CAF877AFF6B8A /* SeasonalBloomCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalBloomCatalogTests.swift; sourceTree = "<group>"; };
 		5D0994A465AE03BD4840F048 /* OutfitRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitRecord.swift; sourceTree = "<group>"; };
+		5D1572882174C9C65DB6792A /* SeasonalBloomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalBloomView.swift; sourceTree = "<group>"; };
 		5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerProcessor.swift; sourceTree = "<group>"; };
 		5EA41B73134695077C4CA8B4 /* BloomCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloomCalendarView.swift; sourceTree = "<group>"; };
 		5F649CD7BB71A5A6E7ECFD77 /* AdonisDateText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisDateText.swift; sourceTree = "<group>"; };
@@ -194,6 +199,7 @@
 		770A0820A3D2A9292070667E /* sample-02-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-02-sticker.png"; sourceTree = "<group>"; };
 		77F83D427A76B9EAE21B0876 /* sample-01-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-01-sticker.png"; sourceTree = "<group>"; };
 		78D0E210640D69DD211F1FBC /* DigitalFigurineCardRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalFigurineCardRenderer.swift; sourceTree = "<group>"; };
+		7B770746CA1D17ADDA6BB6C0 /* SeasonalBloomCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalBloomCatalog.swift; sourceTree = "<group>"; };
 		7C03A1F1A7D0EEB66DEFF4A0 /* CameraAccessService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraAccessService.swift; sourceTree = "<group>"; };
 		7C1B423C8D9B768E0AB09434 /* sample-03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03.png"; sourceTree = "<group>"; };
 		81B62D5D132AC85E01784E17 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
@@ -293,6 +299,7 @@
 				71F810B27C38C0AF79DF2426 /* MonthlyLookbookView.swift */,
 				646E1B8E7A4C66C109816B9A /* OutfitDetailView.swift */,
 				06D602C70C508E36FB89DD60 /* OutfitGarmentObservationsView.swift */,
+				5D1572882174C9C65DB6792A /* SeasonalBloomView.swift */,
 			);
 			path = Bloom;
 			sourceTree = "<group>";
@@ -354,6 +361,7 @@
 				D491330C3A0032C97023EB7B /* PersonalDataArchiveService.swift */,
 				04175832BBE55E7FE3292FE9 /* PhotoLibrarySaver.swift */,
 				EC4C4240274B6A2FB8E050EC /* SampleCatalog.swift */,
+				7B770746CA1D17ADDA6BB6C0 /* SeasonalBloomCatalog.swift */,
 				0AE5FB9960887C789F813E51 /* ShareCardRenderer.swift */,
 				C95059D5C09DEFB138D303EC /* SharedWardrobeImportCoordinator.swift */,
 				5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */,
@@ -466,6 +474,7 @@
 				6392E24759177B8122E2626C /* PersonalDataControlTests.swift */,
 				D6CAE9A2C46336ABF1F1AC6C /* ProcessingTraceTests.swift */,
 				0BCEE85686A0D72974233370 /* SampleRegressionTests.swift */,
+				5B81EEAE568CAF877AFF6B8A /* SeasonalBloomCatalogTests.swift */,
 				3817293121985A50BE799780 /* ShareCardRendererTests.swift */,
 				316737292FE33E782DAD2887 /* SharedImageInboxTests.swift */,
 				F3A9C1588A5A38E96E7EA650 /* SharedWardrobeImportCoordinatorTests.swift */,
@@ -658,6 +667,7 @@
 				F4578113E65A439E817E8886 /* PersonalDataControlTests.swift in Sources */,
 				C30CBEFC83833D8261D3C7C2 /* ProcessingTraceTests.swift in Sources */,
 				794A006056BB5F4413ABAACF /* SampleRegressionTests.swift in Sources */,
+				2B7D58916E4D410B778A9EEE /* SeasonalBloomCatalogTests.swift in Sources */,
 				6CC04A5970B49E77F75BF5C3 /* ShareCardRendererTests.swift in Sources */,
 				1E771E07BF3146CEE74A025F /* SharedImageInboxTests.swift in Sources */,
 				72CE834B10BE56C4FFA4C882 /* SharedWardrobeImportCoordinatorTests.swift in Sources */,
@@ -709,6 +719,8 @@
 				F3F6BB82F1BBE8C09DDD59BB /* PhotoLibrarySaver.swift in Sources */,
 				C4DBF14E9D9D2C87BE1D824B /* ProcessingTrace.swift in Sources */,
 				00D42A70279CDBBA73D491E5 /* SampleCatalog.swift in Sources */,
+				B91099B5CE86DAFF6F01CD6E /* SeasonalBloomCatalog.swift in Sources */,
+				9154C60A4F55C8762AD91614 /* SeasonalBloomView.swift in Sources */,
 				D8A25C85A06194D845F6AB0F /* ShareCardRenderer.swift in Sources */,
 				84E550994C1DD4E25B25F5D6 /* SharedImageInbox.swift in Sources */,
 				4C62C431C85643DBF75BE203 /* SharedWardrobeImportCoordinator.swift in Sources */,
