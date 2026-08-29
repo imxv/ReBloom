@@ -531,6 +531,84 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  func testConfirmedPiecesFromDifferentOutfitsCreateShareableRebloomSuggestion() {
+    let app = XCUIApplication()
+    app.launchArguments.append("-ui-testing")
+    app.launch()
+
+    app.tabBars.buttons["花历"].tap()
+    XCTAssertTrue(app.otherElements["bloom-calendar"].waitForExistence(timeout: 5))
+    XCTAssertFalse(app.buttons["rebloom-entry"].exists)
+
+    app.tabBars.buttons["创作"].tap()
+    saveSampleAndConfirmGarment(
+      "sample-02",
+      slot: "upperBody",
+      in: app
+    )
+    XCTAssertFalse(app.buttons["rebloom-entry"].exists)
+
+    app.tabBars.buttons["创作"].tap()
+    saveSampleAndConfirmGarment(
+      "sample-01",
+      slot: "lowerBody",
+      in: app
+    )
+
+    let entry = app.buttons["rebloom-entry"]
+    XCTAssertTrue(entry.waitForExistence(timeout: 5))
+    XCTAssertTrue(scrollDownToHittable(entry, in: app, attempts: 12))
+    XCTAssertTrue(entry.label.contains("不用选模板"))
+    entry.tap()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["rebloom-screen"]
+        .waitForExistence(timeout: 5)
+    )
+    let provenance = app.descendants(matching: .any)["rebloom-provenance"]
+    XCTAssertTrue(provenance.waitForExistence(timeout: 4))
+    XCTAssertTrue(provenance.label.contains("没有生成试穿照片"))
+
+    let boundary = app.descendants(matching: .any)["rebloom-boundary"]
+    XCTAssertTrue(boundary.waitForExistence(timeout: 4))
+    XCTAssertTrue(boundary.label.contains("从未在同一条 OOTD 中确认过"))
+
+    let card = app.descendants(matching: .any)["rebloom-card"]
+    XCTAssertTrue(scrollToHittable(card, in: app, attempts: 5))
+    XCTAssertTrue(card.label.contains("上装"))
+    XCTAssertTrue(card.label.contains("下装"))
+    XCTAssertTrue(card.label.contains("今天可以直接照着穿"))
+    keepScreenshot(named: "Adonis-rebloom-suggestion")
+
+    let share = app.buttons["share-rebloom"]
+    XCTAssertTrue(scrollToHittable(share, in: app, attempts: 10))
+    share.tap()
+    XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
+    app.buttons["关闭"].tap()
+
+    let sourceOutfit = app.buttons.matching(identifier: "rebloom-source-outfit").firstMatch
+    XCTAssertTrue(scrollToHittable(sourceOutfit, in: app, attempts: 8))
+    sourceOutfit.tap()
+    let historyPicker = app.segmentedControls["history-visual-picker"]
+    let historyMenu = app.descendants(matching: .any)["history-visual-menu"]
+    XCTAssertTrue(
+      historyPicker.waitForExistence(timeout: 3)
+        || historyMenu.waitForExistence(timeout: 3)
+    )
+    let deleteRecord = app.buttons["删除这条记录"]
+    XCTAssertTrue(scrollToHittable(deleteRecord, in: app, attempts: 8))
+    deleteRecord.tap()
+    XCTAssertTrue(app.buttons["删除"].waitForExistence(timeout: 4))
+    app.buttons["删除"].tap()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["rebloom-empty"]
+        .waitForExistence(timeout: 5)
+    )
+    XCTAssertEqual(app.buttons.matching(identifier: "rebloom-source-outfit").count, 0)
+  }
+
+  @MainActor
   func testSavedOutfitAutomaticallyBuildsSeasonalBloomArchive() {
     let app = XCUIApplication()
     app.launchArguments.append("-ui-testing")
@@ -1057,6 +1135,40 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  private func saveSampleAndConfirmGarment(
+    _ sampleID: String,
+    slot: String,
+    in app: XCUIApplication
+  ) {
+    let sample = app.buttons[sampleID]
+    XCTAssertTrue(sample.waitForExistence(timeout: 5))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 6))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 8))
+
+    let save = app.buttons["save-today"]
+    XCTAssertTrue(scrollToHittable(save, in: app, attempts: 5))
+    save.tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 3))
+
+    let makeAnother = app.buttons["make-another"]
+    XCTAssertTrue(scrollToHittable(makeAnother, in: app, attempts: 4))
+    makeAnother.tap()
+    app.tabBars.buttons["花历"].tap()
+
+    let record = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(record.waitForExistence(timeout: 5))
+    XCTAssertTrue(scrollToHittable(record, in: app, attempts: 8))
+    record.tap()
+
+    let createItem = app.buttons["garment-new-\(slot)"]
+    XCTAssertTrue(scrollToHittable(createItem, in: app, attempts: 10))
+    createItem.tap()
+    XCTAssertTrue(app.staticTexts["garment-linked-\(slot)"].waitForExistence(timeout: 4))
+    app.buttons["完成"].tap()
+  }
+
+  @MainActor
   private func scrollToHittable(
     _ element: XCUIElement,
     in app: XCUIApplication,
@@ -1064,6 +1176,18 @@ final class AdonisFlowUITests: XCTestCase {
   ) -> Bool {
     for _ in 0..<attempts where !element.isHittable {
       app.swipeUp()
+    }
+    return element.isHittable
+  }
+
+  @MainActor
+  private func scrollDownToHittable(
+    _ element: XCUIElement,
+    in app: XCUIApplication,
+    attempts: Int
+  ) -> Bool {
+    for _ in 0..<attempts where !element.isHittable {
+      app.swipeDown()
     }
     return element.isHittable
   }

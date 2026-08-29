@@ -124,6 +124,8 @@ enum AppEventKind: String {
   case digitalFigurineCardShareOpened
   case digitalCabinetOpened
   case seasonalBloomArchiveOpened
+  case rebloomOpened
+  case rebloomShareOpened
   case wardrobeItemAdded
   case wardrobeItemDeleted
   case wardrobeItemCorrected
@@ -156,6 +158,8 @@ enum AppEventKind: String {
     case .digitalFigurineCardShareOpened: "打开手办卡分享"
     case .digitalCabinetOpened: "打开数字展柜"
     case .seasonalBloomArchiveOpened: "打开四季花历"
+    case .rebloomOpened: "打开再次盛开"
+    case .rebloomShareOpened: "打开再次盛开分享"
     case .wardrobeItemAdded: "添加单品"
     case .wardrobeItemDeleted: "删除单品"
     case .wardrobeItemCorrected: "纠正单品"

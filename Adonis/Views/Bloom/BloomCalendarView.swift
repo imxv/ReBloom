@@ -5,12 +5,14 @@ struct BloomCalendarView: View {
   @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @Environment(\.modelContext) private var modelContext
   @Query(sort: \OutfitRecord.createdAt, order: .reverse) private var records: [OutfitRecord]
+  @Query(sort: \WardrobeItem.createdAt, order: .reverse) private var wardrobeItems: [WardrobeItem]
 
   @State private var visibleMonth = Date.now
   @State private var selectedRecord: OutfitRecord?
   @State private var monthlyLookbook: MonthlyLookbookPresentation?
   @State private var showDigitalCabinet = false
   @State private var showSeasonalBloomArchive = false
+  @State private var showRebloom = false
   @State private var deleteErrorMessage: String?
   @State private var lookbookErrorMessage: String?
 
@@ -26,6 +28,10 @@ struct BloomCalendarView: View {
         VStack(alignment: .leading, spacing: 24) {
           header
           monthCard
+
+          if let suggestion = rebloomSuggestions.first {
+            rebloomEntryCard(suggestion)
+          }
 
           if !records.isEmpty {
             digitalCabinetEntryCard
@@ -71,6 +77,11 @@ struct BloomCalendarView: View {
     }
     .sheet(isPresented: $showSeasonalBloomArchive) {
       SeasonalBloomArchiveView { record in
+        delete(record)
+      }
+    }
+    .sheet(isPresented: $showRebloom) {
+      RebloomView { record in
         delete(record)
       }
     }
@@ -154,6 +165,107 @@ struct BloomCalendarView: View {
 
   private var seasonalBloomGroups: [SeasonalBloomGroup] {
     SeasonalBloomCatalog().groups(records: records, calendar: calendar)
+  }
+
+  private var rebloomSuggestions: [RebloomSuggestion] {
+    RebloomCatalog().suggestions(
+      records: records,
+      wardrobeItems: wardrobeItems,
+      calendar: calendar
+    )
+  }
+
+  private func rebloomEntryCard(_ suggestion: RebloomSuggestion) -> some View {
+    Button {
+      EventLogger.log(
+        .rebloomOpened,
+        detail:
+          "reason=\(suggestion.reasonEventValue);suggestion_count=\(rebloomSuggestions.count)",
+        processingVersion: AdonisProcessingVersion.rebloomSuggestion,
+        in: modelContext
+      )
+      showRebloom = true
+    } label: {
+      Group {
+        if dynamicTypeSize.isAccessibilitySize {
+          VStack(alignment: .leading, spacing: 14) {
+            rebloomItemStack(suggestion)
+            rebloomEntryCopy(suggestion)
+            rebloomEntryAction
+          }
+        } else {
+          HStack(spacing: 16) {
+            rebloomItemStack(suggestion)
+            rebloomEntryCopy(suggestion)
+            Spacer(minLength: 0)
+            rebloomEntryAction
+          }
+        }
+      }
+      .padding(16)
+      .background(
+        LinearGradient(
+          colors: [AdonisTheme.pomegranate.opacity(0.17), AdonisTheme.butter.opacity(0.31)],
+          startPoint: .topLeading,
+          endPoint: .bottomTrailing
+        ),
+        in: RoundedRectangle(cornerRadius: 27, style: .continuous)
+      )
+      .overlay {
+        RoundedRectangle(cornerRadius: 27, style: .continuous)
+          .stroke(AdonisTheme.pomegranate.opacity(0.20), lineWidth: 1)
+      }
+    }
+    .buttonStyle(StickerButtonStyle())
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel(
+      "打开再次盛开。不用选模板，建议把上装 \(suggestion.top.displayName) 和下装 \(suggestion.bottom.displayName) 组合；两件衣物都已确认，且没有在同一条 OOTD 中共同出现。"
+    )
+    .accessibilityIdentifier("rebloom-entry")
+  }
+
+  private func rebloomEntryCopy(_ suggestion: RebloomSuggestion) -> some View {
+    VStack(alignment: .leading, spacing: 6) {
+      Text("再次盛开")
+        .font(.system(.title3, design: .rounded, weight: .black))
+        .foregroundStyle(AdonisTheme.ink)
+      Text("不用选模板，今天试试 \(suggestion.title)。")
+        .font(.subheadline)
+        .foregroundStyle(AdonisTheme.secondaryInk)
+        .lineLimit(3)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+  }
+
+  private func rebloomItemStack(_ suggestion: RebloomSuggestion) -> some View {
+    HStack(spacing: -8) {
+      rebloomEntryImage(filename: suggestion.top.item.imageFilename, color: AdonisTheme.lavender)
+        .rotationEffect(.degrees(-5))
+      rebloomEntryImage(filename: suggestion.bottom.item.imageFilename, color: AdonisTheme.leaf)
+        .rotationEffect(.degrees(5))
+    }
+    .frame(width: 88, height: 78)
+    .accessibilityHidden(true)
+  }
+
+  private func rebloomEntryImage(filename: String, color: Color) -> some View {
+    StoredImageView(filename: filename, contentMode: .fit)
+      .padding(6)
+      .frame(width: 54, height: 70)
+      .background(color.opacity(0.34), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+      .overlay {
+        RoundedRectangle(cornerRadius: 14, style: .continuous)
+          .stroke(AdonisTheme.paper, lineWidth: 2)
+      }
+  }
+
+  private var rebloomEntryAction: some View {
+    Image(systemName: "arrow.triangle.2.circlepath")
+      .font(.system(size: 17, weight: .black))
+      .foregroundStyle(AdonisTheme.pomegranateInk)
+      .frame(width: 42, height: 42)
+      .background(AdonisTheme.paper.opacity(0.78), in: Circle())
+      .accessibilityHidden(true)
   }
 
   private var seasonalBloomEntry: some View {
