@@ -45,7 +45,7 @@ make accessibility-regression
 - 1 个创作 → 结果 → 进入后台 → 回前台 → 收藏 → 衣橱核心 UI 流程。
 - 1 个处理中浮层“取消”按钮可见、可点击并能返回首页的 UI 流程。
 
-测试结束或失败时都会恢复原字号与对比度。最终专项结果为 3 项通过、0 失败，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_01-32-32-+0800.xcresult`。
+测试结束或失败时都会恢复原字号与对比度。最终专项结果为 3 项通过、0 失败，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_03-06-29-+0800.xcresult`。
 
 处理中取消测试使用 `-ui-testing-hold-generation` 启动参数提供最长 15 秒的测试专用窗口；正式 App 不包含这段等待，不改变实际生成速度。
 
@@ -53,9 +53,9 @@ make accessibility-regression
 
 - `make check`：严格 `swift-format` 与通用 iOS 设备静态分析通过。
 - `make sample-regression`：四张授权样片哈希与字节级重生成通过，11 个图片专项测试通过。
-- `make test`：49 个单元测试与 12 个 UI 流程测试，共 61 项通过、0 失败。
-- `xcresulttool` 独立汇总为 61 通过、0 失败、0 跳过。
-- 完整结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_01-39-31-+0800.xcresult`。
+- `make test`：53 个单元测试与 13 个 UI 流程测试，共 66 项通过、0 失败。
+- `xcresulttool` 独立汇总为 66 通过、0 失败、0 跳过。
+- 完整结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_02-56-37-+0800.xcresult`。
 
 ## 5. 视觉证据
 

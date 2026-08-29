@@ -10,10 +10,10 @@
 
 - Xcode：26.6，Build 17F113。
 - 视觉截图：独立创建的 iPhone 17 Pro，iOS 26.5，设备名 `Adonis Test`。
-- 最终完整测试：命名为 `iPhone 17 Pro` 的 iOS 26.5 模拟器，当前 61 个测试全部通过；包含 49 个单元测试与 12 个 UI 流程测试，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_01-39-31-+0800.xcresult`。
+- 最终完整测试：命名为 `iPhone 17 Pro` 的 iOS 26.5 模拟器，当前 66 个测试全部通过；包含 53 个单元测试与 13 个 UI 流程测试，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_02-56-37-+0800.xcresult`。
 - 通用 iOS 设备构建：`xcodebuild ... -destination 'generic/platform=iOS' ... build CODE_SIGNING_ALLOWED=NO`，退出码 0。
 - 静态分析：`xcodebuild ... -destination 'generic/platform=iOS' ... analyze CODE_SIGNING_ALLOWED=NO`，退出码 0。
-- 完整测试计划：61 个测试通过，0 失败；贴纸主链路、固定样片回归、结构质量降级、最大辅助字号、增强对比度、处理取消、前后台恢复、衣橱轻量导入、系统分享扩展、超大像素图片拒绝、OOTD 线索确认、单品补图、历史穿着回填、生成内容来源标识、个人数据导出与彻底删除链路均已覆盖。
+- 完整测试计划：66 个测试通过，0 失败；贴纸主链路、固定样片回归、结构质量降级、最大辅助字号、增强对比度、处理取消、前后台恢复、衣橱轻量导入、系统分享扩展、超大像素图片拒绝、OOTD 线索确认、单品补图、历史穿着回填、生成内容来源标识、个人数据导出与彻底删除、生成性能成功与取消诊断链路均已覆盖。
 - UI 主链路：样片 → 收藏卡 → 收藏今天 → 返回创作 → 花历出现记录，通过。
 - 文件链路：PNG 写入、读取、删除与清空均限制在注入的媒体目录内；分享扩展与主 App 的 App Group 收件箱成功跨进程交接；标准 TAR 已由 macOS `tar` 独立读取；全部删除覆盖 SwiftData、媒体、App Group 与临时归档，通过。
 - 收藏卡：固定为 1080 × 1440，所有像素 Alpha 为 255，通过。

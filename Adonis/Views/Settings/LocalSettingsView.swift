@@ -159,7 +159,58 @@ struct LocalSettingsView: View {
     Section("处理状态") {
       LabeledContent("成功", value: "\(successfulEvents.count)")
       LabeledContent("失败", value: "\(failedEvents.count)")
-      LabeledContent("平均耗时", value: averageDurationText)
+      LabeledContent("取消", value: "\(cancelledEvents.count)")
+      LabeledContent("平均端到端耗时", value: averageDurationText)
+
+      if !successfulPerformanceTraces.isEmpty {
+        LabeledContent(
+          "45 秒目标内",
+          value: "\(withinTargetCount) / \(successfulPerformanceTraces.count) 次"
+        )
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("performance-budget-summary")
+      }
+
+      if let latestPerformanceEvent,
+        let trace = latestPerformanceEvent.generationPerformanceTrace
+      {
+        LabeledContent(
+          "最近一次链路",
+          value: "\(latestPerformanceEvent.kind.title) · \(durationText(trace.totalMilliseconds))"
+        )
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("performance-latest-event")
+
+        if let slowestStage = trace.slowestStage {
+          LabeledContent(
+            "最近最慢阶段",
+            value: "\(slowestStage.stage.title) · \(durationText(slowestStage.milliseconds))"
+          )
+          .accessibilityElement(children: .combine)
+          .accessibilityIdentifier("performance-latest-stage")
+        }
+
+        if let interruptedStage = trace.interruptedStage {
+          LabeledContent("中断位置", value: interruptedStage.title)
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("performance-interrupted-stage")
+        }
+
+        LabeledContent("本地重试", value: "\(trace.retryCount) 次")
+        LabeledContent("外部请求", value: "\(trace.externalRequestCount) 次")
+        LabeledContent(
+          "外部费用",
+          value: trace.externalRequestCount == 0 ? "不适用（全本机）" : "尚未接入计价"
+        )
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("performance-external-cost")
+
+        if trace.usesPreparedSample {
+          Text("最近一次使用固定样片，只代表本机演示链路。")
+            .font(.caption)
+            .foregroundStyle(.secondary)
+        }
+      }
 
       if let latestFailure = failedEvents.first, let detail = latestFailure.detail {
         VStack(alignment: .leading, spacing: 4) {
@@ -217,10 +268,35 @@ struct LocalSettingsView: View {
     events.filter { $0.kind == .generationFailed }
   }
 
+  private var cancelledEvents: [AppEvent] {
+    events.filter { $0.kind == .generationCancelled }
+  }
+
+  private var successfulPerformanceTraces: [GenerationPerformanceTrace] {
+    successfulEvents.compactMap(\.generationPerformanceTrace)
+  }
+
+  private var withinTargetCount: Int {
+    successfulPerformanceTraces.count { $0.budgetStatus == .withinTarget }
+  }
+
+  private var latestPerformanceEvent: AppEvent? {
+    events.first {
+      $0.generationPerformanceTrace != nil
+        && [.generationSucceeded, .generationFailed, .generationCancelled].contains($0.kind)
+    }
+  }
+
   private var averageDurationText: String {
-    let durations = successfulEvents.compactMap(\.durationMilliseconds)
+    let durations = successfulPerformanceTraces.map(\.totalMilliseconds)
     guard !durations.isEmpty else { return "—" }
-    return "\(durations.reduce(0, +) / durations.count) ms"
+    return durationText(durations.reduce(0, +) / durations.count)
+  }
+
+  private func durationText(_ milliseconds: Int) -> String {
+    guard milliseconds >= 1_000 else { return "\(milliseconds) 毫秒" }
+    let roundedTenths = (milliseconds + 50) / 100
+    return "\(roundedTenths / 10).\(roundedTenths % 10) 秒"
   }
 
   private func traceText(for event: AppEvent) -> String? {

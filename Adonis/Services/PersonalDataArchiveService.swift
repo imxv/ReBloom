@@ -8,7 +8,7 @@ struct PersonalDataArchive: Identifiable, Sendable {
 }
 
 struct PersonalDataArchiveService {
-  static let formatVersion = "adonis-personal-data-v2"
+  static let formatVersion = "adonis-personal-data-v3"
   static let exportDirectoryName = "AdonisExports"
 
   private let mediaStore: MediaStore
@@ -451,6 +451,7 @@ private struct ExportedAppEvent: Encodable, Sendable {
   let detail: String?
   let inputSource: String?
   let processingVersion: String?
+  let generationPerformance: ExportedGenerationPerformance?
 
   @MainActor
   init(_ event: AppEvent) {
@@ -461,6 +462,39 @@ private struct ExportedAppEvent: Encodable, Sendable {
     detail = event.detail
     inputSource = event.inputSourceRawValue
     processingVersion = event.processingVersion
+    generationPerformance = event.generationPerformanceTrace.map(
+      ExportedGenerationPerformance.init
+    )
+  }
+}
+
+private struct ExportedGenerationPerformance: Encodable, Sendable {
+  let version: String
+  let totalMilliseconds: Int
+  let targetMilliseconds: Int
+  let budgetStatus: String
+  let stageMilliseconds: [String: Int]
+  let slowestStage: String?
+  let interruptedStage: String?
+  let retryCount: Int
+  let externalRequestCount: Int
+  let usesPreparedSample: Bool
+
+  init(_ trace: GenerationPerformanceTrace) {
+    version = trace.version
+    totalMilliseconds = trace.totalMilliseconds
+    targetMilliseconds = trace.targetMilliseconds
+    budgetStatus = trace.budgetStatus.rawValue
+    stageMilliseconds = Dictionary(
+      uniqueKeysWithValues: GenerationPerformanceStage.allCases.compactMap { stage in
+        trace.milliseconds(for: stage).map { (stage.rawValue, $0) }
+      }
+    )
+    slowestStage = trace.slowestStage?.stage.rawValue
+    interruptedStage = trace.interruptedStage?.rawValue
+    retryCount = trace.retryCount
+    externalRequestCount = trace.externalRequestCount
+    usesPreparedSample = trace.usesPreparedSample
   }
 }
 

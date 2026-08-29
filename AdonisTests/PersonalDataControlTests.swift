@@ -46,11 +46,20 @@ final class PersonalDataControlTests: XCTestCase {
       sourceKind: .catalogImage,
       dominantColorName: "棕色"
     )
+    let performanceTrace = GenerationPerformanceTrace(
+      totalMilliseconds: 680,
+      stageTimings: [
+        GenerationStageTiming(stage: .subjectExtraction, milliseconds: 500),
+        GenerationStageTiming(stage: .qualityAssessment, milliseconds: 180),
+      ],
+      usesPreparedSample: false
+    )
     let event = AppEvent(
       createdAt: Date(timeIntervalSince1970: 1_700_000_200),
-      kind: .wardrobeItemAdded,
+      kind: .generationSucceeded,
       inputSource: .photoLibrary,
-      processingVersion: "test-v1"
+      processingVersion: "test-v1",
+      generationPerformanceTrace: performanceTrace
     )
     fixture.context.insert(record)
     fixture.context.insert(observation)
@@ -167,6 +176,27 @@ final class PersonalDataControlTests: XCTestCase {
     )
     XCTAssertEqual(observationAsset["requiresUserConfirmation"] as? Bool, true)
     XCTAssertNil(manifest["imageDataBase64"])
+    let processingEvents = try XCTUnwrap(manifest["processingEvents"] as? [[String: Any]])
+    let exportedPerformance = try XCTUnwrap(
+      processingEvents.first?["generationPerformance"] as? [String: Any]
+    )
+    XCTAssertEqual(
+      exportedPerformance["version"] as? String,
+      GenerationPerformanceTrace.currentVersion
+    )
+    XCTAssertEqual(exportedPerformance["totalMilliseconds"] as? Int, 680)
+    XCTAssertEqual(exportedPerformance["targetMilliseconds"] as? Int, 45_000)
+    XCTAssertEqual(
+      exportedPerformance["budgetStatus"] as? String,
+      GenerationBudgetStatus.withinTarget.rawValue
+    )
+    XCTAssertEqual(exportedPerformance["retryCount"] as? Int, 0)
+    XCTAssertEqual(exportedPerformance["externalRequestCount"] as? Int, 0)
+    let stageMilliseconds = try XCTUnwrap(
+      exportedPerformance["stageMilliseconds"] as? [String: Int]
+    )
+    XCTAssertEqual(stageMilliseconds[GenerationPerformanceStage.subjectExtraction.rawValue], 500)
+    XCTAssertEqual(stageMilliseconds[GenerationPerformanceStage.qualityAssessment.rawValue], 180)
 
     let attachment = XCTAttachment(contentsOfFile: archive.url)
     attachment.name = "Adonis-personal-data-export"

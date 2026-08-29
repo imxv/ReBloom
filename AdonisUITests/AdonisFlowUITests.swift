@@ -72,6 +72,67 @@ final class AdonisFlowUITests: XCTestCase {
 
     XCTAssertTrue(firstSample.waitForExistence(timeout: 4))
     XCTAssertFalse(overlay.exists)
+
+    let settings = app.buttons["本地设置"]
+    for _ in 0..<8 where !settings.isHittable {
+      app.swipeDown()
+    }
+    XCTAssertTrue(settings.waitForExistence(timeout: 4))
+    XCTAssertTrue(settings.isHittable)
+    settings.tap()
+    XCTAssertTrue(app.navigationBars["本地设置"].waitForExistence(timeout: 4))
+
+    let latestEvent = app.descendants(matching: .any)["performance-latest-event"]
+    XCTAssertTrue(scrollToHittable(latestEvent, in: app, attempts: 8))
+    XCTAssertTrue(latestEvent.label.contains("取消处理"))
+    let interruptedStage =
+      app.descendants(matching: .any)["performance-interrupted-stage"]
+    XCTAssertTrue(scrollToHittable(interruptedStage, in: app, attempts: 3))
+    XCTAssertTrue(interruptedStage.label.contains("抠图与白边"))
+    keepScreenshot(named: "Adonis-performance-cancelled")
+  }
+
+  @MainActor
+  func testLocalPerformanceTraceShowsBudgetAndStages() {
+    let app = XCUIApplication()
+    app.launchArguments.append("-ui-testing")
+    app.launch()
+
+    let firstSample = app.buttons["sample-01"]
+    XCTAssertTrue(firstSample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(firstSample, in: app, attempts: 8))
+    firstSample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
+
+    let makeAnother = app.buttons["make-another"]
+    XCTAssertTrue(scrollToHittable(makeAnother, in: app, attempts: 5))
+    makeAnother.tap()
+    XCTAssertTrue(firstSample.waitForExistence(timeout: 5))
+
+    let settings = app.buttons["本地设置"]
+    for _ in 0..<8 where !settings.isHittable {
+      app.swipeDown()
+    }
+    XCTAssertTrue(settings.isHittable)
+    settings.tap()
+    XCTAssertTrue(app.navigationBars["本地设置"].waitForExistence(timeout: 4))
+
+    let budget = app.descendants(matching: .any)["performance-budget-summary"]
+    XCTAssertTrue(scrollToHittable(budget, in: app, attempts: 8))
+    XCTAssertTrue(budget.label.contains("45 秒目标内"))
+    XCTAssertTrue(budget.label.contains("1 / 1 次"))
+
+    let latestEvent = app.descendants(matching: .any)["performance-latest-event"]
+    XCTAssertTrue(scrollToHittable(latestEvent, in: app, attempts: 3))
+    XCTAssertTrue(latestEvent.label.contains("处理成功"))
+
+    let latestStage = app.descendants(matching: .any)["performance-latest-stage"]
+    XCTAssertTrue(scrollToHittable(latestStage, in: app, attempts: 3))
+    XCTAssertFalse(latestStage.label.isEmpty)
+    let externalCost = app.descendants(matching: .any)["performance-external-cost"]
+    XCTAssertTrue(scrollToHittable(externalCost, in: app, attempts: 3))
+    XCTAssertTrue(externalCost.label.contains("不适用（全本机）"))
+    keepScreenshot(named: "Adonis-performance-budget")
   }
 
   @MainActor

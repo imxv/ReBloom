@@ -19,6 +19,7 @@ struct CreateView: View {
   @State private var showSettings = false
   @State private var activeGenerationID: UUID?
   @State private var activeInputSource: EventInputSource?
+  @State private var activePerformanceRecorder: GenerationPerformanceRecorder?
 
   private let processor = StickerProcessor()
   private let qualityAssessor = StickerQualityAssessor()
@@ -260,8 +261,17 @@ struct CreateView: View {
   @MainActor
   private func loadPhoto(from item: PhotosPickerItem) async {
     let loadID = UUID()
+    let recorder = GenerationPerformanceRecorder(usesPreparedSample: false)
     activeGenerationID = loadID
     activeInputSource = .photoLibrary
+    activePerformanceRecorder = recorder
+    recorder.begin(.inputLoading)
+    EventLogger.log(
+      .generationStarted,
+      inputSource: .photoLibrary,
+      processingVersion: AdonisProcessingVersion.generationPipeline,
+      in: modelContext
+    )
     do {
       processingStage = .reading
       isProcessing = true
@@ -270,23 +280,29 @@ struct CreateView: View {
       else {
         throw StickerProcessingError.unreadableImage
       }
+      recorder.finish(.inputLoading)
       guard activeGenerationID == loadID else { return }
       await generate(
         from: image,
         inputSource: .photoLibrary,
-        alreadyShowingProgress: true
+        alreadyShowingProgress: true,
+        performanceRecorder: recorder,
+        startEventLogged: true
       )
     } catch {
       guard activeGenerationID == loadID else { return }
+      let trace = recorder.makeTrace(interrupted: true)
       EventLogger.log(
         .generationFailed,
         detail: error.localizedDescription,
         inputSource: .photoLibrary,
         processingVersion: AdonisProcessingVersion.generationPipeline,
+        generationPerformanceTrace: trace,
         in: modelContext
       )
       activeGenerationID = nil
       activeInputSource = nil
+      activePerformanceRecorder = nil
       isProcessing = false
       errorMessage = error.localizedDescription
     }
@@ -296,13 +312,17 @@ struct CreateView: View {
   private func generate(
     from image: UIImage,
     inputSource: EventInputSource,
-    alreadyShowingProgress: Bool = false
+    alreadyShowingProgress: Bool = false,
+    performanceRecorder: GenerationPerformanceRecorder? = nil,
+    startEventLogged: Bool = false
   ) async {
     await generate(
       from: image,
       preparedSticker: nil,
       inputSource: inputSource,
-      alreadyShowingProgress: alreadyShowingProgress
+      alreadyShowingProgress: alreadyShowingProgress,
+      performanceRecorder: performanceRecorder,
+      startEventLogged: startEventLogged
     )
   }
 
@@ -311,21 +331,31 @@ struct CreateView: View {
     from image: UIImage,
     preparedSticker: UIImage?,
     inputSource: EventInputSource,
-    alreadyShowingProgress: Bool = false
+    alreadyShowingProgress: Bool = false,
+    performanceRecorder: GenerationPerformanceRecorder? = nil,
+    startEventLogged: Bool = false
   ) async {
     let generationID = UUID()
+    let recorder =
+      performanceRecorder
+      ?? GenerationPerformanceRecorder(usesPreparedSample: preparedSticker != nil)
     activeGenerationID = generationID
     activeInputSource = inputSource
+    activePerformanceRecorder = recorder
     if !alreadyShowingProgress {
       isProcessing = true
     }
     processingStage = .separating
-    EventLogger.log(
-      .generationStarted,
-      inputSource: inputSource,
-      processingVersion: AdonisProcessingVersion.generationPipeline,
-      in: modelContext
-    )
+    if !startEventLogged {
+      EventLogger.log(
+        .generationStarted,
+        inputSource: inputSource,
+        processingVersion: AdonisProcessingVersion.generationPipeline,
+        in: modelContext
+      )
+    }
+
+    recorder.begin(.subjectExtraction)
 
     if ProcessInfo.processInfo.arguments.contains("-ui-testing-hold-generation") {
       try? await Task.sleep(for: .seconds(15))
@@ -343,16 +373,19 @@ struct CreateView: View {
       } else {
         processed = try await processor.process(image)
       }
+      recorder.finish(.subjectExtraction)
       guard activeGenerationID == generationID else { return }
 
       processingStage = .outlining
       await Task.yield()
       guard activeGenerationID == generationID else { return }
       processingStage = .checking
+      recorder.begin(.qualityAssessment)
       let qualityAssessment = await qualityAssessor.assess(
         sticker: processed.image,
         foregroundCoverage: processed.foregroundCoverage
       )
+      recorder.finish(.qualityAssessment)
       guard activeGenerationID == generationID else { return }
       if qualityAssessment.isRejected {
         EventLogger.log(
@@ -377,27 +410,31 @@ struct CreateView: View {
       processingStage = .composing
       let bloomNumber = (records.map(\.bloomNumber).max() ?? 0) + 1
       let date = Date.now
+      recorder.begin(.shareCardComposition)
       let card = cardRenderer.render(
         sticker: processed.image,
         bloomNumber: bloomNumber,
         date: date
       )
+      recorder.finish(.shareCardComposition)
       processingStage = .observing
+      recorder.begin(.garmentObservation)
       let garmentObservations = await garmentObserver.observe(sticker: processed.image)
+      recorder.finish(.garmentObservation)
       guard activeGenerationID == generationID else { return }
 
+      let trace = recorder.makeTrace(interrupted: false)
       EventLogger.log(
         .generationSucceeded,
-        durationMilliseconds: preparedSticker == nil
-          ? processed.elapsedMilliseconds
-          : nil,
         detail: preparedSticker == nil ? nil : "prepared_sample",
         inputSource: inputSource,
         processingVersion: AdonisProcessingVersion.generationPipeline,
+        generationPerformanceTrace: trace,
         in: modelContext
       )
       activeGenerationID = nil
       activeInputSource = nil
+      activePerformanceRecorder = nil
       isProcessing = false
       draft = GenerationDraft(
         createdAt: date,
@@ -405,7 +442,7 @@ struct CreateView: View {
         stickerImage: processed.image,
         cardImage: card,
         bloomNumber: bloomNumber,
-        processingMilliseconds: processed.elapsedMilliseconds,
+        processingMilliseconds: trace.totalMilliseconds,
         foregroundCoverage: processed.foregroundCoverage,
         usesPreparedSample: preparedSticker != nil,
         inputSource: inputSource,
@@ -414,15 +451,18 @@ struct CreateView: View {
       )
     } catch {
       guard activeGenerationID == generationID else { return }
+      let trace = recorder.makeTrace(interrupted: true)
       EventLogger.log(
         .generationFailed,
         detail: error.localizedDescription,
         inputSource: inputSource,
         processingVersion: AdonisProcessingVersion.generationPipeline,
+        generationPerformanceTrace: trace,
         in: modelContext
       )
       activeGenerationID = nil
       activeInputSource = nil
+      activePerformanceRecorder = nil
       isProcessing = false
       errorMessage = error.localizedDescription
     }
@@ -431,6 +471,7 @@ struct CreateView: View {
   @MainActor
   private func cancelGeneration() {
     guard activeGenerationID != nil else { return }
+    let trace = activePerformanceRecorder?.makeTrace(interrupted: true)
     activeGenerationID = nil
     selectedPhotoItem = nil
     isProcessing = false
@@ -438,9 +479,11 @@ struct CreateView: View {
       .generationCancelled,
       inputSource: activeInputSource,
       processingVersion: AdonisProcessingVersion.generationPipeline,
+      generationPerformanceTrace: trace,
       in: modelContext
     )
     activeInputSource = nil
+    activePerformanceRecorder = nil
   }
 
   @MainActor

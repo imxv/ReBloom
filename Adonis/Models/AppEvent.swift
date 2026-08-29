@@ -10,6 +10,17 @@ final class AppEvent {
   var detail: String?
   var inputSourceRawValue: String?
   var processingVersion: String?
+  var generationPerformanceVersion: String?
+  var generationTargetMilliseconds: Int?
+  var generationInputLoadingMilliseconds: Int?
+  var generationSubjectExtractionMilliseconds: Int?
+  var generationQualityAssessmentMilliseconds: Int?
+  var generationShareCardCompositionMilliseconds: Int?
+  var generationGarmentObservationMilliseconds: Int?
+  var generationRetryCount: Int?
+  var generationExternalRequestCount: Int?
+  var generationUsesPreparedSample: Bool?
+  var generationInterruptedStageRawValue: String?
 
   var kind: AppEventKind {
     AppEventKind(rawValue: kindRawValue) ?? .unknown
@@ -20,6 +31,33 @@ final class AppEvent {
     return EventInputSource(rawValue: inputSourceRawValue)
   }
 
+  var generationPerformanceTrace: GenerationPerformanceTrace? {
+    guard let generationPerformanceVersion,
+      let durationMilliseconds,
+      let generationTargetMilliseconds
+    else {
+      return nil
+    }
+
+    let stageTimings = GenerationPerformanceStage.allCases.compactMap { stage in
+      generationMilliseconds(for: stage).map {
+        GenerationStageTiming(stage: stage, milliseconds: $0)
+      }
+    }
+    return GenerationPerformanceTrace(
+      version: generationPerformanceVersion,
+      totalMilliseconds: durationMilliseconds,
+      targetMilliseconds: generationTargetMilliseconds,
+      stageTimings: stageTimings,
+      retryCount: generationRetryCount ?? 0,
+      externalRequestCount: generationExternalRequestCount ?? 0,
+      usesPreparedSample: generationUsesPreparedSample ?? false,
+      interruptedStage: generationInterruptedStageRawValue.flatMap(
+        GenerationPerformanceStage.init(rawValue:)
+      )
+    )
+  }
+
   init(
     id: UUID = UUID(),
     createdAt: Date = .now,
@@ -27,15 +65,48 @@ final class AppEvent {
     durationMilliseconds: Int? = nil,
     detail: String? = nil,
     inputSource: EventInputSource? = nil,
-    processingVersion: String? = nil
+    processingVersion: String? = nil,
+    generationPerformanceTrace: GenerationPerformanceTrace? = nil
   ) {
     self.id = id
     self.createdAt = createdAt
     self.kindRawValue = kind.rawValue
-    self.durationMilliseconds = durationMilliseconds
+    self.durationMilliseconds =
+      generationPerformanceTrace?.totalMilliseconds ?? durationMilliseconds
     self.detail = detail
     self.inputSourceRawValue = inputSource?.rawValue
     self.processingVersion = processingVersion
+    self.generationPerformanceVersion = generationPerformanceTrace?.version
+    self.generationTargetMilliseconds = generationPerformanceTrace?.targetMilliseconds
+    self.generationInputLoadingMilliseconds = generationPerformanceTrace?.milliseconds(
+      for: .inputLoading
+    )
+    self.generationSubjectExtractionMilliseconds = generationPerformanceTrace?.milliseconds(
+      for: .subjectExtraction
+    )
+    self.generationQualityAssessmentMilliseconds = generationPerformanceTrace?.milliseconds(
+      for: .qualityAssessment
+    )
+    self.generationShareCardCompositionMilliseconds = generationPerformanceTrace?.milliseconds(
+      for: .shareCardComposition
+    )
+    self.generationGarmentObservationMilliseconds = generationPerformanceTrace?.milliseconds(
+      for: .garmentObservation
+    )
+    self.generationRetryCount = generationPerformanceTrace?.retryCount
+    self.generationExternalRequestCount = generationPerformanceTrace?.externalRequestCount
+    self.generationUsesPreparedSample = generationPerformanceTrace?.usesPreparedSample
+    self.generationInterruptedStageRawValue = generationPerformanceTrace?.interruptedStage?.rawValue
+  }
+
+  private func generationMilliseconds(for stage: GenerationPerformanceStage) -> Int? {
+    switch stage {
+    case .inputLoading: generationInputLoadingMilliseconds
+    case .subjectExtraction: generationSubjectExtractionMilliseconds
+    case .qualityAssessment: generationQualityAssessmentMilliseconds
+    case .shareCardComposition: generationShareCardCompositionMilliseconds
+    case .garmentObservation: generationGarmentObservationMilliseconds
+    }
   }
 }
 
