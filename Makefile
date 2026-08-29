@@ -4,7 +4,7 @@ SCHEME := Adonis
 DESTINATION := platform=iOS Simulator,name=iPhone 17 Pro,OS=latest
 DERIVED_DATA := .derivedData
 
-.PHONY: project build test sample-regression accessibility-regression permission-regression persistence-regression performance-regression lookbook-regression lint format analyze check clean
+.PHONY: project build test sample-regression accessibility-regression permission-regression persistence-regression performance-regression lookbook-regression figurine-regression lint format analyze check clean
 
 project:
 	./scripts/xcodegen.sh generate --spec project.yml
@@ -50,6 +50,12 @@ lookbook-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
 		-only-testing:AdonisTests/MonthlyLookbookRendererTests \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testSavedOutfitCreatesMonthlyStickerLookbookReadyToShare
+
+figurine-regression: project
+	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
+		-only-testing:AdonisTests/DigitalFigurineCardRendererTests \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testGeneratedStickerCreatesShareableDigitalFigurineCardWithoutConfiguration \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testPreparedSampleCanBeCollectedAndFoundInBloomCalendar
 
 lint:
 	xcrun swift-format lint --recursive --parallel --strict Adonis AdonisShared AdonisShareExtension AdonisTests AdonisUITests

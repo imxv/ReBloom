@@ -10,7 +10,9 @@ struct OutfitDetailView: View {
   @Environment(\.modelContext) private var modelContext
   @State private var visualAsset: OutfitVisualAsset
   @State private var showShare = false
+  @State private var digitalFigurineCard: DigitalFigurineCardPresentation?
   @State private var showDeleteConfirmation = false
+  @State private var figurineError: String?
 
   init(record: OutfitRecord, onDelete: @escaping () -> Void) {
     self.record = record
@@ -47,6 +49,10 @@ struct OutfitDetailView: View {
           }
 
           ContentProvenanceNotice(provenance: visualAsset.provenance)
+
+          DigitalFigurineCardEntry {
+            makeDigitalFigurineCard()
+          }
 
           OutfitGarmentObservationsView(observations: record.garmentObservations)
 
@@ -99,6 +105,26 @@ struct OutfitDetailView: View {
         ActivityView(items: [image])
           .presentationDetents([.medium, .large])
       }
+    }
+    .sheet(item: $digitalFigurineCard) { presentation in
+      DigitalFigurineCardView(presentation: presentation) {
+        EventLogger.log(
+          .digitalFigurineCardShareOpened,
+          processingVersion: AdonisProcessingVersion.digitalFigurineCard,
+          in: modelContext
+        )
+      }
+    }
+    .alert(
+      "手办卡还没做好",
+      isPresented: Binding(
+        get: { figurineError != nil },
+        set: { if !$0 { figurineError = nil } }
+      )
+    ) {
+      Button("知道了", role: .cancel) {}
+    } message: {
+      Text(figurineError ?? "请稍后再试。")
     }
     .confirmationDialog("删除这一天？", isPresented: $showDeleteConfirmation) {
       Button("删除", role: .destructive) {
@@ -184,5 +210,33 @@ struct OutfitDetailView: View {
     case .sticker: record.stickerImageFilename
     case .originalPhoto: record.sourceImageFilename
     }
+  }
+
+  private func makeDigitalFigurineCard() {
+    guard let sticker = MediaStore.shared.image(filename: record.stickerImageFilename) else {
+      figurineError = "这条收藏的透明贴纸暂时无法读取。原记录没有丢失，可以稍后再试。"
+      return
+    }
+    guard
+      let image = DigitalFigurineCardRenderer().render(
+        sticker: sticker,
+        bloomNumber: record.bloomNumber,
+        date: record.createdAt
+      )
+    else {
+      figurineError = "这张透明贴纸暂时无法放进展台，可以稍后再试。"
+      return
+    }
+
+    EventLogger.log(
+      .digitalFigurineCardCreated,
+      processingVersion: AdonisProcessingVersion.digitalFigurineCard,
+      in: modelContext
+    )
+    digitalFigurineCard = DigitalFigurineCardPresentation(
+      image: image,
+      bloomNumber: record.bloomNumber,
+      date: record.createdAt
+    )
   }
 }

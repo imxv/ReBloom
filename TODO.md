@@ -34,7 +34,7 @@
 - [x] 根据用户明确决策，首个结果选择数字手办贴纸收藏卡，不再要求先完成四类候选比较。
 - [x] 定义最小输入、等待目标、身份与衣物保真要求和失败降级方式。
 - [x] 明确一次生成同时产出透明手办贴纸和分享收藏卡。
-- [x] 定义保存贴纸、分享收藏卡和再次生成三个首访后续行为。
+- [x] 定义保存贴纸、分享收藏卡和再次生成三个核心首访后续行为；数字手办只作为无需配置的次级收藏入口。
 
 产品规格：[数字手办贴纸收藏卡](docs/digital-figurine-sticker-card.md)。首轮默认视觉已确认采用“原图质感 + 纯白贴纸边”，[已选样片与技术检查](docs/experiments/2026-08-29-sticker-prototype.md)已记录；真实透明通道、固定样本保真和用户反应仍在 M0 中验证。
 
@@ -45,7 +45,7 @@
 - [x] 用可运行界面覆盖打开应用、选择图片、等待处理、看到结果到保存的完整流程。
 - [x] 首次获得结果前不要求完整注册、建衣橱、填写身体信息或选择 AI 模型。
 - [x] 每个页面只保留一个主要动作。
-- [x] 结果页只提供收藏今天、分享和再做一张三个后续动作。
+- [x] 结果页以收藏今天、分享和再做一张作为三个核心后续动作；数字手办以单个次级卡片入口出现，不增加模式、参数或模板选择。
 - [x] 为生成失败、模拟器能力不足和用户取消提供不打断主流程的降级方式。
 
 当前证据：[iOS 本地 Demo 四屏与 UI 流程验证](docs/verification/2026-08-29-ios-local-demo.md)。真实用户无讲解测试仍属于 ADO-008。
@@ -88,7 +88,7 @@ M0 退出条件：
 - [x] **ADO-107：实现最小历史视图。** 花历按日期显示记录，并能再次打开、分享或删除。
 - [ ] **ADO-108：完成真实设备或目标浏览器回归。** 验证上传、生成、保存、重试和删除的完整链路。
 
-  模拟器当前 90 项测试（71 个单元测试与 19 个 UI 流程测试）、最大辅助字号与增强对比度界面检查、前后台恢复、已收藏记录进程终止后重新启动恢复、图片像素检查、90 秒超时降级、月度贴纸 Lookbook、生成性能诊断和通用 iOS 真机静态分析已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[冷启动持久化验证](docs/verification/2026-08-30-cold-launch-persistence.md)、[无障碍与前后台恢复验证](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[月度贴纸 Lookbook 验证](docs/verification/2026-08-30-monthly-lookbook.md)、[固定样片回归基线](docs/verification/2026-08-30-sample-regression-baseline.md)、[贴纸低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)、[生成超时与基础贴纸降级验证](docs/verification/2026-08-30-generation-timeout-fallback.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)、[生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)与 [生成性能和预算验证](docs/verification/2026-08-30-generation-performance-budget.md)。
+  模拟器当前 95 项测试（75 个单元测试与 20 个 UI 流程测试）、最大辅助字号与增强对比度界面检查、前后台恢复、已收藏记录进程终止后重新启动恢复、图片像素检查、90 秒超时降级、月度贴纸 Lookbook、2.5D 数字手办收藏卡、生成性能诊断和通用 iOS 真机静态分析已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[冷启动持久化验证](docs/verification/2026-08-30-cold-launch-persistence.md)、[无障碍与前后台恢复验证](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[月度贴纸 Lookbook 验证](docs/verification/2026-08-30-monthly-lookbook.md)、[数字手办收藏卡验证](docs/verification/2026-08-30-digital-figurine-card.md)、[固定样片回归基线](docs/verification/2026-08-30-sample-regression-baseline.md)、[贴纸低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)、[生成超时与基础贴纸降级验证](docs/verification/2026-08-30-generation-timeout-fallback.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)、[生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)与 [生成性能和预算验证](docs/verification/2026-08-30-generation-performance-budget.md)。
 
 M1 退出条件：新用户无需建立衣橱即可完成一次真实 OOTD 记录，并能再次找到或删除它。
 
@@ -134,7 +134,7 @@ M3 退出条件：试穿和创作在固定样本上有清楚的保真边界，�
 - [ ] **ADO-401：设计第一版“再次盛开”。** 从长期未穿的单品或过去 OOTD 中生成可直接采用的新搭配。
 - [ ] **ADO-402：实现基础花历。** 已完成按月和日期查看真实 OOTD 记录；季节聚合尚未实现，因此任务保持未完成。
 - [x] **ADO-403：生成月度 Lookbook。** 花历在当前月份存在收藏时提供一次点击入口，把已收藏 OOTD 的透明贴纸、日期与 Bloom 编号程序化排成 1080 × 1440 静态贴纸画册；按日期倒序最多展示最近 6 条，空月份不出现入口。预览与图片页脚都明确人物和衣物来自已收藏原图、画册由 Adonis 排版，当前不含 AI 像素，也不要求 Prompt、模型或模板选择。自动回归、系统分享入口与真实界面证据见 [月度贴纸 Lookbook 验证记录](docs/verification/2026-08-30-monthly-lookbook.md)。动态 Lookbook 与真实用户分享意愿仍需后续验证，但不扩张本任务的第一版静态交付。
-- [ ] **ADO-404：实现第一版数字手办。** 优先验证手办渲染图、旋转视频或 2.5D 收藏卡。
+- [x] **ADO-404：实现第一版数字手办。** 已选择对单图最诚实、心智负担最低的静态 2.5D 收藏卡：结果页与已收藏 OOTD 均提供“一键立起来”入口，直接复用透明贴纸的人物、衣物、姿势和纯白边，只由程序加入展台、透明罩、投影、日期与 Bloom 编号；成品固定为 1080 × 1440、不透明并可打开系统分享。当前不保存第二份永久资产，也不宣称 AI 重绘、旋转视频、3D 网格、AR 或照片外补全。6 项专项、3 项最大辅助字号回归和真实界面证据见 [数字手办收藏卡验证记录](docs/verification/2026-08-30-digital-figurine-card.md)。
 - [ ] **ADO-405：建立数字展柜。** 让手办与对应日期、OOTD 和衣物存在可追溯关系。
 - [ ] **ADO-406：验证长期提醒。** 提醒应带来具体可用结果，不制造打卡压力。
 
@@ -153,10 +153,10 @@ M4 退出条件：历史数据可以生成用户愿意再次打开、保存或�
 - [ ] **ADO-Q05：成本与时延预算。** 在选定供应方案前记录真实请求成本、重试和后处理开销。
 
   已完成本地链路预算切片：从输入可用到结果或终止，按“读取照片 / 抠图与白边 / 结构检查 / 收藏卡排版 / 衣物线索”记录端到端与分阶段耗时；成功、失败、超时和取消都持久化，中断终态保留阶段，设置页显示 45 秒目标、平均耗时、最慢阶段、重试与外部请求。90 秒用户等待边界与迟到结果隔离已经实现。当前没有网络请求，因此重试与外部请求真实值为 0、外部费用为“不适用”；内置样片明确标记为演示链路。真实供应商成本、联网重试和真机实时 Vision 时延仍未实现，因此任务保持未完成。证据见 [生成性能与预算验证记录](docs/verification/2026-08-30-generation-performance-budget.md)与 [生成超时和基础贴纸降级验证记录](docs/verification/2026-08-30-generation-timeout-fallback.md)。
-- [x] **ADO-Q06：可观测性。** 本地 Demo 记录不含图片内容的开始、成功、失败、超时、取消、保存、删除、复用、纠正、线索创建、关联、排除、暂放和补商品图事件，并追踪相册/相机/样片/其他 App 输入来源及贴纸、卡片、衣橱分析、共享收件箱、OOTD 观察、候选排序、补图事务和历史回填版本。生成终态还保存结构化阶段耗时、预算、中断位置、重试、外部请求和超时降级类型；事件落库失败会留下不含用户内容的系统日志，而不是静默忽略。
+- [x] **ADO-Q06：可观测性。** 本地 Demo 记录不含图片内容的开始、成功、失败、超时、取消、保存、删除、复用、纠正、线索创建、关联、排除、暂放、补商品图、手办卡生成和手办卡分享入口事件，并追踪相册/相机/样片/其他 App 输入来源及贴纸、卡片、衣橱分析、共享收件箱、OOTD 观察、候选排序、补图事务、历史回填和手办卡版本。生成终态还保存结构化阶段耗时、预算、中断位置、重试、外部请求和超时降级类型；事件落库失败会留下不含用户内容的系统日志，而不是静默忽略。
 - [ ] **ADO-Q07：可访问性与真实设备体验。** 覆盖相册权限、相机权限、弱网、前后台切换和辅助功能。
 
-  已完成三个本地纵向切片。无障碍与生命周期部分覆盖最大辅助字号、增强对比度、关键 VoiceOver 语义、44 点触控区域、减弱动态效果分支、处理中取消，以及结果页前后台往返；相机部分在用户点击“现在拍一张”后才判断权限，已区分未决定、已允许、已拒绝、系统限制和设备不可用，拒绝态提供系统设置入口，限制态继续引导相册且不提供无效设置承诺；持久化部分会在收藏成功后真实终止并重新启动模拟器 App，确认花历只恢复原来的 1 条记录，收藏卡与来源说明仍可打开。真实 VoiceOver 朗读与手势、真实系统相机授权弹窗、设置往返、实际拍摄、相册权限、真实 iPhone、整机重启、未收藏草稿恢复和未来联网后的弱网仍未验证，因此任务保持未完成。证据见 [无障碍与前后台恢复验证记录](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[相机权限恢复验证记录](docs/verification/2026-08-30-camera-permission-recovery.md)与 [已收藏 OOTD 冷启动持久化验证记录](docs/verification/2026-08-30-cold-launch-persistence.md)。
+  已完成四个本地纵向切片。无障碍与生命周期部分覆盖最大辅助字号、增强对比度、关键 VoiceOver 语义、44 点触控区域、减弱动态效果分支、处理中取消、结果页前后台往返，以及数字手办入口、来源与能力边界、分享按钮的滚动可达；相机部分在用户点击“现在拍一张”后才判断权限，已区分未决定、已允许、已拒绝、系统限制和设备不可用，拒绝态提供系统设置入口，限制态继续引导相册且不提供无效设置承诺；持久化部分会在收藏成功后真实终止并重新启动模拟器 App，确认花历只恢复原来的 1 条记录，收藏卡与来源说明仍可打开。真实 VoiceOver 朗读与手势、真实系统相机授权弹窗、设置往返、实际拍摄、相册权限、真实 iPhone、整机重启、未收藏草稿恢复和未来联网后的弱网仍未验证，因此任务保持未完成。证据见 [无障碍与前后台恢复验证记录](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[数字手办收藏卡验证记录](docs/verification/2026-08-30-digital-figurine-card.md)、[相机权限恢复验证记录](docs/verification/2026-08-30-camera-permission-recovery.md)与 [已收藏 OOTD 冷启动持久化验证记录](docs/verification/2026-08-30-cold-launch-persistence.md)。
 
 ## 以后再做
 

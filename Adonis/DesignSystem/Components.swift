@@ -79,6 +79,7 @@ struct StickerTag: View {
 struct ContentProvenanceNotice: View {
   let provenance: VisualContentProvenance
   var detail: String?
+  var identifier: String?
 
   var body: some View {
     HStack(alignment: .top, spacing: 12) {
@@ -127,7 +128,7 @@ struct ContentProvenanceNotice: View {
     }
     .accessibilityElement(children: .combine)
     .accessibilityLabel("\(provenance.title)，\(provenance.summary)。\(detail ?? provenance.detail)")
-    .accessibilityIdentifier("content-provenance-\(provenance.rawValue)")
+    .accessibilityIdentifier(identifier ?? "content-provenance-\(provenance.rawValue)")
   }
 
   private var tint: Color {

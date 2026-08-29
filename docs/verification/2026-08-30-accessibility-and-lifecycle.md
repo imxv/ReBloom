@@ -12,6 +12,7 @@
 - 系统启用“减弱动态效果”时，按压缩放和旋转花朵停止，浮层只做透明度过渡。
 - App 从结果页进入后台再回前台后，未收藏的当前结果仍在；用户可继续收藏并进入衣橱。
 - 收藏后进入花历，最大辅助字号下仍可滚动到月度 Lookbook 入口；画册预览、程序排版来源说明和分享按钮均可到达。
+- 结果页最大辅助字号下可以滚动到数字手办入口；手办预览的来源说明、2.5D 能力边界和分享按钮均可到达，不依赖图标理解。
 
 ## 2. Dynamic Type 与密集界面边界
 
@@ -43,10 +44,10 @@ make accessibility-regression
 脚本会保存模拟器原设置，临时启用最大辅助字号 `accessibility-extra-extra-extra-large` 和增强对比度，确认设置已经生效后运行：
 
 - 1 个颜色对比度契约测试。
-- 1 个创作 → 结果 → 进入后台 → 回前台 → 收藏 → 月度 Lookbook → 衣橱核心 UI 流程。
+- 1 个创作 → 结果 → 进入后台 → 回前台 → 数字手办卡 → 收藏 → 月度 Lookbook → 衣橱核心 UI 流程。
 - 1 个处理中浮层“取消”按钮可见、可点击并能返回首页的 UI 流程。
 
-测试结束或失败时都会恢复原字号与对比度。加入月度 Lookbook 覆盖后的最新专项结果为 3 项通过、0 失败，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_05-13-17-+0800.xcresult`。脚本结束后重新读取模拟器设置，字号为 `large`、增强对比度为 `disabled`，与进入专项前一致。
+测试结束或失败时都会恢复原字号与对比度。加入数字手办收藏卡覆盖后的最新专项结果为 3 项通过、0 失败，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_05-40-14-+0800.xcresult`。脚本结束后重新读取模拟器设置，字号为 `large`、增强对比度为 `disabled`，与进入专项前一致。
 
 处理中取消测试使用 `-ui-testing-hold-generation` 启动参数提供最长 15 秒的测试专用窗口；正式 App 不包含这段等待，不改变实际生成速度。
 
@@ -56,9 +57,9 @@ make accessibility-regression
 - `make sample-regression`：四张授权样片哈希与字节级重生成通过，11 个图片专项测试通过。
 - `make permission-regression`：5 个权限服务测试与 2 个相机恢复 UI 流程，共 7 项通过、0 失败。
 - `make persistence-regression`：4 个存储策略测试与 1 个进程终止/重新启动 UI 流程，共 5 项通过、0 失败。
-- `make test`：71 个单元测试与 19 个 UI 流程测试，共 90 项通过、0 失败。
-- `xcresulttool` 独立汇总为 90 通过、0 失败、0 跳过。
-- 完整结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_05-15-59-+0800.xcresult`。
+- `make test`：75 个单元测试与 20 个 UI 流程测试，共 95 项通过、0 失败。
+- `xcresulttool` 独立汇总为 95 通过、0 失败、0 跳过。
+- 完整结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_05-46-58-+0800.xcresult`。
 
 ## 5. 视觉证据
 

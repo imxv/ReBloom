@@ -80,6 +80,21 @@ final class AdonisFlowUITests: XCTestCase {
     app.activate()
     XCTAssertTrue(resultTitle.waitForExistence(timeout: 8))
 
+    let figurineEntry = app.buttons["digital-figurine-card-entry"]
+    XCTAssertTrue(figurineEntry.waitForExistence(timeout: 4))
+    XCTAssertTrue(scrollToHittable(figurineEntry, in: app, attempts: 8))
+    figurineEntry.tap()
+
+    let figurinePreview = app.descendants(matching: .any)["digital-figurine-card-preview"]
+    XCTAssertTrue(figurinePreview.waitForExistence(timeout: 6))
+    let figurineBoundary = app.descendants(matching: .any)["digital-figurine-card-boundary"]
+    XCTAssertTrue(scrollToHittable(figurineBoundary, in: app, attempts: 10))
+    XCTAssertTrue(figurineBoundary.label.contains("不是可旋转的 3D 模型"))
+    let figurineShare = app.buttons["share-digital-figurine-card"]
+    XCTAssertTrue(scrollToHittable(figurineShare, in: app, attempts: 5))
+    XCTAssertTrue(figurineShare.isHittable)
+    app.buttons["close-digital-figurine-card"].tap()
+
     let saveButton = app.buttons["save-today"]
     XCTAssertTrue(saveButton.waitForExistence(timeout: 4))
     XCTAssertTrue(scrollToHittable(saveButton, in: app, attempts: 8))
@@ -382,6 +397,50 @@ final class AdonisFlowUITests: XCTestCase {
     }
     XCTAssertTrue(historyProvenance.isHittable)
     keepScreenshot(named: "Adonis-content-provenance-history")
+
+    let historyFigurineEntry = app.buttons["digital-figurine-card-entry"]
+    XCTAssertTrue(scrollToHittable(historyFigurineEntry, in: app, attempts: 4))
+    historyFigurineEntry.tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["digital-figurine-card-preview"]
+        .waitForExistence(timeout: 6)
+    )
+    app.buttons["close-digital-figurine-card"].tap()
+  }
+
+  @MainActor
+  func testGeneratedStickerCreatesShareableDigitalFigurineCardWithoutConfiguration() {
+    let app = XCUIApplication()
+    app.launchArguments.append("-ui-testing")
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 5))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 8))
+
+    let entry = app.buttons["digital-figurine-card-entry"]
+    XCTAssertTrue(scrollToHittable(entry, in: app, attempts: 5))
+    XCTAssertTrue(entry.label.contains("人物和衣服保持原样"))
+    entry.tap()
+
+    let preview = app.descendants(matching: .any)["digital-figurine-card-preview"]
+    XCTAssertTrue(preview.waitForExistence(timeout: 6))
+    XCTAssertTrue(preview.label.contains("Bloom No."))
+    keepScreenshot(named: "Adonis-digital-figurine-card")
+
+    let provenance = app.descendants(matching: .any)["digital-figurine-card-provenance"]
+    XCTAssertTrue(scrollToHittable(provenance, in: app, attempts: 8))
+    XCTAssertTrue(provenance.label.contains("没有重绘人物或衣物"))
+
+    let boundary = app.descendants(matching: .any)["digital-figurine-card-boundary"]
+    XCTAssertTrue(scrollToHittable(boundary, in: app, attempts: 4))
+    XCTAssertTrue(boundary.label.contains("2.5D 展台卡"))
+
+    let share = app.buttons["share-digital-figurine-card"]
+    XCTAssertTrue(scrollToHittable(share, in: app, attempts: 4))
+    share.tap()
+    XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
   }
 
   @MainActor

@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 struct GenerationResultView: View {
@@ -8,10 +9,13 @@ struct GenerationResultView: View {
 
   @Environment(\.dismiss) private var dismiss
   @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+  @Environment(\.modelContext) private var modelContext
   @State private var mode: OutfitVisualAsset
   @State private var isSaved: Bool
   @State private var showShare = false
+  @State private var digitalFigurineCard: DigitalFigurineCardPresentation?
   @State private var saveError: String?
+  @State private var figurineError: String?
 
   init(
     draft: GenerationDraft,
@@ -69,6 +73,10 @@ struct GenerationResultView: View {
 
           ContentProvenanceNotice(provenance: mode.provenance)
 
+          DigitalFigurineCardEntry {
+            makeDigitalFigurineCard()
+          }
+
           if !draft.garmentObservations.isEmpty {
             wardrobeObservationHint
           }
@@ -84,6 +92,16 @@ struct GenerationResultView: View {
       ActivityView(items: [selectedImage])
         .presentationDetents([.medium, .large])
     }
+    .sheet(item: $digitalFigurineCard) { presentation in
+      DigitalFigurineCardView(presentation: presentation) {
+        EventLogger.log(
+          .digitalFigurineCardShareOpened,
+          inputSource: draft.inputSource,
+          processingVersion: AdonisProcessingVersion.digitalFigurineCard,
+          in: modelContext
+        )
+      }
+    }
     .alert(
       "保存失败",
       isPresented: Binding(
@@ -94,6 +112,17 @@ struct GenerationResultView: View {
       Button("知道了", role: .cancel) {}
     } message: {
       Text(saveError ?? "请稍后再试。")
+    }
+    .alert(
+      "手办卡还没做好",
+      isPresented: Binding(
+        get: { figurineError != nil },
+        set: { if !$0 { figurineError = nil } }
+      )
+    ) {
+      Button("知道了", role: .cancel) {}
+    } message: {
+      Text(figurineError ?? "请稍后再试。")
     }
   }
 
@@ -251,6 +280,31 @@ struct GenerationResultView: View {
     case .sticker: draft.stickerImage
     case .originalPhoto: draft.sourceImage
     }
+  }
+
+  private func makeDigitalFigurineCard() {
+    guard
+      let image = DigitalFigurineCardRenderer().render(
+        sticker: draft.stickerImage,
+        bloomNumber: draft.bloomNumber,
+        date: draft.createdAt
+      )
+    else {
+      figurineError = "这张透明贴纸暂时无法放进展台，可以稍后再试。"
+      return
+    }
+
+    EventLogger.log(
+      .digitalFigurineCardCreated,
+      inputSource: draft.inputSource,
+      processingVersion: AdonisProcessingVersion.digitalFigurineCard,
+      in: modelContext
+    )
+    digitalFigurineCard = DigitalFigurineCardPresentation(
+      image: image,
+      bloomNumber: draft.bloomNumber,
+      date: draft.createdAt
+    )
   }
 
   private var outputTagTitle: String {
