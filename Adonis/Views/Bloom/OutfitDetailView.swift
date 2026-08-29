@@ -7,6 +7,7 @@ struct OutfitDetailView: View {
 
   @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var modelContext
+  @State private var visualAsset: OutfitVisualAsset = .shareCard
   @State private var showShare = false
   @State private var showDeleteConfirmation = false
 
@@ -17,10 +18,18 @@ struct OutfitDetailView: View {
 
       ScrollView {
         VStack(spacing: 22) {
-          StoredImageView(filename: record.cardImageFilename, contentMode: .fit)
-            .frame(maxWidth: .infinity)
-            .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-            .shadow(color: AdonisTheme.ink.opacity(0.14), radius: 16, y: 9)
+          Picker("查看图片", selection: $visualAsset) {
+            ForEach(OutfitVisualAsset.allCases) { asset in
+              Text(asset.title)
+                .tag(asset)
+            }
+          }
+          .pickerStyle(.segmented)
+          .accessibilityIdentifier("history-visual-picker")
+
+          visualPreview
+
+          ContentProvenanceNotice(provenance: visualAsset.provenance)
 
           OutfitGarmentObservationsView(observations: record.garmentObservations)
 
@@ -69,7 +78,7 @@ struct OutfitDetailView: View {
       }
     }
     .sheet(isPresented: $showShare) {
-      if let image = MediaStore.shared.image(filename: record.cardImageFilename) {
+      if let image = MediaStore.shared.image(filename: selectedFilename) {
         ActivityView(items: [image])
           .presentationDetents([.medium, .large])
       }
@@ -82,6 +91,39 @@ struct OutfitDetailView: View {
       Button("取消", role: .cancel) {}
     } message: {
       Text("原图、贴纸和收藏卡都会从当前设备移除。")
+    }
+  }
+
+  @ViewBuilder
+  private var visualPreview: some View {
+    switch visualAsset {
+    case .shareCard, .originalPhoto:
+      StoredImageView(filename: selectedFilename, contentMode: .fit)
+        .frame(maxWidth: .infinity)
+        .background(AdonisTheme.paper)
+        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+        .shadow(color: AdonisTheme.ink.opacity(0.14), radius: 16, y: 9)
+
+    case .sticker:
+      TransparencyGridBackground()
+        .overlay {
+          StoredImageView(filename: selectedFilename, contentMode: .fit)
+            .padding(24)
+        }
+        .aspectRatio(3 / 4, contentMode: .fit)
+        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+        .overlay {
+          RoundedRectangle(cornerRadius: 26, style: .continuous)
+            .stroke(AdonisTheme.ink.opacity(0.08), lineWidth: 1)
+        }
+    }
+  }
+
+  private var selectedFilename: String {
+    switch visualAsset {
+    case .shareCard: record.cardImageFilename
+    case .sticker: record.stickerImageFilename
+    case .originalPhoto: record.sourceImageFilename
     }
   }
 }

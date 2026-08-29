@@ -62,7 +62,7 @@ struct OutfitGarmentObservationsView: View {
           )
         }
       }
-      Text("只把画面里的衣服留成线索，点一下确认后才会影响衣橱。")
+      Text("本机识别建议只会留成线索，点一下确认后才会影响衣橱。")
         .font(.footnote)
         .foregroundStyle(AdonisTheme.secondaryInk)
         .lineSpacing(2)
@@ -276,7 +276,8 @@ private struct GarmentObservationCard: View {
           .lineLimit(2)
         HStack(spacing: 7) {
           WardrobeColorDot(hex: observation.dominantColorHex)
-          Text("画面线索")
+          Text("识别建议")
+            .accessibilityIdentifier("garment-recognition-suggestion")
           Text("·")
           Text("待你确认")
         }

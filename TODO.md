@@ -88,7 +88,7 @@ M0 退出条件：
 - [x] **ADO-107：实现最小历史视图。** 花历按日期显示记录，并能再次打开、分享或删除。
 - [ ] **ADO-108：完成真实设备或目标浏览器回归。** 验证上传、生成、保存、重试和删除的完整链路。
 
-  模拟器当前 42 项测试（33 个单元测试与 9 个 UI 流程测试）、界面像素检查和通用 iOS 真机构建已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)与 [本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)。
+  模拟器当前 47 项测试（38 个单元测试与 9 个 UI 流程测试）、界面像素检查和通用 iOS 真机构建已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)与 [生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)。
 
 M1 退出条件：新用户无需建立衣橱即可完成一次真实 OOTD 记录，并能再次找到或删除它。
 
@@ -145,7 +145,7 @@ M4 退出条件：历史数据可以生成用户愿意再次打开、保存或�
 这些任务随相关功能同步完成，不推迟到上线前集中补做。
 
 - [x] **ADO-Q01：图片与身体数据隐私。** 已明确主动选图/拍摄/分享的访问边界、App 本地存储与 iOS 系统备份的区别，并实现本机数量查看、标准 TAR 导出、文件保护、共享队列与像素尺寸上限，以及覆盖 SwiftData、媒体、App Group 收件箱和临时归档的二次确认删除。安全复查后无未解决的高/中风险；真实 iPhone 文件保护与备份恢复仍归入 ADO-Q07。证据见 [本地数据导出与删除验证记录](docs/verification/2026-08-29-local-data-controls.md)。
-- [ ] **ADO-Q02：生成内容标识。** 区分原始图片、识别结果、补全内容和生成内容。
+- [x] **ADO-Q02：生成内容标识。** 已建立“原始图片 / 原图处理 / 程序排版 / 识别建议 / AI 补全 / AI 生成”六类稳定契约；当前结果、历史、衣橱识别、OOTD 线索、分享收藏卡与个人数据导出均按实际来源标识，且没有把本机抠图或排版描述为 AI 生成。AI 补全与 AI 生成类型已预留，但因当前没有真实供应商输出，不宣称其质量已经验证。证据见 [生成内容来源标识验证记录](docs/verification/2026-08-29-content-provenance.md)。
 - [ ] **ADO-Q03：固定回归样本集。** 每次更换模型、提示或后处理后重新验证。
 - [ ] **ADO-Q04：失败与降级。** 为超时、低质量、识别不确定和供应商不可用提供用户可理解的结果。
 - [ ] **ADO-Q05：成本与时延预算。** 在选定供应方案前记录真实请求成本、重试和后处理开销。

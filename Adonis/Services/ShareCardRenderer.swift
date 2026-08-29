@@ -172,13 +172,24 @@ struct ShareCardRenderer {
     )
 
     ("让每一个你，重新盛开" as NSString).draw(
-      in: CGRect(x: 280, y: 1322, width: 520, height: 42),
+      in: CGRect(x: 280, y: 1305, width: 520, height: 36),
       withAttributes: [
-        .font: UIFont.systemFont(ofSize: 24, weight: .medium),
+        .font: UIFont.systemFont(ofSize: 22, weight: .medium),
         .foregroundColor: secondary,
         .paragraphStyle: paragraph,
       ]
     )
+
+    if let provenanceFooter = VisualContentProvenance.programmaticComposition.shareCardFooter {
+      (provenanceFooter as NSString).draw(
+        in: CGRect(x: 180, y: 1345, width: 720, height: 28),
+        withAttributes: [
+          .font: UIFont.systemFont(ofSize: 17, weight: .semibold),
+          .foregroundColor: secondary.withAlphaComponent(0.82),
+          .paragraphStyle: paragraph,
+        ]
+      )
+    }
   }
 
   private func aspectFit(size source: CGSize, in target: CGRect) -> CGRect {

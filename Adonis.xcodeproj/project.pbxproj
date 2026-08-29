@@ -18,6 +18,7 @@
 		14BFCF74C380ED0981B92AFC /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84BF18B5CED9D834A195F7F /* Components.swift */; };
 		153086CAF11ADC89B572AC57 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1616941BE0EAB40F74A088AA /* README.md */; };
 		17E549E80F389BD3C90C24D4 /* sample-01.png in Resources */ = {isa = PBXBuildFile; fileRef = 94AFB89D4E0698D5253B8179 /* sample-01.png */; };
+		1CCF473DA8BAD7E4925CADF6 /* VisualContentProvenanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B8591003804E662E9435F6 /* VisualContentProvenanceTests.swift */; };
 		1D66DB546BDE1410DD5C83B8 /* OutfitGarmentObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0297B7A729F4B3D757F6A0A3 /* OutfitGarmentObserverTests.swift */; };
 		1E771E07BF3146CEE74A025F /* SharedImageInboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316737292FE33E782DAD2887 /* SharedImageInboxTests.swift */; };
 		212E902D6EFF97FB6AC0FE1C /* StoredImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B19E79DC35ECB753DE22B9 /* StoredImageView.swift */; };
@@ -55,6 +56,7 @@
 		A9A9F6F7D289FC8856D4D3A1 /* AdonisTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A8470E112FD06E2CDC338F /* AdonisTheme.swift */; };
 		AA09CC345698764168BFAD0F /* WardrobeItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A0AC80513194F13CBD6154 /* WardrobeItem.swift */; };
 		AA7616F94BC57247CB84EB02 /* WardrobeItemImageUpgradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41C63FE0943B218F96DECA0 /* WardrobeItemImageUpgradeView.swift */; };
+		B025F76F64788BA52A25BFBE /* VisualContentProvenance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E35A62405F04F4C91FD146 /* VisualContentProvenance.swift */; };
 		B8E00E8E01CF44D38A6F50C0 /* WardrobeImageAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344C0FB1909A7A7BC018E316 /* WardrobeImageAnalyzer.swift */; };
 		B9540D2F881B8B9964CA15EC /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12FE82838AC414CFC2DB702A /* ShareViewController.swift */; };
 		BD88A01D52A457191971F5FD /* WardrobeItemImageUpgradeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD41588E828E23AB762808A7 /* WardrobeItemImageUpgradeTests.swift */; };
@@ -129,6 +131,7 @@
 		1616941BE0EAB40F74A088AA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1AF0F87BBB9C1CD0572BDB60 /* GenerationDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationDraft.swift; sourceTree = "<group>"; };
 		2153A825703E5C59A02F6A3D /* AdonisFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisFlowUITests.swift; sourceTree = "<group>"; };
+		25E35A62405F04F4C91FD146 /* VisualContentProvenance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualContentProvenance.swift; sourceTree = "<group>"; };
 		27A8470E112FD06E2CDC338F /* AdonisTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisTheme.swift; sourceTree = "<group>"; };
 		290B068850AE398F3ACAC1A7 /* WardrobeItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemDetailView.swift; sourceTree = "<group>"; };
 		2ACEBFD1D2E574D182EC23D3 /* GarmentObservationPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarmentObservationPersistenceTests.swift; sourceTree = "<group>"; };
@@ -156,6 +159,7 @@
 		6D1AC57D0B3CE409AF9AA3B0 /* WardrobeHistorySuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeHistorySuggestionsView.swift; sourceTree = "<group>"; };
 		6FA56E47100150E8087EB527 /* AdonisShareExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = AdonisShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		715F9375B113CB2BBE597E7F /* MediaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStore.swift; sourceTree = "<group>"; };
+		75B8591003804E662E9435F6 /* VisualContentProvenanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualContentProvenanceTests.swift; sourceTree = "<group>"; };
 		770A0820A3D2A9292070667E /* sample-02-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-02-sticker.png"; sourceTree = "<group>"; };
 		77F83D427A76B9EAE21B0876 /* sample-01-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-01-sticker.png"; sourceTree = "<group>"; };
 		7C1B423C8D9B768E0AB09434 /* sample-03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03.png"; sourceTree = "<group>"; };
@@ -213,6 +217,7 @@
 				1AF0F87BBB9C1CD0572BDB60 /* GenerationDraft.swift */,
 				5D0994A465AE03BD4840F048 /* OutfitRecord.swift */,
 				4D05F8A9D74EA80804DC6A13 /* ProcessingTrace.swift */,
+				25E35A62405F04F4C91FD146 /* VisualContentProvenance.swift */,
 				F3A0AC80513194F13CBD6154 /* WardrobeItem.swift */,
 			);
 			path = Models;
@@ -401,6 +406,7 @@
 				316737292FE33E782DAD2887 /* SharedImageInboxTests.swift */,
 				F3A9C1588A5A38E96E7EA650 /* SharedWardrobeImportCoordinatorTests.swift */,
 				4718CD6CE45E819A6AC83529 /* StickerProcessorTests.swift */,
+				75B8591003804E662E9435F6 /* VisualContentProvenanceTests.swift */,
 				9E2ED59B556B639C01144CF3 /* WardrobeCandidateMatcherTests.swift */,
 				51B14671AF376DB8E9B11E1E /* WardrobeHistoryMatcherTests.swift */,
 				EEBDC07323E67E0A60762AF4 /* WardrobeImageAnalyzerTests.swift */,
@@ -581,6 +587,7 @@
 				1E771E07BF3146CEE74A025F /* SharedImageInboxTests.swift in Sources */,
 				72CE834B10BE56C4FFA4C882 /* SharedWardrobeImportCoordinatorTests.swift in Sources */,
 				4AFB40403A8C7A8584F3CEE9 /* StickerProcessorTests.swift in Sources */,
+				1CCF473DA8BAD7E4925CADF6 /* VisualContentProvenanceTests.swift in Sources */,
 				833D591989DF8A521A68D1C1 /* WardrobeCandidateMatcherTests.swift in Sources */,
 				9A95DEEA282092ED4CB0DA28 /* WardrobeHistoryMatcherTests.swift in Sources */,
 				0E6AFE4AA346781D0DBF4800 /* WardrobeImageAnalyzerTests.swift in Sources */,
@@ -621,6 +628,7 @@
 				4C62C431C85643DBF75BE203 /* SharedWardrobeImportCoordinator.swift in Sources */,
 				38385A8843FD7D39731262D1 /* StickerProcessor.swift in Sources */,
 				212E902D6EFF97FB6AC0FE1C /* StoredImageView.swift in Sources */,
+				B025F76F64788BA52A25BFBE /* VisualContentProvenance.swift in Sources */,
 				72679204352E432C70016FBA /* WardrobeCandidateMatcher.swift in Sources */,
 				4F75F5C23890C809B5B1EDA3 /* WardrobeComponents.swift in Sources */,
 				64A19ED48E35F7B3EAAD0177 /* WardrobeHistoryMatcher.swift in Sources */,

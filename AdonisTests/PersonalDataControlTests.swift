@@ -98,6 +98,41 @@ final class PersonalDataControlTests: XCTestCase {
     )
     let pendingSharedImages = try XCTUnwrap(manifest["pendingSharedImages"] as? [String])
     XCTAssertEqual(pendingSharedImages, ["shared-inbox/\(pending.id)"])
+    let visualAssets = try XCTUnwrap(manifest["visualAssets"] as? [[String: Any]])
+    XCTAssertEqual(visualAssets.count, 6)
+    XCTAssertEqual(
+      provenance(for: "media/\(sourceFilename)", in: visualAssets),
+      VisualContentProvenance.userProvided.rawValue
+    )
+    XCTAssertEqual(
+      provenance(for: "media/\(stickerFilename)", in: visualAssets),
+      VisualContentProvenance.derivedFromOriginal.rawValue
+    )
+    XCTAssertEqual(
+      provenance(for: "media/\(cardFilename)", in: visualAssets),
+      VisualContentProvenance.programmaticComposition.rawValue
+    )
+    XCTAssertEqual(
+      provenance(for: "media/\(wardrobeFilename)", in: visualAssets),
+      VisualContentProvenance.userProvided.rawValue
+    )
+    XCTAssertEqual(
+      provenance(for: "media/\(observationFilename)", in: visualAssets),
+      VisualContentProvenance.recognitionSuggestion.rawValue
+    )
+    XCTAssertEqual(
+      provenance(for: "shared-inbox/\(pending.id)", in: visualAssets),
+      VisualContentProvenance.userProvided.rawValue
+    )
+    XCTAssertTrue(
+      visualAssets.allSatisfy { asset in
+        asset["containsAIGeneratedPixels"] as? Bool == false
+      }
+    )
+    let observationAsset = try XCTUnwrap(
+      visualAssets.first { $0["path"] as? String == "media/\(observationFilename)" }
+    )
+    XCTAssertEqual(observationAsset["requiresUserConfirmation"] as? Bool, true)
     XCTAssertNil(manifest["imageDataBase64"])
 
     let attachment = XCTAttachment(contentsOfFile: archive.url)
@@ -193,6 +228,10 @@ final class PersonalDataControlTests: XCTestCase {
       root: root,
       exportDirectory: exportDirectory
     )
+  }
+
+  private func provenance(for path: String, in assets: [[String: Any]]) -> String? {
+    assets.first { $0["path"] as? String == path }?["provenance"] as? String
   }
 }
 

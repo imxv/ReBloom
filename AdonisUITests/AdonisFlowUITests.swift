@@ -26,21 +26,69 @@ final class AdonisFlowUITests: XCTestCase {
     firstSample.tap()
 
     XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 8))
-    keepScreenshot(named: "Adonis-result-card")
+    XCTAssertTrue(
+      app.descendants(matching: .any)["content-provenance-programmatic_composition"]
+        .waitForExistence(timeout: 3)
+    )
+
+    let resultModes = app.segmentedControls["result-mode-picker"]
+    XCTAssertTrue(resultModes.buttons["透明贴纸"].waitForExistence(timeout: 3))
+    resultModes.buttons["透明贴纸"].tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["content-provenance-derived_from_original"]
+        .waitForExistence(timeout: 3)
+    )
+    resultModes.buttons["原始照片"].tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["content-provenance-user_provided"]
+        .waitForExistence(timeout: 3)
+    )
+    resultModes.buttons["收藏卡"].tap()
+
+    let resultProvenance =
+      app.descendants(matching: .any)["content-provenance-programmatic_composition"]
+    for _ in 0..<3 where !resultProvenance.isHittable {
+      app.swipeUp()
+    }
+    XCTAssertTrue(resultProvenance.isHittable)
+    keepScreenshot(named: "Adonis-content-provenance-result")
 
     let saveButton = app.buttons["save-today"]
     XCTAssertTrue(saveButton.waitForExistence(timeout: 3))
+    for _ in 0..<3 where !saveButton.isHittable {
+      app.swipeUp()
+    }
     saveButton.tap()
     XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 3))
 
-    app.buttons["make-another"].tap()
+    let makeAnother = app.buttons["make-another"]
+    XCTAssertTrue(makeAnother.waitForExistence(timeout: 3))
+    for _ in 0..<2 where !makeAnother.isHittable {
+      app.swipeUp()
+    }
+    makeAnother.tap()
     XCTAssertTrue(app.buttons["sample-01"].waitForExistence(timeout: 5))
 
     app.tabBars.buttons["花历"].tap()
     XCTAssertTrue(app.otherElements["bloom-calendar"].waitForExistence(timeout: 5))
     XCTAssertTrue(app.staticTexts["recent-blooms-title"].waitForExistence(timeout: 5))
     XCTAssertTrue(app.staticTexts["今日穿搭"].exists)
-    keepScreenshot(named: "Adonis-bloom-calendar")
+
+    let recordCard = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(recordCard.waitForExistence(timeout: 5))
+    recordCard.tap()
+    let historyModes = app.segmentedControls["history-visual-picker"]
+    XCTAssertTrue(historyModes.buttons["收藏卡"].waitForExistence(timeout: 5))
+    XCTAssertTrue(historyModes.buttons["透明贴纸"].exists)
+    XCTAssertTrue(historyModes.buttons["原始照片"].exists)
+    let historyProvenance =
+      app.descendants(matching: .any)["content-provenance-programmatic_composition"]
+    XCTAssertTrue(historyProvenance.waitForExistence(timeout: 3))
+    for _ in 0..<3 where !historyProvenance.isHittable {
+      app.swipeUp()
+    }
+    XCTAssertTrue(historyProvenance.isHittable)
+    keepScreenshot(named: "Adonis-content-provenance-history")
   }
 
   @MainActor
@@ -57,6 +105,13 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(app.staticTexts["wardrobe-analysis-summary"].waitForExistence(timeout: 8))
     XCTAssertTrue(app.staticTexts["棕色单品"].exists)
     XCTAssertTrue(app.staticTexts["像商品图"].exists)
+    let recognitionNotice =
+      app.descendants(matching: .any)["content-provenance-recognition_suggestion"]
+    XCTAssertTrue(recognitionNotice.waitForExistence(timeout: 3))
+    for _ in 0..<2 where !recognitionNotice.isHittable {
+      app.swipeUp()
+    }
+    XCTAssertTrue(recognitionNotice.isHittable)
     keepScreenshot(named: "Adonis-wardrobe-analysis")
 
     let topCategory = app.buttons["wardrobe-category-上装"]

@@ -1,20 +1,13 @@
 import SwiftUI
 
 struct GenerationResultView: View {
-  enum PreviewMode: String, CaseIterable, Identifiable {
-    case card = "收藏卡"
-    case sticker = "透明贴纸"
-
-    var id: String { rawValue }
-  }
-
   let draft: GenerationDraft
   let initiallySaved: Bool
   let onSave: () throws -> Void
   let onReset: () -> Void
 
   @Environment(\.dismiss) private var dismiss
-  @State private var mode: PreviewMode = .card
+  @State private var mode: OutfitVisualAsset = .shareCard
   @State private var isSaved: Bool
   @State private var showShare = false
   @State private var saveError: String?
@@ -42,8 +35,9 @@ struct GenerationResultView: View {
           resultHeader
 
           Picker("预览方式", selection: $mode) {
-            ForEach(PreviewMode.allCases) { mode in
-              Text(mode.rawValue).tag(mode)
+            ForEach(OutfitVisualAsset.allCases) { mode in
+              Text(mode.title)
+                .tag(mode)
             }
           }
           .pickerStyle(.segmented)
@@ -53,18 +47,18 @@ struct GenerationResultView: View {
 
           HStack(spacing: 8) {
             StickerTag(
-              title: mode == .sticker ? "真实透明 PNG" : "1080 × 1440",
+              title: outputTagTitle,
               color: mode == .sticker ? AdonisTheme.leaf.opacity(0.5) : AdonisTheme.butter,
-              icon: mode == .sticker ? "checkerboard.rectangle" : "rectangle.portrait"
+              icon: outputTagIcon
             )
             StickerTag(
-              title: draft.usesPreparedSample
-                ? "样片已预处理"
-                : "\(draft.processingMilliseconds) ms",
+              title: "来自\(draft.inputSource.title)",
               color: AdonisTheme.lavender.opacity(0.55),
-              icon: draft.usesPreparedSample ? "checkmark.seal.fill" : "bolt.fill"
+              icon: "photo.on.rectangle"
             )
           }
+
+          ContentProvenanceNotice(provenance: mode.provenance)
 
           if !draft.garmentObservations.isEmpty {
             wardrobeObservationHint
@@ -78,7 +72,7 @@ struct GenerationResultView: View {
       }
     }
     .sheet(isPresented: $showShare) {
-      ActivityView(items: [mode == .card ? draft.cardImage : draft.stickerImage])
+      ActivityView(items: [selectedImage])
         .presentationDetents([.medium, .large])
     }
     .alert(
@@ -160,7 +154,7 @@ struct GenerationResultView: View {
   @ViewBuilder
   private var preview: some View {
     switch mode {
-    case .card:
+    case .shareCard:
       Image(uiImage: draft.cardImage)
         .resizable()
         .scaledToFit()
@@ -173,7 +167,7 @@ struct GenerationResultView: View {
         .transition(.opacity)
 
     case .sticker:
-      CheckerboardBackground()
+      TransparencyGridBackground()
         .overlay {
           Image(uiImage: draft.stickerImage)
             .resizable()
@@ -187,6 +181,43 @@ struct GenerationResultView: View {
             .stroke(AdonisTheme.ink.opacity(0.08), lineWidth: 1)
         }
         .transition(.opacity)
+
+    case .originalPhoto:
+      Image(uiImage: draft.sourceImage)
+        .resizable()
+        .scaledToFit()
+        .frame(maxWidth: .infinity)
+        .background(AdonisTheme.paper)
+        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+        .overlay {
+          RoundedRectangle(cornerRadius: 26, style: .continuous)
+            .stroke(AdonisTheme.ink.opacity(0.08), lineWidth: 1)
+        }
+        .transition(.opacity)
+    }
+  }
+
+  private var selectedImage: UIImage {
+    switch mode {
+    case .shareCard: draft.cardImage
+    case .sticker: draft.stickerImage
+    case .originalPhoto: draft.sourceImage
+    }
+  }
+
+  private var outputTagTitle: String {
+    switch mode {
+    case .shareCard: "1080 × 1440"
+    case .sticker: "真实透明 PNG"
+    case .originalPhoto: "原始尺寸"
+    }
+  }
+
+  private var outputTagIcon: String {
+    switch mode {
+    case .shareCard: "rectangle.portrait"
+    case .sticker: "checkerboard.rectangle"
+    case .originalPhoto: "camera.fill"
     }
   }
 
@@ -239,24 +270,5 @@ struct GenerationResultView: View {
         .accessibilityIdentifier("make-another")
       }
     }
-  }
-}
-
-private struct CheckerboardBackground: View {
-  private let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: 10)
-
-  var body: some View {
-    GeometryReader { proxy in
-      let cell = proxy.size.width / 10
-      LazyVGrid(columns: columns, spacing: 0) {
-        ForEach(0..<140, id: \.self) { index in
-          Rectangle()
-            .fill((index + index / 10).isMultiple(of: 2) ? Color.white : Color(hex: 0xE8E4E1))
-            .frame(height: cell)
-        }
-      }
-    }
-    .clipped()
-    .accessibilityHidden(true)
   }
 }

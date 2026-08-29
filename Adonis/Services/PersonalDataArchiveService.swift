@@ -218,6 +218,7 @@ private struct PersonalDataManifest: Encodable, Sendable {
   let wardrobeItems: [ExportedWardrobeItem]
   let garmentObservations: [ExportedGarmentObservation]
   let processingEvents: [ExportedAppEvent]
+  let visualAssets: [ExportedVisualAsset]
   let mediaFiles: [String]
   let pendingSharedImages: [String]
 
@@ -240,8 +241,84 @@ private struct PersonalDataManifest: Encodable, Sendable {
       ExportedGarmentObservation.init
     )
     processingEvents = events.sorted { $0.createdAt < $1.createdAt }.map(ExportedAppEvent.init)
+    visualAssets =
+      (records.flatMap { record in
+        [
+          ExportedVisualAsset(
+            path: "media/\(record.sourceImageFilename)",
+            role: "outfit_original_photo",
+            provenance: .userProvided,
+            ownerID: record.id
+          ),
+          ExportedVisualAsset(
+            path: "media/\(record.stickerImageFilename)",
+            role: "outfit_sticker",
+            provenance: .derivedFromOriginal,
+            ownerID: record.id
+          ),
+          ExportedVisualAsset(
+            path: "media/\(record.cardImageFilename)",
+            role: "outfit_share_card",
+            provenance: .programmaticComposition,
+            ownerID: record.id
+          ),
+        ]
+      }
+      + items.map { item in
+        ExportedVisualAsset(
+          path: "media/\(item.imageFilename)",
+          role: "wardrobe_item_image",
+          provenance: item.sourceKind == .outfitObservation
+            ? .derivedFromOriginal
+            : .userProvided,
+          ownerID: item.id
+        )
+      }
+      + observations.map { observation in
+        ExportedVisualAsset(
+          path: "media/\(observation.previewImageFilename)",
+          role: "garment_observation_preview",
+          provenance: .recognitionSuggestion,
+          ownerID: observation.id
+        )
+      }
+      + pendingSharedImagePaths.map { path in
+        ExportedVisualAsset(
+          path: path,
+          role: "pending_shared_image",
+          provenance: .userProvided,
+          ownerID: nil
+        )
+      }).sorted { lhs, rhs in
+        lhs.path == rhs.path ? lhs.role < rhs.role : lhs.path < rhs.path
+      }
     mediaFiles = mediaPaths.sorted()
     pendingSharedImages = pendingSharedImagePaths.sorted()
+  }
+}
+
+private struct ExportedVisualAsset: Encodable, Sendable {
+  let path: String
+  let role: String
+  let provenance: VisualContentProvenance
+  let ownerID: UUID?
+  let disclosure: String
+  let containsAIGeneratedPixels: Bool
+  let requiresUserConfirmation: Bool
+
+  init(
+    path: String,
+    role: String,
+    provenance: VisualContentProvenance,
+    ownerID: UUID?
+  ) {
+    self.path = path
+    self.role = role
+    self.provenance = provenance
+    self.ownerID = ownerID
+    self.disclosure = provenance.detail
+    self.containsAIGeneratedPixels = provenance.containsAIGeneratedPixels
+    self.requiresUserConfirmation = provenance.requiresUserConfirmation
   }
 }
 

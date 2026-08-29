@@ -177,6 +177,13 @@ struct WardrobeItemDetailView: View {
           .font(.footnote)
           .foregroundStyle(AdonisTheme.secondaryInk)
       }
+
+      if item.analysisVersion != nil {
+        ContentProvenanceNotice(
+          provenance: .recognitionSuggestion,
+          detail: "颜色、画面类型与未确认分类来自本机分析；你手动选择的分类始终优先。"
+        )
+      }
     }
     .padding(18)
     .paperSurface(radius: 24)
