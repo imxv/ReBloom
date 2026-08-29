@@ -2,6 +2,7 @@ import SwiftData
 import SwiftUI
 
 struct BloomCalendarView: View {
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @Environment(\.modelContext) private var modelContext
   @Query(sort: \OutfitRecord.createdAt, order: .reverse) private var records: [OutfitRecord]
 
@@ -65,44 +66,19 @@ struct BloomCalendarView: View {
     VStack(alignment: .leading, spacing: 5) {
       AdonisWordmark(compact: true)
       Text("我的花历")
-        .font(.system(size: 34, weight: .black, design: .rounded))
+        .font(.system(.largeTitle, design: .rounded, weight: .black))
         .foregroundStyle(AdonisTheme.ink)
+        .accessibilityAddTraits(.isHeader)
       Text("穿过的每一天，都可以再盛开一次。")
         .font(.subheadline)
         .foregroundStyle(AdonisTheme.secondaryInk)
+        .fixedSize(horizontal: false, vertical: true)
     }
   }
 
   private var monthCard: some View {
     VStack(spacing: 18) {
-      HStack {
-        Button {
-          visibleMonth =
-            calendar.date(byAdding: .month, value: -1, to: visibleMonth) ?? visibleMonth
-        } label: {
-          Image(systemName: "chevron.left")
-            .frame(width: 44, height: 44)
-        }
-        .buttonStyle(StickerButtonStyle())
-        .accessibilityLabel("上个月")
-
-        Spacer()
-
-        Text(monthTitle)
-          .font(.system(.title3, design: .rounded, weight: .black))
-          .foregroundStyle(AdonisTheme.ink)
-
-        Spacer()
-
-        Button {
-          visibleMonth = calendar.date(byAdding: .month, value: 1, to: visibleMonth) ?? visibleMonth
-        } label: {
-          Image(systemName: "chevron.right")
-            .frame(width: 44, height: 44)
-        }
-        .buttonStyle(StickerButtonStyle())
-        .accessibilityLabel("下个月")
-      }
+      monthNavigation
 
       LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 7), spacing: 8)
       {
@@ -122,6 +98,7 @@ struct BloomCalendarView: View {
           }
         }
       }
+      .dynamicTypeSize(.xSmall ... .xxxLarge)
     }
     .padding(18)
     .paperSurface()
@@ -130,12 +107,11 @@ struct BloomCalendarView: View {
 
   private var recentBlooms: some View {
     VStack(alignment: .leading, spacing: 14) {
-      HStack {
+      AccessibilityAdaptiveStack(spacing: 8) {
         Text("最近盛开")
           .font(.system(.title3, design: .rounded, weight: .bold))
           .foregroundStyle(AdonisTheme.ink)
           .accessibilityIdentifier("recent-blooms-title")
-        Spacer()
         StickerTag(title: "\(records.count) 次", color: AdonisTheme.leaf.opacity(0.36))
       }
 
@@ -157,7 +133,7 @@ struct BloomCalendarView: View {
                 .foregroundStyle(AdonisTheme.secondaryInk)
               Text("Bloom No. \(String(format: "%03d", record.bloomNumber))")
                 .font(.system(.caption, design: .monospaced, weight: .semibold))
-                .foregroundStyle(AdonisTheme.pomegranate)
+                .foregroundStyle(AdonisTheme.pomegranateInk)
             }
 
             Spacer()
@@ -169,9 +145,77 @@ struct BloomCalendarView: View {
           .shadow(color: AdonisTheme.ink.opacity(0.07), radius: 9, y: 4)
         }
         .buttonStyle(StickerButtonStyle())
+        .accessibilityLabel(
+          "\(record.title)，\(AdonisDateText.longDate(record.createdAt))，Bloom No. \(String(format: "%03d", record.bloomNumber))"
+        )
         .accessibilityIdentifier("bloom-record-card")
       }
     }
+  }
+
+  @ViewBuilder
+  private var monthNavigation: some View {
+    if dynamicTypeSize.isAccessibilitySize {
+      VStack(spacing: 8) {
+        Text(monthTitle)
+          .font(.system(.title3, design: .rounded, weight: .black))
+          .foregroundStyle(AdonisTheme.ink)
+
+        HStack(spacing: 12) {
+          Button {
+            showPreviousMonth()
+          } label: {
+            Label("上个月", systemImage: "chevron.left")
+              .frame(maxWidth: .infinity, minHeight: 44)
+          }
+          .buttonStyle(StickerButtonStyle())
+
+          Button {
+            showNextMonth()
+          } label: {
+            Label("下个月", systemImage: "chevron.right")
+              .frame(maxWidth: .infinity, minHeight: 44)
+          }
+          .buttonStyle(StickerButtonStyle())
+        }
+      }
+    } else {
+      HStack {
+        Button {
+          showPreviousMonth()
+        } label: {
+          Image(systemName: "chevron.left")
+            .frame(width: 44, height: 44)
+        }
+        .buttonStyle(StickerButtonStyle())
+        .accessibilityLabel("上个月")
+
+        Spacer()
+
+        Text(monthTitle)
+          .font(.system(.title3, design: .rounded, weight: .black))
+          .foregroundStyle(AdonisTheme.ink)
+
+        Spacer()
+
+        Button {
+          showNextMonth()
+        } label: {
+          Image(systemName: "chevron.right")
+            .frame(width: 44, height: 44)
+        }
+        .buttonStyle(StickerButtonStyle())
+        .accessibilityLabel("下个月")
+      }
+    }
+  }
+
+  private func showPreviousMonth() {
+    visibleMonth = calendar.date(byAdding: .month, value: -1, to: visibleMonth) ?? visibleMonth
+  }
+
+  private func showNextMonth() {
+    visibleMonth = calendar.date(byAdding: .month, value: 1, to: visibleMonth) ?? visibleMonth
   }
 
   private func dayCell(for date: Date) -> some View {
@@ -199,7 +243,7 @@ struct BloomCalendarView: View {
         } else {
           Text("\(calendar.component(.day, from: date))")
             .font(.caption.weight(isToday ? .black : .medium))
-            .foregroundStyle(isToday ? AdonisTheme.pomegranate : AdonisTheme.secondaryInk)
+            .foregroundStyle(isToday ? AdonisTheme.pomegranateInk : AdonisTheme.secondaryInk)
         }
       }
       .frame(maxWidth: .infinity)

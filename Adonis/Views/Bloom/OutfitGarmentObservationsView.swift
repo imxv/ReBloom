@@ -46,12 +46,11 @@ struct OutfitGarmentObservationsView: View {
 
   private var header: some View {
     VStack(alignment: .leading, spacing: 5) {
-      HStack {
+      AccessibilityAdaptiveStack(spacing: 8, verticalAlignment: .firstTextBaseline) {
         Text("这天穿了什么")
           .font(.system(.title3, design: .rounded, weight: .black))
           .foregroundStyle(AdonisTheme.ink)
           .accessibilityIdentifier("garment-observation-section")
-        Spacer()
         if !observations.isEmpty {
           StickerTag(
             title: "\(pendingCount) 个待确认",
@@ -243,6 +242,7 @@ private struct GarmentObservationCard: View {
   let onResume: () -> Void
 
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
   var body: some View {
     VStack(alignment: .leading, spacing: 16) {
@@ -273,7 +273,7 @@ private struct GarmentObservationCard: View {
         Text(observation.displayName)
           .font(.system(.headline, design: .rounded, weight: .black))
           .foregroundStyle(AdonisTheme.ink)
-          .lineLimit(2)
+          .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
         HStack(spacing: 7) {
           WardrobeColorDot(hex: observation.dominantColorHex)
           Text("识别建议")
@@ -322,7 +322,7 @@ private struct GarmentObservationCard: View {
         }
       }
 
-      HStack(spacing: 10) {
+      AccessibilityAdaptiveStack(spacing: 10) {
         Button(action: onCreate) {
           Label("这是新衣服", systemImage: "plus")
             .font(.system(.subheadline, design: .rounded, weight: .bold))
@@ -357,7 +357,7 @@ private struct GarmentObservationCard: View {
       HStack(spacing: 10) {
         Image(systemName: "checkmark.circle.fill")
           .font(.system(size: 21, weight: .bold))
-          .foregroundStyle(AdonisTheme.leaf)
+          .foregroundStyle(AdonisTheme.leafInk)
         VStack(alignment: .leading, spacing: 2) {
           Text(observation.state == .createdNew ? "已收进衣橱" : "已关联到衣橱")
             .font(.system(.subheadline, design: .rounded, weight: .bold))
@@ -394,13 +394,12 @@ private struct GarmentObservationCard: View {
   }
 
   private var dismissedContent: some View {
-    HStack(spacing: 10) {
+    AccessibilityAdaptiveStack(spacing: 10) {
       Image(systemName: "tray")
         .foregroundStyle(AdonisTheme.secondaryInk)
       Text("已经先放着，不会影响衣橱。")
         .font(.footnote)
         .foregroundStyle(AdonisTheme.secondaryInk)
-      Spacer()
       Button("再看看", action: onResume)
         .font(.system(.subheadline, design: .rounded, weight: .bold))
         .foregroundStyle(AdonisTheme.ink)
@@ -413,8 +412,10 @@ private struct GarmentObservationCard: View {
 private struct CandidateRow: View {
   let candidate: WardrobeMatchCandidate
 
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
   var body: some View {
-    HStack(spacing: 11) {
+    AccessibilityAdaptiveStack(spacing: 11) {
       StoredImageView(filename: candidate.item.imageFilename)
         .frame(width: 54, height: 58)
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
@@ -427,16 +428,15 @@ private struct CandidateRow: View {
         Text(candidate.item.name)
           .font(.system(.subheadline, design: .rounded, weight: .bold))
           .foregroundStyle(AdonisTheme.ink)
-          .lineLimit(1)
+          .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
         Text(candidate.reasonText.isEmpty ? "信息有限，需要你确认" : candidate.reasonText)
           .font(.caption2)
           .foregroundStyle(AdonisTheme.secondaryInk)
-          .lineLimit(1)
+          .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
       }
-      Spacer(minLength: 4)
       Text("就是它")
         .font(.system(.caption, design: .rounded, weight: .black))
-        .foregroundStyle(AdonisTheme.pomegranate)
+        .foregroundStyle(AdonisTheme.pomegranateInk)
     }
     .padding(9)
     .background(

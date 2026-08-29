@@ -29,6 +29,7 @@
 		3C9A8154794D56761BF03D4A /* WardrobeHistorySuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1AC57D0B3CE409AF9AA3B0 /* WardrobeHistorySuggestionsView.swift */; };
 		423AEFB97294ADDACA708B53 /* SharedImageInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9C4FA8A91B8CCA08F29DBB /* SharedImageInbox.swift */; };
 		444C652105F7620F3A0DBDD3 /* MediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 715F9375B113CB2BBE597E7F /* MediaStore.swift */; };
+		4509285B952C40CC075B1C2B /* AccessibilityContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE9700DD179F9FED5BD0771 /* AccessibilityContractTests.swift */; };
 		4AFB40403A8C7A8584F3CEE9 /* StickerProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4718CD6CE45E819A6AC83529 /* StickerProcessorTests.swift */; };
 		4C62C431C85643DBF75BE203 /* SharedWardrobeImportCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95059D5C09DEFB138D303EC /* SharedWardrobeImportCoordinator.swift */; };
 		4F75F5C23890C809B5B1EDA3 /* WardrobeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688A508B58F7C22C4FB354F0 /* WardrobeComponents.swift */; };
@@ -194,6 +195,7 @@
 		D491330C3A0032C97023EB7B /* PersonalDataArchiveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalDataArchiveService.swift; sourceTree = "<group>"; };
 		D545412EE2679B9A7070E13B /* Adonis.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Adonis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6CAE9A2C46336ABF1F1AC6C /* ProcessingTraceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingTraceTests.swift; sourceTree = "<group>"; };
+		DAE9700DD179F9FED5BD0771 /* AccessibilityContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityContractTests.swift; sourceTree = "<group>"; };
 		E302C7B66FF3753821830A56 /* AdonisTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AdonisTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E84BF18B5CED9D834A195F7F /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		EC4C4240274B6A2FB8E050EC /* SampleCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleCatalog.swift; sourceTree = "<group>"; };
@@ -410,6 +412,7 @@
 		D0C0C14446A3F4F40F62F033 /* AdonisTests */ = {
 			isa = PBXGroup;
 			children = (
+				DAE9700DD179F9FED5BD0771 /* AccessibilityContractTests.swift */,
 				2ACEBFD1D2E574D182EC23D3 /* GarmentObservationPersistenceTests.swift */,
 				BEE29B87471D0B83F42701EE /* MediaStoreTests.swift */,
 				0297B7A729F4B3D757F6A0A3 /* OutfitGarmentObserverTests.swift */,
@@ -594,6 +597,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4509285B952C40CC075B1C2B /* AccessibilityContractTests.swift in Sources */,
 				54CC62F55AC3C5E101AD6FD0 /* GarmentObservationPersistenceTests.swift in Sources */,
 				53E1BE68968D66539E749E22 /* MediaStoreTests.swift in Sources */,
 				1D66DB546BDE1410DD5C83B8 /* OutfitGarmentObserverTests.swift in Sources */,

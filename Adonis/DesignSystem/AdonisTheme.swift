@@ -6,7 +6,9 @@ enum AdonisTheme {
   static let ink = Color(hex: 0x291F24)
   static let secondaryInk = Color(hex: 0x706268)
   static let pomegranate = Color(hex: 0xE65564)
+  static let pomegranateInk = Color(hex: 0xA03242)
   static let leaf = Color(hex: 0x82AF78)
+  static let leafInk = Color(hex: 0x477042)
   static let butter = Color(hex: 0xF4D88A)
   static let lavender = Color(hex: 0xC9B8E8)
 

@@ -5,6 +5,7 @@ struct WardrobeHistorySuggestionsView: View {
   let item: WardrobeItem
 
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @Environment(\.modelContext) private var modelContext
   @Query(sort: \GarmentObservation.createdAt, order: .reverse)
   private var observations: [GarmentObservation]
@@ -26,7 +27,7 @@ struct WardrobeHistorySuggestionsView: View {
           HStack(spacing: 10) {
             Image(systemName: "checkmark.circle.fill")
               .font(.system(size: 20, weight: .bold))
-              .foregroundStyle(AdonisTheme.leaf)
+              .foregroundStyle(AdonisTheme.leafInk)
             Text("已经确认出现在 \(linkedHistoricalCount) 天穿搭里")
               .font(.system(.subheadline, design: .rounded, weight: .bold))
               .foregroundStyle(AdonisTheme.ink)
@@ -87,7 +88,7 @@ struct WardrobeHistorySuggestionsView: View {
     HStack(alignment: .top, spacing: 12) {
       Image(systemName: candidates.isEmpty ? "calendar.badge.checkmark" : "clock.arrow.circlepath")
         .font(.system(size: 19, weight: .bold))
-        .foregroundStyle(candidates.isEmpty ? AdonisTheme.leaf : AdonisTheme.pomegranate)
+        .foregroundStyle(candidates.isEmpty ? AdonisTheme.leafInk : AdonisTheme.pomegranateInk)
         .frame(width: 42, height: 42)
         .background(
           (candidates.isEmpty ? AdonisTheme.leaf : AdonisTheme.butter).opacity(0.18),
@@ -134,12 +135,12 @@ struct WardrobeHistorySuggestionsView: View {
           Text(candidate.reasonText.isEmpty ? "信息有限，需要你确认" : candidate.reasonText)
             .font(.caption2)
             .foregroundStyle(AdonisTheme.secondaryInk)
-            .lineLimit(1)
+            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
         }
         Spacer(minLength: 0)
       }
 
-      HStack(spacing: 10) {
+      AccessibilityAdaptiveStack(spacing: 10) {
         Button {
           confirm(candidate.observation)
         } label: {

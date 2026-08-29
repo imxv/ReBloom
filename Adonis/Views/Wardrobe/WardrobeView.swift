@@ -5,6 +5,8 @@ import UIKit
 import UniformTypeIdentifiers
 
 struct WardrobeView: View {
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @Environment(\.modelContext) private var modelContext
   @Query(sort: \WardrobeItem.createdAt, order: .reverse) private var items: [WardrobeItem]
 
@@ -24,10 +26,15 @@ struct WardrobeView: View {
   private let analyzer = WardrobeImageAnalyzer()
   private let importer = WardrobeItemImportService()
 
-  private let columns = [
-    GridItem(.flexible(), spacing: 14),
-    GridItem(.flexible(), spacing: 14),
-  ]
+  private var columns: [GridItem] {
+    if dynamicTypeSize.isAccessibilitySize {
+      return [GridItem(.flexible())]
+    }
+    return [
+      GridItem(.flexible(), spacing: 14),
+      GridItem(.flexible(), spacing: 14),
+    ]
+  }
 
   init(
     sharedImportNotice: SharedWardrobeImportNotice? = nil,
@@ -72,7 +79,9 @@ struct WardrobeView: View {
 
       if isImporting {
         WardrobeImportOverlay(stage: importStage, onCancel: cancelImport)
-          .transition(.opacity.combined(with: .scale(scale: 0.98)))
+          .transition(
+            reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.98))
+          )
           .zIndex(2)
       }
     }
@@ -107,21 +116,49 @@ struct WardrobeView: View {
     }
   }
 
+  @ViewBuilder
   private var header: some View {
-    HStack(alignment: .center) {
-      VStack(alignment: .leading, spacing: 5) {
-        AdonisWordmark(compact: true)
-        Text("我的衣橱")
-          .font(.system(size: 34, weight: .black, design: .rounded))
-          .foregroundStyle(AdonisTheme.ink)
-        Text("不用整理完整，先记住真正会穿的。")
-          .font(.subheadline)
-          .foregroundStyle(AdonisTheme.secondaryInk)
+    if dynamicTypeSize.isAccessibilitySize {
+      VStack(alignment: .leading, spacing: 16) {
+        headerCopy
+        addItemControl
       }
+    } else {
+      HStack(alignment: .center) {
+        headerCopy
+        Spacer()
+        addItemControl
+      }
+    }
+  }
 
-      Spacer()
+  private var headerCopy: some View {
+    VStack(alignment: .leading, spacing: 5) {
+      AdonisWordmark(compact: true)
+      Text("我的衣橱")
+        .font(.system(.largeTitle, design: .rounded, weight: .black))
+        .foregroundStyle(AdonisTheme.ink)
+        .accessibilityAddTraits(.isHeader)
+      Text("不用整理完整，先记住真正会穿的。")
+        .font(.subheadline)
+        .foregroundStyle(AdonisTheme.secondaryInk)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+  }
 
-      PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+  private var addItemControl: some View {
+    PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+      if dynamicTypeSize.isAccessibilitySize {
+        Label("添加衣服图片", systemImage: "plus")
+          .font(.system(.headline, design: .rounded, weight: .bold))
+          .foregroundStyle(.white)
+          .frame(maxWidth: .infinity, minHeight: 54)
+          .padding(.horizontal, 18)
+          .background(
+            AdonisTheme.ink,
+            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+          )
+      } else {
         Image(systemName: "plus")
           .font(.system(size: 18, weight: .black))
           .foregroundStyle(.white)
@@ -129,11 +166,11 @@ struct WardrobeView: View {
           .background(AdonisTheme.ink, in: Circle())
           .shadow(color: AdonisTheme.ink.opacity(0.15), radius: 10, y: 5)
       }
-      .buttonStyle(StickerButtonStyle())
-      .disabled(isImporting)
-      .accessibilityLabel("添加衣服图片")
-      .accessibilityIdentifier("add-wardrobe-item")
     }
+    .buttonStyle(StickerButtonStyle())
+    .disabled(isImporting)
+    .accessibilityLabel("添加衣服图片")
+    .accessibilityIdentifier("add-wardrobe-item")
   }
 
   private var emptyState: some View {
@@ -423,6 +460,8 @@ private struct SystemShareTestItem: Identifiable {
 private struct WardrobeItemCard: View {
   let item: WardrobeItem
 
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
       StoredImageView(filename: item.imageFilename)
@@ -436,7 +475,8 @@ private struct WardrobeItemCard: View {
       Text(item.name)
         .font(.system(.subheadline, design: .rounded, weight: .bold))
         .foregroundStyle(AdonisTheme.ink)
-        .lineLimit(1)
+        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+        .fixedSize(horizontal: false, vertical: true)
 
       HStack(spacing: 6) {
         WardrobeColorDot(hex: item.dominantColorHex)
@@ -446,7 +486,8 @@ private struct WardrobeItemCard: View {
       }
       .font(.caption)
       .foregroundStyle(AdonisTheme.secondaryInk)
-      .lineLimit(1)
+      .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+      .fixedSize(horizontal: false, vertical: true)
     }
     .padding(9)
     .background(AdonisTheme.paper, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
@@ -470,7 +511,7 @@ private struct SharedWardrobeImportBanner: View {
     HStack(alignment: .top, spacing: 13) {
       Image(systemName: "shippingbox.and.arrow.backward.fill")
         .font(.system(size: 20, weight: .bold))
-        .foregroundStyle(AdonisTheme.pomegranate)
+        .foregroundStyle(AdonisTheme.pomegranateInk)
         .frame(width: 42, height: 42)
         .background(AdonisTheme.paper.opacity(0.82), in: Circle())
 
@@ -531,6 +572,7 @@ private struct WardrobeImportOverlay: View {
     ZStack {
       Color.black.opacity(0.22)
         .ignoresSafeArea()
+        .accessibilityHidden(true)
 
       VStack(spacing: 18) {
         ZStack {
@@ -550,6 +592,11 @@ private struct WardrobeImportOverlay: View {
             .font(.footnote)
             .foregroundStyle(AdonisTheme.secondaryInk)
         }
+        .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(stage.rawValue)
+        .accessibilityAddTraits(.updatesFrequently)
 
         Button("取消", action: onCancel)
           .font(.system(.subheadline, design: .rounded, weight: .bold))
@@ -557,12 +604,13 @@ private struct WardrobeImportOverlay: View {
           .frame(minWidth: 88, minHeight: 44)
           .buttonStyle(StickerButtonStyle())
       }
-      .padding(.horizontal, 30)
-      .frame(width: 304, height: 262)
+      .padding(30)
+      .frame(maxWidth: 324)
       .paperSurface()
+      .padding(24)
+      .accessibilityElement(children: .contain)
+      .accessibilityAddTraits(.isModal)
     }
-    .accessibilityElement(children: .combine)
-    .accessibilityLabel(stage.rawValue)
     .accessibilityIdentifier("wardrobe-import-overlay")
   }
 }

@@ -6,6 +6,7 @@ struct OutfitDetailView: View {
   let onDelete: () -> Void
 
   @Environment(\.dismiss) private var dismiss
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @Environment(\.modelContext) private var modelContext
   @State private var visualAsset: OutfitVisualAsset
   @State private var showShare = false
@@ -26,14 +27,7 @@ struct OutfitDetailView: View {
 
       ScrollView {
         VStack(spacing: 22) {
-          Picker("查看图片", selection: $visualAsset) {
-            ForEach(OutfitVisualAsset.allCases) { asset in
-              Text(asset.title)
-                .tag(asset)
-            }
-          }
-          .pickerStyle(.segmented)
-          .accessibilityIdentifier("history-visual-picker")
+          visualAssetPicker
 
           visualPreview
 
@@ -118,6 +112,8 @@ struct OutfitDetailView: View {
         .background(AdonisTheme.paper)
         .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
         .shadow(color: AdonisTheme.ink.opacity(0.14), radius: 16, y: 9)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(previewAccessibilityLabel)
 
     case .sticker:
       TransparencyGridBackground()
@@ -131,6 +127,46 @@ struct OutfitDetailView: View {
           RoundedRectangle(cornerRadius: 26, style: .continuous)
             .stroke(AdonisTheme.ink.opacity(0.08), lineWidth: 1)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(previewAccessibilityLabel)
+    }
+  }
+
+  @ViewBuilder
+  private var visualAssetPicker: some View {
+    if dynamicTypeSize.isAccessibilitySize {
+      Picker("查看图片", selection: $visualAsset) {
+        ForEach(OutfitVisualAsset.allCases) { asset in
+          Text(asset.title)
+            .tag(asset)
+        }
+      }
+      .pickerStyle(.menu)
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .padding(.horizontal, 14)
+      .frame(minHeight: 52)
+      .background(
+        AdonisTheme.paper,
+        in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+      )
+      .accessibilityIdentifier("history-visual-menu")
+    } else {
+      Picker("查看图片", selection: $visualAsset) {
+        ForEach(OutfitVisualAsset.allCases) { asset in
+          Text(asset.title)
+            .tag(asset)
+        }
+      }
+      .pickerStyle(.segmented)
+      .accessibilityIdentifier("history-visual-picker")
+    }
+  }
+
+  private var previewAccessibilityLabel: String {
+    switch visualAsset {
+    case .shareCard: "收藏卡预览，人物与衣物来自原始照片"
+    case .sticker: "透明贴纸预览，人物与衣物来自原始照片"
+    case .originalPhoto: "这条记录的原始照片预览"
     }
   }
 

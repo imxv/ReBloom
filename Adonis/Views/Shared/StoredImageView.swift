@@ -28,6 +28,8 @@ struct EmptyGardenView: View {
   let message: String
   let systemImage: String
 
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
   var body: some View {
     VStack(spacing: 14) {
       ZStack {
@@ -38,10 +40,12 @@ struct EmptyGardenView: View {
           .font(.system(size: 34, weight: .medium))
           .foregroundStyle(AdonisTheme.ink)
       }
+      .accessibilityHidden(true)
 
       Text(title)
         .font(.system(.title3, design: .rounded, weight: .bold))
         .foregroundStyle(AdonisTheme.ink)
+        .fixedSize(horizontal: false, vertical: true)
 
       Text(message)
         .font(.subheadline)
@@ -49,8 +53,11 @@ struct EmptyGardenView: View {
         .multilineTextAlignment(.center)
         .lineSpacing(3)
         .frame(maxWidth: 280)
+        .fixedSize(horizontal: false, vertical: true)
     }
     .frame(maxWidth: .infinity)
-    .padding(.vertical, 44)
+    .padding(.vertical, dynamicTypeSize.isAccessibilitySize ? 24 : 44)
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel("\(title)。\(message)")
   }
 }

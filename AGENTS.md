@@ -20,6 +20,8 @@
 
 修改贴纸质量状态、结构阈值、失败提示、默认结果模式、收藏后的质量信息、质量事件或导出字段前，还必须完整阅读 [贴纸低质量降级验证记录](docs/verification/2026-08-30-sticker-quality-degradation.md)，并运行 `make sample-regression`。当前检查只证明透明通道、主体连通和纯白边等结构事实，不能宣称已经判断身份或衣物保真；不得向普通用户展示内部阈值或置信分数。
 
+修改布局、文案、颜色、动效、导航、无障碍语义、处理浮层或前后台状态恢复前，还必须完整阅读 [无障碍与前后台恢复验证记录](docs/verification/2026-08-30-accessibility-and-lifecycle.md)，并运行 `make accessibility-regression`。当前门禁证明最大辅助字号、增强对比度、关键操作可达、处理取消和一次前后台往返；它不替代真实 VoiceOver、权限流程或真实 iPhone 验证。
+
 修改 OOTD 衣物发现、候选排序、自动关联或历史回填前，还必须完整阅读 [OOTD 衣物线索与确认验证记录](docs/verification/2026-08-29-ootd-garment-observations.md)。当前类别与颜色候选只是待确认建议，不是同款识别证据。
 
 修改 OOTD 单品的商品图补充、图片替换、重复判断或历史回填前，还必须完整阅读 [OOTD 单品补商品图验证记录](docs/verification/2026-08-29-ootd-product-image-upgrade.md)。补图必须原地升级同一个衣物实体，保留用户命名、备注与已确认分类；重复图片不得在没有用户确认的情况下自动合并两个单品。
@@ -61,4 +63,5 @@
 - 修改 Swift 源码后运行 `make check`，执行严格 `swift-format` 检查与通用 iOS 设备静态分析。
 - 修改用户主链路、数据模型或图像处理后运行 `make test`；不能用单次编译代替 UI 与像素证据。
 - 修改模型、提示、分割或贴纸/收藏卡后处理时，额外运行 `make sample-regression`；它同时校验仓库哈希、macOS Vision 字节级重生成、iOS 像素结构和四张收藏卡。
+- 修改布局、文案、颜色、动效、无障碍语义或生命周期状态时，额外运行 `make accessibility-regression`；脚本会临时启用最大辅助字号与增强对比度，并在退出时恢复模拟器设置。
 - 当前 iOS 26.5 模拟器的 Vision 推理上下文不可用。不得用假蒙版伪装成功；先阅读 [2026-08-29 iOS 本地 Demo 验证记录](docs/verification/2026-08-29-ios-local-demo.md)，并在可用真机上补做实时分割回归。

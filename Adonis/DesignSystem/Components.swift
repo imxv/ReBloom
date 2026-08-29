@@ -44,21 +44,33 @@ struct StickerTag: View {
   let color: Color
   var icon: String?
 
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
   var body: some View {
     HStack(spacing: 6) {
       if let icon {
         Image(systemName: icon)
       }
       Text(title)
+        .fixedSize(horizontal: false, vertical: true)
     }
     .font(.system(.caption, design: .rounded, weight: .bold))
     .foregroundStyle(AdonisTheme.ink)
     .padding(.horizontal, 12)
     .frame(minHeight: 32)
-    .background(color, in: Capsule())
+    .background(
+      color,
+      in: RoundedRectangle(
+        cornerRadius: dynamicTypeSize.isAccessibilitySize ? 14 : 100,
+        style: .continuous
+      )
+    )
     .overlay {
-      Capsule()
-        .stroke(.white.opacity(0.75), lineWidth: 2)
+      RoundedRectangle(
+        cornerRadius: dynamicTypeSize.isAccessibilitySize ? 14 : 100,
+        style: .continuous
+      )
+      .stroke(.white.opacity(0.75), lineWidth: 2)
     }
     .rotationEffect(.degrees(-1.5))
   }
@@ -77,12 +89,21 @@ struct ContentProvenanceNotice: View {
         .background(tint.opacity(0.65), in: Circle())
 
       VStack(alignment: .leading, spacing: 3) {
-        HStack(spacing: 7) {
-          Text(provenance.title)
-            .font(.system(.subheadline, design: .rounded, weight: .black))
-          Text("·")
-          Text(provenance.summary)
-            .font(.caption.weight(.semibold))
+        ViewThatFits(in: .horizontal) {
+          HStack(spacing: 7) {
+            Text(provenance.title)
+              .font(.system(.subheadline, design: .rounded, weight: .black))
+            Text("·")
+            Text(provenance.summary)
+              .font(.caption.weight(.semibold))
+          }
+
+          VStack(alignment: .leading, spacing: 2) {
+            Text(provenance.title)
+              .font(.system(.subheadline, design: .rounded, weight: .black))
+            Text(provenance.summary)
+              .font(.caption.weight(.semibold))
+          }
         }
         .foregroundStyle(AdonisTheme.ink)
 
@@ -208,7 +229,41 @@ struct StickerButtonStyle: ButtonStyle {
     configuration.label
       .scaleEffect(configuration.isPressed && !reduceMotion ? 0.96 : 1)
       .opacity(configuration.isPressed ? 0.88 : 1)
-      .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
+      .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: configuration.isPressed)
+  }
+}
+
+struct AccessibilityAdaptiveStack<Content: View>: View {
+  let spacing: CGFloat
+  let horizontalAlignment: HorizontalAlignment
+  let verticalAlignment: VerticalAlignment
+  private let content: Content
+
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+  init(
+    spacing: CGFloat = 12,
+    horizontalAlignment: HorizontalAlignment = .leading,
+    verticalAlignment: VerticalAlignment = .center,
+    @ViewBuilder content: () -> Content
+  ) {
+    self.spacing = spacing
+    self.horizontalAlignment = horizontalAlignment
+    self.verticalAlignment = verticalAlignment
+    self.content = content()
+  }
+
+  @ViewBuilder
+  var body: some View {
+    if dynamicTypeSize.isAccessibilitySize {
+      VStack(alignment: horizontalAlignment, spacing: spacing) {
+        content
+      }
+    } else {
+      HStack(alignment: verticalAlignment, spacing: spacing) {
+        content
+      }
+    }
   }
 }
 
@@ -217,16 +272,15 @@ struct PrimaryActionLabel: View {
   let systemImage: String
 
   var body: some View {
-    HStack(spacing: 10) {
-      Text(title)
-        .font(.system(.headline, design: .rounded, weight: .bold))
-      Image(systemName: systemImage)
-        .font(.system(size: 16, weight: .bold))
-    }
-    .foregroundStyle(.white)
-    .frame(maxWidth: .infinity, minHeight: 54)
-    .padding(.horizontal, 18)
-    .background(AdonisTheme.ink, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-    .shadow(color: AdonisTheme.ink.opacity(0.14), radius: 10, y: 6)
+    Label(title, systemImage: systemImage)
+      .font(.system(.headline, design: .rounded, weight: .bold))
+      .multilineTextAlignment(.center)
+      .fixedSize(horizontal: false, vertical: true)
+      .foregroundStyle(.white)
+      .frame(maxWidth: .infinity, minHeight: 54)
+      .padding(.horizontal, 18)
+      .padding(.vertical, 10)
+      .background(AdonisTheme.ink, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+      .shadow(color: AdonisTheme.ink.opacity(0.14), radius: 10, y: 6)
   }
 }

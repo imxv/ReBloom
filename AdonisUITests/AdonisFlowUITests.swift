@@ -2,6 +2,79 @@ import XCTest
 
 final class AdonisFlowUITests: XCTestCase {
   @MainActor
+  func testAccessibleCoreFlowSurvivesBackgroundAndKeepsActionsReachable() {
+    let app = XCUIApplication()
+    app.launchArguments.append("-ui-testing")
+    app.launch()
+
+    let hero = app.descendants(matching: .any)["create-hero"]
+    XCTAssertTrue(hero.waitForExistence(timeout: 8))
+    XCTAssertTrue(hero.label.contains("一张照片"))
+    XCTAssertTrue(hero.label.contains("保留原来的你"))
+    keepScreenshot(named: "Adonis-accessibility-create")
+
+    let firstSample = app.buttons["sample-01"]
+    XCTAssertTrue(firstSample.waitForExistence(timeout: 5))
+    XCTAssertTrue(scrollToHittable(firstSample, in: app, attempts: 8))
+    firstSample.tap()
+
+    let resultTitle = app.staticTexts["result-title"]
+    XCTAssertTrue(resultTitle.waitForExistence(timeout: 10))
+    XCTAssertEqual(resultTitle.label, "今天开了一朵花")
+    let resultModeMenu = app.descendants(matching: .any)["result-mode-menu"]
+    let resultModePicker = app.segmentedControls["result-mode-picker"]
+    XCTAssertTrue(resultModeMenu.exists || resultModePicker.exists)
+    keepScreenshot(named: "Adonis-accessibility-result")
+
+    XCUIDevice.shared.press(.home)
+    let backgroundExpectation = XCTNSPredicateExpectation(
+      predicate: NSPredicate { _, _ in app.state != .runningForeground },
+      object: nil
+    )
+    XCTAssertEqual(XCTWaiter.wait(for: [backgroundExpectation], timeout: 3), .completed)
+    app.activate()
+    XCTAssertTrue(resultTitle.waitForExistence(timeout: 8))
+
+    let saveButton = app.buttons["save-today"]
+    XCTAssertTrue(saveButton.waitForExistence(timeout: 4))
+    XCTAssertTrue(scrollToHittable(saveButton, in: app, attempts: 8))
+    saveButton.tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 4))
+
+    let makeAnother = app.buttons["make-another"]
+    XCTAssertTrue(scrollToHittable(makeAnother, in: app, attempts: 4))
+    makeAnother.tap()
+
+    app.tabBars.buttons["衣橱"].tap()
+    let addFirstItem = app.buttons["add-first-wardrobe-item"]
+    XCTAssertTrue(addFirstItem.waitForExistence(timeout: 5))
+    XCTAssertTrue(scrollToHittable(addFirstItem, in: app, attempts: 8))
+    keepScreenshot(named: "Adonis-accessibility-wardrobe")
+  }
+
+  @MainActor
+  func testProcessingOverlayKeepsCancelReachable() {
+    let app = XCUIApplication()
+    app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-hold-generation"])
+    app.launch()
+
+    let firstSample = app.buttons["sample-01"]
+    XCTAssertTrue(firstSample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(firstSample, in: app, attempts: 8))
+    firstSample.tap()
+
+    let overlay = app.descendants(matching: .any)["processing-overlay"]
+    XCTAssertTrue(overlay.waitForExistence(timeout: 3))
+    let cancel = app.buttons["processing-cancel"]
+    XCTAssertTrue(cancel.waitForExistence(timeout: 3))
+    XCTAssertTrue(cancel.isHittable)
+    cancel.tap()
+
+    XCTAssertTrue(firstSample.waitForExistence(timeout: 4))
+    XCTAssertFalse(overlay.exists)
+  }
+
+  @MainActor
   func testTopLevelCreateAndWardrobeScreensRemainReadable() {
     let app = XCUIApplication()
     app.launchArguments.append("-ui-testing")
@@ -433,5 +506,17 @@ final class AdonisFlowUITests: XCTestCase {
     attachment.name = name
     attachment.lifetime = .keepAlways
     add(attachment)
+  }
+
+  @MainActor
+  private func scrollToHittable(
+    _ element: XCUIElement,
+    in app: XCUIApplication,
+    attempts: Int
+  ) -> Bool {
+    for _ in 0..<attempts where !element.isHittable {
+      app.swipeUp()
+    }
+    return element.isHittable
   }
 }

@@ -22,6 +22,8 @@ struct WardrobeMetadataChip: View {
   var color = AdonisTheme.leaf.opacity(0.22)
   var colorHex: String?
 
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
   var body: some View {
     HStack(spacing: 7) {
       if colorHex != nil {
@@ -31,13 +33,20 @@ struct WardrobeMetadataChip: View {
           .font(.system(size: 12, weight: .bold))
       }
       Text(title)
-        .lineLimit(1)
+        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+        .fixedSize(horizontal: false, vertical: true)
     }
     .font(.system(.caption, design: .rounded, weight: .bold))
     .foregroundStyle(AdonisTheme.ink)
     .padding(.horizontal, 11)
     .frame(minHeight: 34)
-    .background(color, in: Capsule())
+    .background(
+      color,
+      in: RoundedRectangle(
+        cornerRadius: dynamicTypeSize.isAccessibilitySize ? 14 : 100,
+        style: .continuous
+      )
+    )
   }
 }
 

@@ -7,6 +7,7 @@ struct GenerationResultView: View {
   let onReset: () -> Void
 
   @Environment(\.dismiss) private var dismiss
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @State private var mode: OutfitVisualAsset
   @State private var isSaved: Bool
   @State private var showShare = false
@@ -37,14 +38,7 @@ struct GenerationResultView: View {
         VStack(spacing: 20) {
           resultHeader
 
-          Picker("预览方式", selection: $mode) {
-            ForEach(OutfitVisualAsset.allCases) { mode in
-              Text(mode.title)
-                .tag(mode)
-            }
-          }
-          .pickerStyle(.segmented)
-          .accessibilityIdentifier("result-mode-picker")
+          resultModePicker
 
           preview
 
@@ -52,7 +46,7 @@ struct GenerationResultView: View {
             StickerQualityNotice(assessment: draft.qualityAssessment)
           }
 
-          HStack(spacing: 8) {
+          AccessibilityAdaptiveStack(spacing: 8) {
             StickerTag(
               title: outputTagTitle,
               color: mode == .sticker ? AdonisTheme.leaf.opacity(0.5) : AdonisTheme.butter,
@@ -105,6 +99,7 @@ struct GenerationResultView: View {
           .font(.system(size: 17, weight: .bold))
           .foregroundStyle(AdonisTheme.ink)
       }
+      .accessibilityHidden(true)
 
       VStack(alignment: .leading, spacing: 4) {
         Text(isSaved ? "衣橱线索已经留好" : "还看到了穿搭里的衣服")
@@ -136,6 +131,8 @@ struct GenerationResultView: View {
         Text(draft.qualityAssessment.requiresReview ? "先看看这张贴纸" : "今天开了一朵花")
           .font(.system(.title2, design: .rounded, weight: .black))
           .foregroundStyle(AdonisTheme.ink)
+          .fixedSize(horizontal: false, vertical: true)
+          .accessibilityAddTraits(.isHeader)
           .accessibilityIdentifier("result-title")
         Text("Bloom No. \(String(format: "%03d", draft.bloomNumber))")
           .font(.system(.subheadline, design: .monospaced, weight: .semibold))
@@ -172,6 +169,8 @@ struct GenerationResultView: View {
             .stroke(AdonisTheme.ink.opacity(0.08), lineWidth: 1)
         }
         .transition(.opacity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("收藏卡预览，人物与衣物来自原始照片")
 
     case .sticker:
       TransparencyGridBackground()
@@ -188,6 +187,8 @@ struct GenerationResultView: View {
             .stroke(AdonisTheme.ink.opacity(0.08), lineWidth: 1)
         }
         .transition(.opacity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("透明贴纸预览，人物与衣物来自原始照片")
 
     case .originalPhoto:
       Image(uiImage: draft.sourceImage)
@@ -201,6 +202,38 @@ struct GenerationResultView: View {
             .stroke(AdonisTheme.ink.opacity(0.08), lineWidth: 1)
         }
         .transition(.opacity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("你选择的原始照片预览")
+    }
+  }
+
+  @ViewBuilder
+  private var resultModePicker: some View {
+    if dynamicTypeSize.isAccessibilitySize {
+      Picker("预览内容", selection: $mode) {
+        ForEach(OutfitVisualAsset.allCases) { mode in
+          Text(mode.title)
+            .tag(mode)
+        }
+      }
+      .pickerStyle(.menu)
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .padding(.horizontal, 14)
+      .frame(minHeight: 52)
+      .background(
+        AdonisTheme.paper,
+        in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+      )
+      .accessibilityIdentifier("result-mode-menu")
+    } else {
+      Picker("预览方式", selection: $mode) {
+        ForEach(OutfitVisualAsset.allCases) { mode in
+          Text(mode.title)
+            .tag(mode)
+        }
+      }
+      .pickerStyle(.segmented)
+      .accessibilityIdentifier("result-mode-picker")
     }
   }
 
@@ -247,7 +280,7 @@ struct GenerationResultView: View {
       .disabled(isSaved)
       .accessibilityIdentifier("save-today")
 
-      HStack(spacing: 12) {
+      AccessibilityAdaptiveStack(spacing: 12) {
         Button {
           showShare = true
         } label: {

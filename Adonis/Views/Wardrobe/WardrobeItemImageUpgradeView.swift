@@ -51,7 +51,7 @@ struct WardrobeItemImageUpgradeView: View {
       HStack(alignment: .top, spacing: 12) {
         Image(systemName: isUpgraded ? "checkmark.seal.fill" : "photo.badge.plus")
           .font(.system(size: 20, weight: .bold))
-          .foregroundStyle(isUpgraded ? AdonisTheme.leaf : AdonisTheme.pomegranate)
+          .foregroundStyle(isUpgraded ? AdonisTheme.leafInk : AdonisTheme.pomegranateInk)
           .frame(width: 42, height: 42)
           .background(
             (isUpgraded ? AdonisTheme.leaf : AdonisTheme.butter).opacity(0.18),

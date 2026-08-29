@@ -3,6 +3,7 @@ import SwiftUI
 
 struct LocalSettingsView: View {
   @Environment(\.dismiss) private var dismiss
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @Environment(\.modelContext) private var modelContext
   @Query(sort: \AppEvent.createdAt, order: .reverse) private var events: [AppEvent]
   @Query private var records: [OutfitRecord]
@@ -179,7 +180,7 @@ struct LocalSettingsView: View {
           .foregroundStyle(.secondary)
       } else {
         ForEach(events.prefix(12)) { event in
-          HStack {
+          AccessibilityAdaptiveStack(spacing: 8, verticalAlignment: .top) {
             VStack(alignment: .leading, spacing: 3) {
               Text(event.kind.title)
               Text(AdonisDateText.eventTime(event.createdAt))
@@ -189,10 +190,10 @@ struct LocalSettingsView: View {
                 Text(trace)
                   .font(.system(.caption2, design: .monospaced))
                   .foregroundStyle(.secondary)
-                  .lineLimit(1)
+                  .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
               }
             }
-            Spacer()
+            .frame(maxWidth: .infinity, alignment: .leading)
             if let duration = event.durationMilliseconds {
               Text("\(duration) ms")
                 .font(.system(.caption, design: .monospaced))

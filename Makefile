@@ -4,7 +4,7 @@ SCHEME := Adonis
 DESTINATION := platform=iOS Simulator,name=iPhone 17 Pro,OS=latest
 DERIVED_DATA := .derivedData
 
-.PHONY: project build test sample-regression lint format analyze check clean
+.PHONY: project build test sample-regression accessibility-regression lint format analyze check clean
 
 project:
 	./scripts/xcodegen.sh generate --spec project.yml
@@ -21,6 +21,9 @@ sample-regression: project
 		-only-testing:AdonisTests/SampleRegressionTests \
 		-only-testing:AdonisTests/StickerProcessorTests \
 		-only-testing:AdonisTests/StickerQualityAssessorTests
+
+accessibility-regression: project
+	./scripts/verify_accessibility_regression.sh
 
 lint:
 	xcrun swift-format lint --recursive --parallel --strict Adonis AdonisShared AdonisShareExtension AdonisTests AdonisUITests

@@ -4,6 +4,8 @@ import SwiftUI
 import UIKit
 
 struct CreateView: View {
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @Environment(\.modelContext) private var modelContext
   @Query(sort: \OutfitRecord.createdAt, order: .reverse) private var records: [OutfitRecord]
 
@@ -48,7 +50,9 @@ struct CreateView: View {
           stage: processingStage,
           onCancel: cancelGeneration
         )
-        .transition(.opacity.combined(with: .scale(scale: 0.98)))
+        .transition(
+          reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.98))
+        )
         .zIndex(2)
       }
     }
@@ -132,9 +136,9 @@ struct CreateView: View {
         StickerTag(title: "今天也值得收藏", color: AdonisTheme.butter, icon: "heart.fill")
 
         Text("一张照片，\n变成今天的贴纸")
-          .font(.system(size: 38, weight: .black, design: .rounded))
+          .font(.system(.largeTitle, design: .rounded, weight: .black))
           .foregroundStyle(AdonisTheme.ink)
-          .minimumScaleFactor(0.8)
+          .fixedSize(horizontal: false, vertical: true)
 
         Text("保留原来的你，只把背景轻轻拿走。")
           .font(.system(.subheadline, design: .rounded, weight: .medium))
@@ -142,7 +146,7 @@ struct CreateView: View {
       }
       .padding(26)
     }
-    .frame(height: 290)
+    .frame(maxWidth: .infinity, minHeight: 290, alignment: .bottomLeading)
     .clipShape(RoundedRectangle(cornerRadius: AdonisTheme.largeRadius, style: .continuous))
     .shadow(color: AdonisTheme.ink.opacity(0.08), radius: 18, y: 10)
     .overlay(alignment: .topTrailing) {
@@ -183,15 +187,7 @@ struct CreateView: View {
 
   private var sampleSection: some View {
     VStack(alignment: .leading, spacing: 14) {
-      HStack(alignment: .firstTextBaseline) {
-        Text("先用样片玩一下")
-          .font(.system(.title3, design: .rounded, weight: .bold))
-          .foregroundStyle(AdonisTheme.ink)
-        Spacer()
-        Text("全部本机处理")
-          .font(.caption)
-          .foregroundStyle(AdonisTheme.secondaryInk)
-      }
+      sampleSectionHeader
 
       ScrollView(.horizontal) {
         HStack(spacing: 14) {
@@ -219,11 +215,36 @@ struct CreateView: View {
     }
   }
 
+  @ViewBuilder
+  private var sampleSectionHeader: some View {
+    if dynamicTypeSize.isAccessibilitySize {
+      VStack(alignment: .leading, spacing: 4) {
+        Text("先用样片玩一下")
+          .font(.system(.title3, design: .rounded, weight: .bold))
+          .foregroundStyle(AdonisTheme.ink)
+        Text("全部本机处理")
+          .font(.caption)
+          .foregroundStyle(AdonisTheme.secondaryInk)
+      }
+    } else {
+      HStack(alignment: .firstTextBaseline) {
+        Text("先用样片玩一下")
+          .font(.system(.title3, design: .rounded, weight: .bold))
+          .foregroundStyle(AdonisTheme.ink)
+        Spacer()
+        Text("全部本机处理")
+          .font(.caption)
+          .foregroundStyle(AdonisTheme.secondaryInk)
+      }
+    }
+  }
+
   private var privacyNote: some View {
     HStack(alignment: .top, spacing: 10) {
       Image(systemName: "lock.fill")
-        .foregroundStyle(AdonisTheme.leaf)
+        .foregroundStyle(AdonisTheme.leafInk)
         .frame(width: 24)
+        .accessibilityHidden(true)
       Text("这个 Demo 没有账号和网络请求。照片、贴纸与穿搭记录只保存在当前设备。")
         .font(.footnote)
         .foregroundStyle(AdonisTheme.secondaryInk)
@@ -231,7 +252,9 @@ struct CreateView: View {
     }
     .padding(16)
     .background(
-      AdonisTheme.leaf.opacity(0.11), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+      AdonisTheme.leaf.opacity(0.11), in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+    )
+    .accessibilityElement(children: .combine)
   }
 
   @MainActor
@@ -303,6 +326,11 @@ struct CreateView: View {
       processingVersion: AdonisProcessingVersion.generationPipeline,
       in: modelContext
     )
+
+    if ProcessInfo.processInfo.arguments.contains("-ui-testing-hold-generation") {
+      try? await Task.sleep(for: .seconds(15))
+      guard activeGenerationID == generationID else { return }
+    }
 
     do {
       let processed: StickerProcessingResult
@@ -500,6 +528,8 @@ private struct SamplePhotoButton: View {
   let sample: SamplePhoto
   let action: () -> Void
 
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
   var body: some View {
     Button(action: action) {
       VStack(alignment: .leading, spacing: 9) {
@@ -512,7 +542,7 @@ private struct SamplePhotoButton: View {
             AdonisTheme.lavender.opacity(0.4)
           }
         }
-        .frame(width: 144, height: 176)
+        .frame(width: imageWidth, height: 176)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay {
           RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -526,16 +556,25 @@ private struct SamplePhotoButton: View {
         Text(sample.subtitle)
           .font(.caption2)
           .foregroundStyle(AdonisTheme.secondaryInk)
-          .lineLimit(1)
+          .lineLimit(dynamicTypeSize.isAccessibilitySize ? 3 : 1)
+          .fixedSize(horizontal: false, vertical: true)
       }
       .padding(9)
-      .frame(width: 162, alignment: .leading)
+      .frame(width: cardWidth, alignment: .leading)
       .background(AdonisTheme.paper, in: RoundedRectangle(cornerRadius: 25, style: .continuous))
       .shadow(color: AdonisTheme.ink.opacity(0.08), radius: 10, y: 5)
     }
     .buttonStyle(StickerButtonStyle())
     .accessibilityLabel("使用样片：\(sample.title)")
     .accessibilityIdentifier(sample.id)
+  }
+
+  private var cardWidth: CGFloat {
+    dynamicTypeSize.isAccessibilitySize ? 220 : 162
+  }
+
+  private var imageWidth: CGFloat {
+    cardWidth - 18
   }
 }
 
@@ -549,6 +588,7 @@ private struct ProcessingOverlay: View {
     ZStack {
       Color.black.opacity(0.22)
         .ignoresSafeArea()
+        .accessibilityHidden(true)
 
       VStack(spacing: 20) {
         ZStack {
@@ -569,16 +609,25 @@ private struct ProcessingOverlay: View {
             .font(.footnote)
             .foregroundStyle(AdonisTheme.secondaryInk)
         }
+        .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(stage.rawValue)
+        .accessibilityAddTraits(.updatesFrequently)
 
         Button("取消", action: onCancel)
           .font(.system(.subheadline, design: .rounded, weight: .bold))
           .foregroundStyle(AdonisTheme.secondaryInk)
           .frame(minWidth: 88, minHeight: 44)
           .buttonStyle(StickerButtonStyle())
+          .accessibilityIdentifier("processing-cancel")
       }
-      .padding(.horizontal, 30)
-      .frame(width: 300, height: 270)
+      .padding(30)
+      .frame(maxWidth: 320)
       .paperSurface()
+      .padding(24)
+      .accessibilityElement(children: .contain)
+      .accessibilityAddTraits(.isModal)
     }
     .onAppear {
       guard !reduceMotion else { return }
@@ -586,8 +635,6 @@ private struct ProcessingOverlay: View {
         rotation = 360
       }
     }
-    .accessibilityElement(children: .combine)
-    .accessibilityLabel(stage.rawValue)
     .accessibilityIdentifier("processing-overlay")
   }
 }

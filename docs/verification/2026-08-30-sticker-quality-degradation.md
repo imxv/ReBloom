@@ -89,9 +89,9 @@ xcodebuild -project Adonis.xcodeproj -scheme Adonis \
 
 - `make sample-regression`：四张样片哈希与字节级重生成通过，11 个图片专项测试通过。
 - `make check`：严格 `swift-format` 与通用 iOS 设备静态分析通过。
-- `make test`：48 个单元测试与 10 个 UI 流程测试，共 58 项通过、0 失败。
-- `xcresulttool` 独立汇总为 58 通过、0 失败、0 跳过。
-- 完整结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_00-54-14-+0800.xcresult`。
+- `make test`：49 个单元测试与 12 个 UI 流程测试，共 61 项通过、0 失败。
+- `xcresulttool` 独立汇总为 61 通过、0 失败、0 跳过。
+- 完整结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_01-39-31-+0800.xcresult`。
 
 ## 7. 尚未证明
 

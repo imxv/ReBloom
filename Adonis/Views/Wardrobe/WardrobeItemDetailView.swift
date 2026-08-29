@@ -6,6 +6,7 @@ struct WardrobeItemDetailView: View {
   let onDelete: () -> Void
 
   @Environment(\.dismiss) private var dismiss
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @Environment(\.modelContext) private var modelContext
   @State private var showDeleteConfirmation = false
   @State private var showOptionalDetails = false
@@ -50,7 +51,7 @@ struct WardrobeItemDetailView: View {
                 .foregroundStyle(AdonisTheme.secondaryInk)
             }
 
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 94), spacing: 10)], spacing: 10) {
+            LazyVGrid(columns: categoryColumns, spacing: 10) {
               ForEach(WardrobeCategory.allCases) { category in
                 Button {
                   select(category)
@@ -76,8 +77,9 @@ struct WardrobeItemDetailView: View {
 
           HStack(alignment: .top, spacing: 10) {
             Image(systemName: "lock.fill")
-              .foregroundStyle(AdonisTheme.leaf)
+              .foregroundStyle(AdonisTheme.leafInk)
               .frame(width: 22)
+              .accessibilityHidden(true)
             Text("颜色和款式只在当前设备上分析；图片不会因为加入衣橱而上传。")
               .font(.footnote)
               .foregroundStyle(AdonisTheme.secondaryInk)
@@ -88,6 +90,7 @@ struct WardrobeItemDetailView: View {
             AdonisTheme.leaf.opacity(0.11),
             in: RoundedRectangle(cornerRadius: 17, style: .continuous)
           )
+          .accessibilityElement(children: .combine)
 
           Button(role: .destructive) {
             showDeleteConfirmation = true
@@ -142,7 +145,7 @@ struct WardrobeItemDetailView: View {
           Text(item.name)
             .font(.system(.title3, design: .rounded, weight: .bold))
             .foregroundStyle(AdonisTheme.ink)
-            .lineLimit(2)
+            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
         }
       }
 
@@ -231,6 +234,13 @@ struct WardrobeItemDetailView: View {
       AdonisTheme.paper,
       in: RoundedRectangle(cornerRadius: 22, style: .continuous)
     )
+  }
+
+  private var categoryColumns: [GridItem] {
+    if dynamicTypeSize.isAccessibilitySize {
+      return [GridItem(.flexible())]
+    }
+    return [GridItem(.adaptive(minimum: 94), spacing: 10)]
   }
 
   private var categoryHelperText: String {
