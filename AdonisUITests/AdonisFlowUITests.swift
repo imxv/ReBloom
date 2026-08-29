@@ -155,6 +155,63 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  func testWardrobeItemCanExplicitlyReconnectPastOutfit() {
+    let app = XCUIApplication()
+    app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-wardrobe-import"])
+    app.launch()
+
+    let sample = app.buttons["sample-02"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 5))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 8))
+    app.buttons["save-today"].tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 3))
+    app.buttons["make-another"].tap()
+
+    app.tabBars.buttons["衣橱"].tap()
+    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 0)
+    let addTestItem = app.buttons["add-test-wardrobe-item"]
+    XCTAssertTrue(addTestItem.waitForExistence(timeout: 5))
+    addTestItem.tap()
+    XCTAssertTrue(app.staticTexts["wardrobe-analysis-summary"].waitForExistence(timeout: 8))
+    for _ in 0..<3 {
+      app.swipeUp()
+    }
+    app.buttons["wardrobe-category-上装"].tap()
+    XCTAssertTrue(app.staticTexts["棕色上装"].waitForExistence(timeout: 3))
+    app.buttons["完成"].tap()
+
+    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 1)
+    app.buttons.matching(identifier: "wardrobe-item-card").firstMatch.tap()
+
+    let confirm = app.buttons["wardrobe-history-confirm"]
+    for _ in 0..<4 where !confirm.isHittable {
+      app.swipeUp()
+    }
+    XCTAssertTrue(confirm.waitForExistence(timeout: 4))
+    app.swipeUp()
+    XCTAssertTrue(confirm.isHittable)
+    keepScreenshot(named: "Adonis-wardrobe-history-candidate")
+    confirm.tap()
+
+    XCTAssertTrue(app.staticTexts["wardrobe-history-linked"].waitForExistence(timeout: 4))
+    XCTAssertTrue(app.staticTexts["wardrobe-history-linked"].label.contains("1 天"))
+    keepScreenshot(named: "Adonis-wardrobe-history-linked")
+
+    app.buttons["完成"].tap()
+    app.tabBars.buttons["花历"].tap()
+    let recordCard = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(recordCard.waitForExistence(timeout: 5))
+    recordCard.tap()
+
+    let linked = app.staticTexts["garment-linked-upperBody"]
+    for _ in 0..<4 where !linked.exists {
+      app.swipeUp()
+    }
+    XCTAssertTrue(linked.waitForExistence(timeout: 4))
+  }
+
+  @MainActor
   private func keepScreenshot(named name: String) {
     let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
     attachment.name = name

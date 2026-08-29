@@ -38,6 +38,8 @@ struct WardrobeItemDetailView: View {
             )
           }
 
+          WardrobeHistorySuggestionsView(item: item)
+
           VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
               Text("不对的话，点一下改")
