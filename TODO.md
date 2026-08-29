@@ -88,7 +88,7 @@ M0 退出条件：
 - [x] **ADO-107：实现最小历史视图。** 花历按日期显示记录，并能再次打开、分享或删除。
 - [ ] **ADO-108：完成真实设备或目标浏览器回归。** 验证上传、生成、保存、重试和删除的完整链路。
 
-  模拟器当前 73 项测试（58 个单元测试与 15 个 UI 流程测试）、最大辅助字号与增强对比度界面检查、前后台恢复、图片像素检查、90 秒超时降级、生成性能诊断和通用 iOS 真机静态分析已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[无障碍与前后台恢复验证](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[固定样片回归基线](docs/verification/2026-08-30-sample-regression-baseline.md)、[贴纸低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)、[生成超时与基础贴纸降级验证](docs/verification/2026-08-30-generation-timeout-fallback.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)、[生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)与 [生成性能和预算验证](docs/verification/2026-08-30-generation-performance-budget.md)。
+  模拟器当前 85 项测试（67 个单元测试与 18 个 UI 流程测试）、最大辅助字号与增强对比度界面检查、前后台恢复、已收藏记录进程终止后重新启动恢复、图片像素检查、90 秒超时降级、生成性能诊断和通用 iOS 真机静态分析已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[冷启动持久化验证](docs/verification/2026-08-30-cold-launch-persistence.md)、[无障碍与前后台恢复验证](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[固定样片回归基线](docs/verification/2026-08-30-sample-regression-baseline.md)、[贴纸低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)、[生成超时与基础贴纸降级验证](docs/verification/2026-08-30-generation-timeout-fallback.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)、[生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)与 [生成性能和预算验证](docs/verification/2026-08-30-generation-performance-budget.md)。
 
 M1 退出条件：新用户无需建立衣橱即可完成一次真实 OOTD 记录，并能再次找到或删除它。
 
@@ -156,7 +156,7 @@ M4 退出条件：历史数据可以生成用户愿意再次打开、保存或�
 - [x] **ADO-Q06：可观测性。** 本地 Demo 记录不含图片内容的开始、成功、失败、超时、取消、保存、删除、复用、纠正、线索创建、关联、排除、暂放和补商品图事件，并追踪相册/相机/样片/其他 App 输入来源及贴纸、卡片、衣橱分析、共享收件箱、OOTD 观察、候选排序、补图事务和历史回填版本。生成终态还保存结构化阶段耗时、预算、中断位置、重试、外部请求和超时降级类型；事件落库失败会留下不含用户内容的系统日志，而不是静默忽略。
 - [ ] **ADO-Q07：可访问性与真实设备体验。** 覆盖相册权限、相机权限、弱网、前后台切换和辅助功能。
 
-  已完成两个本地纵向切片。无障碍与生命周期部分覆盖最大辅助字号、增强对比度、关键 VoiceOver 语义、44 点触控区域、减弱动态效果分支、处理中取消，以及结果页前后台往返；相机部分在用户点击“现在拍一张”后才判断权限，已区分未决定、已允许、已拒绝、系统限制和设备不可用，拒绝态提供系统设置入口，限制态继续引导相册且不提供无效设置承诺。权限服务单元测试与两条注入状态 UI 回归已通过。真实 VoiceOver 朗读与手势、真实系统相机授权弹窗、设置往返、实际拍摄、相册权限、真实 iPhone、重启和未来联网后的弱网仍未验证，因此任务保持未完成。证据见 [无障碍与前后台恢复验证记录](docs/verification/2026-08-30-accessibility-and-lifecycle.md)与 [相机权限恢复验证记录](docs/verification/2026-08-30-camera-permission-recovery.md)。
+  已完成三个本地纵向切片。无障碍与生命周期部分覆盖最大辅助字号、增强对比度、关键 VoiceOver 语义、44 点触控区域、减弱动态效果分支、处理中取消，以及结果页前后台往返；相机部分在用户点击“现在拍一张”后才判断权限，已区分未决定、已允许、已拒绝、系统限制和设备不可用，拒绝态提供系统设置入口，限制态继续引导相册且不提供无效设置承诺；持久化部分会在收藏成功后真实终止并重新启动模拟器 App，确认花历只恢复原来的 1 条记录，收藏卡与来源说明仍可打开。真实 VoiceOver 朗读与手势、真实系统相机授权弹窗、设置往返、实际拍摄、相册权限、真实 iPhone、整机重启、未收藏草稿恢复和未来联网后的弱网仍未验证，因此任务保持未完成。证据见 [无障碍与前后台恢复验证记录](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[相机权限恢复验证记录](docs/verification/2026-08-30-camera-permission-recovery.md)与 [已收藏 OOTD 冷启动持久化验证记录](docs/verification/2026-08-30-cold-launch-persistence.md)。
 
 ## 以后再做
 

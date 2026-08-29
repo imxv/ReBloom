@@ -1,3 +1,4 @@
+import Foundation
 import XCTest
 
 final class AdonisFlowUITests: XCTestCase {
@@ -364,6 +365,44 @@ final class AdonisFlowUITests: XCTestCase {
     }
     XCTAssertTrue(historyProvenance.isHittable)
     keepScreenshot(named: "Adonis-content-provenance-history")
+  }
+
+  @MainActor
+  func testCollectedOutfitSurvivesProcessTerminationAndRelaunch() {
+    let app = XCUIApplication()
+    let persistentStoreID = UUID().uuidString
+    app.launchArguments.append(
+      contentsOf: ["-ui-testing", "-ui-testing-persistent-store", persistentStoreID]
+    )
+    app.launch()
+
+    let firstSample = app.buttons["sample-01"]
+    XCTAssertTrue(firstSample.waitForExistence(timeout: 8))
+    firstSample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 8))
+
+    let saveButton = app.buttons["save-today"]
+    XCTAssertTrue(scrollToHittable(saveButton, in: app, attempts: 3))
+    saveButton.tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 3))
+
+    app.terminate()
+    app.launch()
+
+    XCTAssertTrue(app.buttons["sample-01"].waitForExistence(timeout: 8))
+    app.tabBars.buttons["花历"].tap()
+    let recordCard = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(recordCard.waitForExistence(timeout: 5))
+    XCTAssertEqual(app.buttons.matching(identifier: "bloom-record-card").count, 1)
+    recordCard.tap()
+
+    let historyModes = app.segmentedControls["history-visual-picker"]
+    XCTAssertTrue(historyModes.buttons["收藏卡"].waitForExistence(timeout: 5))
+    XCTAssertTrue(
+      app.descendants(matching: .any)["content-provenance-programmatic_composition"]
+        .waitForExistence(timeout: 3)
+    )
+    keepScreenshot(named: "Adonis-cold-launch-restored-outfit")
   }
 
   @MainActor

@@ -1,3 +1,4 @@
+import Foundation
 import SwiftData
 import SwiftUI
 
@@ -12,15 +13,35 @@ struct AdonisApp: App {
       WardrobeItem.self,
       AppEvent.self,
     ])
-    let isRunningTests =
-      ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
-      || ProcessInfo.processInfo.arguments.contains("-ui-testing")
-    let configuration = ModelConfiguration(
-      schema: schema,
-      isStoredInMemoryOnly: isRunningTests
-    )
-
     do {
+      let storeMode = AdonisModelStorePolicy.resolve(
+        arguments: ProcessInfo.processInfo.arguments,
+        environment: ProcessInfo.processInfo.environment
+      )
+      let configuration: ModelConfiguration
+
+      switch storeMode {
+      case .production:
+        configuration = ModelConfiguration(schema: schema)
+      case .transientTest:
+        configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+      case .persistentUITest(let identifier):
+        let storeURL = AdonisModelStorePolicy.persistentUITestStoreURL(
+          identifier: identifier,
+          baseDirectory: FileManager.default.temporaryDirectory
+        )
+        try FileManager.default.createDirectory(
+          at: storeURL.deletingLastPathComponent(),
+          withIntermediateDirectories: true
+        )
+        configuration = ModelConfiguration(
+          "AdonisUITestStore",
+          schema: schema,
+          url: storeURL,
+          cloudKitDatabase: .none
+        )
+      }
+
       modelContainer = try ModelContainer(
         for: schema,
         configurations: [configuration]

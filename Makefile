@@ -4,7 +4,7 @@ SCHEME := Adonis
 DESTINATION := platform=iOS Simulator,name=iPhone 17 Pro,OS=latest
 DERIVED_DATA := .derivedData
 
-.PHONY: project build test sample-regression accessibility-regression permission-regression performance-regression lint format analyze check clean
+.PHONY: project build test sample-regression accessibility-regression permission-regression persistence-regression performance-regression lint format analyze check clean
 
 project:
 	./scripts/xcodegen.sh generate --spec project.yml
@@ -30,6 +30,11 @@ permission-regression: project
 		-only-testing:AdonisTests/CameraAccessServiceTests \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testDeniedCameraPermissionOffersSettingsWithoutOpeningCamera \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testRestrictedCameraPermissionKeepsAlbumAlternativeWithoutSettingsShortcut
+
+persistence-regression: project
+	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
+		-only-testing:AdonisTests/ModelStorePolicyTests \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testCollectedOutfitSurvivesProcessTerminationAndRelaunch
 
 performance-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
