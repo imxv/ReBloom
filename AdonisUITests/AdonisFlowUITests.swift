@@ -93,6 +93,61 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  func testLocalDataCanBeReviewedAndExported() {
+    let app = XCUIApplication()
+    app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-privacy-data"])
+    app.launch()
+
+    let settings = app.buttons["本地设置"]
+    XCTAssertTrue(settings.waitForExistence(timeout: 8))
+    settings.tap()
+    XCTAssertTrue(app.navigationBars["本地设置"].waitForExistence(timeout: 5))
+
+    let wardrobeCount = app.descendants(matching: .any)["privacy-wardrobe-count"]
+    let inboxCount = app.descendants(matching: .any)["privacy-inbox-count"]
+    XCTAssertTrue(wardrobeCount.waitForExistence(timeout: 5))
+    XCTAssertEqual(wardrobeCount.label, "衣橱单品 1")
+    XCTAssertEqual(inboxCount.label, "待导入图片 1")
+    keepScreenshot(named: "Adonis-local-data-controls")
+
+    app.buttons["export-personal-data"].tap()
+    XCTAssertTrue(app.buttons["生成导出包"].waitForExistence(timeout: 3))
+    app.buttons["生成导出包"].tap()
+    let closeShareSheet = app.buttons["关闭"]
+    XCTAssertTrue(closeShareSheet.waitForExistence(timeout: 10))
+    keepScreenshot(named: "Adonis-local-data-export-share")
+  }
+
+  @MainActor
+  func testLocalDataCanBeDeletedCompletely() {
+    let app = XCUIApplication()
+    app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-privacy-data"])
+    app.launch()
+
+    let settings = app.buttons["本地设置"]
+    XCTAssertTrue(settings.waitForExistence(timeout: 8))
+    settings.tap()
+    XCTAssertTrue(app.navigationBars["本地设置"].waitForExistence(timeout: 5))
+
+    let wardrobeCount = app.descendants(matching: .any)["privacy-wardrobe-count"]
+    let inboxCount = app.descendants(matching: .any)["privacy-inbox-count"]
+    XCTAssertTrue(wardrobeCount.waitForExistence(timeout: 5))
+    XCTAssertEqual(wardrobeCount.label, "衣橱单品 1")
+    XCTAssertEqual(inboxCount.label, "待导入图片 1")
+
+    let deleteAllData = app.buttons["delete-all-personal-data"]
+    deleteAllData.tap()
+    XCTAssertTrue(app.buttons["全部删除"].waitForExistence(timeout: 3))
+    app.buttons["全部删除"].tap()
+    XCTAssertTrue(app.alerts["已经清空本地数据"].waitForExistence(timeout: 5))
+    app.alerts["已经清空本地数据"].buttons["知道了"].tap()
+
+    XCTAssertEqual(wardrobeCount.label, "衣橱单品 0")
+    XCTAssertEqual(inboxCount.label, "待导入图片 0")
+    keepScreenshot(named: "Adonis-local-data-cleared")
+  }
+
+  @MainActor
   func testSystemShareExtensionCarriesImageAcrossAppGroupBoundary() {
     let app = XCUIApplication()
     app.launchArguments.append(

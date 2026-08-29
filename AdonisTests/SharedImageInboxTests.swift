@@ -53,6 +53,39 @@ final class SharedImageInboxTests: XCTestCase {
     XCTAssertTrue(try inbox.pendingItems().isEmpty)
   }
 
+  func testQueueLimitRejectsMoreImagesWithoutOverwritingPendingData() throws {
+    let directory = temporaryDirectory(named: "adonis-shared-inbox-capacity")
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let data = try XCTUnwrap(WardrobeTestImageFactory.brownCatalogShirt().pngData())
+    let inbox = try SharedImageInbox(
+      baseURL: directory,
+      queuedImageCountLimit: 1,
+      queuedImageBytesLimit: data.count * 2
+    )
+
+    let first = try inbox.enqueue(data: data)
+    XCTAssertThrowsError(try inbox.enqueue(data: data)) { error in
+      XCTAssertEqual(error as? SharedImageInboxError, .inboxFull)
+    }
+    XCTAssertEqual(try inbox.pendingItems().map(\.id), [first.id])
+    XCTAssertEqual(try inbox.data(for: first), data)
+  }
+
+  func testOversizedPixelDimensionsAreRejectedBeforeQueueing() throws {
+    let directory = temporaryDirectory(named: "adonis-shared-inbox-pixels")
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let data = try XCTUnwrap(WardrobeTestImageFactory.brownCatalogShirt().pngData())
+    let inbox = try SharedImageInbox(
+      baseURL: directory,
+      maximumImagePixelCount: 4_095
+    )
+
+    XCTAssertThrowsError(try inbox.enqueue(data: data)) { error in
+      XCTAssertEqual(error as? SharedImageInboxError, .imageDimensionsTooLarge)
+    }
+    XCTAssertTrue(try inbox.pendingItems().isEmpty)
+  }
+
   private func temporaryDirectory(named prefix: String) -> URL {
     FileManager.default.temporaryDirectory
       .appendingPathComponent("\(prefix)-\(UUID().uuidString)", isDirectory: true)

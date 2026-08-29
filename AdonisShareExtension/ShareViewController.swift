@@ -41,7 +41,7 @@ final class ShareViewController: UIViewController {
     statusLabel.numberOfLines = 0
     statusLabel.accessibilityIdentifier = "share-extension-status"
 
-    detailLabel.text = "图片只会保存在你的设备上"
+    detailLabel.text = "Adonis 不会自动上传这张图片"
     detailLabel.font = .preferredFont(forTextStyle: .subheadline)
     detailLabel.textColor = UIColor.secondaryLabel
     detailLabel.textAlignment = .center
@@ -100,7 +100,7 @@ final class ShareViewController: UIViewController {
         } catch {
           failedCount += 1
           logger.error(
-            "Unable to read image attachment: \(error.localizedDescription, privacy: .public); types=\(provider.registeredTypeIdentifiers.joined(separator: ","), privacy: .public)"
+            "Unable to read image attachment: \(error.localizedDescription, privacy: .private); types=\(provider.registeredTypeIdentifiers.joined(separator: ","), privacy: .public)"
           )
         }
       }

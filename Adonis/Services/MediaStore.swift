@@ -21,6 +21,7 @@ final class MediaStore {
       at: self.baseURL,
       withIntermediateDirectories: true
     )
+    applyDirectoryProtection()
   }
 
   @discardableResult
@@ -28,7 +29,10 @@ final class MediaStore {
     guard let data = image.pngData() else {
       throw MediaStoreError.encodingFailed
     }
-    try data.write(to: url(for: filename), options: .atomic)
+    try data.write(
+      to: url(for: filename),
+      options: [.atomic, .completeFileProtectionUnlessOpen]
+    )
     return filename
   }
 
@@ -37,7 +41,10 @@ final class MediaStore {
     guard let data = image.jpegData(compressionQuality: quality) else {
       throw MediaStoreError.encodingFailed
     }
-    try data.write(to: url(for: filename), options: .atomic)
+    try data.write(
+      to: url(for: filename),
+      options: [.atomic, .completeFileProtectionUnlessOpen]
+    )
     return filename
   }
 
@@ -64,10 +71,30 @@ final class MediaStore {
       try fileManager.removeItem(at: baseURL)
     }
     try fileManager.createDirectory(at: baseURL, withIntermediateDirectories: true)
+    applyDirectoryProtection()
   }
 
   func url(for filename: String) -> URL {
     baseURL.appendingPathComponent(filename, isDirectory: false)
+  }
+
+  func storedFileURLs() throws -> [URL] {
+    try fileManager.contentsOfDirectory(
+      at: baseURL,
+      includingPropertiesForKeys: [.isRegularFileKey],
+      options: [.skipsHiddenFiles]
+    )
+    .filter { url in
+      (try? url.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true
+    }
+    .sorted { $0.lastPathComponent < $1.lastPathComponent }
+  }
+
+  private func applyDirectoryProtection() {
+    try? fileManager.setAttributes(
+      [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
+      ofItemAtPath: baseURL.path
+    )
   }
 }
 
