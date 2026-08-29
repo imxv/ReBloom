@@ -53,6 +53,9 @@ enum AppEventKind: String {
   case wardrobeImportStarted
   case wardrobeImportFailed
   case wardrobeImportCancelled
+  case wardrobeImageUpgradeStarted
+  case wardrobeImageUpgradeSucceeded
+  case wardrobeImageUpgradeFailed
   case garmentObservationsCreated
   case garmentObservationLinked
   case garmentObservationRejected
@@ -75,6 +78,9 @@ enum AppEventKind: String {
     case .wardrobeImportStarted: "开始识别单品"
     case .wardrobeImportFailed: "单品识别失败"
     case .wardrobeImportCancelled: "取消识别单品"
+    case .wardrobeImageUpgradeStarted: "开始补充商品图"
+    case .wardrobeImageUpgradeSucceeded: "商品图更新成功"
+    case .wardrobeImageUpgradeFailed: "商品图更新失败"
     case .garmentObservationsCreated: "发现穿搭线索"
     case .garmentObservationLinked: "关联已有单品"
     case .garmentObservationRejected: "排除候选单品"

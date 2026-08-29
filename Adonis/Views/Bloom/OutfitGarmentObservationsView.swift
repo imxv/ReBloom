@@ -242,6 +242,8 @@ private struct GarmentObservationCard: View {
   let onDismiss: () -> Void
   let onResume: () -> Void
 
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
   var body: some View {
     VStack(alignment: .leading, spacing: 16) {
       observationHeader
@@ -249,7 +251,7 @@ private struct GarmentObservationCard: View {
     }
     .padding(16)
     .paperSurface(radius: 24)
-    .animation(.easeOut(duration: 0.18), value: observation.stateRawValue)
+    .animation(reduceMotion ? nil : .easeOut(duration: 0.18), value: observation.stateRawValue)
   }
 
   private var observationHeader: some View {
@@ -371,6 +373,14 @@ private struct GarmentObservationCard: View {
         AdonisTheme.leaf.opacity(0.14),
         in: RoundedRectangle(cornerRadius: 16, style: .continuous)
       )
+
+      if observation.state == .createdNew, let linkedItem {
+        WardrobeItemImageUpgradeView(
+          item: linkedItem,
+          presentation: .embedded,
+          accessibilitySuffix: observation.slot.rawValue
+        )
+      }
 
       if observation.state == .linkedExisting || linkedItem == nil {
         Button("不是这件", action: onReject)

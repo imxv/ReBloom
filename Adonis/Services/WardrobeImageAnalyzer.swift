@@ -25,17 +25,10 @@ struct WardrobeImageAnalysis: Equatable, Sendable {
   }
 
   var suggestedName: String {
-    let category = automaticallyAssignedCategory
-    switch (dominantColorName, category) {
-    case (let color?, let value) where value != .uncategorized:
-      return "\(color)\(value.rawValue)"
-    case (let color?, _):
-      return "\(color)单品"
-    case (_, let value) where value != .uncategorized:
-      return value.rawValue
-    default:
-      return "新单品"
-    }
+    WardrobeItemNaming.generatedName(
+      colorName: dominantColorName,
+      category: automaticallyAssignedCategory
+    )
   }
 }
 

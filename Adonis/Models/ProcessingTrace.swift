@@ -20,6 +20,7 @@ enum AdonisProcessingVersion {
   static let sticker = "sticker-vision-v1"
   static let shareCard = "share-card-v1"
   static let wardrobeAnalysis = "wardrobe-local-v1"
+  static let wardrobeImageUpgrade = "wardrobe-image-upgrade-v1"
   static let outfitObservation = "ootd-observation-local-v1"
   static let candidateMatching = "wardrobe-candidate-local-v1"
   static let generationPipeline = "\(sticker)+\(shareCard)+\(outfitObservation)"

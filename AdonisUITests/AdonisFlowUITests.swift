@@ -132,9 +132,26 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(app.staticTexts["garment-linked-upperBody"].waitForExistence(timeout: 3))
     XCTAssertTrue(app.staticTexts["已收进衣橱"].exists)
 
+    let upgrade = app.buttons["wardrobe-image-upgrade-test-upperBody"]
+    for _ in 0..<5 where !upgrade.isHittable {
+      app.swipeUp()
+    }
+    XCTAssertTrue(upgrade.waitForExistence(timeout: 3))
+    XCTAssertTrue(upgrade.isHittable)
+    upgrade.tap()
+    XCTAssertTrue(
+      app.staticTexts["wardrobe-image-upgrade-success-upperBody"].waitForExistence(timeout: 8)
+    )
+    XCTAssertTrue(app.staticTexts["蓝色上装"].exists)
+    let upgradedSource = app.staticTexts["wardrobe-image-upgrade-source-upperBody"]
+    XCTAssertTrue(upgradedSource.exists)
+    XCTAssertTrue(upgradedSource.label.contains("像商品图"))
+    keepScreenshot(named: "Adonis-outfit-product-image-upgrade")
+
     app.buttons["完成"].tap()
     app.tabBars.buttons["衣橱"].tap()
     XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 2)
+    XCTAssertTrue(app.staticTexts["蓝色上装"].exists)
   }
 
   @MainActor

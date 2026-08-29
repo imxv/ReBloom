@@ -10,6 +10,7 @@ final class WardrobeItem {
   var imageFilename: String
   var note: String
   var sourceKindRawValue: String = WardrobeSourceKind.unknown.rawValue
+  var originSourceKindRawValue: String?
   var dominantColorName: String?
   var dominantColorHex: String?
   var suggestedCategoryRawValue: String?
@@ -30,6 +31,14 @@ final class WardrobeItem {
     set { sourceKindRawValue = newValue.rawValue }
   }
 
+  var originSourceKind: WardrobeSourceKind {
+    get {
+      guard let originSourceKindRawValue else { return sourceKind }
+      return WardrobeSourceKind(rawValue: originSourceKindRawValue) ?? sourceKind
+    }
+    set { originSourceKindRawValue = newValue.rawValue }
+  }
+
   var suggestedCategory: WardrobeCategory? {
     guard let suggestedCategoryRawValue else { return nil }
     return WardrobeCategory(rawValue: suggestedCategoryRawValue)
@@ -43,6 +52,7 @@ final class WardrobeItem {
     imageFilename: String,
     note: String = "",
     sourceKind: WardrobeSourceKind = .unknown,
+    originSourceKind: WardrobeSourceKind? = nil,
     dominantColorName: String? = nil,
     dominantColorHex: String? = nil,
     suggestedCategory: WardrobeCategory? = nil,
@@ -60,6 +70,7 @@ final class WardrobeItem {
     self.imageFilename = imageFilename
     self.note = note
     self.sourceKindRawValue = sourceKind.rawValue
+    self.originSourceKindRawValue = (originSourceKind ?? sourceKind).rawValue
     self.dominantColorName = dominantColorName
     self.dominantColorHex = dominantColorHex
     self.suggestedCategoryRawValue = suggestedCategory?.rawValue

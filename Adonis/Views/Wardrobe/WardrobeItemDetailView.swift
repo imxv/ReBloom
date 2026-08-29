@@ -30,6 +30,14 @@ struct WardrobeItemDetailView: View {
 
           analysisSummary
 
+          if item.originSourceKind == .outfitObservation {
+            WardrobeItemImageUpgradeView(
+              item: item,
+              presentation: .standalone,
+              accessibilitySuffix: "detail"
+            )
+          }
+
           VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
               Text("不对的话，点一下改")
@@ -226,21 +234,20 @@ struct WardrobeItemDetailView: View {
   private func select(_ category: WardrobeCategory) {
     guard item.category != category else { return }
     let previousCategory = item.category
-    let color = item.dominantColorName ?? ""
-    let generatedNames = [
-      "新单品",
-      "\(color)单品",
-      previousCategory == .uncategorized ? "" : "\(color)\(previousCategory.rawValue)",
-      previousCategory == .uncategorized ? "" : previousCategory.rawValue,
-    ]
-    let shouldRefreshName = item.analysisVersion != nil && generatedNames.contains(item.name)
+    let shouldRefreshName =
+      item.analysisVersion != nil
+      && WardrobeItemNaming.isGeneratedName(
+        item.name,
+        colorName: item.dominantColorName,
+        category: previousCategory
+      )
 
     item.category = category
     if shouldRefreshName {
-      item.name =
-        category == .uncategorized
-        ? (color.isEmpty ? "新单品" : "\(color)单品")
-        : "\(color)\(category.rawValue)"
+      item.name = WardrobeItemNaming.generatedName(
+        colorName: item.dominantColorName,
+        category: category
+      )
     }
     try? modelContext.save()
     EventLogger.log(
