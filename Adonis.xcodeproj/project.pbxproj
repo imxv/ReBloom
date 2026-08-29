@@ -1,0 +1,754 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0081F47B332BDBDD4C4E1017 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B62D5D132AC85E01784E17 /* ActivityView.swift */; };
+		00AF26192862085A3491B550 /* OutfitRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0994A465AE03BD4840F048 /* OutfitRecord.swift */; };
+		00D42A70279CDBBA73D491E5 /* SampleCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4C4240274B6A2FB8E050EC /* SampleCatalog.swift */; };
+		021CC131FBC255BC402AAB86 /* sample-04-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DD490D9A72639AF6EB7DC17 /* sample-04-sticker.png */; };
+		0383F37EB4CD45A47D50D350 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5A96B162481D212E146A1 /* CameraPicker.swift */; };
+		083CDC61E99645D77389A7D5 /* sample-04.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A637377461748CC37830D9C /* sample-04.png */; };
+		14BFCF74C380ED0981B92AFC /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84BF18B5CED9D834A195F7F /* Components.swift */; };
+		153086CAF11ADC89B572AC57 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1616941BE0EAB40F74A088AA /* README.md */; };
+		17E549E80F389BD3C90C24D4 /* sample-01.png in Resources */ = {isa = PBXBuildFile; fileRef = 94AFB89D4E0698D5253B8179 /* sample-01.png */; };
+		212E902D6EFF97FB6AC0FE1C /* StoredImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B19E79DC35ECB753DE22B9 /* StoredImageView.swift */; };
+		23309718D6FDAAFF470997CF /* WardrobeItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290B068850AE398F3ACAC1A7 /* WardrobeItemDetailView.swift */; };
+		38385A8843FD7D39731262D1 /* StickerProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */; };
+		444C652105F7620F3A0DBDD3 /* MediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 715F9375B113CB2BBE597E7F /* MediaStore.swift */; };
+		4AFB40403A8C7A8584F3CEE9 /* StickerProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4718CD6CE45E819A6AC83529 /* StickerProcessorTests.swift */; };
+		53E1BE68968D66539E749E22 /* MediaStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE29B87471D0B83F42701EE /* MediaStoreTests.swift */; };
+		60C452EC3947CF4E67630CDD /* sample-03-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B8DB8DEFCD7D0A3C1AE2C1E /* sample-03-sticker.png */; };
+		6CC04A5970B49E77F75BF5C3 /* ShareCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3817293121985A50BE799780 /* ShareCardRendererTests.swift */; };
+		6E01162835B4CAB93893D08D /* sample-02-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 770A0820A3D2A9292070667E /* sample-02-sticker.png */; };
+		753A1D4111D6DA78C35A12B4 /* sample-01-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 77F83D427A76B9EAE21B0876 /* sample-01-sticker.png */; };
+		756BD9C49D13F4E62E447528 /* AdonisFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2153A825703E5C59A02F6A3D /* AdonisFlowUITests.swift */; };
+		7648F7094EA366551F43714F /* AdonisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C79187C672D6932F46FD1BC /* AdonisApp.swift */; };
+		8A92C00F7CF1C1DE1976C59F /* sample-03.png in Resources */ = {isa = PBXBuildFile; fileRef = 7C1B423C8D9B768E0AB09434 /* sample-03.png */; };
+		8D508A42988434FD1A130B52 /* EventLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FA337AA391BD2C538ADBC1 /* EventLogger.swift */; };
+		9842AA7B154D80427C2585C1 /* WardrobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB469AA7A56D82430C566D6 /* WardrobeView.swift */; };
+		9E01DF7A621C13A85C8BC96F /* CreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F443048A8AB2396EC8490E /* CreateView.swift */; };
+		A2EE6457FD6A5063FF426A21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 110BE262F9946F560C99A9F5 /* Assets.xcassets */; };
+		A9A9F6F7D289FC8856D4D3A1 /* AdonisTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A8470E112FD06E2CDC338F /* AdonisTheme.swift */; };
+		AA09CC345698764168BFAD0F /* WardrobeItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A0AC80513194F13CBD6154 /* WardrobeItem.swift */; };
+		CDF538E52325346AE8B637A0 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0E94632BE94071D6AFD0F1 /* AppRootView.swift */; };
+		D8A25C85A06194D845F6AB0F /* ShareCardRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE5FB9960887C789F813E51 /* ShareCardRenderer.swift */; };
+		DA1A1F32C4890631A6F52D5E /* AdonisDateText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F649CD7BB71A5A6E7ECFD77 /* AdonisDateText.swift */; };
+		DFC1900DF99A5B95BAD68800 /* LocalSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88F3E9DA33A9CF6B2A875C1 /* LocalSettingsView.swift */; };
+		E27687894E2632B60816F221 /* BloomCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA41B73134695077C4CA8B4 /* BloomCalendarView.swift */; };
+		E7CD31E84502D5CFB742EE81 /* GenerationResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7227972E1BB092B766EEF3 /* GenerationResultView.swift */; };
+		F3F6BB82F1BBE8C09DDD59BB /* PhotoLibrarySaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04175832BBE55E7FE3292FE9 /* PhotoLibrarySaver.swift */; };
+		F53443A9DD577B29AD4364C1 /* sample-02.png in Resources */ = {isa = PBXBuildFile; fileRef = A4D6165666D17D32A05ABAF6 /* sample-02.png */; };
+		F7DF5679A1AF54ACC4237EA2 /* GenerationDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF0F87BBB9C1CD0572BDB60 /* GenerationDraft.swift */; };
+		FD43C3F3C093C6AB2F30B011 /* AppEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2008CD53DE2CE10DC6E70C6 /* AppEvent.swift */; };
+		FFE61E37855A15B7C426564B /* OutfitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 646E1B8E7A4C66C109816B9A /* OutfitDetailView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		617B2AB14C58595A90AE39B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9FAC52ADF60DAA6037ACCA7A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5DD80AB492E229CC181C91E6;
+			remoteInfo = Adonis;
+		};
+		9AD5EA3FF21BE74F0719388B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9FAC52ADF60DAA6037ACCA7A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5DD80AB492E229CC181C91E6;
+			remoteInfo = Adonis;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		04175832BBE55E7FE3292FE9 /* PhotoLibrarySaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibrarySaver.swift; sourceTree = "<group>"; };
+		0AE5FB9960887C789F813E51 /* ShareCardRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRenderer.swift; sourceTree = "<group>"; };
+		110BE262F9946F560C99A9F5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1616941BE0EAB40F74A088AA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1AF0F87BBB9C1CD0572BDB60 /* GenerationDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationDraft.swift; sourceTree = "<group>"; };
+		2153A825703E5C59A02F6A3D /* AdonisFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisFlowUITests.swift; sourceTree = "<group>"; };
+		27A8470E112FD06E2CDC338F /* AdonisTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisTheme.swift; sourceTree = "<group>"; };
+		290B068850AE398F3ACAC1A7 /* WardrobeItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemDetailView.swift; sourceTree = "<group>"; };
+		2DD490D9A72639AF6EB7DC17 /* sample-04-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-04-sticker.png"; sourceTree = "<group>"; };
+		3817293121985A50BE799780 /* ShareCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRendererTests.swift; sourceTree = "<group>"; };
+		4718CD6CE45E819A6AC83529 /* StickerProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerProcessorTests.swift; sourceTree = "<group>"; };
+		4A637377461748CC37830D9C /* sample-04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-04.png"; sourceTree = "<group>"; };
+		57F443048A8AB2396EC8490E /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
+		5D0994A465AE03BD4840F048 /* OutfitRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitRecord.swift; sourceTree = "<group>"; };
+		5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerProcessor.swift; sourceTree = "<group>"; };
+		5EA41B73134695077C4CA8B4 /* BloomCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloomCalendarView.swift; sourceTree = "<group>"; };
+		5F649CD7BB71A5A6E7ECFD77 /* AdonisDateText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisDateText.swift; sourceTree = "<group>"; };
+		646E1B8E7A4C66C109816B9A /* OutfitDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitDetailView.swift; sourceTree = "<group>"; };
+		65B19E79DC35ECB753DE22B9 /* StoredImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredImageView.swift; sourceTree = "<group>"; };
+		715F9375B113CB2BBE597E7F /* MediaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStore.swift; sourceTree = "<group>"; };
+		770A0820A3D2A9292070667E /* sample-02-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-02-sticker.png"; sourceTree = "<group>"; };
+		77F83D427A76B9EAE21B0876 /* sample-01-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-01-sticker.png"; sourceTree = "<group>"; };
+		7C1B423C8D9B768E0AB09434 /* sample-03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03.png"; sourceTree = "<group>"; };
+		81B62D5D132AC85E01784E17 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		8B8DB8DEFCD7D0A3C1AE2C1E /* sample-03-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03-sticker.png"; sourceTree = "<group>"; };
+		8C79187C672D6932F46FD1BC /* AdonisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisApp.swift; sourceTree = "<group>"; };
+		94AFB89D4E0698D5253B8179 /* sample-01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-01.png"; sourceTree = "<group>"; };
+		94E389967339AE810B636BC5 /* AdonisUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AdonisUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4D6165666D17D32A05ABAF6 /* sample-02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-02.png"; sourceTree = "<group>"; };
+		B2008CD53DE2CE10DC6E70C6 /* AppEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEvent.swift; sourceTree = "<group>"; };
+		B4FA337AA391BD2C538ADBC1 /* EventLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLogger.swift; sourceTree = "<group>"; };
+		BEE29B87471D0B83F42701EE /* MediaStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStoreTests.swift; sourceTree = "<group>"; };
+		C88F3E9DA33A9CF6B2A875C1 /* LocalSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSettingsView.swift; sourceTree = "<group>"; };
+		CB7227972E1BB092B766EEF3 /* GenerationResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationResultView.swift; sourceTree = "<group>"; };
+		D545412EE2679B9A7070E13B /* Adonis.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Adonis.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E302C7B66FF3753821830A56 /* AdonisTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AdonisTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E84BF18B5CED9D834A195F7F /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		EC4C4240274B6A2FB8E050EC /* SampleCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleCatalog.swift; sourceTree = "<group>"; };
+		EDB469AA7A56D82430C566D6 /* WardrobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeView.swift; sourceTree = "<group>"; };
+		EE0E94632BE94071D6AFD0F1 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
+		F3A0AC80513194F13CBD6154 /* WardrobeItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItem.swift; sourceTree = "<group>"; };
+		FAD5A96B162481D212E146A1 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		044D66FE82F566D586B771CB /* Wardrobe */ = {
+			isa = PBXGroup;
+			children = (
+				290B068850AE398F3ACAC1A7 /* WardrobeItemDetailView.swift */,
+				EDB469AA7A56D82430C566D6 /* WardrobeView.swift */,
+			);
+			path = Wardrobe;
+			sourceTree = "<group>";
+		};
+		11DB0BF8E0E80CECB0E4BC01 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B2008CD53DE2CE10DC6E70C6 /* AppEvent.swift */,
+				1AF0F87BBB9C1CD0572BDB60 /* GenerationDraft.swift */,
+				5D0994A465AE03BD4840F048 /* OutfitRecord.swift */,
+				F3A0AC80513194F13CBD6154 /* WardrobeItem.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		1DE3B998912D8490FDA4D823 /* Samples */ = {
+			isa = PBXGroup;
+			children = (
+				1616941BE0EAB40F74A088AA /* README.md */,
+				77F83D427A76B9EAE21B0876 /* sample-01-sticker.png */,
+				94AFB89D4E0698D5253B8179 /* sample-01.png */,
+				770A0820A3D2A9292070667E /* sample-02-sticker.png */,
+				A4D6165666D17D32A05ABAF6 /* sample-02.png */,
+				8B8DB8DEFCD7D0A3C1AE2C1E /* sample-03-sticker.png */,
+				7C1B423C8D9B768E0AB09434 /* sample-03.png */,
+				2DD490D9A72639AF6EB7DC17 /* sample-04-sticker.png */,
+				4A637377461748CC37830D9C /* sample-04.png */,
+			);
+			path = Samples;
+			sourceTree = "<group>";
+		};
+		2A7589C0FC983C5512B106A6 /* Bloom */ = {
+			isa = PBXGroup;
+			children = (
+				5EA41B73134695077C4CA8B4 /* BloomCalendarView.swift */,
+				646E1B8E7A4C66C109816B9A /* OutfitDetailView.swift */,
+			);
+			path = Bloom;
+			sourceTree = "<group>";
+		};
+		2F2218A463277528601B1906 /* Create */ = {
+			isa = PBXGroup;
+			children = (
+				57F443048A8AB2396EC8490E /* CreateView.swift */,
+				CB7227972E1BB092B766EEF3 /* GenerationResultView.swift */,
+			);
+			path = Create;
+			sourceTree = "<group>";
+		};
+		3B386851C7EE3E4A3552DDC0 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				5F649CD7BB71A5A6E7ECFD77 /* AdonisDateText.swift */,
+				27A8470E112FD06E2CDC338F /* AdonisTheme.swift */,
+				E84BF18B5CED9D834A195F7F /* Components.swift */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		3C28B0C10EA7023C9683014B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1DE3B998912D8490FDA4D823 /* Samples */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		424DB438D2C37A3DACD70564 /* Adonis */ = {
+			isa = PBXGroup;
+			children = (
+				110BE262F9946F560C99A9F5 /* Assets.xcassets */,
+				DC38724FEE7CF1E16F8BF7E1 /* App */,
+				3B386851C7EE3E4A3552DDC0 /* DesignSystem */,
+				11DB0BF8E0E80CECB0E4BC01 /* Models */,
+				3C28B0C10EA7023C9683014B /* Resources */,
+				5001D869916DBC4A89DF42CE /* Services */,
+				844C03C84F678472866A590F /* Views */,
+			);
+			path = Adonis;
+			sourceTree = "<group>";
+		};
+		5001D869916DBC4A89DF42CE /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B4FA337AA391BD2C538ADBC1 /* EventLogger.swift */,
+				715F9375B113CB2BBE597E7F /* MediaStore.swift */,
+				04175832BBE55E7FE3292FE9 /* PhotoLibrarySaver.swift */,
+				EC4C4240274B6A2FB8E050EC /* SampleCatalog.swift */,
+				0AE5FB9960887C789F813E51 /* ShareCardRenderer.swift */,
+				5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		5869BCCCF692F5A4FD98F5D6 /* AdonisUITests */ = {
+			isa = PBXGroup;
+			children = (
+				2153A825703E5C59A02F6A3D /* AdonisFlowUITests.swift */,
+			);
+			path = AdonisUITests;
+			sourceTree = "<group>";
+		};
+		6983FAAE88F76DB468F2F55F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D545412EE2679B9A7070E13B /* Adonis.app */,
+				E302C7B66FF3753821830A56 /* AdonisTests.xctest */,
+				94E389967339AE810B636BC5 /* AdonisUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		844C03C84F678472866A590F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2A7589C0FC983C5512B106A6 /* Bloom */,
+				2F2218A463277528601B1906 /* Create */,
+				A5FF7B37BFF05329C91B59BB /* Settings */,
+				BF8C362BD44176DF45C3CA34 /* Shared */,
+				044D66FE82F566D586B771CB /* Wardrobe */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1A4134866202E6AFFE1E1DE = {
+			isa = PBXGroup;
+			children = (
+				424DB438D2C37A3DACD70564 /* Adonis */,
+				D0C0C14446A3F4F40F62F033 /* AdonisTests */,
+				5869BCCCF692F5A4FD98F5D6 /* AdonisUITests */,
+				6983FAAE88F76DB468F2F55F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A5FF7B37BFF05329C91B59BB /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				C88F3E9DA33A9CF6B2A875C1 /* LocalSettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		BF8C362BD44176DF45C3CA34 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				81B62D5D132AC85E01784E17 /* ActivityView.swift */,
+				FAD5A96B162481D212E146A1 /* CameraPicker.swift */,
+				65B19E79DC35ECB753DE22B9 /* StoredImageView.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		D0C0C14446A3F4F40F62F033 /* AdonisTests */ = {
+			isa = PBXGroup;
+			children = (
+				BEE29B87471D0B83F42701EE /* MediaStoreTests.swift */,
+				3817293121985A50BE799780 /* ShareCardRendererTests.swift */,
+				4718CD6CE45E819A6AC83529 /* StickerProcessorTests.swift */,
+			);
+			path = AdonisTests;
+			sourceTree = "<group>";
+		};
+		DC38724FEE7CF1E16F8BF7E1 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				8C79187C672D6932F46FD1BC /* AdonisApp.swift */,
+				EE0E94632BE94071D6AFD0F1 /* AppRootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5DD80AB492E229CC181C91E6 /* Adonis */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3BB03CDA5F1B5F4602A76C47 /* Build configuration list for PBXNativeTarget "Adonis" */;
+			buildPhases = (
+				8D3F57E3FD0E2374AAD93574 /* Sources */,
+				C0FC9CCD2762042821788D1B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Adonis;
+			packageProductDependencies = (
+			);
+			productName = Adonis;
+			productReference = D545412EE2679B9A7070E13B /* Adonis.app */;
+			productType = "com.apple.product-type.application";
+		};
+		5E3120DDE7A5A5F2FED1F377 /* AdonisTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E33A3D7DB26D68A28833F1B9 /* Build configuration list for PBXNativeTarget "AdonisTests" */;
+			buildPhases = (
+				5E9EA98660B52E410906229F /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6C35C25DC119494EF9290CD9 /* PBXTargetDependency */,
+			);
+			name = AdonisTests;
+			packageProductDependencies = (
+			);
+			productName = AdonisTests;
+			productReference = E302C7B66FF3753821830A56 /* AdonisTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		7681C0B838837683D78A284D /* AdonisUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5B9BB3B36CB7D85E6173C973 /* Build configuration list for PBXNativeTarget "AdonisUITests" */;
+			buildPhases = (
+				1DDD80D0A3F3DCC40BAF030D /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				720B21F286433EF2F57B1FEE /* PBXTargetDependency */,
+			);
+			name = AdonisUITests;
+			packageProductDependencies = (
+			);
+			productName = AdonisUITests;
+			productReference = 94E389967339AE810B636BC5 /* AdonisUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9FAC52ADF60DAA6037ACCA7A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					7681C0B838837683D78A284D = {
+						TestTargetID = 5DD80AB492E229CC181C91E6;
+					};
+				};
+			};
+			buildConfigurationList = 5C43C14614DFD31C28CC8CBA /* Build configuration list for PBXProject "Adonis" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = A1A4134866202E6AFFE1E1DE;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 6983FAAE88F76DB468F2F55F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5DD80AB492E229CC181C91E6 /* Adonis */,
+				5E3120DDE7A5A5F2FED1F377 /* AdonisTests */,
+				7681C0B838837683D78A284D /* AdonisUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C0FC9CCD2762042821788D1B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2EE6457FD6A5063FF426A21 /* Assets.xcassets in Resources */,
+				153086CAF11ADC89B572AC57 /* README.md in Resources */,
+				753A1D4111D6DA78C35A12B4 /* sample-01-sticker.png in Resources */,
+				17E549E80F389BD3C90C24D4 /* sample-01.png in Resources */,
+				6E01162835B4CAB93893D08D /* sample-02-sticker.png in Resources */,
+				F53443A9DD577B29AD4364C1 /* sample-02.png in Resources */,
+				60C452EC3947CF4E67630CDD /* sample-03-sticker.png in Resources */,
+				8A92C00F7CF1C1DE1976C59F /* sample-03.png in Resources */,
+				021CC131FBC255BC402AAB86 /* sample-04-sticker.png in Resources */,
+				083CDC61E99645D77389A7D5 /* sample-04.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1DDD80D0A3F3DCC40BAF030D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				756BD9C49D13F4E62E447528 /* AdonisFlowUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5E9EA98660B52E410906229F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53E1BE68968D66539E749E22 /* MediaStoreTests.swift in Sources */,
+				6CC04A5970B49E77F75BF5C3 /* ShareCardRendererTests.swift in Sources */,
+				4AFB40403A8C7A8584F3CEE9 /* StickerProcessorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D3F57E3FD0E2374AAD93574 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0081F47B332BDBDD4C4E1017 /* ActivityView.swift in Sources */,
+				7648F7094EA366551F43714F /* AdonisApp.swift in Sources */,
+				DA1A1F32C4890631A6F52D5E /* AdonisDateText.swift in Sources */,
+				A9A9F6F7D289FC8856D4D3A1 /* AdonisTheme.swift in Sources */,
+				FD43C3F3C093C6AB2F30B011 /* AppEvent.swift in Sources */,
+				CDF538E52325346AE8B637A0 /* AppRootView.swift in Sources */,
+				E27687894E2632B60816F221 /* BloomCalendarView.swift in Sources */,
+				0383F37EB4CD45A47D50D350 /* CameraPicker.swift in Sources */,
+				14BFCF74C380ED0981B92AFC /* Components.swift in Sources */,
+				9E01DF7A621C13A85C8BC96F /* CreateView.swift in Sources */,
+				8D508A42988434FD1A130B52 /* EventLogger.swift in Sources */,
+				F7DF5679A1AF54ACC4237EA2 /* GenerationDraft.swift in Sources */,
+				E7CD31E84502D5CFB742EE81 /* GenerationResultView.swift in Sources */,
+				DFC1900DF99A5B95BAD68800 /* LocalSettingsView.swift in Sources */,
+				444C652105F7620F3A0DBDD3 /* MediaStore.swift in Sources */,
+				FFE61E37855A15B7C426564B /* OutfitDetailView.swift in Sources */,
+				00AF26192862085A3491B550 /* OutfitRecord.swift in Sources */,
+				F3F6BB82F1BBE8C09DDD59BB /* PhotoLibrarySaver.swift in Sources */,
+				00D42A70279CDBBA73D491E5 /* SampleCatalog.swift in Sources */,
+				D8A25C85A06194D845F6AB0F /* ShareCardRenderer.swift in Sources */,
+				38385A8843FD7D39731262D1 /* StickerProcessor.swift in Sources */,
+				212E902D6EFF97FB6AC0FE1C /* StoredImageView.swift in Sources */,
+				AA09CC345698764168BFAD0F /* WardrobeItem.swift in Sources */,
+				23309718D6FDAAFF470997CF /* WardrobeItemDetailView.swift in Sources */,
+				9842AA7B154D80427C2585C1 /* WardrobeView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6C35C25DC119494EF9290CD9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5DD80AB492E229CC181C91E6 /* Adonis */;
+			targetProxy = 9AD5EA3FF21BE74F0719388B /* PBXContainerItemProxy */;
+		};
+		720B21F286433EF2F57B1FEE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5DD80AB492E229CC181C91E6 /* Adonis */;
+			targetProxy = 617B2AB14C58595A90AE39B7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1467123585E9D43EEEE6D206 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Adonis.app/Adonis";
+			};
+			name = Debug;
+		};
+		5C5173E14BE40BCE992B9277 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Adonis;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photo-video";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Adonis 使用相机拍摄你想制作成贴纸的照片。";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Adonis 仅在你主动选择时把作品保存到相册。";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo;
+				PRODUCT_NAME = Adonis;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		6E739987731C90D749529E0B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Adonis;
+			};
+			name = Debug;
+		};
+		9F1DE00CEF2127B6663BEB68 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		9F7C8FF533B135EA8813930B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Adonis;
+			};
+			name = Release;
+		};
+		B618EA1784F11622FADD724C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Adonis.app/Adonis";
+			};
+			name = Release;
+		};
+		E378D78DA610F3A8B549149A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Adonis;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photo-video";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Adonis 使用相机拍摄你想制作成贴纸的照片。";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Adonis 仅在你主动选择时把作品保存到相册。";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo;
+				PRODUCT_NAME = Adonis;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		EC1108C0B8EAA710D981D14F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3BB03CDA5F1B5F4602A76C47 /* Build configuration list for PBXNativeTarget "Adonis" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E378D78DA610F3A8B549149A /* Debug */,
+				5C5173E14BE40BCE992B9277 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5B9BB3B36CB7D85E6173C973 /* Build configuration list for PBXNativeTarget "AdonisUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6E739987731C90D749529E0B /* Debug */,
+				9F7C8FF533B135EA8813930B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5C43C14614DFD31C28CC8CBA /* Build configuration list for PBXProject "Adonis" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9F1DE00CEF2127B6663BEB68 /* Debug */,
+				EC1108C0B8EAA710D981D14F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E33A3D7DB26D68A28833F1B9 /* Build configuration list for PBXNativeTarget "AdonisTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1467123585E9D43EEEE6D206 /* Debug */,
+				B618EA1784F11622FADD724C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9FAC52ADF60DAA6037ACCA7A /* Project object */;
+}
