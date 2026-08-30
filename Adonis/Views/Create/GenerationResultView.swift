@@ -89,7 +89,7 @@ struct GenerationResultView: View {
             )
           }
 
-          ContentProvenanceNotice(provenance: mode.provenance)
+          ContentProvenanceNotice(provenance: draft.provenance(for: mode))
 
           BotanicalPosterEntry {
             makeBotanicalPoster()
@@ -285,7 +285,7 @@ struct GenerationResultView: View {
         }
         .transition(.opacity)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("收藏卡预览，人物与衣物来自原始照片")
+        .accessibilityLabel(previewAccessibilityLabel)
 
     case .sticker:
       TransparencyGridBackground()
@@ -303,7 +303,7 @@ struct GenerationResultView: View {
         }
         .transition(.opacity)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("透明贴纸预览，人物与衣物来自原始照片")
+        .accessibilityLabel(previewAccessibilityLabel)
 
     case .originalPhoto:
       Image(uiImage: draft.sourceImage)
@@ -360,12 +360,24 @@ struct GenerationResultView: View {
     }
   }
 
+  private var previewAccessibilityLabel: String {
+    switch mode {
+    case .shareCard:
+      "收藏卡预览，\(draft.provenance(for: .shareCard).summary)"
+    case .sticker:
+      "透明贴纸预览，\(draft.provenance(for: .sticker).summary)"
+    case .originalPhoto:
+      "你选择的原始照片预览"
+    }
+  }
+
   private func makeDigitalFigurineCard() {
     guard
       let image = DigitalFigurineCardRenderer().render(
         sticker: draft.stickerImage,
         bloomNumber: draft.bloomNumber,
-        date: draft.createdAt
+        date: draft.createdAt,
+        stickerProvenance: draft.stickerProvenance
       )
     else {
       figurineError = "这张透明贴纸暂时无法放进展台，可以稍后再试。"
@@ -381,7 +393,8 @@ struct GenerationResultView: View {
     digitalFigurineCard = DigitalFigurineCardPresentation(
       image: image,
       bloomNumber: draft.bloomNumber,
-      date: draft.createdAt
+      date: draft.createdAt,
+      stickerProvenance: draft.stickerProvenance
     )
   }
 
@@ -391,7 +404,8 @@ struct GenerationResultView: View {
       let image = BotanicalPosterRenderer().render(
         sticker: draft.stickerImage,
         bloomNumber: draft.bloomNumber,
-        date: draft.createdAt
+        date: draft.createdAt,
+        stickerProvenance: draft.stickerProvenance
       )
     else {
       creativeWorkError = "这张透明贴纸暂时无法排进花影海报，可以稍后再试。"
@@ -409,7 +423,8 @@ struct GenerationResultView: View {
       recipe: .botanicalPoster,
       image: image,
       processingMilliseconds: milliseconds,
-      executionMetadata: .botanicalPoster
+      executionMetadata: .botanicalPoster,
+      provenance: BotanicalPosterRenderer.provenance(for: draft.stickerProvenance)
     )
     EventLogger.log(
       .creativeWorkCreated,

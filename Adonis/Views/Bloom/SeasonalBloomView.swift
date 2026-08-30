@@ -30,8 +30,11 @@ struct SeasonalBloomArchiveView: View {
             header
 
             ContentProvenanceNotice(
-              provenance: .programmaticComposition,
-              detail: "四季花历只整理已收藏记录，不生成新照片，也不改动人物、衣物或日期。",
+              provenance: records.contains { $0.stickerProvenance.containsAIGeneratedPixels }
+                ? .aiGenerated : .programmaticComposition,
+              detail: records.contains { $0.stickerProvenance.containsAIGeneratedPixels }
+                ? "四季花历包含 AI 生成贴纸，只整理已收藏记录，不会再次生成或改动人物、衣物与日期。"
+                : "四季花历只整理已收藏记录，不生成新照片，也不改动人物、衣物或日期。",
               identifier: "seasonal-bloom-provenance"
             )
 

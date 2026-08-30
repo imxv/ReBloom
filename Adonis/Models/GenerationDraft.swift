@@ -17,6 +17,7 @@ struct GenerationDraft: Identifiable {
   let id: UUID
   let createdAt: Date
   let sourceImage: UIImage
+  let aiStickerSourceImage: UIImage?
   let stickerImage: UIImage
   let cardImage: UIImage
   let bloomNumber: Int
@@ -24,6 +25,8 @@ struct GenerationDraft: Identifiable {
   let foregroundCoverage: Double
   let usesPreparedSample: Bool
   let inputSource: EventInputSource
+  let stickerProvenance: VisualContentProvenance
+  let stickerExecutionMetadata: CreativeExecutionMetadata?
   let completionMode: GenerationCompletionMode
   let qualityAssessment: StickerQualityAssessment
   let garmentObservations: [GarmentObservationDraft]
@@ -32,6 +35,7 @@ struct GenerationDraft: Identifiable {
     id: UUID = UUID(),
     createdAt: Date = .now,
     sourceImage: UIImage,
+    aiStickerSourceImage: UIImage? = nil,
     stickerImage: UIImage,
     cardImage: UIImage,
     bloomNumber: Int,
@@ -39,6 +43,8 @@ struct GenerationDraft: Identifiable {
     foregroundCoverage: Double,
     usesPreparedSample: Bool = false,
     inputSource: EventInputSource,
+    stickerProvenance: VisualContentProvenance = .derivedFromOriginal,
+    stickerExecutionMetadata: CreativeExecutionMetadata? = nil,
     completionMode: GenerationCompletionMode = .complete,
     qualityAssessment: StickerQualityAssessment = .acceptable,
     garmentObservations: [GarmentObservationDraft] = []
@@ -46,6 +52,7 @@ struct GenerationDraft: Identifiable {
     self.id = id
     self.createdAt = createdAt
     self.sourceImage = sourceImage
+    self.aiStickerSourceImage = aiStickerSourceImage
     self.stickerImage = stickerImage
     self.cardImage = cardImage
     self.bloomNumber = bloomNumber
@@ -53,16 +60,30 @@ struct GenerationDraft: Identifiable {
     self.foregroundCoverage = foregroundCoverage
     self.usesPreparedSample = usesPreparedSample
     self.inputSource = inputSource
+    self.stickerProvenance = stickerProvenance
+    self.stickerExecutionMetadata = stickerExecutionMetadata
     self.completionMode = completionMode
     self.qualityAssessment = qualityAssessment
     self.garmentObservations = garmentObservations
+  }
+
+  func provenance(for asset: OutfitVisualAsset) -> VisualContentProvenance {
+    switch asset {
+    case .originalPhoto:
+      .userProvided
+    case .sticker:
+      stickerProvenance
+    case .shareCard:
+      stickerProvenance.containsAIGeneratedPixels ? .aiGenerated : .programmaticComposition
+    }
   }
 }
 
 enum ProcessingStage: String, CaseIterable {
   case reading = "正在读取照片"
   case understanding = "正在看看这张照片"
-  case separating = "正在沿轮廓裁出你"
+  case generatingSticker = "正在生成贴纸形象"
+  case separating = "正在从贴纸图里抠出人物"
   case checking = "正在检查贴纸边缘"
   case outlining = "正在加上纯白贴纸边"
   case composing = "正在装进收藏卡"

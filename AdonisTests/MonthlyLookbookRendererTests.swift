@@ -4,10 +4,26 @@ import XCTest
 @testable import Adonis
 
 final class MonthlyLookbookRendererTests: XCTestCase {
-  func testProvenanceFooterNamesSavedOriginalsAndProgrammaticLayout() {
+  func testLegacyProvenanceFooterNamesSavedOriginalsAndProgrammaticLayout() {
     XCTAssertEqual(
       MonthlyLookbookRenderer.provenanceFooter,
       "人物与衣物来自已收藏原图 · 画册由 ADONIS 排版"
+    )
+  }
+
+  func testLookbookDisclosesWhenAnySavedStickerContainsAIPixels() {
+    let entries = [
+      MonthlyLookbookEntry(
+        sticker: solidImage(color: .systemPink),
+        bloomNumber: 7,
+        date: Date(timeIntervalSince1970: 0),
+        stickerProvenance: .aiGenerated
+      )
+    ]
+
+    XCTAssertEqual(
+      MonthlyLookbookRenderer.provenanceFooter(for: entries),
+      "画册包含 AI 生成贴纸 · 画册由 ADONIS 排版"
     )
   }
 

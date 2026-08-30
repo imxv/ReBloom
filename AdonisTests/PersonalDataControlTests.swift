@@ -12,6 +12,10 @@ final class PersonalDataControlTests: XCTestCase {
     let image = WardrobeTestImageFactory.brownCatalogShirt()
     let imageData = try XCTUnwrap(image.pngData())
     let sourceFilename = try fixture.store.savePNG(image, filename: "outfit-source.png")
+    let aiSourceFilename = try fixture.store.savePNG(
+      image,
+      filename: "outfit-ai-sticker-source.png"
+    )
     let stickerFilename = try fixture.store.savePNG(image, filename: "outfit-sticker.png")
     let cardFilename = try fixture.store.savePNG(image, filename: "outfit-card.png")
     let creativeFilename = try fixture.store.savePNG(image, filename: "botanical-poster.png")
@@ -27,11 +31,14 @@ final class PersonalDataControlTests: XCTestCase {
       createdAt: Date(timeIntervalSince1970: 1_700_000_000),
       title: "周末穿搭",
       sourceImageFilename: sourceFilename,
+      aiStickerSourceImageFilename: aiSourceFilename,
       stickerImageFilename: stickerFilename,
       cardImageFilename: cardFilename,
       bloomNumber: 7,
+      stickerProvenance: .aiGenerated,
+      stickerExecutionMetadata: .appleImagePlayground,
       note: "公园",
-      generationCompletionMode: .basicStickerFallback,
+      generationCompletionMode: .complete,
       stickerQualityAssessment: StickerQualityAssessment(
         level: .reviewRecommended,
         issues: [.edgeMayIncludeBackground]
@@ -52,6 +59,7 @@ final class PersonalDataControlTests: XCTestCase {
       imageFilename: creativeFilename,
       processingMilliseconds: 87,
       executionMetadata: .botanicalPoster,
+      provenance: .aiGenerated,
       sourceOutfit: record
     )
     record.creativeWorks.append(creativeWork)
@@ -101,12 +109,14 @@ final class PersonalDataControlTests: XCTestCase {
       visualSignatureRawValue: visualSignature
     )
     let performanceTrace = GenerationPerformanceTrace(
-      totalMilliseconds: 680,
+      totalMilliseconds: 3_680,
       stageTimings: [
+        GenerationStageTiming(stage: .aiStickerGeneration, milliseconds: 3_000),
         GenerationStageTiming(stage: .subjectExtraction, milliseconds: 500),
         GenerationStageTiming(stage: .qualityAssessment, milliseconds: 180),
       ],
-      usesPreparedSample: false
+      usesPreparedSample: false,
+      executionMetadata: .appleImagePlayground
     )
     let event = AppEvent(
       createdAt: Date(timeIntervalSince1970: 1_700_000_200),
@@ -141,6 +151,7 @@ final class PersonalDataControlTests: XCTestCase {
     let entries = try TarTestInspector.entries(in: try Data(contentsOf: archive.url))
 
     XCTAssertEqual(entries["media/\(sourceFilename)"], imageData)
+    XCTAssertEqual(entries["media/\(aiSourceFilename)"], imageData)
     XCTAssertEqual(entries["media/\(stickerFilename)"], imageData)
     XCTAssertEqual(entries["media/\(cardFilename)"], imageData)
     XCTAssertEqual(entries["media/\(creativeFilename)"], imageData)
@@ -156,17 +167,45 @@ final class PersonalDataControlTests: XCTestCase {
       try JSONSerialization.jsonObject(with: manifestData) as? [String: Any]
     )
     XCTAssertEqual(manifest["formatVersion"] as? String, PersonalDataArchiveService.formatVersion)
-    XCTAssertEqual(manifest["formatVersion"] as? String, "adonis-personal-data-v7")
+    XCTAssertEqual(manifest["formatVersion"] as? String, "adonis-personal-data-v8")
     XCTAssertEqual(manifest["storage"] as? String, "local_app_storage")
     XCTAssertEqual(manifest["adonisAutomaticNetworkUpload"] as? Bool, false)
+    XCTAssertEqual(
+      manifest["systemImageGenerationTransport"] as? String,
+      "system_managed_when_available"
+    )
     XCTAssertEqual(manifest["systemBackupControlledByIOS"] as? Bool, true)
     let outfits = try XCTUnwrap(manifest["outfits"] as? [[String: Any]])
     XCTAssertEqual(outfits.first?["originalPhotoPath"] as? String, "media/\(sourceFilename)")
+    XCTAssertEqual(
+      outfits.first?["aiStickerSourcePath"] as? String,
+      "media/\(aiSourceFilename)"
+    )
     XCTAssertEqual(outfits.first?["derivedStickerPath"] as? String, "media/\(stickerFilename)")
     XCTAssertEqual(outfits.first?["derivedShareCardPath"] as? String, "media/\(cardFilename)")
     XCTAssertEqual(
+      outfits.first?["stickerProvenance"] as? String,
+      VisualContentProvenance.aiGenerated.rawValue
+    )
+    XCTAssertEqual(
+      outfits.first?["shareCardProvenance"] as? String,
+      VisualContentProvenance.aiGenerated.rawValue
+    )
+    let stickerExecutionMetadata = try XCTUnwrap(
+      outfits.first?["stickerExecutionMetadata"] as? [String: Any]
+    )
+    XCTAssertEqual(
+      stickerExecutionMetadata["provider"] as? String,
+      CreativeProviderIdentifier.appleImagePlayground.rawValue
+    )
+    XCTAssertEqual(stickerExecutionMetadata["providerRequestCount"] as? Int, 1)
+    XCTAssertEqual(
+      stickerExecutionMetadata["networkTransport"] as? String,
+      CreativeNetworkTransport.systemManaged.rawValue
+    )
+    XCTAssertEqual(
       outfits.first?["generationCompletionMode"] as? String,
-      GenerationCompletionMode.basicStickerFallback.rawValue
+      GenerationCompletionMode.complete.rawValue
     )
     XCTAssertEqual(
       outfits.first?["stickerQualityLevel"] as? String,
@@ -197,9 +236,9 @@ final class PersonalDataControlTests: XCTestCase {
     )
     XCTAssertEqual(
       botanical["provenance"] as? String,
-      VisualContentProvenance.programmaticComposition.rawValue
+      VisualContentProvenance.aiGenerated.rawValue
     )
-    XCTAssertEqual(botanical["containsAIGeneratedPixels"] as? Bool, false)
+    XCTAssertEqual(botanical["containsAIGeneratedPixels"] as? Bool, true)
     XCTAssertEqual(botanical["processingMilliseconds"] as? Int, 87)
     XCTAssertEqual(
       botanical["imagePath"] as? String,
@@ -342,22 +381,26 @@ final class PersonalDataControlTests: XCTestCase {
     let pendingSharedImages = try XCTUnwrap(manifest["pendingSharedImages"] as? [String])
     XCTAssertEqual(pendingSharedImages, ["shared-inbox/\(pending.id)"])
     let visualAssets = try XCTUnwrap(manifest["visualAssets"] as? [[String: Any]])
-    XCTAssertEqual(visualAssets.count, 11)
+    XCTAssertEqual(visualAssets.count, 12)
     XCTAssertEqual(
       provenance(for: "media/\(sourceFilename)", in: visualAssets),
       VisualContentProvenance.userProvided.rawValue
     )
     XCTAssertEqual(
       provenance(for: "media/\(stickerFilename)", in: visualAssets),
-      VisualContentProvenance.derivedFromOriginal.rawValue
+      VisualContentProvenance.aiGenerated.rawValue
     )
     XCTAssertEqual(
       provenance(for: "media/\(cardFilename)", in: visualAssets),
-      VisualContentProvenance.programmaticComposition.rawValue
+      VisualContentProvenance.aiGenerated.rawValue
+    )
+    XCTAssertEqual(
+      provenance(for: "media/\(aiSourceFilename)", in: visualAssets),
+      VisualContentProvenance.aiGenerated.rawValue
     )
     XCTAssertEqual(
       provenance(for: "media/\(creativeFilename)", in: visualAssets),
-      VisualContentProvenance.programmaticComposition.rawValue
+      VisualContentProvenance.aiGenerated.rawValue
     )
     XCTAssertEqual(
       provenance(for: "media/\(mythicFilename)", in: visualAssets),
@@ -407,7 +450,7 @@ final class PersonalDataControlTests: XCTestCase {
       visualAssets.filter { asset in
         asset["containsAIGeneratedPixels"] as? Bool == true
       }.count,
-      3
+      7
     )
     let observationAsset = try XCTUnwrap(
       visualAssets.first { $0["path"] as? String == "media/\(observationFilename)" }
@@ -422,7 +465,7 @@ final class PersonalDataControlTests: XCTestCase {
       exportedPerformance["version"] as? String,
       GenerationPerformanceTrace.currentVersion
     )
-    XCTAssertEqual(exportedPerformance["totalMilliseconds"] as? Int, 680)
+    XCTAssertEqual(exportedPerformance["totalMilliseconds"] as? Int, 3_680)
     XCTAssertEqual(exportedPerformance["targetMilliseconds"] as? Int, 45_000)
     XCTAssertEqual(
       exportedPerformance["budgetStatus"] as? String,
@@ -430,8 +473,21 @@ final class PersonalDataControlTests: XCTestCase {
     )
     XCTAssertEqual(exportedPerformance["retryCount"] as? Int, 0)
     XCTAssertEqual(exportedPerformance["externalRequestCount"] as? Int, 0)
+    let performanceMetadata = try XCTUnwrap(
+      exportedPerformance["executionMetadata"] as? [String: Any]
+    )
+    XCTAssertEqual(
+      performanceMetadata["provider"] as? String,
+      CreativeProviderIdentifier.appleImagePlayground.rawValue
+    )
+    XCTAssertEqual(performanceMetadata["providerRequestCount"] as? Int, 1)
+    XCTAssertFalse(performanceMetadata.keys.contains("externalRequestCount"))
     let stageMilliseconds = try XCTUnwrap(
       exportedPerformance["stageMilliseconds"] as? [String: Int]
+    )
+    XCTAssertEqual(
+      stageMilliseconds[GenerationPerformanceStage.aiStickerGeneration.rawValue],
+      3_000
     )
     XCTAssertEqual(stageMilliseconds[GenerationPerformanceStage.subjectExtraction.rawValue], 500)
     XCTAssertEqual(stageMilliseconds[GenerationPerformanceStage.qualityAssessment.rawValue], 180)

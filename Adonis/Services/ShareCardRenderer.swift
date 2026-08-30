@@ -3,7 +3,19 @@ import UIKit
 struct ShareCardRenderer {
   private let size = CGSize(width: 1080, height: 1440)
 
-  func render(sticker: UIImage, bloomNumber: Int, date: Date) -> UIImage {
+  static func provenanceFooter(for stickerProvenance: VisualContentProvenance) -> String {
+    if stickerProvenance.containsAIGeneratedPixels {
+      return "贴纸由 AI 生成 · 卡面由 ADONIS 排版"
+    }
+    return "人物与衣物来自原图 · 卡面由 ADONIS 排版"
+  }
+
+  func render(
+    sticker: UIImage,
+    bloomNumber: Int,
+    date: Date,
+    stickerProvenance: VisualContentProvenance = .derivedFromOriginal
+  ) -> UIImage {
     let format = UIGraphicsImageRendererFormat()
     format.scale = 1
     format.opaque = true
@@ -13,7 +25,11 @@ struct ShareCardRenderer {
       drawBackground(in: context)
       drawDecorations(in: context)
       drawSticker(sticker, in: context)
-      drawTypography(bloomNumber: bloomNumber, date: date)
+      drawTypography(
+        bloomNumber: bloomNumber,
+        date: date,
+        stickerProvenance: stickerProvenance
+      )
     }
   }
 
@@ -130,7 +146,11 @@ struct ShareCardRenderer {
     context.restoreGState()
   }
 
-  private func drawTypography(bloomNumber: Int, date: Date) {
+  private func drawTypography(
+    bloomNumber: Int,
+    date: Date,
+    stickerProvenance: VisualContentProvenance
+  ) {
     let ink = UIColor(red: 0.16, green: 0.12, blue: 0.14, alpha: 1)
     let secondary = UIColor(red: 0.44, green: 0.38, blue: 0.41, alpha: 1)
     let paragraph = NSMutableParagraphStyle()
@@ -180,16 +200,15 @@ struct ShareCardRenderer {
       ]
     )
 
-    if let provenanceFooter = VisualContentProvenance.programmaticComposition.shareCardFooter {
-      (provenanceFooter as NSString).draw(
-        in: CGRect(x: 180, y: 1345, width: 720, height: 28),
-        withAttributes: [
-          .font: UIFont.systemFont(ofSize: 17, weight: .semibold),
-          .foregroundColor: secondary.withAlphaComponent(0.82),
-          .paragraphStyle: paragraph,
-        ]
-      )
-    }
+    let provenanceFooter = Self.provenanceFooter(for: stickerProvenance)
+    (provenanceFooter as NSString).draw(
+      in: CGRect(x: 180, y: 1345, width: 720, height: 28),
+      withAttributes: [
+        .font: UIFont.systemFont(ofSize: 17, weight: .semibold),
+        .foregroundColor: secondary.withAlphaComponent(0.82),
+        .paragraphStyle: paragraph,
+      ]
+    )
   }
 
   private func aspectFit(size source: CGSize, in target: CGRect) -> CGRect {

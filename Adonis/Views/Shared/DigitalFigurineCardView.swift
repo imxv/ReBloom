@@ -6,6 +6,7 @@ struct DigitalFigurineCardPresentation: Identifiable {
   let image: UIImage
   let bloomNumber: Int
   let date: Date
+  let stickerProvenance: VisualContentProvenance
 }
 
 struct DigitalFigurineCardEntry: View {
@@ -28,7 +29,7 @@ struct DigitalFigurineCardEntry: View {
           Text("把这张贴纸立起来")
             .font(.system(.headline, design: .rounded, weight: .black))
             .foregroundStyle(AdonisTheme.ink)
-          Text("一键放进 2.5D 手办展台，人物和衣服保持原样。")
+          Text("一键放进 2.5D 手办展台，贴纸内容保持不变。")
             .font(.footnote)
             .foregroundStyle(AdonisTheme.secondaryInk)
             .fixedSize(horizontal: false, vertical: true)
@@ -59,7 +60,7 @@ struct DigitalFigurineCardEntry: View {
     }
     .buttonStyle(StickerButtonStyle())
     .accessibilityElement(children: .combine)
-    .accessibilityLabel("制作数字手办收藏卡，一键放进 2.5D 展台，人物和衣服保持原样")
+    .accessibilityLabel("制作数字手办收藏卡，一键放进 2.5D 展台，贴纸内容保持不变")
     .accessibilityIdentifier("digital-figurine-card-entry")
   }
 }
@@ -111,8 +112,12 @@ struct DigitalFigurineCardView: View {
             }
 
             ContentProvenanceNotice(
-              provenance: DigitalFigurineCardRenderer.provenance,
-              detail: "人物、衣物、姿势与纯白边沿用透明贴纸像素；Adonis 只添加展台、透明罩、投影和文字，没有重绘人物或衣物。",
+              provenance: DigitalFigurineCardRenderer.provenance(
+                for: presentation.stickerProvenance
+              ),
+              detail: presentation.stickerProvenance.containsAIGeneratedPixels
+                ? "人物、衣物、姿势与纯白边沿用 AI 贴纸像素；Adonis 只添加展台、透明罩、投影和文字，没有再次重绘人物或衣物。"
+                : "人物、衣物、姿势与纯白边沿用原图贴纸像素；Adonis 只添加展台、透明罩、投影和文字，没有重绘人物或衣物。",
               identifier: "digital-figurine-card-provenance"
             )
 

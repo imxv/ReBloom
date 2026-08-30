@@ -3,6 +3,63 @@ import XCTest
 
 final class AdonisFlowUITests: XCTestCase {
   @MainActor
+  func testMainCreationGeneratesAIStickerSourceBeforeTransparentStickerAndPersistsIt() {
+    let app = XCUIApplication()
+    let persistentStoreID = UUID().uuidString
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-persistent-store",
+        persistentStoreID,
+        "-ui-testing-ai-sticker-main-flow",
+      ]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
+    sample.tap()
+
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 25))
+    XCTAssertFalse(app.alerts.element.exists)
+    let picker = app.segmentedControls["result-mode-picker"]
+    XCTAssertTrue(picker.buttons["透明贴纸"].waitForExistence(timeout: 3))
+
+    picker.buttons["透明贴纸"].tap()
+    let aiProvenance = app.descendants(matching: .any)["content-provenance-ai_generated"]
+    XCTAssertTrue(aiProvenance.waitForExistence(timeout: 3))
+    XCTAssertTrue(aiProvenance.label.contains("画面包含 AI 生成或重绘"))
+    keepScreenshot(named: "Adonis-ai-transparent-sticker-result")
+
+    picker.buttons["原始照片"].tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["content-provenance-user_provided"]
+        .waitForExistence(timeout: 3)
+    )
+    picker.buttons["收藏卡"].tap()
+    XCTAssertTrue(aiProvenance.waitForExistence(timeout: 3))
+
+    let save = app.buttons["save-today"]
+    XCTAssertTrue(scrollToHittable(save, in: app, attempts: 8))
+    save.tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 5))
+    keepScreenshot(named: "Adonis-ai-sticker-main-flow")
+
+    let makeAnother = app.buttons["make-another"]
+    XCTAssertTrue(scrollToHittable(makeAnother, in: app, attempts: 4))
+    makeAnother.tap()
+    app.tabBars.buttons["花历"].tap()
+    let record = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(record.waitForExistence(timeout: 5))
+    record.tap()
+    let historyPicker = app.segmentedControls["history-visual-picker"]
+    XCTAssertTrue(historyPicker.buttons["透明贴纸"].waitForExistence(timeout: 3))
+    historyPicker.buttons["透明贴纸"].tap()
+    XCTAssertTrue(aiProvenance.waitForExistence(timeout: 3))
+  }
+
+  @MainActor
   func testCuratedStyleGardenSelectsPersistsAndReopensFloralSketch() {
     let app = XCUIApplication()
     let persistentStoreID = UUID().uuidString
@@ -380,7 +437,7 @@ final class AdonisFlowUITests: XCTestCase {
     let hero = app.descendants(matching: .any)["create-hero"]
     XCTAssertTrue(hero.waitForExistence(timeout: 8))
     XCTAssertTrue(hero.label.contains("一张照片"))
-    XCTAssertTrue(hero.label.contains("保留原来的你"))
+    XCTAssertTrue(hero.label.contains("先生成贴纸形象"))
     keepScreenshot(named: "Adonis-accessibility-create")
 
     let firstSample = app.buttons["sample-01"]
@@ -434,7 +491,7 @@ final class AdonisFlowUITests: XCTestCase {
     let lookbookEntry = app.buttons["monthly-lookbook-entry"]
     XCTAssertTrue(lookbookEntry.waitForExistence(timeout: 5))
     XCTAssertTrue(scrollToHittable(lookbookEntry, in: app, attempts: 8))
-    lookbookEntry.tap()
+    lookbookEntry.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
 
     let lookbookPreview = app.descendants(matching: .any)["monthly-lookbook-preview"]
     XCTAssertTrue(lookbookPreview.waitForExistence(timeout: 5))
@@ -667,7 +724,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertFalse(latestStage.label.isEmpty)
     let externalCost = app.descendants(matching: .any)["performance-external-cost"]
     XCTAssertTrue(scrollToHittable(externalCost, in: app, attempts: 3))
-    XCTAssertTrue(externalCost.label.contains("不适用（全本机）"))
+    XCTAssertTrue(externalCost.label.contains("不适用（旧版本机链路）"))
     keepScreenshot(named: "Adonis-performance-budget")
   }
 
@@ -858,7 +915,7 @@ final class AdonisFlowUITests: XCTestCase {
 
     let entry = app.buttons["digital-figurine-card-entry"]
     XCTAssertTrue(scrollToHittable(entry, in: app, attempts: 5))
-    XCTAssertTrue(entry.label.contains("人物和衣服保持原样"))
+    XCTAssertTrue(entry.label.contains("贴纸内容保持不变"))
     entry.tap()
 
     let preview = app.descendants(matching: .any)["digital-figurine-card-preview"]
@@ -1335,7 +1392,7 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
-  func testAmbiguousCatalogImageAsksBeforeSavingAfterStickerFailure() {
+  func testAmbiguousInputDoesNotBypassUnavailableAIStickerGeneration() {
     let app = XCUIApplication()
     app.launchArguments.append(
       contentsOf: ["-ui-testing", "-ui-testing-create-input-routing"]
@@ -1347,18 +1404,26 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(scrollToHittable(catalogImage, in: app, attempts: 6))
     catalogImage.tap()
 
-    let confirmation = app.alerts["这张更像衣服图片"]
-    XCTAssertTrue(confirmation.waitForExistence(timeout: 10))
-    XCTAssertTrue(confirmation.buttons["收进衣橱"].exists)
+    let unavailableAlert = app.alerts["这台 iPhone 暂时不能生成 AI 贴纸"]
+    XCTAssertTrue(unavailableAlert.waitForExistence(timeout: 10))
+    XCTAssertTrue(
+      app.staticTexts[
+        "这次需要先生成一张背景干净的 AI 贴纸形象，再做透明抠图。当前系统能力不可用，Adonis 没有改用原照片直接抠图。"
+      ].exists
+    )
+    XCTAssertTrue(unavailableAlert.buttons["换一张试试"].exists)
+    XCTAssertFalse(unavailableAlert.buttons["收进衣橱"].exists)
     XCTAssertFalse(app.staticTexts["result-title"].exists)
-    confirmation.buttons["收进衣橱"].tap()
+    XCTAssertFalse(
+      app.descendants(matching: .any)["creation-wardrobe-import-notice"].exists
+    )
+    keepScreenshot(named: "Adonis-ai-sticker-unavailable-no-fallback")
 
-    let notice = app.descendants(matching: .any)["creation-wardrobe-import-notice"]
-    XCTAssertTrue(notice.waitForExistence(timeout: 5))
-    XCTAssertTrue(app.staticTexts["已收进衣橱"].exists)
-    app.buttons["creation-open-wardrobe"].tap()
-    XCTAssertTrue(app.staticTexts["棕色单品"].waitForExistence(timeout: 5))
-    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 1)
+    unavailableAlert.buttons["换一张试试"].tap()
+    XCTAssertTrue(app.buttons["sample-01"].waitForExistence(timeout: 3))
+    app.tabBars.buttons["衣橱"].tap()
+    XCTAssertTrue(app.buttons["add-first-wardrobe-item"].waitForExistence(timeout: 5))
+    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 0)
   }
 
   @MainActor

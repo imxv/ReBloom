@@ -4,10 +4,29 @@ struct MonthlyLookbookEntry {
   let sticker: UIImage
   let bloomNumber: Int
   let date: Date
+  let stickerProvenance: VisualContentProvenance
+
+  init(
+    sticker: UIImage,
+    bloomNumber: Int,
+    date: Date,
+    stickerProvenance: VisualContentProvenance = .derivedFromOriginal
+  ) {
+    self.sticker = sticker
+    self.bloomNumber = bloomNumber
+    self.date = date
+    self.stickerProvenance = stickerProvenance
+  }
 }
 
 struct MonthlyLookbookRenderer {
   static let provenanceFooter = "人物与衣物来自已收藏原图 · 画册由 ADONIS 排版"
+
+  static func provenanceFooter(for entries: [MonthlyLookbookEntry]) -> String {
+    entries.contains { $0.stickerProvenance.containsAIGeneratedPixels }
+      ? "画册包含 AI 生成贴纸 · 画册由 ADONIS 排版"
+      : provenanceFooter
+  }
 
   private let size = CGSize(width: 1080, height: 1440)
 
@@ -49,7 +68,10 @@ struct MonthlyLookbookRenderer {
         drawEntry(entry, index: index, in: frames[index], context: context)
       }
 
-      drawFooter(showingLatestSix: monthEntries.count > selectedEntries.count)
+      drawFooter(
+        showingLatestSix: monthEntries.count > selectedEntries.count,
+        provenanceFooter: Self.provenanceFooter(for: selectedEntries)
+      )
     }
   }
 
@@ -252,7 +274,7 @@ struct MonthlyLookbookRenderer {
     )
   }
 
-  private func drawFooter(showingLatestSix: Bool) {
+  private func drawFooter(showingLatestSix: Bool, provenanceFooter: String) {
     let centered = NSMutableParagraphStyle()
     centered.alignment = .center
 
@@ -266,7 +288,7 @@ struct MonthlyLookbookRenderer {
       ]
     )
 
-    (Self.provenanceFooter as NSString).draw(
+    (provenanceFooter as NSString).draw(
       in: CGRect(x: 130, y: 1280, width: 820, height: 40),
       withAttributes: [
         .font: UIFont.systemFont(ofSize: 19, weight: .semibold),

@@ -1,6 +1,8 @@
 # 2026-08-29 本地数据导出与删除验证记录
 
 > 结论：Adonis 已提供不新增一级导航的本地数据控制入口。用户可以先查看本机内容数量，再生成标准 TAR 副本交给 iOS 系统分享面板，或经二次确认清空 SwiftData、媒体文件、App Group 待导入图片和临时导出包。
+>
+> 2026-08-31 更新：当前清单已升级为 `adonis-personal-data-v8`，增加 AI 不透明贴纸源、动态贴纸/卡片/派生作品来源，以及 AI 生成阶段和 provider 执行元数据。下文标明 v7 的条目与数量是升级前的历史验证证据；现行增量契约见 [AI 贴纸先生成后抠图验证记录](2026-08-31-ai-sticker-first-pipeline.md)。
 
 ## 用户入口与低负担原则
 
@@ -17,18 +19,19 @@
 | 路径 | 内容 |
 | --- | --- |
 | `manifest.json` | 格式版本、导出时间、App 版本和所有本地业务记录 |
-| `media/` | OOTD 原图、透明贴纸、分享收藏卡、衣橱图片和衣物线索预览 |
+| `media/` | OOTD 原图、可选 AI 不透明贴纸源、透明贴纸、分享收藏卡、衣橱图片和衣物线索预览 |
 | `shared-inbox/` | 用户已分享给 Adonis、但尚未成功导入衣橱的图片 |
 
 `manifest.json` 使用明确的图片角色字段，而不是把二进制图片塞进 Base64：
 
 - `originalPhotoPath`
+- `aiStickerSourcePath`
 - `derivedStickerPath`
 - `derivedShareCardPath`
 - `sourceImagePath`
 - `derivedPreviewPath`
 
-当前清单格式为 `adonis-personal-data-v7`。它包含 `visualAssets` 数组，为每个图片路径记录 `role`、`provenance`、`ownerID`、面向用户的 `disclosure`、`containsAIGeneratedPixels` 和 `requiresUserConfirmation`。OOTD 原图、商品图与待导入图片标为 `user_provided`，透明贴纸标为 `derived_from_original`，收藏卡与花影海报标为 `programmatic_composition`，衣物线索预览标为 `recognition_suggestion`，永生花园标为 `ai_generated`。透明贴纸与收藏卡还保存结构质量字段；每条 OOTD 的 `generationCompletionMode` 区分完整结果与基础贴纸降级。`creativeWorks` 保存来源 OOTD、配方、版本、图片路径、来源类型、是否含 AI 像素、耗时，以及 provider、请求、网络、费用和质量口径；系统未暴露的外部请求数显式写为 JSON `null`。`processingEvents.generationPerformance` 另行保存贴纸生成总耗时、阶段、重试与外部请求。两者都不嵌入图片内容或内部概念。衣橱单品和 OOTD 线索继续导出本机派生的视觉签名，它们不是商品身份或自动关联事实。详细规则见 [生成内容来源标识验证记录](2026-08-29-content-provenance.md)与 [永生花园系统创作验证记录](2026-08-30-mythic-garden.md)。
+当前清单格式为 `adonis-personal-data-v8`。它包含 `visualAssets` 数组，为每个图片路径记录 `role`、`provenance`、`ownerID`、面向用户的 `disclosure`、`containsAIGeneratedPixels` 和 `requiresUserConfirmation`。OOTD 原图、商品图与待导入图片标为 `user_provided`；默认 AI 不透明贴纸源、透明贴纸、收藏卡及使用该贴纸的派生作品标为 `ai_generated`；历史直抠样片仍可标为 `derived_from_original`，衣物线索预览标为 `recognition_suggestion`。透明贴纸与收藏卡还保存结构质量字段；每条 OOTD 的 `generationCompletionMode` 区分完整结果与基础贴纸降级，并保存 AI provider 执行元数据。`creativeWorks` 保存来源 OOTD、配方、版本、图片路径、实际来源、是否含 AI 像素、耗时，以及 provider、请求、网络、费用和质量口径；系统未暴露的外部请求数显式写为 JSON `null`。`processingEvents.generationPerformance` 另行保存贴纸生成总耗时、AI 生成和本机处理阶段、中断位置、重试与执行元数据。它们都不嵌入图片内容或内部概念。衣橱单品和可信 OOTD 线索继续导出本机派生的视觉签名，它们不是商品身份或自动关联事实。详细规则见 [生成内容来源标识验证记录](2026-08-29-content-provenance.md)与 [AI 贴纸先生成后抠图验证记录](2026-08-31-ai-sticker-first-pipeline.md)。
 
 清单同时写明 `storage = local_app_storage`、`adonisAutomaticNetworkUpload = false` 和 `systemBackupControlledByIOS = true`。这表示 Adonis 本身没有自动网络上传；用户在下一步系统分享面板选择的 App 或位置仍可能接收该副本。
 
@@ -70,12 +73,13 @@
 
 ## 自动验证
 
-- 当前 v7 导出单元测试创建 1 条 OOTD、1 件衣物、1 条线索、1 条事件、花影海报与永生花园共 7 个媒体文件，以及 1 张待导入图片，并验证每个角色路径、二进制内容与执行元数据。
+- 历史 v7 导出单元测试创建 1 条 OOTD、1 件衣物、1 条线索、1 条事件、花影海报与永生花园共 7 个媒体文件，以及 1 张待导入图片，并验证每个角色路径、二进制内容与执行元数据。
 - 测试产出的 TAR 已从 XCTest 结果包导出，再由 macOS 自带 `tar -tf`、`tar -xOf ... manifest.json` 与 `jq` 独立读取。实际条目为 `manifest.json`、7 个 `media/` 文件和 1 个 `shared-inbox/` 文件；清单包含 8 个视觉资产，其中 7 个不含 AI 生成像素，只有永生花园标为 AI 生成。不是只用项目自己的解析器自证。
 - 删除单元测试验证五类模型计数归零、媒体目录为空、共享收件箱为空、陈旧临时 TAR 消失。
 - UI 测试分别覆盖：查看非零数据计数并打开带 TAR 的系统分享面板；二次确认删除后看到成功反馈，并验证衣橱与待导入图片计数从 1 变成 0。
 - `make check` 的严格 `swift-format` 与通用 iOS 真机静态分析通过。
-- 当前完整结果：127 个单元测试与 28 个 UI 流程测试，共 155 项通过、0 失败、0 跳过；`xcresulttool` 独立汇总一致，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_11-55-11-+0800.xcresult`。完整测试范围也记录在 [iOS 本地 Demo 验证记录](2026-08-29-ios-local-demo.md)。
+- 历史 v7 完整结果：127 个单元测试与 28 个 UI 流程测试，共 155 项通过、0 失败、0 跳过；`xcresulttool` 独立汇总一致，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_11-55-11-+0800.xcresult`。完整测试范围也记录在 [iOS 本地 Demo 验证记录](2026-08-29-ios-local-demo.md)。
+- v8 增量测试验证 AI 源媒体、动态来源和 provider 元数据进入可读 TAR；最终全量回归 214 项通过，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.31_02-46-41-+0800.xcresult`。
 
 ## 界面证据
 

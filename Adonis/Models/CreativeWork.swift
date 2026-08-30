@@ -9,6 +9,7 @@ struct CreativeWorkDraft: Identifiable {
   let image: UIImage
   let processingMilliseconds: Int
   let executionMetadata: CreativeExecutionMetadata
+  let provenance: VisualContentProvenance
 
   init(
     id: UUID = UUID(),
@@ -16,7 +17,8 @@ struct CreativeWorkDraft: Identifiable {
     recipe: CreativeRecipe,
     image: UIImage,
     processingMilliseconds: Int,
-    executionMetadata: CreativeExecutionMetadata
+    executionMetadata: CreativeExecutionMetadata,
+    provenance: VisualContentProvenance? = nil
   ) {
     self.id = id
     self.createdAt = createdAt
@@ -24,10 +26,13 @@ struct CreativeWorkDraft: Identifiable {
     self.image = image
     self.processingMilliseconds = max(0, processingMilliseconds)
     self.executionMetadata = executionMetadata
+    self.provenance = provenance ?? recipe.provenance
   }
 
   var eventDetail: String {
-    executionMetadata.eventDetail(for: recipe)
+    let base = executionMetadata.eventDetail(for: recipe)
+    guard provenance != recipe.provenance else { return base }
+    return "\(base);output_provenance=\(provenance.rawValue)"
   }
 }
 
@@ -78,6 +83,7 @@ final class CreativeWork {
     imageFilename: String,
     processingMilliseconds: Int,
     executionMetadata: CreativeExecutionMetadata,
+    provenance: VisualContentProvenance? = nil,
     sourceOutfit: OutfitRecord? = nil
   ) {
     self.id = id
@@ -85,7 +91,7 @@ final class CreativeWork {
     self.recipeRawValue = recipe.rawValue
     self.recipeVersion = recipe.version
     self.imageFilename = imageFilename
-    self.provenanceRawValue = recipe.provenance.rawValue
+    self.provenanceRawValue = (provenance ?? recipe.provenance).rawValue
     self.processingMilliseconds = max(0, processingMilliseconds)
     self.providerRawValue = executionMetadata.provider.rawValue
     self.providerRequestCount = executionMetadata.providerRequestCount

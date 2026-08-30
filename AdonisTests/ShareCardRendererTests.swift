@@ -3,6 +3,17 @@ import XCTest
 @testable import Adonis
 
 final class ShareCardRendererTests: XCTestCase {
+  func testProvenanceFooterDisclosesAIGeneratedStickerPixels() {
+    XCTAssertEqual(
+      ShareCardRenderer.provenanceFooter(for: .aiGenerated),
+      "贴纸由 AI 生成 · 卡面由 ADONIS 排版"
+    )
+    XCTAssertEqual(
+      ShareCardRenderer.provenanceFooter(for: .derivedFromOriginal),
+      "人物与衣物来自原图 · 卡面由 ADONIS 排版"
+    )
+  }
+
   func testRendererProducesOpaqueSocialCardAtContractSize() throws {
     let sticker = try XCTUnwrap(SampleCatalog.photos.first?.preparedStickerImage())
     let date = try XCTUnwrap(

@@ -13,6 +13,7 @@ final class AppEvent {
   var generationPerformanceVersion: String?
   var generationTargetMilliseconds: Int?
   var generationInputLoadingMilliseconds: Int?
+  var generationAIStickerMilliseconds: Int?
   var generationSubjectExtractionMilliseconds: Int?
   var generationQualityAssessmentMilliseconds: Int?
   var generationShareCardCompositionMilliseconds: Int?
@@ -21,6 +22,7 @@ final class AppEvent {
   var generationExternalRequestCount: Int?
   var generationUsesPreparedSample: Bool?
   var generationInterruptedStageRawValue: String?
+  var generationExecutionMetadataData: Data?
 
   var kind: AppEventKind {
     AppEventKind(rawValue: kindRawValue) ?? .unknown
@@ -54,7 +56,10 @@ final class AppEvent {
       usesPreparedSample: generationUsesPreparedSample ?? false,
       interruptedStage: generationInterruptedStageRawValue.flatMap(
         GenerationPerformanceStage.init(rawValue:)
-      )
+      ),
+      executionMetadata: generationExecutionMetadataData.flatMap {
+        try? JSONDecoder().decode(CreativeExecutionMetadata.self, from: $0)
+      }
     )
   }
 
@@ -81,6 +86,9 @@ final class AppEvent {
     self.generationInputLoadingMilliseconds = generationPerformanceTrace?.milliseconds(
       for: .inputLoading
     )
+    self.generationAIStickerMilliseconds = generationPerformanceTrace?.milliseconds(
+      for: .aiStickerGeneration
+    )
     self.generationSubjectExtractionMilliseconds = generationPerformanceTrace?.milliseconds(
       for: .subjectExtraction
     )
@@ -97,11 +105,15 @@ final class AppEvent {
     self.generationExternalRequestCount = generationPerformanceTrace?.externalRequestCount
     self.generationUsesPreparedSample = generationPerformanceTrace?.usesPreparedSample
     self.generationInterruptedStageRawValue = generationPerformanceTrace?.interruptedStage?.rawValue
+    self.generationExecutionMetadataData = generationPerformanceTrace?.executionMetadata.flatMap {
+      try? JSONEncoder().encode($0)
+    }
   }
 
   private func generationMilliseconds(for stage: GenerationPerformanceStage) -> Int? {
     switch stage {
     case .inputLoading: generationInputLoadingMilliseconds
+    case .aiStickerGeneration: generationAIStickerMilliseconds
     case .subjectExtraction: generationSubjectExtractionMilliseconds
     case .qualityAssessment: generationQualityAssessmentMilliseconds
     case .shareCardComposition: generationShareCardCompositionMilliseconds

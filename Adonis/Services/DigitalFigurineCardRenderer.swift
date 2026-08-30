@@ -4,9 +4,26 @@ struct DigitalFigurineCardRenderer {
   static let provenance = VisualContentProvenance.programmaticComposition
   static let provenanceFooter = "人物与衣物来自原图贴纸 · 展台由 ADONIS 排版"
 
+  static func provenance(
+    for stickerProvenance: VisualContentProvenance
+  ) -> VisualContentProvenance {
+    stickerProvenance.containsAIGeneratedPixels ? .aiGenerated : .programmaticComposition
+  }
+
+  static func provenanceFooter(for stickerProvenance: VisualContentProvenance) -> String {
+    stickerProvenance.containsAIGeneratedPixels
+      ? "人物与衣物来自 AI 贴纸 · 展台由 ADONIS 排版"
+      : provenanceFooter
+  }
+
   private let size = CGSize(width: 1080, height: 1440)
 
-  func render(sticker: UIImage, bloomNumber: Int, date: Date) -> UIImage? {
+  func render(
+    sticker: UIImage,
+    bloomNumber: Int,
+    date: Date,
+    stickerProvenance: VisualContentProvenance = .derivedFromOriginal
+  ) -> UIImage? {
     guard sticker.size.width.isFinite,
       sticker.size.height.isFinite,
       sticker.size.width > 0,
@@ -24,7 +41,10 @@ struct DigitalFigurineCardRenderer {
       drawBackground(in: context)
       drawHeader(bloomNumber: bloomNumber, date: date)
       drawDisplayCase(sticker: sticker, in: context)
-      drawCollectionMetadata(bloomNumber: bloomNumber)
+      drawCollectionMetadata(
+        bloomNumber: bloomNumber,
+        stickerProvenance: stickerProvenance
+      )
     }
   }
 
@@ -257,14 +277,21 @@ struct DigitalFigurineCardRenderer {
     context.restoreGState()
   }
 
-  private func drawCollectionMetadata(bloomNumber: Int) {
+  private func drawCollectionMetadata(
+    bloomNumber: Int,
+    stickerProvenance: VisualContentProvenance
+  ) {
     let centered = NSMutableParagraphStyle()
     centered.alignment = .center
 
     let badgeRect = CGRect(x: 326, y: 1110, width: 428, height: 54)
     Self.leaf.withAlphaComponent(0.20).setFill()
     UIBezierPath(roundedRect: badgeRect, cornerRadius: 27).fill()
-    ("ORIGINAL OUTFIT · 2.5D DISPLAY" as NSString).draw(
+    let sourceBadge =
+      stickerProvenance.containsAIGeneratedPixels
+      ? "AI STICKER · 2.5D DISPLAY"
+      : "ORIGINAL OUTFIT · 2.5D DISPLAY"
+    (sourceBadge as NSString).draw(
       in: CGRect(x: 340, y: 1126, width: 400, height: 28),
       withAttributes: [
         .font: UIFont.systemFont(ofSize: 17, weight: .heavy),
@@ -284,7 +311,7 @@ struct DigitalFigurineCardRenderer {
       ]
     )
 
-    (Self.provenanceFooter as NSString).draw(
+    (Self.provenanceFooter(for: stickerProvenance) as NSString).draw(
       in: CGRect(x: 120, y: 1260, width: 840, height: 40),
       withAttributes: [
         .font: UIFont.systemFont(ofSize: 19, weight: .semibold),

@@ -70,7 +70,7 @@ struct CreativeWorkView: View {
           }
 
           ContentProvenanceNotice(
-            provenance: presentation.draft.recipe.provenance,
+            provenance: presentation.draft.provenance,
             detail: provenanceDetail,
             identifier: "creative-work-provenance",
             summary: provenanceSummary
@@ -276,7 +276,7 @@ struct CreativeWorkView: View {
   private var executionTagTitle: String {
     switch presentation.draft.recipe {
     case .botanicalPoster: "本机创作"
-    case .floralSketch, .mythicGarden, .moonlitTheater: "系统创作"
+    case .aiStickerSource, .floralSketch, .mythicGarden, .moonlitTheater: "系统创作"
     case .stickerTryOn: "本机试搭"
     }
   }
@@ -289,7 +289,7 @@ struct CreativeWorkView: View {
   private var executionTagIcon: String {
     switch presentation.draft.recipe {
     case .botanicalPoster: "iphone"
-    case .floralSketch, .mythicGarden, .moonlitTheater: "sparkles"
+    case .aiStickerSource, .floralSketch, .mythicGarden, .moonlitTheater: "sparkles"
     case .stickerTryOn: "tshirt"
     }
   }
@@ -297,8 +297,10 @@ struct CreativeWorkView: View {
   private var provenanceDetail: String {
     switch presentation.draft.recipe {
     case .botanicalPoster:
-      "人物、衣物、姿势和纯白边直接复用原图贴纸；背景、花影与文字由 Adonis 本机排版，不含 AI 重绘。"
-    case .floralSketch, .mythicGarden, .moonlitTheater:
+      presentation.draft.provenance.containsAIGeneratedPixels
+        ? "人物、衣物、姿势和纯白边沿用 AI 贴纸像素；背景、花影与文字由 Adonis 本机排版，没有再次重绘人物或衣物。"
+        : "人物、衣物、姿势和纯白边直接复用原图贴纸；背景、花影与文字由 Adonis 本机排版，不含 AI 重绘。"
+    case .aiStickerSource, .floralSketch, .mythicGarden, .moonlitTheater:
       "原始照片只作为创作参考；画面包含系统生成或重绘的人物、衣物和背景，请与原图对照后再收藏。"
     case .stickerTryOn:
       "人物与背景来自 OOTD 原始照片；衣物来自商品图，由本机裁切、缩放并覆盖到上身位置，不含 AI 重绘。"
@@ -313,7 +315,8 @@ struct CreativeWorkView: View {
   private var boundaryTitle: String {
     switch presentation.draft.recipe {
     case .botanicalPoster: "只是一张风格海报"
-    case .floralSketch, .mythicGarden, .moonlitTheater: "人物和衣服都可能改变"
+    case .aiStickerSource, .floralSketch, .mythicGarden, .moonlitTheater:
+      "人物和衣服都可能改变"
     case .stickerTryOn: "只是一张贴纸试搭草图"
     }
   }
@@ -322,7 +325,7 @@ struct CreativeWorkView: View {
     switch presentation.draft.recipe {
     case .botanicalPoster:
       "它不是试穿效果，也不代表一张真实拍摄的新照片。"
-    case .floralSketch, .mythicGarden, .moonlitTheater:
+    case .aiStickerSource, .floralSketch, .mythicGarden, .moonlitTheater:
       "请把它当作风格插画，不是试穿效果，也不是真实拍摄的新照片。"
     case .stickerTryOn:
       "它不预测尺码、合身度、垂坠、褶皱或真实遮挡，请只用来快速看看配色和轮廓。"
@@ -364,7 +367,7 @@ struct BotanicalPosterEntry: View {
           Text("花影海报")
             .font(.system(.title3, design: .rounded, weight: .black))
             .foregroundStyle(AdonisTheme.ink)
-          Text("一键排版，人物和衣服保持原样")
+          Text("一键排版，贴纸内容保持不变")
             .font(.footnote)
             .foregroundStyle(AdonisTheme.secondaryInk)
             .fixedSize(horizontal: false, vertical: true)
@@ -387,7 +390,7 @@ struct BotanicalPosterEntry: View {
       }
     }
     .buttonStyle(StickerButtonStyle())
-    .accessibilityLabel("制作花影海报，一键排版，人物和衣服保持原样")
+    .accessibilityLabel("制作花影海报，一键排版，贴纸内容保持不变")
     .accessibilityIdentifier("botanical-poster-entry")
   }
 }

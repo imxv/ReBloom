@@ -750,7 +750,8 @@ struct BloomCalendarView: View {
         MonthlyLookbookEntry(
           sticker: sticker,
           bloomNumber: record.bloomNumber,
-          date: record.createdAt
+          date: record.createdAt,
+          stickerProvenance: record.stickerProvenance
         ))
     }
 
@@ -768,7 +769,9 @@ struct BloomCalendarView: View {
     monthlyLookbook = MonthlyLookbookPresentation(
       image: image,
       month: visibleMonth,
-      entryCount: visibleMonthRecords.count
+      entryCount: visibleMonthRecords.count,
+      provenance: entries.contains { $0.stickerProvenance.containsAIGeneratedPixels }
+        ? .aiGenerated : .programmaticComposition
     )
   }
 
@@ -800,7 +803,8 @@ struct BloomCalendarView: View {
         record.sourceImageFilename,
         record.stickerImageFilename,
         record.cardImageFilename,
-      ] + record.garmentObservations.map(\.previewImageFilename)
+      ] + [record.aiStickerSourceImageFilename].compactMap { $0 }
+      + record.garmentObservations.map(\.previewImageFilename)
       + record.creativeWorks.map(\.imageFilename)
     modelContext.delete(record)
     do {

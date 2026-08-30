@@ -4,7 +4,7 @@ import XCTest
 @testable import Adonis
 
 final class DigitalFigurineCardRendererTests: XCTestCase {
-  func testContractNamesOriginalStickerAndProgrammaticStage() {
+  func testLegacyContractNamesOriginalStickerAndProgrammaticStage() {
     XCTAssertEqual(
       DigitalFigurineCardRenderer.provenanceFooter,
       "人物与衣物来自原图贴纸 · 展台由 ADONIS 排版"
@@ -13,6 +13,14 @@ final class DigitalFigurineCardRendererTests: XCTestCase {
     XCTAssertEqual(AdonisProcessingVersion.digitalFigurineCard, "digital-figurine-card-v1")
     XCTAssertEqual(AppEventKind.digitalFigurineCardCreated.title, "生成手办收藏卡")
     XCTAssertEqual(AppEventKind.digitalFigurineCardShareOpened.title, "打开手办卡分享")
+  }
+
+  func testAIStickerKeepsAIProvenanceThroughFigurineStageLayout() {
+    XCTAssertEqual(DigitalFigurineCardRenderer.provenance(for: .aiGenerated), .aiGenerated)
+    XCTAssertEqual(
+      DigitalFigurineCardRenderer.provenanceFooter(for: .aiGenerated),
+      "人物与衣物来自 AI 贴纸 · 展台由 ADONIS 排版"
+    )
   }
 
   func testRendererRejectsEmptyStickerInsteadOfProducingAnEmptyStage() {

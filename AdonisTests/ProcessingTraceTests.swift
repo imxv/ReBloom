@@ -79,6 +79,43 @@ final class ProcessingTraceTests: XCTestCase {
   }
 
   @MainActor
+  func testAIStickerGenerationStageAndProviderMetadataSurviveEventPersistence() throws {
+    let schema = Schema([AppEvent.self])
+    let container = try ModelContainer(
+      for: schema,
+      configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+    )
+    let context = ModelContext(container)
+    let trace = GenerationPerformanceTrace(
+      totalMilliseconds: 940,
+      stageTimings: [
+        GenerationStageTiming(stage: .aiStickerGeneration, milliseconds: 800),
+        GenerationStageTiming(stage: .subjectExtraction, milliseconds: 140),
+      ],
+      usesPreparedSample: false,
+      executionMetadata: .appleImagePlayground
+    )
+
+    XCTAssertTrue(
+      EventLogger.log(
+        .generationSucceeded,
+        inputSource: .photoLibrary,
+        processingVersion: AdonisProcessingVersion.generationPipeline,
+        generationPerformanceTrace: trace,
+        in: context
+      )
+    )
+
+    let event = try XCTUnwrap(try context.fetch(FetchDescriptor<AppEvent>()).first)
+    XCTAssertEqual(event.generationPerformanceTrace, trace)
+    XCTAssertEqual(
+      event.generationPerformanceTrace?.milliseconds(for: .aiStickerGeneration),
+      800
+    )
+    XCTAssertEqual(event.generationPerformanceTrace?.executionMetadata, .appleImagePlayground)
+  }
+
+  @MainActor
   func testRecorderMeasuresSequentialStagesAgainstBudget() {
     let clock = ContinuousClock()
     var now = clock.now
@@ -137,13 +174,13 @@ final class ProcessingTraceTests: XCTestCase {
   func testGenerationPerformanceContractUsesStableVersionAndFirstResultTarget() {
     XCTAssertEqual(
       GenerationPerformanceTrace.currentVersion,
-      "generation-performance-v1"
+      "generation-performance-v2"
     )
     XCTAssertEqual(
       GenerationPerformanceTrace.firstResultTargetMilliseconds,
       45_000
     )
-    XCTAssertEqual(GenerationPerformanceStage.allCases.count, 5)
+    XCTAssertEqual(GenerationPerformanceStage.allCases.count, 6)
 
     let sanitized = GenerationPerformanceTrace(
       totalMilliseconds: -10,

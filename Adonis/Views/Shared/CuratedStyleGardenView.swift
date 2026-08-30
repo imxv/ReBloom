@@ -197,7 +197,7 @@ private struct CuratedStyleOption: View {
     case .mythicGarden: "植物神话插画"
     case .floralSketch: "纸上时装速写"
     case .moonlitTheater: "蓝夜动画剧照"
-    case .botanicalPoster, .stickerTryOn: "精选风格"
+    case .aiStickerSource, .botanicalPoster, .stickerTryOn: "精选风格"
     }
   }
 
@@ -206,7 +206,7 @@ private struct CuratedStyleOption: View {
     case .mythicGarden: AdonisTheme.pomegranate
     case .floralSketch: Color(hex: 0xB5443B)
     case .moonlitTheater: Color(hex: 0x294FA3)
-    case .botanicalPoster, .stickerTryOn: AdonisTheme.leaf
+    case .aiStickerSource, .botanicalPoster, .stickerTryOn: AdonisTheme.leaf
     }
   }
 }
@@ -250,7 +250,7 @@ private struct CuratedStyleArtwork: View {
     case .mythicGarden: Color(hex: 0x24141F)
     case .floralSketch: Color(hex: 0xE9DCC2)
     case .moonlitTheater: Color(hex: 0x10255E)
-    case .botanicalPoster, .stickerTryOn: AdonisTheme.ink
+    case .aiStickerSource, .botanicalPoster, .stickerTryOn: AdonisTheme.ink
     }
   }
 
@@ -259,7 +259,7 @@ private struct CuratedStyleArtwork: View {
     case .mythicGarden: AdonisTheme.pomegranate
     case .floralSketch: Color(hex: 0xB5443B)
     case .moonlitTheater: Color(hex: 0xFF646B)
-    case .botanicalPoster, .stickerTryOn: AdonisTheme.butter
+    case .aiStickerSource, .botanicalPoster, .stickerTryOn: AdonisTheme.butter
     }
   }
 
@@ -268,7 +268,7 @@ private struct CuratedStyleArtwork: View {
     case .mythicGarden: AdonisTheme.leaf
     case .floralSketch: Color(hex: 0x40342D)
     case .moonlitTheater: Color(hex: 0x4DA9C8)
-    case .botanicalPoster, .stickerTryOn: AdonisTheme.paper
+    case .aiStickerSource, .botanicalPoster, .stickerTryOn: AdonisTheme.paper
     }
   }
 
@@ -277,7 +277,7 @@ private struct CuratedStyleArtwork: View {
     case .mythicGarden: AdonisTheme.butter
     case .floralSketch: Color(hex: 0x5F7A4C)
     case .moonlitTheater: Color(hex: 0xFFD46D)
-    case .botanicalPoster, .stickerTryOn: AdonisTheme.pomegranate
+    case .aiStickerSource, .botanicalPoster, .stickerTryOn: AdonisTheme.pomegranate
     }
   }
 
@@ -286,7 +286,7 @@ private struct CuratedStyleArtwork: View {
     case .mythicGarden: "sparkles"
     case .floralSketch: "pencil.tip"
     case .moonlitTheater: "moon.stars.fill"
-    case .botanicalPoster, .stickerTryOn: "wand.and.stars"
+    case .aiStickerSource, .botanicalPoster, .stickerTryOn: "wand.and.stars"
     }
   }
 }

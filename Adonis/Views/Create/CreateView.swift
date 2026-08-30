@@ -32,7 +32,6 @@ struct CreateView: View {
   @State private var wardrobeImportNotice: CreationWardrobeImportNotice?
   @State private var deadlineController = GenerationDeadlineController()
 
-  private let processor = StickerProcessor()
   private let qualityAssessor = StickerQualityAssessor()
   private let cardRenderer = ShareCardRenderer()
   private let garmentObserver = OutfitGarmentObserver()
@@ -42,6 +41,7 @@ struct CreateView: View {
   private let wardrobeImporter = WardrobeItemImportService()
   private let cameraAccessService: CameraAccessService
   private let creativeImageGenerator: any CreativeImageGenerating
+  private let aiStickerPipeline: AIStickerCreationPipeline
   private let onOpenWardrobe: () -> Void
 
   @MainActor
@@ -50,8 +50,40 @@ struct CreateView: View {
     creativeImageGenerator: (any CreativeImageGenerating)? = nil,
     onOpenWardrobe: @escaping () -> Void = {}
   ) {
+    let resolvedGenerator = creativeImageGenerator ?? CreativeImageGeneratorFactory.make()
+    let extractSticker: AIStickerCreationPipeline.StickerExtractor
+    #if DEBUG
+      if ProcessInfo.processInfo.arguments.contains("-ui-testing-ai-sticker-main-flow") {
+        extractSticker = { generatedSource in
+          guard generatedSource.cgImage != nil,
+            let sticker = SampleCatalog.showcasePhotos.first?.preparedStickerImage()
+          else {
+            throw StickerProcessingError.renderFailed
+          }
+          return StickerProcessingResult(
+            image: sticker,
+            elapsedMilliseconds: 0,
+            foregroundCoverage: 0.36,
+            rawMatteAssessment: .acceptable,
+            sourceFidelityAssessment: .acceptable
+          )
+        }
+      } else {
+        extractSticker = { image in
+          try await StickerProcessor().process(image)
+        }
+      }
+    #else
+      extractSticker = { image in
+        try await StickerProcessor().process(image)
+      }
+    #endif
     self.cameraAccessService = cameraAccessService ?? .live
-    self.creativeImageGenerator = creativeImageGenerator ?? CreativeImageGeneratorFactory.make()
+    self.creativeImageGenerator = resolvedGenerator
+    self.aiStickerPipeline = AIStickerCreationPipeline(
+      sourceGenerator: CreativeAIStickerSourceGenerator(generator: resolvedGenerator),
+      extractSticker: extractSticker
+    )
     self.onOpenWardrobe = onOpenWardrobe
   }
 
@@ -195,7 +227,7 @@ struct CreateView: View {
           .foregroundStyle(AdonisTheme.ink)
           .fixedSize(horizontal: false, vertical: true)
 
-        Text("保留原来的你，只把背景轻轻拿走。")
+        Text("先生成贴纸形象，再把背景轻轻拿走。")
           .font(.system(.subheadline, design: .rounded, weight: .medium))
           .foregroundStyle(AdonisTheme.secondaryInk)
       }
@@ -326,13 +358,23 @@ struct CreateView: View {
         HStack(spacing: 14) {
           ForEach(samplesForDisplay) { sample in
             SamplePhotoButton(sample: sample) {
-              guard let image = sample.image(),
-                let sticker = sample.preparedStickerImage()
-              else {
+              guard let image = sample.image() else {
                 presentGenerationError("样片没有正确打包进 App。")
                 return
               }
               Task {
+                #if DEBUG
+                  if ProcessInfo.processInfo.arguments.contains(
+                    "-ui-testing-ai-sticker-main-flow"
+                  ) {
+                    await generate(from: image, inputSource: .testFixture)
+                    return
+                  }
+                #endif
+                guard let sticker = sample.preparedStickerImage() else {
+                  presentGenerationError("样片没有正确打包进 App。")
+                  return
+                }
                 await generate(
                   from: image,
                   preparedSticker: sticker,
@@ -394,7 +436,7 @@ struct CreateView: View {
         .foregroundStyle(AdonisTheme.leafInk)
         .frame(width: 24)
         .accessibilityHidden(true)
-      Text("这个 Demo 没有账号和网络请求。照片、贴纸与穿搭记录只保存在当前设备。")
+      Text("没有账号或 Adonis 云同步。AI 贴纸由 Apple 系统图片生成，网络方式由系统管理；收藏记录保存在当前设备。")
         .font(.footnote)
         .foregroundStyle(AdonisTheme.secondaryInk)
         .lineSpacing(3)
@@ -831,7 +873,7 @@ struct CreateView: View {
     if !alreadyShowingProgress {
       isProcessing = true
     }
-    processingStage = .separating
+    processingStage = preparedSticker == nil ? .generatingSticker : .separating
     if !startEventLogged {
       EventLogger.log(
         .generationStarted,
@@ -841,7 +883,7 @@ struct CreateView: View {
       )
     }
 
-    recorder.begin(.subjectExtraction)
+    recorder.begin(preparedSticker == nil ? .aiStickerGeneration : .subjectExtraction)
 
     if ProcessInfo.processInfo.arguments.contains("-ui-testing-hold-generation") {
       let holdDuration: Duration =
@@ -854,7 +896,13 @@ struct CreateView: View {
 
     do {
       let processed: StickerProcessingResult
+      let aiStickerSourceImage: UIImage?
+      let stickerProvenance: VisualContentProvenance
+      let stickerExecutionMetadata: CreativeExecutionMetadata?
       if let preparedSticker {
+        aiStickerSourceImage = nil
+        stickerProvenance = .derivedFromOriginal
+        stickerExecutionMetadata = nil
         processed = StickerProcessingResult(
           image: preparedSticker,
           elapsedMilliseconds: 0,
@@ -863,7 +911,18 @@ struct CreateView: View {
           sourceFidelityAssessment: .acceptable
         )
       } else {
-        processed = try await processor.process(image)
+        let result = try await aiStickerPipeline.createSticker(from: image) {
+          _, metadata in
+          guard activeGenerationID == generationID else { return }
+          recorder.finish(.aiStickerGeneration)
+          recorder.recordExecutionMetadata(metadata)
+          processingStage = .separating
+          recorder.begin(.subjectExtraction)
+        }
+        aiStickerSourceImage = result.generatedSourceImage
+        stickerProvenance = .aiGenerated
+        stickerExecutionMetadata = result.executionMetadata
+        processed = result.stickerProcessingResult
       }
       recorder.finish(.subjectExtraction)
       guard activeGenerationID == generationID else { return }
@@ -908,39 +967,48 @@ struct CreateView: View {
       let card = cardRenderer.render(
         sticker: processed.image,
         bloomNumber: bloomNumber,
-        date: date
+        date: date,
+        stickerProvenance: stickerProvenance
       )
       recorder.finish(.shareCardComposition)
       activeFallbackCandidate = GenerationFallbackCandidate(
         id: generationID,
         createdAt: date,
         sourceImage: image,
+        aiStickerSourceImage: aiStickerSourceImage,
         stickerImage: processed.image,
         cardImage: card,
         bloomNumber: bloomNumber,
         foregroundCoverage: processed.foregroundCoverage,
         usesPreparedSample: preparedSticker != nil,
         inputSource: inputSource,
+        stickerProvenance: stickerProvenance,
+        stickerExecutionMetadata: stickerExecutionMetadata,
         qualityAssessment: qualityAssessment
       )
-      processingStage = .observing
-      recorder.begin(.garmentObservation)
-      if ProcessInfo.processInfo.arguments.contains(
-        "-ui-testing-force-generation-fallback-timeout"
-      ) {
-        armGenerationDeadline(for: generationID, timeout: .seconds(1))
-        try? await Task.sleep(for: .seconds(2))
+      let garmentObservations: [GarmentObservationDraft]
+      if stickerProvenance.containsAIGeneratedPixels {
+        garmentObservations = []
+      } else {
+        processingStage = .observing
+        recorder.begin(.garmentObservation)
+        if ProcessInfo.processInfo.arguments.contains(
+          "-ui-testing-force-generation-fallback-timeout"
+        ) {
+          armGenerationDeadline(for: generationID, timeout: .seconds(1))
+          try? await Task.sleep(for: .seconds(2))
+          guard activeGenerationID == generationID else { return }
+        }
+        garmentObservations = await garmentObserver.observe(sticker: processed.image)
+        recorder.finish(.garmentObservation)
         guard activeGenerationID == generationID else { return }
       }
-      let garmentObservations = await garmentObserver.observe(sticker: processed.image)
-      recorder.finish(.garmentObservation)
-      guard activeGenerationID == generationID else { return }
 
       let trace = recorder.makeTrace(interrupted: false)
       deadlineController.cancel(generationID: generationID)
       EventLogger.log(
         .generationSucceeded,
-        detail: preparedSticker == nil ? nil : "prepared_sample",
+        detail: stickerExecutionMetadata?.eventDetail(for: .aiStickerSource) ?? "prepared_sample",
         inputSource: inputSource,
         processingVersion: AdonisProcessingVersion.generationPipeline,
         generationPerformanceTrace: trace,
@@ -950,6 +1018,7 @@ struct CreateView: View {
       draft = GenerationDraft(
         createdAt: date,
         sourceImage: image,
+        aiStickerSourceImage: aiStickerSourceImage,
         stickerImage: processed.image,
         cardImage: card,
         bloomNumber: bloomNumber,
@@ -957,23 +1026,37 @@ struct CreateView: View {
         foregroundCoverage: processed.foregroundCoverage,
         usesPreparedSample: preparedSticker != nil,
         inputSource: inputSource,
+        stickerProvenance: stickerProvenance,
+        stickerExecutionMetadata: stickerExecutionMetadata,
         qualityAssessment: qualityAssessment,
         garmentObservations: garmentObservations
       )
     } catch {
       guard activeGenerationID == generationID else { return }
       let wardrobeCandidate = activeWardrobeCandidate
+      let pendingRetryInput = retryInput
       deadlineController.cancel(generationID: generationID)
       let trace = recorder.makeTrace(interrupted: true)
+      let failureDetail: String
+      if let creativeError = error as? CreativeGenerationError {
+        failureDetail =
+          "stage=ai_sticker_source;reason=\(creativeError.eventCode);fallback=none"
+      } else {
+        failureDetail = "stage=ai_sticker_matte;reason=\(error.localizedDescription);fallback=none"
+      }
       EventLogger.log(
         .generationFailed,
-        detail: error.localizedDescription,
+        detail: failureDetail,
         inputSource: inputSource,
         processingVersion: AdonisProcessingVersion.generationPipeline,
         generationPerformanceTrace: trace,
         in: modelContext
       )
       finishCreateOperation(operationID: generationID)
+      if let creativeError = error as? CreativeGenerationError {
+        presentAIStickerGenerationError(creativeError, retry: pendingRetryInput)
+        return
+      }
       if let wardrobeCandidate {
         errorMessage = nil
         offersRetry = false
@@ -986,6 +1069,11 @@ struct CreateView: View {
         presentGenerationError(
           assessment.userDetail,
           title: assessment.userTitle
+        )
+      } else if error is StickerProcessingError, preparedSticker == nil {
+        presentGenerationError(
+          "AI 贴纸形象已经生成，但没能干净地抠出人物。这次没有改用原照片直接抠图，请换一张照片再试。",
+          title: "这张 AI 贴纸还抠不干净"
         )
       } else {
         presentGenerationError(error.localizedDescription)
@@ -1118,13 +1206,41 @@ struct CreateView: View {
   @MainActor
   private func presentGenerationError(
     _ message: String,
-    title: String = "这次没有生成成功"
+    title: String = "这次没有生成成功",
+    retry: GenerationRetryInput? = nil
   ) {
     errorTitle = title
-    offersRetry = false
-    retryInput = nil
+    offersRetry = retry != nil
+    retryInput = retry
     retryPhotoItem = nil
     errorMessage = message
+  }
+
+  @MainActor
+  private func presentAIStickerGenerationError(
+    _ error: CreativeGenerationError,
+    retry: GenerationRetryInput?
+  ) {
+    switch error {
+    case .unavailable, .unsupportedLanguage:
+      presentGenerationError(
+        "这次需要先生成一张背景干净的 AI 贴纸形象，再做透明抠图。当前系统能力不可用，Adonis 没有改用原照片直接抠图。",
+        title: "这台 iPhone 暂时不能生成 AI 贴纸"
+      )
+    case .unsupportedSource, .personTooSmall:
+      presentGenerationError(
+        "系统没能根据这张照片生成完整的贴纸形象。请换一张人物更清楚、全身更完整的照片；Adonis 没有改用原照片直接抠图。",
+        title: "换一张更清楚的照片"
+      )
+    case .cancelled:
+      presentGenerationError("已经停止这次 AI 贴纸生成。", title: "已停止生成")
+    case .timedOut, .noImage, .failed:
+      presentGenerationError(
+        "AI 贴纸形象还没有成功生成，因此没有进入抠图，也没有改用原照片直接抠图。可以再试一次。",
+        title: "AI 贴纸形象没有生成好",
+        retry: retry
+      )
+    }
   }
 
   @MainActor
@@ -1140,6 +1256,17 @@ struct CreateView: View {
         filename: "\(prefix)-source.png"
       )
       savedFilenames.append(sourceFilename)
+      let aiStickerSourceFilename: String?
+      if let aiStickerSourceImage = draft.aiStickerSourceImage {
+        let savedAIStickerSourceFilename = try MediaStore.shared.savePNG(
+          aiStickerSourceImage,
+          filename: "\(prefix)-ai-sticker-source.png"
+        )
+        aiStickerSourceFilename = savedAIStickerSourceFilename
+        savedFilenames.append(savedAIStickerSourceFilename)
+      } else {
+        aiStickerSourceFilename = nil
+      }
       let stickerFilename = try MediaStore.shared.savePNG(
         draft.stickerImage,
         filename: "\(prefix)-sticker.png"
@@ -1155,9 +1282,12 @@ struct CreateView: View {
         id: draft.id,
         createdAt: draft.createdAt,
         sourceImageFilename: sourceFilename,
+        aiStickerSourceImageFilename: aiStickerSourceFilename,
         stickerImageFilename: stickerFilename,
         cardImageFilename: cardFilename,
         bloomNumber: draft.bloomNumber,
+        stickerProvenance: draft.stickerProvenance,
+        stickerExecutionMetadata: draft.stickerExecutionMetadata,
         generationCompletionMode: draft.completionMode,
         stickerQualityAssessment: draft.qualityAssessment,
         stickerQualityVersion: StickerQualityAssessor.version
@@ -1334,12 +1464,15 @@ private struct GenerationFallbackCandidate {
   let id: UUID
   let createdAt: Date
   let sourceImage: UIImage
+  let aiStickerSourceImage: UIImage?
   let stickerImage: UIImage
   let cardImage: UIImage
   let bloomNumber: Int
   let foregroundCoverage: Double
   let usesPreparedSample: Bool
   let inputSource: EventInputSource
+  let stickerProvenance: VisualContentProvenance
+  let stickerExecutionMetadata: CreativeExecutionMetadata?
   let qualityAssessment: StickerQualityAssessment
 
   func makeDraft(processingMilliseconds: Int) -> GenerationDraft {
@@ -1347,6 +1480,7 @@ private struct GenerationFallbackCandidate {
       id: id,
       createdAt: createdAt,
       sourceImage: sourceImage,
+      aiStickerSourceImage: aiStickerSourceImage,
       stickerImage: stickerImage,
       cardImage: cardImage,
       bloomNumber: bloomNumber,
@@ -1354,6 +1488,8 @@ private struct GenerationFallbackCandidate {
       foregroundCoverage: foregroundCoverage,
       usesPreparedSample: usesPreparedSample,
       inputSource: inputSource,
+      stickerProvenance: stickerProvenance,
+      stickerExecutionMetadata: stickerExecutionMetadata,
       completionMode: .basicStickerFallback,
       qualityAssessment: qualityAssessment
     )

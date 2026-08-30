@@ -4,7 +4,7 @@ SCHEME := Adonis
 DESTINATION := platform=iOS Simulator,name=iPhone 17 Pro,OS=latest
 DERIVED_DATA := .derivedData
 
-.PHONY: project build test sample-regression accessibility-regression permission-regression photo-save-regression persistence-regression wardrobe-visual-regression input-routing-regression performance-regression lookbook-regression figurine-regression cabinet-regression seasonal-regression rebloom-regression rebloom-reminder-regression creative-regression tryon-regression lint format analyze check clean
+.PHONY: project build test sample-regression ai-sticker-regression accessibility-regression permission-regression photo-save-regression persistence-regression wardrobe-visual-regression input-routing-regression performance-regression lookbook-regression figurine-regression cabinet-regression seasonal-regression rebloom-regression rebloom-reminder-regression creative-regression tryon-regression lint format analyze check clean
 
 project:
 	./scripts/xcodegen.sh generate --spec project.yml
@@ -24,6 +24,14 @@ sample-regression: project
 		-only-testing:AdonisTests/RawMatteQualityAssessorTests \
 		-only-testing:AdonisTests/StickerSourceFidelityAssessorTests \
 		-only-testing:AdonisTests/StickerQualityAssessorTests
+
+ai-sticker-regression: project
+	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
+		-only-testing:AdonisTests/AIStickerCreationPipelineTests \
+		-only-testing:AdonisTests/ProcessingTraceTests/testAIStickerGenerationStageAndProviderMetadataSurviveEventPersistence \
+		-only-testing:AdonisTests/ShareCardRendererTests/testProvenanceFooterDisclosesAIGeneratedStickerPixels \
+		-only-testing:AdonisTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testMainCreationGeneratesAIStickerSourceBeforeTransparentStickerAndPersistsIt
 
 accessibility-regression: project
 	./scripts/verify_accessibility_regression.sh
@@ -60,7 +68,7 @@ input-routing-regression: project
 		-only-testing:AdonisTests/CreationImageIntentRouterTests \
 		-only-testing:AdonisTests/WardrobeImageAnalyzerTests \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testCreateInputAutomaticallyRoutesHighConfidenceCatalogGarmentToWardrobe \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testAmbiguousCatalogImageAsksBeforeSavingAfterStickerFailure
+		-only-testing:AdonisUITests/AdonisFlowUITests/testAmbiguousInputDoesNotBypassUnavailableAIStickerGeneration
 
 performance-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \

@@ -92,6 +92,7 @@ enum CreativeImageGeneratorFactory {
     #if DEBUG
       if arguments.contains("-ui-testing-system-creative")
         || arguments.contains("-ui-testing-system-creative-unavailable")
+        || arguments.contains("-ui-testing-ai-sticker-main-flow")
       {
         return UITestCreativeImageGenerator(arguments: arguments)
       }
@@ -257,6 +258,13 @@ struct SystemCreativeImageGenerator: CreativeImageGenerating {
       }
       try Task.checkCancellation()
 
+      if arguments.contains("-ui-testing-ai-sticker-main-flow"),
+        recipe == .aiStickerSource,
+        let fixture = aiStickerSourceFixture()
+      {
+        return CreativeProviderOutput(image: fixture, executionMetadata: .uiTestFixture)
+      }
+
       let format = UIGraphicsImageRendererFormat()
       format.scale = 1
       format.opaque = true
@@ -288,10 +296,47 @@ struct SystemCreativeImageGenerator: CreativeImageGenerating {
       return CreativeProviderOutput(image: image, executionMetadata: .uiTestFixture)
     }
 
+    private func aiStickerSourceFixture() -> UIImage? {
+      guard let sticker = SampleCatalog.showcasePhotos.first?.preparedStickerImage() else {
+        return nil
+      }
+      let canvasSize = CGSize(width: 1_080, height: 1_440)
+      let inset = CGRect(x: 90, y: 54, width: 900, height: 1_332)
+      let scale = min(
+        inset.width / sticker.size.width,
+        inset.height / sticker.size.height
+      )
+      let stickerSize = CGSize(
+        width: sticker.size.width * scale,
+        height: sticker.size.height * scale
+      )
+      let stickerFrame = CGRect(
+        x: inset.midX - stickerSize.width / 2,
+        y: inset.midY - stickerSize.height / 2,
+        width: stickerSize.width,
+        height: stickerSize.height
+      )
+      let format = UIGraphicsImageRendererFormat()
+      format.scale = 1
+      format.opaque = true
+      return UIGraphicsImageRenderer(size: canvasSize, format: format).image { context in
+        UIColor(red: 0.965, green: 0.949, blue: 0.925, alpha: 1).setFill()
+        context.fill(CGRect(origin: .zero, size: canvasSize))
+        sticker.draw(in: stickerFrame)
+      }
+    }
+
     private func palette(for recipe: CreativeRecipe) -> (
       background: UIColor, sun: UIColor, figure: UIColor, line: UIColor
     ) {
       switch recipe {
+      case .aiStickerSource:
+        (
+          UIColor(red: 0.98, green: 0.97, blue: 0.93, alpha: 1),
+          UIColor(red: 0.91, green: 0.34, blue: 0.42, alpha: 1),
+          UIColor(red: 0.22, green: 0.18, blue: 0.20, alpha: 1),
+          UIColor(red: 0.53, green: 0.70, blue: 0.47, alpha: 1)
+        )
       case .floralSketch:
         (
           UIColor(red: 0.94, green: 0.88, blue: 0.76, alpha: 1),

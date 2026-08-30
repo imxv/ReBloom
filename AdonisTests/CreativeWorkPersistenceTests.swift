@@ -100,6 +100,50 @@ final class CreativeWorkPersistenceTests: XCTestCase {
   }
 
   @MainActor
+  func testStorePersistsInheritedAIProvenanceForLocalDerivative() throws {
+    let schema = Schema([OutfitRecord.self, GarmentObservation.self, CreativeWork.self])
+    let container = try ModelContainer(
+      for: schema,
+      configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+    )
+    let context = ModelContext(container)
+    let outfit = OutfitRecord(
+      sourceImageFilename: "source.png",
+      aiStickerSourceImageFilename: "ai-source.png",
+      stickerImageFilename: "sticker.png",
+      cardImageFilename: "card.png",
+      bloomNumber: 11,
+      stickerProvenance: .aiGenerated,
+      stickerExecutionMetadata: .appleImagePlayground
+    )
+    context.insert(outfit)
+    try context.save()
+
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(
+      "adonis-ai-creative-work-\(UUID().uuidString)",
+      isDirectory: true
+    )
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let draft = CreativeWorkDraft(
+      recipe: .botanicalPoster,
+      image: solidImage(),
+      processingMilliseconds: 31,
+      executionMetadata: .botanicalPoster,
+      provenance: BotanicalPosterRenderer.provenance(for: outfit.stickerProvenance)
+    )
+
+    let stored = try CreativeWorkStore(mediaStore: MediaStore(baseURL: directory)).save(
+      draft,
+      for: outfit,
+      in: context
+    )
+
+    XCTAssertEqual(stored.provenance, .aiGenerated)
+    XCTAssertTrue(stored.containsAIGeneratedPixels)
+    XCTAssertEqual(stored.executionMetadata, .botanicalPoster)
+  }
+
+  @MainActor
   func testDeletingSourceOutfitCascadesSavedCreativeWork() throws {
     let schema = Schema([OutfitRecord.self, GarmentObservation.self, CreativeWork.self])
     let container = try ModelContainer(

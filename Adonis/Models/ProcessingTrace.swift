@@ -19,6 +19,7 @@ enum EventInputSource: String, Sendable {
 }
 
 enum AdonisProcessingVersion {
+  static let aiStickerSource = "ai-sticker-source-apple-v1"
   static let sticker = "sticker-vision-edge-refine-v2"
   static let stickerSourceFidelity = "sticker-source-fidelity-v1"
   static let stickerQuality = "sticker-quality-raw-fidelity-delivery-v3"
@@ -42,11 +43,12 @@ enum AdonisProcessingVersion {
   static let wardrobeHistoryMatching = "wardrobe-history-backfill-v1"
   static let sharedWardrobeInbox = SharedImageInbox.version
   static let generationPipeline =
-    "\(sticker)+\(stickerSourceFidelity)+\(stickerQuality)+\(shareCard)+\(outfitObservation)"
+    "\(aiStickerSource)+\(sticker)+\(stickerSourceFidelity)+\(stickerQuality)+\(shareCard)+\(outfitObservation)"
 }
 
 enum GenerationPerformanceStage: String, CaseIterable, Codable, Sendable {
   case inputLoading
+  case aiStickerGeneration
   case subjectExtraction
   case qualityAssessment
   case shareCardComposition
@@ -55,6 +57,7 @@ enum GenerationPerformanceStage: String, CaseIterable, Codable, Sendable {
   var title: String {
     switch self {
     case .inputLoading: "读取照片"
+    case .aiStickerGeneration: "AI 贴纸底图"
     case .subjectExtraction: "抠图与白边"
     case .qualityAssessment: "蒙版与成品检查"
     case .shareCardComposition: "收藏卡排版"
@@ -86,7 +89,7 @@ enum GenerationBudgetStatus: String, Codable, Sendable {
 }
 
 struct GenerationPerformanceTrace: Codable, Equatable, Sendable {
-  static let currentVersion = "generation-performance-v1"
+  static let currentVersion = "generation-performance-v2"
   static let firstResultTargetMilliseconds = 45_000
 
   let version: String
@@ -97,6 +100,7 @@ struct GenerationPerformanceTrace: Codable, Equatable, Sendable {
   let externalRequestCount: Int
   let usesPreparedSample: Bool
   let interruptedStage: GenerationPerformanceStage?
+  let executionMetadata: CreativeExecutionMetadata?
 
   init(
     version: String = Self.currentVersion,
@@ -106,7 +110,8 @@ struct GenerationPerformanceTrace: Codable, Equatable, Sendable {
     retryCount: Int = 0,
     externalRequestCount: Int = 0,
     usesPreparedSample: Bool,
-    interruptedStage: GenerationPerformanceStage? = nil
+    interruptedStage: GenerationPerformanceStage? = nil,
+    executionMetadata: CreativeExecutionMetadata? = nil
   ) {
     self.version = version
     self.totalMilliseconds = max(0, totalMilliseconds)
@@ -116,6 +121,7 @@ struct GenerationPerformanceTrace: Codable, Equatable, Sendable {
     self.externalRequestCount = max(0, externalRequestCount)
     self.usesPreparedSample = usesPreparedSample
     self.interruptedStage = interruptedStage
+    self.executionMetadata = executionMetadata
   }
 
   var budgetStatus: GenerationBudgetStatus {
@@ -146,6 +152,7 @@ final class GenerationPerformanceRecorder {
   private var stageTimings: [GenerationStageTiming] = []
   private var retryCount = 0
   private var externalRequestCount = 0
+  private var executionMetadata: CreativeExecutionMetadata?
   private var finishedAt: ContinuousClock.Instant?
   private var finishedTrace: GenerationPerformanceTrace?
 
@@ -186,6 +193,11 @@ final class GenerationPerformanceRecorder {
     externalRequestCount += 1
   }
 
+  func recordExecutionMetadata(_ metadata: CreativeExecutionMetadata) {
+    guard finishedAt == nil else { return }
+    executionMetadata = metadata
+  }
+
   func makeTrace(interrupted: Bool) -> GenerationPerformanceTrace {
     if let finishedTrace { return finishedTrace }
     let instant = finishedAt ?? now()
@@ -199,7 +211,8 @@ final class GenerationPerformanceRecorder {
       retryCount: retryCount,
       externalRequestCount: externalRequestCount,
       usesPreparedSample: usesPreparedSample,
-      interruptedStage: interruptedStage
+      interruptedStage: interruptedStage,
+      executionMetadata: executionMetadata
     )
     finishedTrace = trace
     return trace

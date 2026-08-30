@@ -100,14 +100,14 @@ struct LocalSettingsView: View {
         VStack(alignment: .leading, spacing: 3) {
           Text("由你保管")
             .font(.system(.headline, design: .rounded, weight: .bold))
-          Text("Adonis 不上传，也不做账号云同步")
+          Text("没有账号或 Adonis 云同步；AI 图片生成由 Apple 系统管理")
             .font(.caption)
             .foregroundStyle(.secondary)
         }
       }
       .padding(.vertical, 4)
     } footer: {
-      Text("只读取你主动选择或分享的图片；系统设备备份是否包含 App 数据，由你的 iOS 备份设置决定。")
+      Text("只读取你主动选择或分享的图片。AI 贴纸会交给 Apple 系统图片生成，网络与费用信息由系统管理且未向 Adonis 公开；设备备份由你的 iOS 设置决定。")
     }
   }
 
@@ -200,13 +200,26 @@ struct LocalSettingsView: View {
         }
 
         LabeledContent("本地重试", value: "\(trace.retryCount) 次")
-        LabeledContent("外部请求", value: "\(trace.externalRequestCount) 次")
-        LabeledContent(
-          "外部费用",
-          value: trace.externalRequestCount == 0 ? "不适用（全本机）" : "尚未接入计价"
-        )
-        .accessibilityElement(children: .combine)
-        .accessibilityIdentifier("performance-external-cost")
+        if let metadata = trace.executionMetadata {
+          LabeledContent("图片提供方", value: providerTitle(metadata.provider))
+          LabeledContent("提供方请求", value: "\(metadata.providerRequestCount) 次")
+          LabeledContent(
+            "外部请求",
+            value: metadata.externalRequestCount.map { "\($0) 次" } ?? "系统未公开"
+          )
+          LabeledContent("网络方式", value: transportTitle(metadata.networkTransport))
+          LabeledContent("外部费用", value: costTitle(metadata.externalCost))
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("performance-external-cost")
+        } else {
+          LabeledContent("外部请求", value: "\(trace.externalRequestCount) 次")
+          LabeledContent(
+            "外部费用",
+            value: trace.externalRequestCount == 0 ? "不适用（旧版本机链路）" : "尚未接入计价"
+          )
+          .accessibilityElement(children: .combine)
+          .accessibilityIdentifier("performance-external-cost")
+        }
 
         if trace.usesPreparedSample {
           Text("最近一次使用固定样片，只代表本机演示链路。")
@@ -309,6 +322,31 @@ struct LocalSettingsView: View {
     guard milliseconds >= 1_000 else { return "\(milliseconds) 毫秒" }
     let roundedTenths = (milliseconds + 50) / 100
     return "\(roundedTenths / 10).\(roundedTenths % 10) 秒"
+  }
+
+  private func providerTitle(_ provider: CreativeProviderIdentifier) -> String {
+    switch provider {
+    case .adonisLocalRenderer: "Adonis 本机"
+    case .appleImagePlayground: "Apple 系统图片生成"
+    case .uiTestFixture: "测试夹具"
+    case .unknown: "未知"
+    }
+  }
+
+  private func transportTitle(_ transport: CreativeNetworkTransport) -> String {
+    switch transport {
+    case .none: "无"
+    case .systemManaged: "由系统管理"
+    case .unknown: "未知"
+    }
+  }
+
+  private func costTitle(_ cost: CreativeExternalCost) -> String {
+    switch cost {
+    case .notApplicable: "不适用"
+    case .notExposed: "系统未公开"
+    case .unknown: "未知"
+    }
   }
 
   private func traceText(for event: AppEvent) -> String? {

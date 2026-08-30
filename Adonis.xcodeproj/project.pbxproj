@@ -118,10 +118,12 @@
 		B8E00E8E01CF44D38A6F50C0 /* WardrobeImageAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344C0FB1909A7A7BC018E316 /* WardrobeImageAnalyzer.swift */; };
 		B91099B5CE86DAFF6F01CD6E /* SeasonalBloomCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B770746CA1D17ADDA6BB6C0 /* SeasonalBloomCatalog.swift */; };
 		B9540D2F881B8B9964CA15EC /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12FE82838AC414CFC2DB702A /* ShareViewController.swift */; };
+		BC1760FC62A340D8002B0BEE /* AIStickerCreationPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = F169EFF01F989F98CC5EC967 /* AIStickerCreationPipeline.swift */; };
 		BC49D0CEF639E277B94589DE /* WardrobeVisualSignatureBackfillServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9CEF90A526C494BB54FE1C /* WardrobeVisualSignatureBackfillServiceTests.swift */; };
 		BD88A01D52A457191971F5FD /* WardrobeItemImageUpgradeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD41588E828E23AB762808A7 /* WardrobeItemImageUpgradeTests.swift */; };
 		C30CBEFC83833D8261D3C7C2 /* ProcessingTraceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CAE9A2C46336ABF1F1AC6C /* ProcessingTraceTests.swift */; };
 		C4DBF14E9D9D2C87BE1D824B /* ProcessingTrace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D05F8A9D74EA80804DC6A13 /* ProcessingTrace.swift */; };
+		C8AB4CC5D0BEEA37105FCDF7 /* AIStickerCreationPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0BD8ABCD06A07E1BEAED3A /* AIStickerCreationPipelineTests.swift */; };
 		C9686C1B55BEBDEE658B3F66 /* WardrobeItemImageUpgradeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129CE264359B0015C452A7D5 /* WardrobeItemImageUpgradeService.swift */; };
 		CD9DB5DC4F2A2C2B5BD7879E /* WardrobeTestImageFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C068922FF4E44027CEB933 /* WardrobeTestImageFactory.swift */; };
 		CDF538E52325346AE8B637A0 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0E94632BE94071D6AFD0F1 /* AppRootView.swift */; };
@@ -216,6 +218,7 @@
 		2ACEBFD1D2E574D182EC23D3 /* GarmentObservationPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarmentObservationPersistenceTests.swift; sourceTree = "<group>"; };
 		2AECF3B88471C33864593324 /* GenerationDeadlineController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationDeadlineController.swift; sourceTree = "<group>"; };
 		2DD490D9A72639AF6EB7DC17 /* sample-04-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-04-sticker.png"; sourceTree = "<group>"; };
+		2F0BD8ABCD06A07E1BEAED3A /* AIStickerCreationPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIStickerCreationPipelineTests.swift; sourceTree = "<group>"; };
 		316737292FE33E782DAD2887 /* SharedImageInboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedImageInboxTests.swift; sourceTree = "<group>"; };
 		344C0FB1909A7A7BC018E316 /* WardrobeImageAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeImageAnalyzer.swift; sourceTree = "<group>"; };
 		35D054A4D8ABBFB0B58A60EB /* WardrobeHistoryMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeHistoryMatcher.swift; sourceTree = "<group>"; };
@@ -322,6 +325,7 @@
 		EEA92A8DC891210E49433FF7 /* WardrobeItemNaming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemNaming.swift; sourceTree = "<group>"; };
 		EEBDC07323E67E0A60762AF4 /* WardrobeImageAnalyzerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeImageAnalyzerTests.swift; sourceTree = "<group>"; };
 		EEC061181CA74103F996C69C /* ModelStorePolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStorePolicyTests.swift; sourceTree = "<group>"; };
+		F169EFF01F989F98CC5EC967 /* AIStickerCreationPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIStickerCreationPipeline.swift; sourceTree = "<group>"; };
 		F3A0AC80513194F13CBD6154 /* WardrobeItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItem.swift; sourceTree = "<group>"; };
 		F3A9C1588A5A38E96E7EA650 /* SharedWardrobeImportCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedWardrobeImportCoordinatorTests.swift; sourceTree = "<group>"; };
 		FAD5A96B162481D212E146A1 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
@@ -437,6 +441,7 @@
 		5001D869916DBC4A89DF42CE /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				F169EFF01F989F98CC5EC967 /* AIStickerCreationPipeline.swift */,
 				B38F411331B65351C1CAD620 /* BotanicalPosterRenderer.swift */,
 				7C03A1F1A7D0EEB66DEFF4A0 /* CameraAccessService.swift */,
 				8FE9F59DB28250B8424C6E9A /* CreationImageIntentRouter.swift */,
@@ -567,6 +572,7 @@
 			isa = PBXGroup;
 			children = (
 				DAE9700DD179F9FED5BD0771 /* AccessibilityContractTests.swift */,
+				2F0BD8ABCD06A07E1BEAED3A /* AIStickerCreationPipelineTests.swift */,
 				7AB1D2A5F0BB7417956978D1 /* BotanicalPosterRendererTests.swift */,
 				9E1E63F7937FAF7439D6F7C8 /* CameraAccessServiceTests.swift */,
 				89AFF60679B8CA5BCAF241B5 /* CreationImageIntentRouterTests.swift */,
@@ -777,6 +783,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8AB4CC5D0BEEA37105FCDF7 /* AIStickerCreationPipelineTests.swift in Sources */,
 				4509285B952C40CC075B1C2B /* AccessibilityContractTests.swift in Sources */,
 				9F532669F1BA869ADF5A67DA /* BotanicalPosterRendererTests.swift in Sources */,
 				05A102A14D5F8953BA875A93 /* CameraAccessServiceTests.swift in Sources */,
@@ -824,6 +831,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC1760FC62A340D8002B0BEE /* AIStickerCreationPipeline.swift in Sources */,
 				0081F47B332BDBDD4C4E1017 /* ActivityView.swift in Sources */,
 				7648F7094EA366551F43714F /* AdonisApp.swift in Sources */,
 				027B14DF89A1B5A4FA6CE39A /* AdonisAppDelegate.swift in Sources */,

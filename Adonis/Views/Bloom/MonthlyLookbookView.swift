@@ -6,6 +6,7 @@ struct MonthlyLookbookPresentation: Identifiable {
   let image: UIImage
   let month: Date
   let entryCount: Int
+  let provenance: VisualContentProvenance
 }
 
 struct MonthlyLookbookView: View {
@@ -41,8 +42,10 @@ struct MonthlyLookbookView: View {
               .accessibilityIdentifier("monthly-lookbook-preview")
 
             ContentProvenanceNotice(
-              provenance: .programmaticComposition,
-              detail: "这张画册只把本月已经收藏的透明贴纸、日期与 Bloom 编号重新排版；没有补画人物或衣物。"
+              provenance: presentation.provenance,
+              detail: presentation.provenance.containsAIGeneratedPixels
+                ? "这张画册包含 AI 生成贴纸，并把贴纸、日期与 Bloom 编号重新排版；Adonis 没有再次补画人物或衣物。"
+                : "这张画册只把本月已经收藏的原图贴纸、日期与 Bloom 编号重新排版；没有补画人物或衣物。"
             )
 
             Button {

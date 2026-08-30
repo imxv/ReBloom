@@ -50,7 +50,7 @@ struct OutfitDetailView: View {
             )
           }
 
-          ContentProvenanceNotice(provenance: visualAsset.provenance)
+          ContentProvenanceNotice(provenance: record.provenance(for: visualAsset))
 
           DigitalFigurineCardEntry {
             makeDigitalFigurineCard()
@@ -299,8 +299,8 @@ struct OutfitDetailView: View {
 
   private var previewAccessibilityLabel: String {
     switch visualAsset {
-    case .shareCard: "收藏卡预览，人物与衣物来自原始照片"
-    case .sticker: "透明贴纸预览，人物与衣物来自原始照片"
+    case .shareCard: "收藏卡预览，\(record.provenance(for: .shareCard).summary)"
+    case .sticker: "透明贴纸预览，\(record.provenance(for: .sticker).summary)"
     case .originalPhoto: "这条记录的原始照片预览"
     }
   }
@@ -322,7 +322,8 @@ struct OutfitDetailView: View {
       let image = DigitalFigurineCardRenderer().render(
         sticker: sticker,
         bloomNumber: record.bloomNumber,
-        date: record.createdAt
+        date: record.createdAt,
+        stickerProvenance: record.stickerProvenance
       )
     else {
       figurineError = "这张透明贴纸暂时无法放进展台，可以稍后再试。"
@@ -337,7 +338,8 @@ struct OutfitDetailView: View {
     digitalFigurineCard = DigitalFigurineCardPresentation(
       image: image,
       bloomNumber: record.bloomNumber,
-      date: record.createdAt
+      date: record.createdAt,
+      stickerProvenance: record.stickerProvenance
     )
   }
 
@@ -356,7 +358,8 @@ struct OutfitDetailView: View {
         recipe: work.recipe,
         image: workImage,
         processingMilliseconds: work.processingMilliseconds,
-        executionMetadata: work.executionMetadata
+        executionMetadata: work.executionMetadata,
+        provenance: work.provenance
       ),
       sourceImage: sourceImage,
       isSaved: true

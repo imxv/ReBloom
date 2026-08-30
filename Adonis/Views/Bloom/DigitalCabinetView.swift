@@ -31,8 +31,11 @@ struct DigitalCabinetView: View {
             header
 
             ContentProvenanceNotice(
-              provenance: .programmaticComposition,
-              detail: "每个展位直接读取你已收藏的透明贴纸；人物、衣服、姿势与纯白边保持原样，展柜和底座由 Adonis 程序绘制。",
+              provenance: records.contains { $0.stickerProvenance.containsAIGeneratedPixels }
+                ? .aiGenerated : .programmaticComposition,
+              detail: records.contains { $0.stickerProvenance.containsAIGeneratedPixels }
+                ? "展柜包含 AI 生成贴纸；每个展位直接读取已收藏贴纸，展柜和底座由 Adonis 程序绘制，没有再次重绘人物或衣物。"
+                : "每个展位直接读取你已收藏的原图贴纸；人物、衣服、姿势与纯白边保持原样，展柜和底座由 Adonis 程序绘制。",
               identifier: "digital-cabinet-provenance"
             )
 

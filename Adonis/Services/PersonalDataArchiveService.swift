@@ -8,7 +8,7 @@ struct PersonalDataArchive: Identifiable, Sendable {
 }
 
 struct PersonalDataArchiveService {
-  static let formatVersion = "adonis-personal-data-v7"
+  static let formatVersion = "adonis-personal-data-v8"
   static let exportDirectoryName = "AdonisExports"
 
   private let mediaStore: MediaStore
@@ -218,6 +218,7 @@ private struct PersonalDataManifest: Encodable, Sendable {
   let appVersion: String
   let storage = "local_app_storage"
   let adonisAutomaticNetworkUpload = false
+  let systemImageGenerationTransport = "system_managed_when_available"
   let systemBackupControlledByIOS = true
   let outfits: [ExportedOutfit]
   let creativeWorks: [ExportedCreativeWork]
@@ -253,7 +254,7 @@ private struct PersonalDataManifest: Encodable, Sendable {
     )
     processingEvents = events.sorted { $0.createdAt < $1.createdAt }.map(ExportedAppEvent.init)
     let outfitAssets: [ExportedVisualAsset] = records.flatMap { record in
-      [
+      var assets = [
         ExportedVisualAsset(
           path: "media/\(record.sourceImageFilename)",
           role: "outfit_original_photo",
@@ -263,7 +264,7 @@ private struct PersonalDataManifest: Encodable, Sendable {
         ExportedVisualAsset(
           path: "media/\(record.stickerImageFilename)",
           role: "outfit_sticker",
-          provenance: .derivedFromOriginal,
+          provenance: record.provenance(for: .sticker),
           ownerID: record.id,
           qualityAssessment: record.stickerQualityAssessment,
           qualityAssessmentVersion: record.stickerQualityVersion
@@ -271,12 +272,23 @@ private struct PersonalDataManifest: Encodable, Sendable {
         ExportedVisualAsset(
           path: "media/\(record.cardImageFilename)",
           role: "outfit_share_card",
-          provenance: .programmaticComposition,
+          provenance: record.provenance(for: .shareCard),
           ownerID: record.id,
           qualityAssessment: record.stickerQualityAssessment,
           qualityAssessmentVersion: record.stickerQualityVersion
         ),
       ]
+      if let filename = record.aiStickerSourceImageFilename {
+        assets.append(
+          ExportedVisualAsset(
+            path: "media/\(filename)",
+            role: "outfit_ai_sticker_source",
+            provenance: .aiGenerated,
+            ownerID: record.id
+          )
+        )
+      }
+      return assets
     }
     let creativeAssets: [ExportedVisualAsset] = records.flatMap(\.creativeWorks).map { work in
       ExportedVisualAsset(
@@ -362,8 +374,12 @@ private struct ExportedOutfit: Encodable, Sendable {
   let createdAt: Date
   let title: String
   let originalPhotoPath: String
+  let aiStickerSourcePath: String?
   let derivedStickerPath: String
   let derivedShareCardPath: String
+  let stickerProvenance: String
+  let shareCardProvenance: String
+  let stickerExecutionMetadata: CreativeExecutionMetadata?
   let bloomNumber: Int
   let note: String
   let generationCompletionMode: String
@@ -378,8 +394,12 @@ private struct ExportedOutfit: Encodable, Sendable {
     createdAt = record.createdAt
     title = record.title
     originalPhotoPath = "media/\(record.sourceImageFilename)"
+    aiStickerSourcePath = record.aiStickerSourceImageFilename.map { "media/\($0)" }
     derivedStickerPath = "media/\(record.stickerImageFilename)"
     derivedShareCardPath = "media/\(record.cardImageFilename)"
+    stickerProvenance = record.provenance(for: .sticker).rawValue
+    shareCardProvenance = record.provenance(for: .shareCard).rawValue
+    stickerExecutionMetadata = record.stickerExecutionMetadata
     bloomNumber = record.bloomNumber
     note = record.note
     generationCompletionMode = record.generationCompletionMode.rawValue
@@ -592,6 +612,7 @@ private struct ExportedGenerationPerformance: Encodable, Sendable {
   let retryCount: Int
   let externalRequestCount: Int
   let usesPreparedSample: Bool
+  let executionMetadata: CreativeExecutionMetadata?
 
   init(_ trace: GenerationPerformanceTrace) {
     version = trace.version
@@ -608,6 +629,7 @@ private struct ExportedGenerationPerformance: Encodable, Sendable {
     retryCount = trace.retryCount
     externalRequestCount = trace.externalRequestCount
     usesPreparedSample = trace.usesPreparedSample
+    executionMetadata = trace.executionMetadata
   }
 }
 

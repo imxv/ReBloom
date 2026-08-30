@@ -131,7 +131,7 @@ struct SystemCreativeCardRenderer {
         eyebrow: "ADONIS / MYTHIC GARDEN",
         caption: "永生花园 · 青春、欲望与再次盛开"
       )
-    case .botanicalPoster, .stickerTryOn:
+    case .aiStickerSource, .botanicalPoster, .stickerTryOn:
       Theme(
         ink: .black,
         paper: .white,

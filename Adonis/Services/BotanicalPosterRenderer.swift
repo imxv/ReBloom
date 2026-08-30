@@ -5,9 +5,26 @@ struct BotanicalPosterRenderer {
   static let provenanceFooter =
     "人物与衣物来自原图贴纸 · ADONIS 本机排版 · 不含 AI 重绘"
 
+  static func provenance(
+    for stickerProvenance: VisualContentProvenance
+  ) -> VisualContentProvenance {
+    stickerProvenance.containsAIGeneratedPixels ? .aiGenerated : .programmaticComposition
+  }
+
+  static func provenanceFooter(for stickerProvenance: VisualContentProvenance) -> String {
+    stickerProvenance.containsAIGeneratedPixels
+      ? "人物与衣物来自 AI 贴纸 · ADONIS 本机排版"
+      : provenanceFooter
+  }
+
   private let size = CGSize(width: 1080, height: 1440)
 
-  func render(sticker: UIImage, bloomNumber: Int, date: Date) -> UIImage? {
+  func render(
+    sticker: UIImage,
+    bloomNumber: Int,
+    date: Date,
+    stickerProvenance: VisualContentProvenance = .derivedFromOriginal
+  ) -> UIImage? {
     guard sticker.size.width.isFinite,
       sticker.size.height.isFinite,
       sticker.size.width > 0,
@@ -26,7 +43,7 @@ struct BotanicalPosterRenderer {
       drawBotanicalField(in: context)
       drawTypography(bloomNumber: bloomNumber, date: date)
       drawSticker(sticker, in: context)
-      drawFooter()
+      drawFooter(stickerProvenance: stickerProvenance)
       sealTransparentRemainder(in: context)
     }
   }
@@ -259,10 +276,10 @@ struct BotanicalPosterRenderer {
     )
   }
 
-  private func drawFooter() {
+  private func drawFooter(stickerProvenance: VisualContentProvenance) {
     let centered = NSMutableParagraphStyle()
     centered.alignment = .center
-    (Self.provenanceFooter as NSString).draw(
+    (Self.provenanceFooter(for: stickerProvenance) as NSString).draw(
       in: CGRect(x: 96, y: 1_318, width: 888, height: 34),
       withAttributes: [
         .font: UIFont.systemFont(ofSize: 18, weight: .semibold),

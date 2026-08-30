@@ -7,10 +7,13 @@ final class OutfitRecord {
   var createdAt: Date
   var title: String
   var sourceImageFilename: String
+  var aiStickerSourceImageFilename: String?
   var stickerImageFilename: String
   var cardImageFilename: String
   var bloomNumber: Int
   var note: String
+  var stickerProvenanceRawValue: String = VisualContentProvenance.derivedFromOriginal.rawValue
+  var stickerExecutionMetadataData: Data?
   var generationCompletionModeRawValue: String = GenerationCompletionMode.complete.rawValue
   var stickerQualityLevelRawValue: String = StickerQualityLevel.acceptable.rawValue
   var stickerQualityIssueRawValues: String = ""
@@ -31,14 +34,29 @@ final class OutfitRecord {
     GenerationCompletionMode(rawValue: generationCompletionModeRawValue) ?? .complete
   }
 
+  var stickerProvenance: VisualContentProvenance {
+    VisualContentProvenance(rawValue: stickerProvenanceRawValue) ?? .derivedFromOriginal
+  }
+
+  var stickerExecutionMetadata: CreativeExecutionMetadata? {
+    guard let stickerExecutionMetadataData else { return nil }
+    return try? JSONDecoder().decode(
+      CreativeExecutionMetadata.self,
+      from: stickerExecutionMetadataData
+    )
+  }
+
   init(
     id: UUID = UUID(),
     createdAt: Date = .now,
     title: String = "今日穿搭",
     sourceImageFilename: String,
+    aiStickerSourceImageFilename: String? = nil,
     stickerImageFilename: String,
     cardImageFilename: String,
     bloomNumber: Int,
+    stickerProvenance: VisualContentProvenance = .derivedFromOriginal,
+    stickerExecutionMetadata: CreativeExecutionMetadata? = nil,
     note: String = "",
     generationCompletionMode: GenerationCompletionMode = .complete,
     stickerQualityAssessment: StickerQualityAssessment = .acceptable,
@@ -50,9 +68,14 @@ final class OutfitRecord {
     self.createdAt = createdAt
     self.title = title
     self.sourceImageFilename = sourceImageFilename
+    self.aiStickerSourceImageFilename = aiStickerSourceImageFilename
     self.stickerImageFilename = stickerImageFilename
     self.cardImageFilename = cardImageFilename
     self.bloomNumber = bloomNumber
+    self.stickerProvenanceRawValue = stickerProvenance.rawValue
+    self.stickerExecutionMetadataData = stickerExecutionMetadata.flatMap {
+      try? JSONEncoder().encode($0)
+    }
     self.note = note
     self.generationCompletionModeRawValue = generationCompletionMode.rawValue
     self.stickerQualityLevelRawValue = stickerQualityAssessment.level.rawValue
@@ -60,5 +83,16 @@ final class OutfitRecord {
     self.stickerQualityVersion = stickerQualityVersion
     self.garmentObservations = garmentObservations
     self.creativeWorks = creativeWorks
+  }
+
+  func provenance(for asset: OutfitVisualAsset) -> VisualContentProvenance {
+    switch asset {
+    case .originalPhoto:
+      .userProvided
+    case .sticker:
+      stickerProvenance
+    case .shareCard:
+      stickerProvenance.containsAIGeneratedPixels ? .aiGenerated : .programmaticComposition
+    }
   }
 }

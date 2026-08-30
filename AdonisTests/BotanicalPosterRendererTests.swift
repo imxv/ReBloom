@@ -4,11 +4,19 @@ import XCTest
 @testable import Adonis
 
 final class BotanicalPosterRendererTests: XCTestCase {
-  func testContractNamesOriginalStickerAndNonGenerativeLocalComposition() {
+  func testLegacyContractNamesOriginalStickerAndNonGenerativeLocalComposition() {
     XCTAssertEqual(BotanicalPosterRenderer.provenance, .programmaticComposition)
     XCTAssertEqual(
       BotanicalPosterRenderer.provenanceFooter,
       "人物与衣物来自原图贴纸 · ADONIS 本机排版 · 不含 AI 重绘"
+    )
+  }
+
+  func testAIStickerKeepsAIProvenanceThroughLocalPosterLayout() {
+    XCTAssertEqual(BotanicalPosterRenderer.provenance(for: .aiGenerated), .aiGenerated)
+    XCTAssertEqual(
+      BotanicalPosterRenderer.provenanceFooter(for: .aiGenerated),
+      "人物与衣物来自 AI 贴纸 · ADONIS 本机排版"
     )
   }
 
