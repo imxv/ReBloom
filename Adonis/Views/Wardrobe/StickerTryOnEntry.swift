@@ -337,11 +337,14 @@ struct StickerTryOnEntry: View {
     activeTask = nil
     attemptTimer = nil
     let isCancelled = error is CancellationError
-    let code = (error as? StickerTryOnError)?.eventCode ?? (isCancelled ? "cancelled" : "failed")
+    let tryOnError = error as? StickerTryOnError
+    let code = tryOnError?.eventCode ?? (isCancelled ? "cancelled" : "failed")
+    let qualityDetail = tryOnError?.qualityIssueEventDetail.map { ";\($0)" } ?? ""
     EventLogger.log(
       isCancelled ? .creativeWorkGenerationCancelled : .creativeWorkGenerationFailed,
       durationMilliseconds: timer.elapsedMilliseconds(),
-      detail: generator.executionMetadata.eventDetail(for: .stickerTryOn) + ";error=\(code)",
+      detail: generator.executionMetadata.eventDetail(for: .stickerTryOn)
+        + ";error=\(code)\(qualityDetail)",
       processingVersion: AdonisProcessingVersion.stickerTryOn,
       in: modelContext
     )

@@ -39,6 +39,7 @@
 		2A3903CCF09460A04EDEFCF7 /* CreativeWorkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AA69B4A22D8C05F5AFABC1 /* CreativeWorkView.swift */; };
 		2B7D58916E4D410B778A9EEE /* SeasonalBloomCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B81EEAE568CAF877AFF6B8A /* SeasonalBloomCatalogTests.swift */; };
 		2BD67932C4F0FBD986AC5507 /* GenerationDeadlineController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECF3B88471C33864593324 /* GenerationDeadlineController.swift */; };
+		2EAE4369D2BD6AEE3C58AD76 /* StickerTryOnDeliveryQualityGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE91E92DAF327FBEA50C6384 /* StickerTryOnDeliveryQualityGate.swift */; };
 		31E4486DE2D380E9354082FF /* RebloomCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461BCFBEC3CDDFB81D480D2A /* RebloomCatalog.swift */; };
 		32CA5F7642FEEC25E743F46E /* StickerQualityAssessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84136BBEA95D26BF94F117B2 /* StickerQualityAssessorTests.swift */; };
 		32E45CD509022E528A2143C1 /* WardrobeVisualSignatureBackfillService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143ACD68241F904B6C35BA58 /* WardrobeVisualSignatureBackfillService.swift */; };
@@ -303,6 +304,7 @@
 		EC4C4240274B6A2FB8E050EC /* SampleCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleCatalog.swift; sourceTree = "<group>"; };
 		EDB469AA7A56D82430C566D6 /* WardrobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeView.swift; sourceTree = "<group>"; };
 		EE0E94632BE94071D6AFD0F1 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
+		EE91E92DAF327FBEA50C6384 /* StickerTryOnDeliveryQualityGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerTryOnDeliveryQualityGate.swift; sourceTree = "<group>"; };
 		EEA92A8DC891210E49433FF7 /* WardrobeItemNaming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemNaming.swift; sourceTree = "<group>"; };
 		EEBDC07323E67E0A60762AF4 /* WardrobeImageAnalyzerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeImageAnalyzerTests.swift; sourceTree = "<group>"; };
 		EEC061181CA74103F996C69C /* ModelStorePolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStorePolicyTests.swift; sourceTree = "<group>"; };
@@ -446,6 +448,7 @@
 				C95059D5C09DEFB138D303EC /* SharedWardrobeImportCoordinator.swift */,
 				5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */,
 				9E8A29F732DC9640A560F982 /* StickerQualityAssessor.swift */,
+				EE91E92DAF327FBEA50C6384 /* StickerTryOnDeliveryQualityGate.swift */,
 				D283843786FEC37B1CDECF1A /* StickerTryOnRenderer.swift */,
 				C7465AE6ACD185AA0E329EA9 /* WardrobeCandidateMatcher.swift */,
 				35D054A4D8ABBFB0B58A60EB /* WardrobeHistoryMatcher.swift */,
@@ -855,6 +858,7 @@
 				38385A8843FD7D39731262D1 /* StickerProcessor.swift in Sources */,
 				148602CF072B947FCFB05C98 /* StickerQualityAssessment.swift in Sources */,
 				A6BCE233749F8E06DE8D9CB4 /* StickerQualityAssessor.swift in Sources */,
+				2EAE4369D2BD6AEE3C58AD76 /* StickerTryOnDeliveryQualityGate.swift in Sources */,
 				E17514A945CF405250F4245F /* StickerTryOnEntry.swift in Sources */,
 				A4B0FE56940EA5F4BA8757B1 /* StickerTryOnRenderer.swift in Sources */,
 				212E902D6EFF97FB6AC0FE1C /* StoredImageView.swift in Sources */,

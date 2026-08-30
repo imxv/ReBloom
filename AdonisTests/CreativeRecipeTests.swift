@@ -34,7 +34,7 @@ final class CreativeRecipeTests: XCTestCase {
 
     XCTAssertEqual(recipe.rawValue, "sticker_try_on")
     XCTAssertEqual(recipe.title, "贴纸试搭")
-    XCTAssertEqual(recipe.version, "sticker-try-on-v1")
+    XCTAssertEqual(recipe.version, "sticker-try-on-delivery-v2")
     XCTAssertEqual(recipe.provenance, .programmaticComposition)
     XCTAssertFalse(recipe.containsAIGeneratedPixels)
     XCTAssertTrue(recipe.preservedElements.contains("原始照片"))

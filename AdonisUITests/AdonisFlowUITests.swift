@@ -1366,6 +1366,50 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  func testStickerTryOnQualityGateStopsBadResultWithoutCreatingAWork() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-wardrobe-import",
+        "-ui-testing-sticker-try-on",
+        "-ui-testing-sticker-try-on-low-quality",
+      ]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-02"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
+    app.buttons["save-today"].tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 4))
+    app.buttons["make-another"].tap()
+
+    app.tabBars.buttons["衣橱"].tap()
+    let addItem = app.buttons["add-test-wardrobe-item"]
+    XCTAssertTrue(addItem.waitForExistence(timeout: 5))
+    addItem.tap()
+    XCTAssertTrue(app.staticTexts["wardrobe-analysis-summary"].waitForExistence(timeout: 8))
+    let topCategory = app.buttons["wardrobe-category-上装"]
+    XCTAssertTrue(scrollToHittable(topCategory, in: app, attempts: 5))
+    topCategory.tap()
+
+    let tryOn = app.buttons["sticker-try-on-entry"]
+    XCTAssertTrue(scrollToHittable(tryOn, in: app, attempts: 8))
+    tryOn.tap()
+
+    let alert = app.alerts["试搭没有完成"]
+    XCTAssertTrue(alert.waitForExistence(timeout: 6))
+    XCTAssertTrue(alert.staticTexts["这次没有把衣物完整放好，已经停止交付。换一张人物更完整的照片再试。"].exists)
+    XCTAssertFalse(app.descendants(matching: .any)["creative-work-preview"].exists)
+    keepScreenshot(named: "Adonis-sticker-try-on-quality-stop")
+    alert.buttons["知道了"].tap()
+    XCTAssertTrue(tryOn.waitForExistence(timeout: 3))
+    XCTAssertTrue(app.descendants(matching: .any)["wardrobe-item-detail"].exists)
+  }
+
+  @MainActor
   func testStickerTryOnCanBeStoppedWithoutOpeningOrChangingAWork() {
     let app = XCUIApplication()
     app.launchArguments.append(

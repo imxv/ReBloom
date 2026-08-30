@@ -114,6 +114,7 @@ tryon-regression: project
 		-only-testing:AdonisTests/CreativeWorkPersistenceTests \
 		-only-testing:AdonisTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testCatalogTopCanCreateReviewSaveShareAndReopenStickerTryOn \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testStickerTryOnQualityGateStopsBadResultWithoutCreatingAWork \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testStickerTryOnCanBeStoppedWithoutOpeningOrChangingAWork
 
 lint:

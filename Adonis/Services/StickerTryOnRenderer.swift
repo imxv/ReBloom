@@ -59,6 +59,7 @@ struct StickerTryOnResult {
   let garmentCoverage: Double
   let poseConfidence: Double
   let provenance: VisualContentProvenance
+  let deliveryQuality: StickerTryOnDeliveryQuality
 }
 
 protocol StickerTryOnGenerating {
@@ -122,15 +123,26 @@ private struct LiveStickerTryOnGenerator: StickerTryOnGenerating {
         try await Task.sleep(for: .milliseconds(1_500))
       }
       try Task.checkCancellation()
-      let pose = StickerTryOnPose(
-        leftShoulder: CGPoint(x: 0.438, y: 0.478),
-        rightShoulder: CGPoint(x: 0.574, y: 0.478),
-        leftHip: CGPoint(x: 0.455, y: 0.618),
-        rightHip: CGPoint(x: 0.568, y: 0.618),
-        leftKnee: CGPoint(x: 0.47, y: 0.82),
-        rightKnee: CGPoint(x: 0.55, y: 0.82),
-        confidence: 0.94
-      )
+      let pose =
+        if arguments.contains("-ui-testing-sticker-try-on-low-quality") {
+          StickerTryOnPose(
+            leftShoulder: CGPoint(x: 0.01, y: 0.478),
+            rightShoulder: CGPoint(x: 0.25, y: 0.478),
+            leftHip: CGPoint(x: 0.04, y: 0.618),
+            rightHip: CGPoint(x: 0.22, y: 0.618),
+            confidence: 0.94
+          )
+        } else {
+          StickerTryOnPose(
+            leftShoulder: CGPoint(x: 0.438, y: 0.478),
+            rightShoulder: CGPoint(x: 0.574, y: 0.478),
+            leftHip: CGPoint(x: 0.455, y: 0.618),
+            rightHip: CGPoint(x: 0.568, y: 0.618),
+            leftKnee: CGPoint(x: 0.47, y: 0.82),
+            rightKnee: CGPoint(x: 0.55, y: 0.82),
+            confidence: 0.94
+          )
+        }
       return try StickerTryOnRenderer().render(
         person: person,
         garment: garment,
@@ -279,6 +291,17 @@ struct StickerTryOnPoseDetector {
 }
 
 struct StickerTryOnRenderer {
+  private struct GarmentCutout {
+    let image: UIImage
+    let visiblePixelRatio: Double
+  }
+
+  private struct Placement {
+    let rect: CGRect
+    let retention: Double
+    let protectedRegion: CGRect
+  }
+
   func render(
     person: UIImage,
     garment: UIImage,
@@ -296,17 +319,39 @@ struct StickerTryOnRenderer {
       throw StickerTryOnError.garmentNotSeparated
     }
 
-    let targetRect = try Self.targetRect(
+    let placement = try Self.targetPlacement(
       for: pose,
       category: category,
       canvasSize: person.size
     )
+    guard placement.retention >= 0.96 else {
+      throw StickerTryOnError.deliveryQualityTooLow([.garmentClipped])
+    }
+    let targetRect = placement.rect
+    let canvasArea = max(person.size.width * person.size.height, 1)
+    let garmentCoverage = Double(targetRect.width * targetRect.height / canvasArea)
+    let visibleGarmentCoverage = garmentCoverage * garmentCutout.visiblePixelRatio
+    guard visibleGarmentCoverage >= 0.012 else {
+      throw StickerTryOnError.deliveryQualityTooLow([.garmentTooSmall])
+    }
     let format = UIGraphicsImageRendererFormat()
     format.scale = 1
     format.opaque = true
     let output = UIGraphicsImageRenderer(size: person.size, format: format).image { _ in
       person.draw(in: CGRect(origin: .zero, size: person.size))
-      Self.drawStickerizedGarment(garmentCutout, in: targetRect)
+      Self.drawStickerizedGarment(garmentCutout.image, in: targetRect)
+    }
+    let deliveryQuality = try StickerTryOnDeliveryQualityGate().assess(
+      person: person,
+      output: output,
+      garment: garmentCutout.image,
+      targetRect: targetRect,
+      protectedRegion: placement.protectedRegion,
+      placementRetention: placement.retention,
+      outlineRadius: Self.outlineRadius(for: targetRect)
+    )
+    guard deliveryQuality.isDeliverable else {
+      throw StickerTryOnError.deliveryQualityTooLow(deliveryQuality.issues)
     }
     let elapsed = startedAt.duration(to: .now)
     let elapsedMilliseconds = max(
@@ -314,22 +359,21 @@ struct StickerTryOnRenderer {
       Int(elapsed.components.seconds * 1_000)
         + Int(elapsed.components.attoseconds / 1_000_000_000_000_000)
     )
-    let canvasArea = max(person.size.width * person.size.height, 1)
-
     return StickerTryOnResult(
       image: output,
       elapsedMilliseconds: elapsedMilliseconds,
-      garmentCoverage: Double(targetRect.width * targetRect.height / canvasArea),
+      garmentCoverage: garmentCoverage,
       poseConfidence: pose.confidence,
-      provenance: .programmaticComposition
+      provenance: .programmaticComposition,
+      deliveryQuality: deliveryQuality
     )
   }
 
-  private static func targetRect(
+  private static func targetPlacement(
     for pose: StickerTryOnPose,
     category: WardrobeCategory,
     canvasSize: CGSize
-  ) throws -> CGRect {
+  ) throws -> Placement {
     let leftShoulder = pose.leftShoulder.scaled(to: canvasSize)
     let rightShoulder = pose.rightShoulder.scaled(to: canvasSize)
     let leftHip = pose.leftHip.scaled(to: canvasSize)
@@ -362,12 +406,23 @@ struct StickerTryOnRenderer {
     guard !clipped.isNull, clipped.width >= 32, clipped.height >= 32 else {
       throw StickerTryOnError.personPoseUnclear
     }
-    return clipped.integral
+    let unclippedArea = max(unclipped.width * unclipped.height, 1)
+    let retainedArea = clipped.width * clipped.height
+    return Placement(
+      rect: unclipped.integral,
+      retention: Double(min(max(retainedArea / unclippedArea, 0), 1)),
+      protectedRegion: CGRect(
+        x: 0,
+        y: 0,
+        width: canvasSize.width,
+        height: max(0, min(leftShoulder.y, rightShoulder.y) - torsoHeight * 0.16)
+      )
+    )
   }
 
   private static func drawStickerizedGarment(_ image: UIImage, in targetRect: CGRect) {
     let outline = image.withTintColor(.white, renderingMode: .alwaysTemplate)
-    let radius = max(3, min(targetRect.width, targetRect.height) * 0.024)
+    let radius = outlineRadius(for: targetRect)
     for index in 0..<16 {
       let angle = CGFloat(index) / 16 * .pi * 2
       outline.draw(
@@ -380,7 +435,11 @@ struct StickerTryOnRenderer {
     image.draw(in: targetRect)
   }
 
-  private static func makeGarmentCutout(from image: UIImage) -> UIImage? {
+  private static func outlineRadius(for targetRect: CGRect) -> CGFloat {
+    max(3, min(targetRect.width, targetRect.height) * 0.024)
+  }
+
+  private static func makeGarmentCutout(from image: UIImage) -> GarmentCutout? {
     let width = max(Int(image.size.width.rounded()), 1)
     let height = max(Int(image.size.height.rounded()), 1)
     guard width >= 32, height >= 32 else { return nil }
@@ -458,7 +517,11 @@ struct StickerTryOnRenderer {
       height: min(height - 1, maxY + margin) - max(0, minY - margin) + 1
     )
     guard let cropped = fullImage.cropping(to: crop) else { return nil }
-    return UIImage(cgImage: cropped, scale: 1, orientation: .up)
+    let croppedArea = max(Int(crop.width * crop.height), 1)
+    return GarmentCutout(
+      image: UIImage(cgImage: cropped, scale: 1, orientation: .up),
+      visiblePixelRatio: Double(visiblePixels) / Double(croppedArea)
+    )
   }
 }
 
@@ -468,7 +531,15 @@ enum StickerTryOnError: LocalizedError, Equatable {
   case poseDetectionUnavailable
   case personPoseUnclear
   case garmentNotSeparated
+  case deliveryQualityTooLow([StickerTryOnDeliveryIssue])
   case renderFailed
+
+  var qualityIssueEventDetail: String? {
+    guard case .deliveryQualityTooLow(let issues) = self, !issues.isEmpty else {
+      return nil
+    }
+    return "quality_issues=" + issues.map(\.rawValue).joined(separator: ",")
+  }
 
   var eventCode: String {
     switch self {
@@ -477,6 +548,7 @@ enum StickerTryOnError: LocalizedError, Equatable {
     case .poseDetectionUnavailable: "pose_detection_unavailable"
     case .personPoseUnclear: "person_pose_unclear"
     case .garmentNotSeparated: "garment_not_separated"
+    case .deliveryQualityTooLow: "delivery_quality_too_low"
     case .renderFailed: "render_failed"
     }
   }
@@ -493,6 +565,8 @@ enum StickerTryOnError: LocalizedError, Equatable {
       "没有找到足够清楚的肩膀和腰部位置，换一张人物更完整的照片再试。"
     case .garmentNotSeparated:
       "这张衣物图的背景不够干净，补一张白底或平铺商品图再试。"
+    case .deliveryQualityTooLow:
+      "这次没有把衣物完整放好，已经停止交付。换一张人物更完整的照片再试。"
     case .renderFailed:
       "试搭草图没有生成成功，原照片和衣橱都没有改变。"
     }

@@ -27,7 +27,7 @@ enum AdonisProcessingVersion {
   static let floralSketch = "floral-sketch-v1"
   static let mythicGarden = "mythic-garden-v1"
   static let moonlitTheater = "moonlit-theater-v1"
-  static let stickerTryOn = "sticker-try-on-v1"
+  static let stickerTryOn = "sticker-try-on-delivery-v2"
   static let digitalCabinet = "digital-cabinet-v1"
   static let seasonalBloom = "seasonal-bloom-v1"
   static let rebloomSuggestion = "rebloom-suggestion-v1"

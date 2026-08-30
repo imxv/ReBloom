@@ -162,6 +162,17 @@ final class StickerTryOnRendererTests: XCTestCase {
     XCTAssertEqual(result.poseConfidence, 0.94, accuracy: 0.001)
     XCTAssertGreaterThan(result.garmentCoverage, 0.03)
     XCTAssertLessThan(result.garmentCoverage, 0.5)
+    XCTAssertTrue(result.deliveryQuality.isDeliverable)
+    XCTAssertTrue(result.deliveryQuality.issues.isEmpty)
+    XCTAssertGreaterThanOrEqual(result.deliveryQuality.placementRetention, 0.98)
+    XCTAssertGreaterThan(result.deliveryQuality.visibleGarmentCoverage, 0.015)
+    XCTAssertLessThan(
+      result.deliveryQuality.visibleGarmentCoverage,
+      result.garmentCoverage * 0.9,
+      "可见覆盖率应该来自衣物前景像素，而不是目标矩形面积"
+    )
+    XCTAssertEqual(result.deliveryQuality.protectedPixelMismatchRatio, 0, accuracy: 0.000_001)
+    XCTAssertEqual(result.deliveryQuality.outsidePlacementMismatchRatio, 0, accuracy: 0.000_001)
 
     let sourceCorner = try pixel(in: person, x: 30, y: 30)
     let resultCorner = try pixel(in: result.image, x: 30, y: 30)
@@ -178,6 +189,148 @@ final class StickerTryOnRendererTests: XCTestCase {
     )
   }
 
+  func testTryOnRejectsPlacementThatWouldCutOffTheGarment() throws {
+    let person = solidImage(
+      size: CGSize(width: 600, height: 900),
+      color: UIColor(red: 0.91, green: 0.86, blue: 0.78, alpha: 1)
+    )
+    let pose = StickerTryOnPose(
+      leftShoulder: CGPoint(x: 0.01, y: 0.27),
+      rightShoulder: CGPoint(x: 0.25, y: 0.27),
+      leftHip: CGPoint(x: 0.04, y: 0.58),
+      rightHip: CGPoint(x: 0.22, y: 0.58),
+      confidence: 0.94
+    )
+
+    XCTAssertThrowsError(
+      try StickerTryOnRenderer().render(
+        person: person,
+        garment: WardrobeTestImageFactory.brownCatalogShirt(),
+        category: .top,
+        pose: pose
+      )
+    ) { error in
+      guard case .deliveryQualityTooLow(let issues) = error as? StickerTryOnError else {
+        XCTFail("应返回交付质量失败")
+        return
+      }
+      XCTAssertEqual(issues, [.garmentClipped])
+    }
+  }
+
+  func testTryOnRejectsSparseForegroundThatWouldLookLikeTinyFragments() throws {
+    let person = solidImage(
+      size: CGSize(width: 600, height: 900),
+      color: UIColor(red: 0.91, green: 0.86, blue: 0.78, alpha: 1)
+    )
+    let pose = StickerTryOnPose(
+      leftShoulder: CGPoint(x: 0.36, y: 0.27),
+      rightShoulder: CGPoint(x: 0.64, y: 0.27),
+      leftHip: CGPoint(x: 0.41, y: 0.58),
+      rightHip: CGPoint(x: 0.59, y: 0.58),
+      confidence: 0.94
+    )
+
+    XCTAssertThrowsError(
+      try StickerTryOnRenderer().render(
+        person: person,
+        garment: sparseGarmentFragments(),
+        category: .top,
+        pose: pose
+      )
+    ) { error in
+      guard case .deliveryQualityTooLow(let issues) = error as? StickerTryOnError else {
+        XCTFail("应返回交付质量失败")
+        return
+      }
+      XCTAssertEqual(issues, [.garmentTooSmall])
+    }
+  }
+
+  func testDeliveryGateRejectsChangedProtectedAndOutsidePixels() throws {
+    let person = solidImage(
+      size: CGSize(width: 100, height: 100),
+      color: UIColor(red: 0.91, green: 0.86, blue: 0.78, alpha: 1)
+    )
+    let garment = solidImage(
+      size: CGSize(width: 20, height: 20),
+      color: UIColor(red: 0.32, green: 0.12, blue: 0.07, alpha: 1)
+    )
+    let output = UIGraphicsImageRenderer(size: person.size).image { context in
+      person.draw(in: CGRect(origin: .zero, size: person.size))
+      garment.draw(in: CGRect(x: 40, y: 40, width: 20, height: 20))
+      UIColor.systemPink.setFill()
+      context.fill(CGRect(x: 8, y: 8, width: 12, height: 12))
+    }
+
+    let quality = try StickerTryOnDeliveryQualityGate().assess(
+      person: person,
+      output: output,
+      garment: garment,
+      targetRect: CGRect(x: 40, y: 40, width: 20, height: 20),
+      protectedRegion: CGRect(x: 0, y: 0, width: 100, height: 30),
+      placementRetention: 1,
+      outlineRadius: 2
+    )
+
+    XCTAssertFalse(quality.isDeliverable)
+    XCTAssertTrue(quality.issues.contains(.protectedPixelsChanged))
+    XCTAssertTrue(quality.issues.contains(.outsidePlacementChanged))
+    XCTAssertGreaterThan(quality.protectedPixelMismatchRatio, 0.01)
+    XCTAssertGreaterThan(quality.outsidePlacementMismatchRatio, 0.005)
+  }
+
+  func testDeliveryGateRejectsGarmentColorShiftInsidePlacement() throws {
+    let person = solidImage(
+      size: CGSize(width: 100, height: 100),
+      color: UIColor(red: 0.91, green: 0.86, blue: 0.78, alpha: 1)
+    )
+    let garment = solidImage(
+      size: CGSize(width: 20, height: 20),
+      color: UIColor(red: 0.32, green: 0.12, blue: 0.07, alpha: 1)
+    )
+    let output = UIGraphicsImageRenderer(size: person.size).image { context in
+      person.draw(in: CGRect(origin: .zero, size: person.size))
+      UIColor.systemBlue.setFill()
+      context.fill(CGRect(x: 40, y: 40, width: 20, height: 20))
+    }
+
+    let quality = try StickerTryOnDeliveryQualityGate().assess(
+      person: person,
+      output: output,
+      garment: garment,
+      targetRect: CGRect(x: 40, y: 40, width: 20, height: 20),
+      protectedRegion: CGRect(x: 0, y: 0, width: 100, height: 30),
+      placementRetention: 1,
+      outlineRadius: 2
+    )
+
+    XCTAssertFalse(quality.isDeliverable)
+    XCTAssertEqual(quality.issues, [.garmentAppearanceChanged])
+    XCTAssertGreaterThan(quality.opaqueGarmentColorDelta, 0.2)
+    XCTAssertEqual(quality.protectedPixelMismatchRatio, 0, accuracy: 0.000_001)
+    XCTAssertEqual(quality.outsidePlacementMismatchRatio, 0, accuracy: 0.000_001)
+  }
+
+  func testDeliveryQualityFailureUsesStablePrivateEventCodeAndPlainRecoveryCopy() {
+    let error = StickerTryOnError.deliveryQualityTooLow([
+      .garmentClipped,
+      .outsidePlacementChanged,
+    ])
+    XCTAssertEqual(
+      error.eventCode,
+      "delivery_quality_too_low"
+    )
+    XCTAssertEqual(
+      error.qualityIssueEventDetail,
+      "quality_issues=garment_clipped,outside_placement_changed"
+    )
+    XCTAssertTrue(
+      error.localizedDescription.contains("已经停止交付")
+    )
+    XCTAssertTrue(error.localizedDescription.contains("换一张"))
+  }
+
   private func solidImage(size: CGSize, color: UIColor) -> UIImage {
     let format = UIGraphicsImageRendererFormat()
     format.scale = 1
@@ -185,6 +338,22 @@ final class StickerTryOnRendererTests: XCTestCase {
     return UIGraphicsImageRenderer(size: size, format: format).image { context in
       color.setFill()
       context.fill(CGRect(origin: .zero, size: size))
+    }
+  }
+
+  private func sparseGarmentFragments() -> UIImage {
+    let format = UIGraphicsImageRendererFormat()
+    format.scale = 1
+    format.opaque = true
+    return UIGraphicsImageRenderer(
+      size: CGSize(width: 200, height: 200),
+      format: format
+    ).image { context in
+      UIColor.white.setFill()
+      context.fill(CGRect(x: 0, y: 0, width: 200, height: 200))
+      UIColor(red: 0.32, green: 0.12, blue: 0.07, alpha: 1).setFill()
+      context.fill(CGRect(x: 20, y: 20, width: 24, height: 24))
+      context.fill(CGRect(x: 156, y: 156, width: 24, height: 24))
     }
   }
 
