@@ -27,7 +27,7 @@
 - 旧数据在 App 活跃后静默回填；缺图、损坏图片或近乎空白的素材会跳过，不弹窗、不增加整理压力。
 - 回填只写入派生签名，不改变关联、排除、暂放、名称、备注或人工分类。
 - 事件只记录更新与跳过数量或通用存储失败原因，不记录衣物名、图片、路径或实体 ID。
-- 用户主动导出的标准 TAR 当前为 `adonis-personal-data-v6`；衣橱单品与 OOTD 线索继续导出签名内容和 `garment-visual-signature-v1` 版本，便于解释和迁移。v6 新增的收藏创作结构不改变衣橱签名字段。
+- 用户主动导出的标准 TAR 当前为 `adonis-personal-data-v7`；衣橱单品与 OOTD 线索继续导出签名内容和 `garment-visual-signature-v1` 版本，便于解释和迁移。作品执行元数据不改变衣橱签名字段。
 
 ## 4. TDD 与自动回归证据
 
@@ -57,7 +57,7 @@
 
 ```json
 {
-  "formatVersion": "adonis-personal-data-v6",
+  "formatVersion": "adonis-personal-data-v7",
   "wardrobeVisualSignatureVersion": "garment-visual-signature-v1",
   "observationVisualSignatureVersion": "garment-visual-signature-v1"
 }

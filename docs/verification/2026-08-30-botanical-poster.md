@@ -43,12 +43,12 @@
 
 删除一条 OOTD 时，作品模型随关系级联删除，海报 PNG 与原图、贴纸、收藏卡和线索图一起清理。“清空所有本地数据”也显式覆盖 `CreativeWork` 模型与全部媒体；设置页会单独显示本机创作作品数量。
 
-个人数据格式升级为 `adonis-personal-data-v6`：
+个人数据格式当前为 `adonis-personal-data-v7`（v6 首次引入作品结构，v7 增加执行元数据）：
 
 - `creativeWorks` 保存来源 OOTD、配方、版本、图片路径、来源类型、是否含 AI 像素和处理耗时；
 - `visualAssets` 把海报登记为 `creative_work` 与 `programmatic_composition`；
 - 海报 PNG 以独立媒体文件进入标准 TAR，不嵌入 Base64；
-- 当前测试中的 7 个视觉资产都明确为不含 AI 生成像素。
+- 当前 v7 混合来源导出共验证 8 个视觉资产：花影海报自身仍明确为不含 AI 生成像素；只有另一配方“永生花园”标为 AI 生成。
 
 ## 4. 可观测性与成本事实
 
@@ -75,15 +75,15 @@ make creative-regression
 - 来源页脚、无 AI 像素、0 次外部请求与费用不适用；
 - 作品模型重新抓取后仍保留配方、来源、耗时和原 OOTD；
 - PNG 与 SwiftData 关系的收藏事务、相同草稿重复收藏幂等性，以及删除来源 OOTD 后的关系级联；
-- v6 标准 TAR 中的作品结构、视觉资产与媒体文件；
+- v7 标准 TAR 中的作品结构、执行元数据、视觉资产与媒体文件；
 - 完整清空同时删除作品模型与图片；
 - 普通字号真实 UI 中的一键生成、原图对照、收藏、系统分享、进程终止重启和花历历史回看。
 
-TDD 先分别观察到配方、渲染器、来源字段、持久化模型、v6 导出与 UI 入口不存在时的预期失败，再逐项转绿。最终专项为 10 个单元测试与 1 个 UI 流程，共 11 项通过、0 失败、0 跳过；`xcresulttool` 独立汇总一致，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_10-37-16-+0800.xcresult`。
+TDD 先分别观察到配方、渲染器、来源字段、持久化模型、导出与 UI 入口不存在时的预期失败，再逐项转绿。花影海报首次专项为 10 个单元测试与 1 个 UI 流程，共 11 项通过、0 失败、0 跳过；结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_10-37-16-+0800.xcresult`。加入 v7 混合来源与系统创作后，当前 `make creative-regression` 为 18 个单元测试与 5 个 UI 流程，共 23 项通过、0 失败、0 跳过；结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_11-51-28-+0800.xcresult`。
 
-最大辅助字号 `accessibility-extra-extra-extra-large` 与增强对比度下，同一 UI 流程使用菜单替代横向分段控件，完成入口、生成、原图对照、来源说明、收藏、系统分享、终止重启和历史回看。连同颜色契约及既有核心/再次盛开/取消流程，共 5 项通过、0 失败、0 跳过；结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_10-15-56-+0800.xcresult`。脚本结束后已重新读取模拟器设置，辅助字号为 `large`、增强对比度为 `disabled`。
+最大辅助字号 `accessibility-extra-extra-extra-large` 与增强对比度下，同一 UI 流程使用菜单替代横向分段控件，完成入口、生成、原图对照、来源说明、收藏、系统分享、终止重启和历史回看。连同颜色契约、既有核心/再次盛开/取消流程及永生花园流程，共 6 项通过、0 失败、0 跳过；结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_11-21-51-+0800.xcresult`。脚本结束后已重新读取模拟器设置，辅助字号为 `large`、增强对比度为 `disabled`。
 
-完整工程门禁同样通过：`make check` 完成严格 Swift 格式检查与通用 iOS 静态分析；`make test` 完成 119 个单元测试与 24 个真实模拟器 UI 流程，共 143 项通过、0 失败、0 跳过，`xcresulttool` 独立汇总一致，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_10-26-57-+0800.xcresult`。`Release`、`generic/platform=iOS`、`CODE_SIGNING_ALLOWED=NO` 构建成功，主 App 与分享扩展均进入 arm64 产物；这只证明无签名真机架构可编译链接。
+完整工程门禁同样通过：`make check` 完成严格 Swift 格式检查与通用 iOS 静态分析；`make test` 完成 127 个单元测试与 28 个真实模拟器 UI 流程，共 155 项通过、0 失败、0 跳过，`xcresulttool` 独立汇总一致，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_11-55-11-+0800.xcresult`。`Release`、`generic/platform=iOS`、`CODE_SIGNING_ALLOWED=NO` 构建成功，主 App 与分享扩展均为 arm64 产物；这只证明无签名真机架构可编译链接。
 
 另外将 Debug 模拟器产物重新安装后，不带 UI 测试参数正常启动 `studio.adonis.localdemo`，启动命令返回进程 ID，随后由宿主进程列表确认 App 仍存活。该检查证明新增 `CreativeWork` 模型可以进入普通模拟器持久化容器启动路径，不等同于真实 iPhone 安装，也没有单独构造历史生产数据库来证明跨版本迁移。
 
@@ -103,8 +103,8 @@ SHA-256：`cdfb6afb05f2ed6919ab3f6f2a899f987a8c1646863a2c0a18ccf2fbbae70563`。
 
 ## 7. 尚未证明
 
-- 当前没有接入任何 AI 图片供应商，不会生成新画风像素、补全遮挡、换装或虚拟试穿。
-- 当前只实现一个固定本机配方，尚未完成 ADO-304 所要求的多种、经固定样本验证的 AI 强风格创作。
+- 花影海报自身仍不调用 AI，不会生成新画风像素、补全遮挡、换装或虚拟试穿。App 另有可选 Apple 系统创作“永生花园”，但它不是花影海报处理链的一部分。
+- 当前只有一个固定本机排版配方与一个尚未用真实 Apple 输出验证的系统插画配方，仍未完成 ADO-304 所要求的多种、经固定样本验证的 AI 强风格创作。
 - 本机耗时来自模拟器与固定样片，不是 iPhone 性能预算或远程供应商 SLA；没有真实联网重试、费用、配额、供应商不可用或弱网降级证据。
 - 像素契约与一张真实授权样片目检不能替代更大固定样本集、人物/衣物语义保真评估或真实用户判断。
 - 没有在真实 iPhone、VoiceOver 朗读与手势、横屏、不同屏幕尺寸或真实社交平台目的地上验证。

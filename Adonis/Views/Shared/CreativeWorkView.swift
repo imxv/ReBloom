@@ -14,9 +14,9 @@ private enum CreativeWorkPreviewAsset: String, CaseIterable, Identifiable {
 
   var id: String { rawValue }
 
-  var title: String {
+  func title(for recipe: CreativeRecipe) -> String {
     switch self {
-    case .work: "花影海报"
+    case .work: recipe.title
     case .originalPhoto: "原始照片"
     }
   }
@@ -63,16 +63,15 @@ struct CreativeWorkView: View {
               icon: "rectangle.portrait"
             )
             StickerTag(
-              title: "本机创作",
+              title: executionTagTitle,
               color: AdonisTheme.leaf.opacity(0.48),
-              icon: "iphone"
+              icon: executionTagIcon
             )
           }
 
           ContentProvenanceNotice(
             provenance: presentation.draft.recipe.provenance,
-            detail:
-              "人物、衣物、姿势和纯白边直接复用原图贴纸；背景、花影与文字由 Adonis 本机排版，不含 AI 重绘。",
+            detail: provenanceDetail,
             identifier: "creative-work-provenance"
           )
 
@@ -84,10 +83,10 @@ struct CreativeWorkView: View {
               .background(AdonisTheme.pomegranate.opacity(0.22), in: Circle())
 
             VStack(alignment: .leading, spacing: 4) {
-              Text("只是一张风格海报")
+              Text(boundaryTitle)
                 .font(.system(.subheadline, design: .rounded, weight: .black))
                 .foregroundStyle(AdonisTheme.ink)
-              Text("它不是试穿效果，也不代表一张真实拍摄的新照片。")
+              Text(boundaryDetail)
                 .font(.footnote)
                 .foregroundStyle(AdonisTheme.secondaryInk)
                 .fixedSize(horizontal: false, vertical: true)
@@ -152,7 +151,7 @@ struct CreativeWorkView: View {
           .background(.white.opacity(0.8), in: Circle())
       }
       .buttonStyle(StickerButtonStyle())
-      .accessibilityLabel("关闭花影海报")
+      .accessibilityLabel("关闭\(presentation.draft.recipe.title)")
       .accessibilityIdentifier("close-creative-work")
     }
   }
@@ -162,7 +161,7 @@ struct CreativeWorkView: View {
     if dynamicTypeSize.isAccessibilitySize {
       Picker("对照查看", selection: $previewAsset) {
         ForEach(CreativeWorkPreviewAsset.allCases) { asset in
-          Text(asset.title).tag(asset)
+          Text(asset.title(for: presentation.draft.recipe)).tag(asset)
         }
       }
       .pickerStyle(.menu)
@@ -177,7 +176,7 @@ struct CreativeWorkView: View {
     } else {
       Picker("对照查看", selection: $previewAsset) {
         ForEach(CreativeWorkPreviewAsset.allCases) { asset in
-          Text(asset.title).tag(asset)
+          Text(asset.title(for: presentation.draft.recipe)).tag(asset)
         }
       }
       .pickerStyle(.segmented)
@@ -208,7 +207,8 @@ struct CreativeWorkView: View {
     .shadow(color: AdonisTheme.ink.opacity(0.14), radius: 18, y: 10)
     .accessibilityElement(children: .ignore)
     .accessibilityLabel(
-      previewAsset == .work ? "花影海报预览" : "原始照片对照预览"
+      previewAsset == .work
+        ? "\(presentation.draft.recipe.title)预览" : "原始照片对照预览"
     )
     .accessibilityIdentifier("creative-work-preview")
   }
@@ -238,7 +238,7 @@ struct CreativeWorkView: View {
         onShareOpened()
         showShare = true
       } label: {
-        Label("分享花影海报", systemImage: "square.and.arrow.up")
+        Label("分享\(presentation.draft.recipe.title)", systemImage: "square.and.arrow.up")
           .font(.system(.headline, design: .rounded, weight: .bold))
           .foregroundStyle(AdonisTheme.ink)
           .frame(maxWidth: .infinity, minHeight: 52)
@@ -249,6 +249,45 @@ struct CreativeWorkView: View {
       }
       .buttonStyle(StickerButtonStyle())
       .accessibilityIdentifier("share-creative-work")
+    }
+  }
+
+  private var executionTagTitle: String {
+    switch presentation.draft.recipe {
+    case .botanicalPoster: "本机创作"
+    case .mythicGarden: "系统创作"
+    }
+  }
+
+  private var executionTagIcon: String {
+    switch presentation.draft.recipe {
+    case .botanicalPoster: "iphone"
+    case .mythicGarden: "sparkles"
+    }
+  }
+
+  private var provenanceDetail: String {
+    switch presentation.draft.recipe {
+    case .botanicalPoster:
+      "人物、衣物、姿势和纯白边直接复用原图贴纸；背景、花影与文字由 Adonis 本机排版，不含 AI 重绘。"
+    case .mythicGarden:
+      "原始照片只作为创作参考；画面包含系统生成或重绘的人物、衣物和背景，请与原图对照后再收藏。"
+    }
+  }
+
+  private var boundaryTitle: String {
+    switch presentation.draft.recipe {
+    case .botanicalPoster: "只是一张风格海报"
+    case .mythicGarden: "人物和衣服都可能改变"
+    }
+  }
+
+  private var boundaryDetail: String {
+    switch presentation.draft.recipe {
+    case .botanicalPoster:
+      "它不是试穿效果，也不代表一张真实拍摄的新照片。"
+    case .mythicGarden:
+      "请把它当作风格插画，不是试穿效果，也不是真实拍摄的新照片。"
     }
   }
 }
@@ -312,5 +351,69 @@ struct BotanicalPosterEntry: View {
     .buttonStyle(StickerButtonStyle())
     .accessibilityLabel("制作花影海报，一键排版，人物和衣服保持原样")
     .accessibilityIdentifier("botanical-poster-entry")
+  }
+}
+
+struct MythicGardenEntry: View {
+  let action: () -> Void
+
+  var body: some View {
+    Button(action: action) {
+      HStack(spacing: 16) {
+        ZStack {
+          RoundedRectangle(cornerRadius: 18, style: .continuous)
+            .fill(Color(hex: 0x24141F))
+          Circle()
+            .fill(AdonisTheme.pomegranate.opacity(0.9))
+            .frame(width: 58, height: 58)
+            .offset(x: 24, y: -24)
+          ForEach(0..<3, id: \.self) { index in
+            Capsule()
+              .fill(index == 1 ? AdonisTheme.butter : AdonisTheme.leaf)
+              .frame(width: 54, height: 17)
+              .rotationEffect(.degrees(Double(index * 48 - 36)))
+              .offset(x: CGFloat(index * 11 - 12), y: CGFloat(index * 17 + 5))
+          }
+          Image(systemName: "sparkles")
+            .font(.system(size: 18, weight: .black))
+            .foregroundStyle(.white)
+            .offset(x: -23, y: -25)
+        }
+        .frame(width: 88, height: 104)
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .accessibilityHidden(true)
+
+        VStack(alignment: .leading, spacing: 5) {
+          Text("系统创作 · 可对照")
+            .font(.caption.weight(.bold))
+            .foregroundStyle(AdonisTheme.pomegranateInk)
+          Text("永生花园")
+            .font(.system(.title3, design: .rounded, weight: .black))
+            .foregroundStyle(AdonisTheme.ink)
+          Text("会重新绘制人物、衣服和背景")
+            .font(.footnote)
+            .foregroundStyle(AdonisTheme.secondaryInk)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+
+        Spacer(minLength: 4)
+        Image(systemName: "chevron.right")
+          .font(.system(size: 14, weight: .black))
+          .foregroundStyle(AdonisTheme.ink)
+          .accessibilityHidden(true)
+      }
+      .padding(14)
+      .background(
+        AdonisTheme.pomegranate.opacity(0.12),
+        in: RoundedRectangle(cornerRadius: 22, style: .continuous)
+      )
+      .overlay {
+        RoundedRectangle(cornerRadius: 22, style: .continuous)
+          .stroke(AdonisTheme.pomegranate.opacity(0.28), lineWidth: 1)
+      }
+    }
+    .buttonStyle(StickerButtonStyle())
+    .accessibilityLabel("制作永生花园，系统会重新绘制人物、衣服和背景，完成后可对照原图")
+    .accessibilityIdentifier("mythic-garden-entry")
   }
 }

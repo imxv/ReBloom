@@ -91,12 +91,18 @@ rebloom-reminder-regression: project
 
 creative-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
+		-only-testing:AdonisTests/CreativeExecutionMetadataTests \
 		-only-testing:AdonisTests/CreativeRecipeTests \
 		-only-testing:AdonisTests/BotanicalPosterRendererTests \
+		-only-testing:AdonisTests/MythicGardenCardRendererTests \
 		-only-testing:AdonisTests/CreativeWorkPersistenceTests \
 		-only-testing:AdonisTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
 		-only-testing:AdonisTests/PersonalDataControlTests/testDeleteAllClearsModelsMediaSharedInboxAndTemporaryExports \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testGeneratedStickerCreatesTraceableBotanicalPosterReadyToCompareSaveAndShare
+		-only-testing:AdonisUITests/AdonisFlowUITests/testGeneratedStickerCreatesTraceableBotanicalPosterReadyToCompareSaveAndShare \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testUnavailableSystemCreationDoesNotShowADeadEntry \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testSystemCreationCanBeCancelledWithoutChangingOriginalResult \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testSystemCreationTimeoutStopsWaitingAndKeepsOriginalResult
 
 lint:
 	xcrun swift-format lint --recursive --parallel --strict Adonis AdonisShared AdonisShareExtension AdonisTests AdonisUITests

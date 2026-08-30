@@ -15,6 +15,7 @@ final class PersonalDataControlTests: XCTestCase {
     let stickerFilename = try fixture.store.savePNG(image, filename: "outfit-sticker.png")
     let cardFilename = try fixture.store.savePNG(image, filename: "outfit-card.png")
     let creativeFilename = try fixture.store.savePNG(image, filename: "botanical-poster.png")
+    let mythicFilename = try fixture.store.savePNG(image, filename: "mythic-garden.png")
     let observationFilename = try fixture.store.savePNG(image, filename: "observation.png")
     let wardrobeFilename = try fixture.store.savePNG(image, filename: "wardrobe.png")
     let visualSignature = try GarmentVisualSignatureAnalyzer().signature(for: image).encoded()
@@ -47,9 +48,19 @@ final class PersonalDataControlTests: XCTestCase {
       recipe: .botanicalPoster,
       imageFilename: creativeFilename,
       processingMilliseconds: 87,
+      executionMetadata: .botanicalPoster,
       sourceOutfit: record
     )
     record.creativeWorks.append(creativeWork)
+    let mythicWork = CreativeWork(
+      createdAt: Date(timeIntervalSince1970: 1_700_000_060),
+      recipe: .mythicGarden,
+      imageFilename: mythicFilename,
+      processingMilliseconds: 2_400,
+      executionMetadata: .appleImagePlayground,
+      sourceOutfit: record
+    )
+    record.creativeWorks.append(mythicWork)
     let item = WardrobeItem(
       createdAt: Date(timeIntervalSince1970: 1_700_000_100),
       name: "棕色上装",
@@ -77,6 +88,7 @@ final class PersonalDataControlTests: XCTestCase {
     fixture.context.insert(record)
     fixture.context.insert(observation)
     fixture.context.insert(creativeWork)
+    fixture.context.insert(mythicWork)
     fixture.context.insert(item)
     fixture.context.insert(event)
     try fixture.context.save()
@@ -99,6 +111,7 @@ final class PersonalDataControlTests: XCTestCase {
     XCTAssertEqual(entries["media/\(stickerFilename)"], imageData)
     XCTAssertEqual(entries["media/\(cardFilename)"], imageData)
     XCTAssertEqual(entries["media/\(creativeFilename)"], imageData)
+    XCTAssertEqual(entries["media/\(mythicFilename)"], imageData)
     XCTAssertEqual(entries["media/\(observationFilename)"], imageData)
     XCTAssertEqual(entries["media/\(wardrobeFilename)"], imageData)
     XCTAssertEqual(entries["shared-inbox/\(pending.id)"], imageData)
@@ -107,7 +120,7 @@ final class PersonalDataControlTests: XCTestCase {
       try JSONSerialization.jsonObject(with: manifestData) as? [String: Any]
     )
     XCTAssertEqual(manifest["formatVersion"] as? String, PersonalDataArchiveService.formatVersion)
-    XCTAssertEqual(manifest["formatVersion"] as? String, "adonis-personal-data-v6")
+    XCTAssertEqual(manifest["formatVersion"] as? String, "adonis-personal-data-v7")
     XCTAssertEqual(manifest["storage"] as? String, "local_app_storage")
     XCTAssertEqual(manifest["adonisAutomaticNetworkUpload"] as? Bool, false)
     XCTAssertEqual(manifest["systemBackupControlledByIOS"] as? Bool, true)
@@ -133,23 +146,73 @@ final class PersonalDataControlTests: XCTestCase {
       StickerQualityAssessor.version
     )
     let creativeWorks = try XCTUnwrap(manifest["creativeWorks"] as? [[String: Any]])
-    XCTAssertEqual(creativeWorks.count, 1)
-    XCTAssertEqual(creativeWorks.first?["outfitID"] as? String, record.id.uuidString)
+    XCTAssertEqual(creativeWorks.count, 2)
+    let botanical = try XCTUnwrap(
+      creativeWorks.first {
+        $0["recipe"] as? String == CreativeRecipe.botanicalPoster.rawValue
+      }
+    )
+    XCTAssertEqual(botanical["outfitID"] as? String, record.id.uuidString)
     XCTAssertEqual(
-      creativeWorks.first?["recipe"] as? String, CreativeRecipe.botanicalPoster.rawValue)
+      botanical["recipe"] as? String, CreativeRecipe.botanicalPoster.rawValue)
     XCTAssertEqual(
-      creativeWorks.first?["recipeVersion"] as? String,
+      botanical["recipeVersion"] as? String,
       AdonisProcessingVersion.botanicalPoster
     )
     XCTAssertEqual(
-      creativeWorks.first?["provenance"] as? String,
+      botanical["provenance"] as? String,
       VisualContentProvenance.programmaticComposition.rawValue
     )
-    XCTAssertEqual(creativeWorks.first?["containsAIGeneratedPixels"] as? Bool, false)
-    XCTAssertEqual(creativeWorks.first?["processingMilliseconds"] as? Int, 87)
+    XCTAssertEqual(botanical["containsAIGeneratedPixels"] as? Bool, false)
+    XCTAssertEqual(botanical["processingMilliseconds"] as? Int, 87)
     XCTAssertEqual(
-      creativeWorks.first?["imagePath"] as? String,
+      botanical["imagePath"] as? String,
       "media/\(creativeFilename)"
+    )
+    XCTAssertEqual(
+      botanical["provider"] as? String,
+      CreativeProviderIdentifier.adonisLocalRenderer.rawValue
+    )
+    XCTAssertEqual(botanical["providerRequestCount"] as? Int, 0)
+    XCTAssertEqual(botanical["externalRequestCount"] as? Int, 0)
+    XCTAssertEqual(
+      botanical["networkTransport"] as? String,
+      CreativeNetworkTransport.none.rawValue
+    )
+    XCTAssertEqual(
+      botanical["externalCost"] as? String,
+      CreativeExternalCost.notApplicable.rawValue
+    )
+    XCTAssertEqual(
+      botanical["quality"] as? String,
+      CreativeQualityStatus.sourcePixelsPreserved.rawValue
+    )
+
+    let mythic = try XCTUnwrap(
+      creativeWorks.first {
+        $0["recipe"] as? String == CreativeRecipe.mythicGarden.rawValue
+      }
+    )
+    XCTAssertEqual(mythic["outfitID"] as? String, record.id.uuidString)
+    XCTAssertEqual(mythic["containsAIGeneratedPixels"] as? Bool, true)
+    XCTAssertEqual(
+      mythic["provider"] as? String,
+      CreativeProviderIdentifier.appleImagePlayground.rawValue
+    )
+    XCTAssertEqual(mythic["providerRequestCount"] as? Int, 1)
+    XCTAssertTrue(mythic.keys.contains("externalRequestCount"))
+    XCTAssertTrue(mythic["externalRequestCount"] is NSNull)
+    XCTAssertEqual(
+      mythic["networkTransport"] as? String,
+      CreativeNetworkTransport.systemManaged.rawValue
+    )
+    XCTAssertEqual(
+      mythic["externalCost"] as? String,
+      CreativeExternalCost.notExposed.rawValue
+    )
+    XCTAssertEqual(
+      mythic["quality"] as? String,
+      CreativeQualityStatus.userReviewRequired.rawValue
     )
     let wardrobeItems = try XCTUnwrap(manifest["wardrobeItems"] as? [[String: Any]])
     XCTAssertEqual(
@@ -174,7 +237,7 @@ final class PersonalDataControlTests: XCTestCase {
     let pendingSharedImages = try XCTUnwrap(manifest["pendingSharedImages"] as? [String])
     XCTAssertEqual(pendingSharedImages, ["shared-inbox/\(pending.id)"])
     let visualAssets = try XCTUnwrap(manifest["visualAssets"] as? [[String: Any]])
-    XCTAssertEqual(visualAssets.count, 7)
+    XCTAssertEqual(visualAssets.count, 8)
     XCTAssertEqual(
       provenance(for: "media/\(sourceFilename)", in: visualAssets),
       VisualContentProvenance.userProvided.rawValue
@@ -190,6 +253,10 @@ final class PersonalDataControlTests: XCTestCase {
     XCTAssertEqual(
       provenance(for: "media/\(creativeFilename)", in: visualAssets),
       VisualContentProvenance.programmaticComposition.rawValue
+    )
+    XCTAssertEqual(
+      provenance(for: "media/\(mythicFilename)", in: visualAssets),
+      VisualContentProvenance.aiGenerated.rawValue
     )
     let stickerAsset = try XCTUnwrap(
       visualAssets.first { $0["path"] as? String == "media/\(stickerFilename)" }
@@ -219,10 +286,11 @@ final class PersonalDataControlTests: XCTestCase {
       provenance(for: "shared-inbox/\(pending.id)", in: visualAssets),
       VisualContentProvenance.userProvided.rawValue
     )
-    XCTAssertTrue(
-      visualAssets.allSatisfy { asset in
-        asset["containsAIGeneratedPixels"] as? Bool == false
-      }
+    XCTAssertEqual(
+      visualAssets.filter { asset in
+        asset["containsAIGeneratedPixels"] as? Bool == true
+      }.count,
+      1
     )
     let observationAsset = try XCTUnwrap(
       visualAssets.first { $0["path"] as? String == "media/\(observationFilename)" }
@@ -289,6 +357,7 @@ final class PersonalDataControlTests: XCTestCase {
       recipe: .botanicalPoster,
       imageFilename: creativeFilename,
       processingMilliseconds: 42,
+      executionMetadata: .botanicalPoster,
       sourceOutfit: record
     )
     record.creativeWorks.append(creativeWork)

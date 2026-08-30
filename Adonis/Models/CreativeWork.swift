@@ -8,19 +8,26 @@ struct CreativeWorkDraft: Identifiable {
   let recipe: CreativeRecipe
   let image: UIImage
   let processingMilliseconds: Int
+  let executionMetadata: CreativeExecutionMetadata
 
   init(
     id: UUID = UUID(),
     createdAt: Date = .now,
     recipe: CreativeRecipe,
     image: UIImage,
-    processingMilliseconds: Int
+    processingMilliseconds: Int,
+    executionMetadata: CreativeExecutionMetadata
   ) {
     self.id = id
     self.createdAt = createdAt
     self.recipe = recipe
     self.image = image
     self.processingMilliseconds = max(0, processingMilliseconds)
+    self.executionMetadata = executionMetadata
+  }
+
+  var eventDetail: String {
+    executionMetadata.eventDetail(for: recipe)
   }
 }
 
@@ -33,6 +40,12 @@ final class CreativeWork {
   var imageFilename: String
   var provenanceRawValue: String
   var processingMilliseconds: Int
+  var providerRawValue: String = CreativeProviderIdentifier.adonisLocalRenderer.rawValue
+  var providerRequestCount: Int = 0
+  var externalRequestCount: Int? = 0
+  var networkTransportRawValue: String = CreativeNetworkTransport.none.rawValue
+  var externalCostRawValue: String = CreativeExternalCost.notApplicable.rawValue
+  var qualityRawValue: String = CreativeQualityStatus.sourcePixelsPreserved.rawValue
   var sourceOutfit: OutfitRecord?
 
   var recipe: CreativeRecipe {
@@ -47,12 +60,24 @@ final class CreativeWork {
     provenance.containsAIGeneratedPixels
   }
 
+  var executionMetadata: CreativeExecutionMetadata {
+    CreativeExecutionMetadata(
+      provider: CreativeProviderIdentifier(rawValue: providerRawValue) ?? .unknown,
+      providerRequestCount: providerRequestCount,
+      externalRequestCount: externalRequestCount,
+      networkTransport: CreativeNetworkTransport(rawValue: networkTransportRawValue) ?? .unknown,
+      externalCost: CreativeExternalCost(rawValue: externalCostRawValue) ?? .unknown,
+      quality: CreativeQualityStatus(rawValue: qualityRawValue) ?? .unknown
+    )
+  }
+
   init(
     id: UUID = UUID(),
     createdAt: Date = .now,
     recipe: CreativeRecipe,
     imageFilename: String,
     processingMilliseconds: Int,
+    executionMetadata: CreativeExecutionMetadata,
     sourceOutfit: OutfitRecord? = nil
   ) {
     self.id = id
@@ -62,6 +87,12 @@ final class CreativeWork {
     self.imageFilename = imageFilename
     self.provenanceRawValue = recipe.provenance.rawValue
     self.processingMilliseconds = max(0, processingMilliseconds)
+    self.providerRawValue = executionMetadata.provider.rawValue
+    self.providerRequestCount = executionMetadata.providerRequestCount
+    self.externalRequestCount = executionMetadata.externalRequestCount
+    self.networkTransportRawValue = executionMetadata.networkTransport.rawValue
+    self.externalCostRawValue = executionMetadata.externalCost.rawValue
+    self.qualityRawValue = executionMetadata.quality.rawValue
     self.sourceOutfit = sourceOutfit
   }
 }

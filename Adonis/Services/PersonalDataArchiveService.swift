@@ -8,7 +8,7 @@ struct PersonalDataArchive: Identifiable, Sendable {
 }
 
 struct PersonalDataArchiveService {
-  static let formatVersion = "adonis-personal-data-v6"
+  static let formatVersion = "adonis-personal-data-v7"
   static let exportDirectoryName = "AdonisExports"
 
   private let mediaStore: MediaStore
@@ -400,6 +400,30 @@ private struct ExportedCreativeWork: Encodable, Sendable {
   let provenance: String
   let containsAIGeneratedPixels: Bool
   let processingMilliseconds: Int
+  let provider: String
+  let providerRequestCount: Int
+  let externalRequestCount: Int?
+  let networkTransport: String
+  let externalCost: String
+  let quality: String
+
+  private enum CodingKeys: String, CodingKey {
+    case id
+    case createdAt
+    case outfitID
+    case recipe
+    case recipeVersion
+    case imagePath
+    case provenance
+    case containsAIGeneratedPixels
+    case processingMilliseconds
+    case provider
+    case providerRequestCount
+    case externalRequestCount
+    case networkTransport
+    case externalCost
+    case quality
+  }
 
   @MainActor
   init(_ work: CreativeWork) {
@@ -412,6 +436,35 @@ private struct ExportedCreativeWork: Encodable, Sendable {
     provenance = work.provenanceRawValue
     containsAIGeneratedPixels = work.containsAIGeneratedPixels
     processingMilliseconds = work.processingMilliseconds
+    provider = work.providerRawValue
+    providerRequestCount = work.providerRequestCount
+    externalRequestCount = work.externalRequestCount
+    networkTransport = work.networkTransportRawValue
+    externalCost = work.externalCostRawValue
+    quality = work.qualityRawValue
+  }
+
+  func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(id, forKey: .id)
+    try container.encode(createdAt, forKey: .createdAt)
+    try container.encodeIfPresent(outfitID, forKey: .outfitID)
+    try container.encode(recipe, forKey: .recipe)
+    try container.encode(recipeVersion, forKey: .recipeVersion)
+    try container.encode(imagePath, forKey: .imagePath)
+    try container.encode(provenance, forKey: .provenance)
+    try container.encode(containsAIGeneratedPixels, forKey: .containsAIGeneratedPixels)
+    try container.encode(processingMilliseconds, forKey: .processingMilliseconds)
+    try container.encode(provider, forKey: .provider)
+    try container.encode(providerRequestCount, forKey: .providerRequestCount)
+    if let externalRequestCount {
+      try container.encode(externalRequestCount, forKey: .externalRequestCount)
+    } else {
+      try container.encodeNil(forKey: .externalRequestCount)
+    }
+    try container.encode(networkTransport, forKey: .networkTransport)
+    try container.encode(externalCost, forKey: .externalCost)
+    try container.encode(quality, forKey: .quality)
   }
 }
 

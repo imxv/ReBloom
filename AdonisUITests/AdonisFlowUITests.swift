@@ -3,6 +3,176 @@ import XCTest
 
 final class AdonisFlowUITests: XCTestCase {
   @MainActor
+  func testUnavailableSystemCreationDoesNotShowADeadEntry() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: ["-ui-testing", "-ui-testing-system-creative-unavailable"]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
+    XCTAssertFalse(app.buttons["mythic-garden-entry"].waitForExistence(timeout: 2))
+    XCTAssertTrue(app.buttons["botanical-poster-entry"].exists)
+  }
+
+  @MainActor
+  func testSystemCreationTimeoutStopsWaitingAndKeepsOriginalResult() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-system-creative",
+        "-ui-testing-system-creative-never-finishes",
+        "-ui-testing-system-creative-timeout",
+      ]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
+
+    let entry = app.buttons["mythic-garden-entry"]
+    XCTAssertTrue(scrollToHittable(entry, in: app, attempts: 12))
+    entry.tap()
+    let processing = app.descendants(matching: .any)["system-creative-processing"]
+    XCTAssertTrue(processing.waitForExistence(timeout: 3))
+    XCTAssertTrue(app.alerts["作品还没做好"].waitForExistence(timeout: 6))
+    XCTAssertTrue(
+      app.staticTexts["等了 90 秒仍没有完成，这次已经停止；原照片和贴纸没有改变。"].exists
+    )
+    app.buttons["知道了"].tap()
+
+    XCTAssertTrue(processing.waitForNonExistence(timeout: 3))
+    XCTAssertTrue(app.staticTexts["result-title"].exists)
+    XCTAssertTrue(entry.exists)
+    XCTAssertFalse(app.descendants(matching: .any)["creative-work-preview"].exists)
+  }
+
+  @MainActor
+  func testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt() {
+    let app = XCUIApplication()
+    let persistentStoreID = UUID().uuidString
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-persistent-store",
+        persistentStoreID,
+        "-ui-testing-system-creative",
+      ]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
+
+    let entry = app.buttons["mythic-garden-entry"]
+    XCTAssertTrue(scrollToHittable(entry, in: app, attempts: 12))
+    entry.tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["system-creative-processing"].waitForExistence(
+        timeout: 3
+      )
+    )
+
+    let preview = app.descendants(matching: .any)["creative-work-preview"]
+    XCTAssertTrue(preview.waitForExistence(timeout: 8))
+    XCTAssertTrue(preview.label.contains("永生花园"))
+    let provenance = app.descendants(matching: .any)["creative-work-provenance"]
+    XCTAssertTrue(scrollToHittable(provenance, in: app, attempts: 8))
+    XCTAssertTrue(provenance.label.contains("AI 生成"))
+    let boundary = app.descendants(matching: .any)["creative-work-boundary"]
+    XCTAssertTrue(scrollToHittable(boundary, in: app, attempts: 5))
+    XCTAssertTrue(boundary.label.contains("人物和衣服都可能改变"))
+
+    let compare = app.segmentedControls["creative-work-mode-picker"]
+    let compareMenu = app.descendants(matching: .any)["creative-work-mode-menu"]
+    if compare.waitForExistence(timeout: 3) {
+      compare.buttons["原始照片"].tap()
+      XCTAssertTrue(preview.label.contains("原始照片"))
+      compare.buttons["永生花园"].tap()
+      XCTAssertTrue(preview.label.contains("永生花园"))
+    } else {
+      XCTAssertTrue(compareMenu.waitForExistence(timeout: 3))
+      compareMenu.tap()
+      app.buttons["原始照片"].tap()
+      XCTAssertTrue(preview.label.contains("原始照片"))
+      compareMenu.tap()
+      app.buttons["永生花园"].tap()
+      XCTAssertTrue(preview.label.contains("永生花园"))
+    }
+
+    let save = app.buttons["save-creative-work"]
+    XCTAssertTrue(scrollToHittable(save, in: app, attempts: 8))
+    save.tap()
+    XCTAssertTrue(app.buttons["作品已经收藏"].waitForExistence(timeout: 5))
+
+    let share = app.buttons["share-creative-work"]
+    XCTAssertTrue(scrollToHittable(share, in: app, attempts: 5))
+    share.tap()
+    XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
+    app.buttons["关闭"].tap()
+    app.buttons["close-creative-work"].tap()
+
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 4))
+    app.terminate()
+    app.launch()
+    app.tabBars.buttons["花历"].tap()
+
+    let record = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(record.waitForExistence(timeout: 5))
+    record.tap()
+    let savedEntry = app.buttons["creative-work-history-entry"]
+    XCTAssertTrue(scrollToHittable(savedEntry, in: app, attempts: 10))
+    XCTAssertTrue(savedEntry.label.contains("永生花园"))
+    savedEntry.tap()
+    XCTAssertTrue(preview.waitForExistence(timeout: 5))
+    XCTAssertTrue(preview.label.contains("永生花园"))
+    XCTAssertTrue(scrollToHittable(provenance, in: app, attempts: 8))
+    XCTAssertTrue(provenance.label.contains("AI 生成"))
+    keepScreenshot(named: "Adonis-mythic-garden-fixture-history")
+  }
+
+  @MainActor
+  func testSystemCreationCanBeCancelledWithoutChangingOriginalResult() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-system-creative",
+        "-ui-testing-system-creative-never-finishes",
+      ]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
+
+    let entry = app.buttons["mythic-garden-entry"]
+    XCTAssertTrue(scrollToHittable(entry, in: app, attempts: 12))
+    entry.tap()
+    let processing = app.descendants(matching: .any)["system-creative-processing"]
+    XCTAssertTrue(processing.waitForExistence(timeout: 3))
+    app.buttons["system-creative-cancel"].tap()
+    XCTAssertTrue(processing.waitForNonExistence(timeout: 4))
+    XCTAssertTrue(app.staticTexts["result-title"].exists)
+    XCTAssertTrue(entry.exists)
+    XCTAssertFalse(app.descendants(matching: .any)["creative-work-preview"].exists)
+  }
+
+  @MainActor
   func testGeneratedStickerCreatesTraceableBotanicalPosterReadyToCompareSaveAndShare() {
     let app = XCUIApplication()
     let persistentStoreID = UUID().uuidString

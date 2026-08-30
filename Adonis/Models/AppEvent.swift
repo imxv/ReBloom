@@ -122,6 +122,10 @@ enum AppEventKind: String {
   case outfitDeleted
   case digitalFigurineCardCreated
   case digitalFigurineCardShareOpened
+  case creativeWorkGenerationStarted
+  case creativeWorkGenerationFailed
+  case creativeWorkGenerationTimedOut
+  case creativeWorkGenerationCancelled
   case creativeWorkCreated
   case creativeWorkSaved
   case creativeWorkShareOpened
@@ -164,7 +168,11 @@ enum AppEventKind: String {
     case .outfitDeleted: "删除穿搭"
     case .digitalFigurineCardCreated: "生成手办收藏卡"
     case .digitalFigurineCardShareOpened: "打开手办卡分享"
-    case .creativeWorkCreated: "生成花影海报"
+    case .creativeWorkGenerationStarted: "开始生成创作作品"
+    case .creativeWorkGenerationFailed: "创作作品生成失败"
+    case .creativeWorkGenerationTimedOut: "创作作品生成超时"
+    case .creativeWorkGenerationCancelled: "取消生成创作作品"
+    case .creativeWorkCreated: "生成创作作品"
     case .creativeWorkSaved: "收藏创作作品"
     case .creativeWorkShareOpened: "打开创作作品分享"
     case .digitalCabinetOpened: "打开数字展柜"

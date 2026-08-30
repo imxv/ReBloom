@@ -24,6 +24,7 @@ enum AdonisProcessingVersion {
   static let shareCard = "share-card-v1"
   static let digitalFigurineCard = "digital-figurine-card-v1"
   static let botanicalPoster = "botanical-poster-v1"
+  static let mythicGarden = "mythic-garden-v1"
   static let digitalCabinet = "digital-cabinet-v1"
   static let seasonalBloom = "seasonal-bloom-v1"
   static let rebloomSuggestion = "rebloom-suggestion-v1"

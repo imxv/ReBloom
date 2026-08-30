@@ -127,7 +127,7 @@ struct OutfitDetailView: View {
         onShareOpened: {
           EventLogger.log(
             .creativeWorkShareOpened,
-            detail: presentation.draft.recipe.traceDetail,
+            detail: presentation.draft.eventDetail,
             processingVersion: presentation.draft.recipe.version,
             in: modelContext
           )
@@ -204,7 +204,7 @@ struct OutfitDetailView: View {
               Text(work.recipe.title)
                 .font(.system(.subheadline, design: .rounded, weight: .black))
                 .foregroundStyle(AdonisTheme.ink)
-              Text("本机创作 · \(work.processingMilliseconds) 毫秒")
+              Text("\(work.provenance.title) · \(work.processingMilliseconds) 毫秒")
                 .font(.caption)
                 .foregroundStyle(AdonisTheme.secondaryInk)
               Text("可对照原图、再次分享")
@@ -226,7 +226,7 @@ struct OutfitDetailView: View {
         }
         .buttonStyle(StickerButtonStyle())
         .accessibilityLabel(
-          "\(work.recipe.title)，本机创作，可对照原图、再次分享"
+          "\(work.recipe.title)，\(work.provenance.title)，可对照原图、再次分享"
         )
         .accessibilityIdentifier("creative-work-history-entry")
       }
@@ -355,7 +355,8 @@ struct OutfitDetailView: View {
         createdAt: work.createdAt,
         recipe: work.recipe,
         image: workImage,
-        processingMilliseconds: work.processingMilliseconds
+        processingMilliseconds: work.processingMilliseconds,
+        executionMetadata: work.executionMetadata
       ),
       sourceImage: sourceImage,
       isSaved: true

@@ -28,6 +28,7 @@ struct CreativeWorkStore {
       recipe: draft.recipe,
       imageFilename: filename,
       processingMilliseconds: draft.processingMilliseconds,
+      executionMetadata: draft.executionMetadata,
       sourceOutfit: outfit
     )
     modelContext.insert(work)

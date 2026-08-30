@@ -21,9 +21,10 @@ final class CreativeWorkPersistenceTests: XCTestCase {
     )
     let work = CreativeWork(
       createdAt: Date(timeIntervalSince1970: 123),
-      recipe: .botanicalPoster,
+      recipe: .mythicGarden,
       imageFilename: "botanical.png",
       processingMilliseconds: 87,
+      executionMetadata: .appleImagePlayground,
       sourceOutfit: outfit
     )
     context.insert(outfit)
@@ -34,11 +35,12 @@ final class CreativeWorkPersistenceTests: XCTestCase {
     let stored = try XCTUnwrap(
       try ModelContext(container).fetch(FetchDescriptor<CreativeWork>()).first
     )
-    XCTAssertEqual(stored.recipe, .botanicalPoster)
-    XCTAssertEqual(stored.recipeVersion, "botanical-poster-v1")
-    XCTAssertEqual(stored.provenance, .programmaticComposition)
-    XCTAssertFalse(stored.containsAIGeneratedPixels)
+    XCTAssertEqual(stored.recipe, .mythicGarden)
+    XCTAssertEqual(stored.recipeVersion, "mythic-garden-v1")
+    XCTAssertEqual(stored.provenance, .aiGenerated)
+    XCTAssertTrue(stored.containsAIGeneratedPixels)
     XCTAssertEqual(stored.processingMilliseconds, 87)
+    XCTAssertEqual(stored.executionMetadata, .appleImagePlayground)
     XCTAssertEqual(stored.sourceOutfit?.id, outfit.id)
   }
 
@@ -70,7 +72,8 @@ final class CreativeWorkPersistenceTests: XCTestCase {
       createdAt: Date(timeIntervalSince1970: 456),
       recipe: .botanicalPoster,
       image: solidImage(),
-      processingMilliseconds: 31
+      processingMilliseconds: 31,
+      executionMetadata: .botanicalPoster
     )
 
     let store = CreativeWorkStore(mediaStore: mediaStore)
@@ -114,6 +117,7 @@ final class CreativeWorkPersistenceTests: XCTestCase {
       recipe: .botanicalPoster,
       imageFilename: "botanical.png",
       processingMilliseconds: 22,
+      executionMetadata: .botanicalPoster,
       sourceOutfit: outfit
     )
     context.insert(outfit)

@@ -74,5 +74,6 @@ xcodebuild \
   -only-testing:AdonisTests/AccessibilityContractTests \
   -only-testing:AdonisUITests/AdonisFlowUITests/testAccessibleCoreFlowSurvivesBackgroundAndKeepsActionsReachable \
   -only-testing:AdonisUITests/AdonisFlowUITests/testGeneratedStickerCreatesTraceableBotanicalPosterReadyToCompareSaveAndShare \
+  -only-testing:AdonisUITests/AdonisFlowUITests/testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt \
   -only-testing:AdonisUITests/AdonisFlowUITests/testConfirmedPiecesFromDifferentOutfitsCreateShareableRebloomSuggestion \
   -only-testing:AdonisUITests/AdonisFlowUITests/testProcessingOverlayKeepsCancelReachable

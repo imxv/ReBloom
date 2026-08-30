@@ -48,7 +48,7 @@ sample-04 仍然是已知困难案例，没有为了测试变绿而删除或修�
 
 - `OutfitRecord` 保存质量级别、问题代码和检查版本；重新进入花历后不会丢失提示。
 - 本地事件新增“贴纸建议复查”和“贴纸质量未通过”，只记录状态与问题代码，不记录图片内容。
-- 当前个人数据导出格式为 `adonis-personal-data-v6`；质量字段与生成性能结构、结果完成模式保持不变，v6 在既有衣橱视觉签名之外新增用户明确收藏的创作作品，不改变本切片的贴纸质量契约。
+- 当前个人数据导出格式为 `adonis-personal-data-v7`；质量字段与生成性能结构、结果完成模式保持不变，创作作品及其执行元数据不改变本切片的贴纸质量契约。
 - `outfits` 保存 `stickerQualityLevel`、`stickerQualityIssues`、`stickerQualityRequiresReview` 和 `stickerQualityVersion`。
 - 透明贴纸与收藏卡对应的 `visualAssets` 保存质量状态；原始照片不伪造贴纸质量字段。
 
@@ -89,9 +89,9 @@ xcodebuild -project Adonis.xcodeproj -scheme Adonis \
 
 - `make sample-regression`：四张样片哈希与字节级重生成通过，11 个图片专项测试通过。
 - `make check`：严格 `swift-format` 与通用 iOS 设备静态分析通过。
-- `make test`：58 个单元测试与 15 个 UI 流程测试，共 73 项通过、0 失败。
-- `xcresulttool` 独立汇总为 73 通过、0 失败、0 跳过。
-- 完整结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_04-05-02-+0800.xcresult`。
+- `make test`：127 个单元测试与 28 个 UI 流程测试，共 155 项通过、0 失败。
+- `xcresulttool` 独立汇总为 155 通过、0 失败、0 跳过。
+- 完整结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_11-55-11-+0800.xcresult`。
 
 ## 7. 尚未证明
 

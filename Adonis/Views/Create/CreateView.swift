@@ -35,10 +35,15 @@ struct CreateView: View {
   private let garmentObserver = OutfitGarmentObserver()
   private let creativeWorkStore = CreativeWorkStore()
   private let cameraAccessService: CameraAccessService
+  private let creativeImageGenerator: any CreativeImageGenerating
 
   @MainActor
-  init(cameraAccessService: CameraAccessService? = nil) {
+  init(
+    cameraAccessService: CameraAccessService? = nil,
+    creativeImageGenerator: (any CreativeImageGenerating)? = nil
+  ) {
     self.cameraAccessService = cameraAccessService ?? .live
+    self.creativeImageGenerator = creativeImageGenerator ?? CreativeImageGeneratorFactory.make()
   }
 
   var body: some View {
@@ -81,6 +86,7 @@ struct CreateView: View {
       GenerationResultView(
         draft: draft,
         initiallySaved: records.contains(where: { $0.id == draft.id }),
+        creativeImageGenerator: creativeImageGenerator,
         onSave: { try save(draft) },
         onSaveCreative: { creativeWork in
           try save(draft)
@@ -785,7 +791,7 @@ struct CreateView: View {
     EventLogger.log(
       .creativeWorkSaved,
       durationMilliseconds: creativeWork.processingMilliseconds,
-      detail: creativeWork.recipe.traceDetail,
+      detail: creativeWork.eventDetail,
       inputSource: draft.inputSource,
       processingVersion: creativeWork.recipe.version,
       in: modelContext

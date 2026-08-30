@@ -1,0 +1,69 @@
+import XCTest
+
+@testable import Adonis
+
+final class CreativeExecutionMetadataTests: XCTestCase {
+  func testCreativeAttemptTimerReportsMillisecondsAndNeverGoesNegative() {
+    let clock = ContinuousClock()
+    let startedAt = clock.now
+    let timer = CreativeGenerationAttemptTimer(startedAt: startedAt)
+
+    XCTAssertEqual(
+      timer.elapsedMilliseconds(at: startedAt.advanced(by: .milliseconds(275))),
+      275
+    )
+    XCTAssertEqual(
+      timer.elapsedMilliseconds(at: startedAt.advanced(by: .milliseconds(-20))),
+      0
+    )
+  }
+
+  @MainActor
+  func testDebugFactoryExposesDeterministicAvailableSystemCreationFixture() {
+    let generator = CreativeImageGeneratorFactory.make(
+      arguments: ["-ui-testing-system-creative"]
+    )
+
+    XCTAssertEqual(generator.availability, .available)
+    XCTAssertEqual(generator.executionMetadata, .uiTestFixture)
+  }
+
+  @MainActor
+  func testDebugFactoryCanProveUnavailableCapabilityHidesTheEntry() {
+    let generator = CreativeImageGeneratorFactory.make(
+      arguments: ["-ui-testing-system-creative-unavailable"]
+    )
+
+    XCTAssertEqual(generator.availability, .unavailable)
+    XCTAssertEqual(generator.executionMetadata, .uiTestFixture)
+  }
+
+  func testAppleSystemGenerationKeepsUnknownTransportAndCostHonest() {
+    let metadata = CreativeExecutionMetadata.appleImagePlayground
+
+    XCTAssertEqual(metadata.provider, .appleImagePlayground)
+    XCTAssertEqual(metadata.providerRequestCount, 1)
+    XCTAssertNil(metadata.externalRequestCount)
+    XCTAssertEqual(metadata.networkTransport, .systemManaged)
+    XCTAssertEqual(metadata.externalCost, .notExposed)
+    XCTAssertEqual(metadata.quality, .userReviewRequired)
+    XCTAssertEqual(
+      metadata.eventDetail(for: .mythicGarden),
+      "recipe=mythic_garden;provenance=ai_generated;ai_pixels=true;provider=apple_image_playground;provider_requests=1;external_requests=unknown;network_transport=system_managed;external_cost=not_exposed;quality=user_review_required"
+    )
+  }
+
+  func testCreativeGenerationErrorsUseStableCodesAndPlainRecoveryCopy() {
+    XCTAssertEqual(CreativeGenerationError.unavailable.eventCode, "unavailable")
+    XCTAssertEqual(CreativeGenerationError.unsupportedSource.eventCode, "unsupported_source")
+    XCTAssertEqual(CreativeGenerationError.personTooSmall.eventCode, "person_too_small")
+    XCTAssertEqual(CreativeGenerationError.timedOut.eventCode, "timed_out")
+    XCTAssertEqual(CreativeGenerationError.noImage.eventCode, "no_image")
+    XCTAssertTrue(
+      CreativeGenerationError.unavailable.localizedDescription.contains("这台 iPhone")
+    )
+    XCTAssertTrue(
+      CreativeGenerationError.personTooSmall.localizedDescription.contains("换一张")
+    )
+  }
+}
