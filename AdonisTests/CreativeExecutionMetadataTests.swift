@@ -3,6 +3,21 @@ import XCTest
 @testable import Adonis
 
 final class CreativeExecutionMetadataTests: XCTestCase {
+  func testStickerTryOnTraceIsLocalZeroRequestAndRequiresVisualReview() {
+    let metadata = CreativeExecutionMetadata.stickerTryOn
+
+    XCTAssertEqual(metadata.provider, .adonisLocalRenderer)
+    XCTAssertEqual(metadata.providerRequestCount, 0)
+    XCTAssertEqual(metadata.externalRequestCount, 0)
+    XCTAssertEqual(metadata.networkTransport, .none)
+    XCTAssertEqual(metadata.externalCost, .notApplicable)
+    XCTAssertEqual(metadata.quality, .userReviewRequired)
+    XCTAssertEqual(
+      metadata.eventDetail(for: .stickerTryOn),
+      "recipe=sticker_try_on;provenance=programmatic_composition;ai_pixels=false;provider=adonis_local_renderer;provider_requests=0;external_requests=0;network_transport=none;external_cost=not_applicable;quality=user_review_required"
+    )
+  }
+
   func testCreativeAttemptTimerReportsMillisecondsAndNeverGoesNegative() {
     let clock = ContinuousClock()
     let startedAt = clock.now

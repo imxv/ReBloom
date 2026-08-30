@@ -3,6 +3,29 @@ import XCTest
 @testable import Adonis
 
 final class CreativeRecipeTests: XCTestCase {
+  func testStickerTryOnIsAOneTapLocalCompositionWithExplicitFitBoundary() {
+    let recipe = CreativeRecipe.stickerTryOn
+
+    XCTAssertEqual(recipe.rawValue, "sticker_try_on")
+    XCTAssertEqual(recipe.title, "贴纸试搭")
+    XCTAssertEqual(recipe.version, "sticker-try-on-v1")
+    XCTAssertEqual(recipe.provenance, .programmaticComposition)
+    XCTAssertFalse(recipe.containsAIGeneratedPixels)
+    XCTAssertTrue(recipe.preservedElements.contains("原始照片"))
+    XCTAssertTrue(recipe.changedElements.contains("衣物图"))
+    XCTAssertFalse(recipe.requiresSystemImageGeneration)
+
+    let userFacingCopy = [
+      recipe.title,
+      recipe.subtitle,
+      recipe.preservedElements,
+      recipe.changedElements,
+    ].joined(separator: " ")
+    for hiddenTerm in ["Prompt", "Skill", "模型", "工作流"] {
+      XCTAssertFalse(userFacingCopy.localizedCaseInsensitiveContains(hiddenTerm))
+    }
+  }
+
   func testBotanicalPosterIsAOneTapNonAIRecipeWithExplicitBoundaries() {
     let recipe = CreativeRecipe.botanicalPoster
 

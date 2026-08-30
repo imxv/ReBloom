@@ -58,7 +58,7 @@ struct CreativeWorkView: View {
 
           AccessibilityAdaptiveStack(spacing: 8) {
             StickerTag(
-              title: "1080 × 1440",
+              title: outputDimensionsTitle,
               color: AdonisTheme.butter,
               icon: "rectangle.portrait"
             )
@@ -72,7 +72,8 @@ struct CreativeWorkView: View {
           ContentProvenanceNotice(
             provenance: presentation.draft.recipe.provenance,
             detail: provenanceDetail,
-            identifier: "creative-work-provenance"
+            identifier: "creative-work-provenance",
+            summary: provenanceSummary
           )
 
           HStack(alignment: .top, spacing: 12) {
@@ -159,20 +160,40 @@ struct CreativeWorkView: View {
   @ViewBuilder
   private var previewPicker: some View {
     if dynamicTypeSize.isAccessibilitySize {
-      Picker("对照查看", selection: $previewAsset) {
+      VStack(spacing: 8) {
         ForEach(CreativeWorkPreviewAsset.allCases) { asset in
-          Text(asset.title(for: presentation.draft.recipe)).tag(asset)
+          Button {
+            previewAsset = asset
+          } label: {
+            HStack(spacing: 10) {
+              Text(asset.title(for: presentation.draft.recipe))
+                .font(.body.weight(.bold))
+                .multilineTextAlignment(.leading)
+              Spacer(minLength: 8)
+              Image(
+                systemName: previewAsset == asset
+                  ? "checkmark.circle.fill"
+                  : "circle"
+              )
+              .font(.title3.weight(.bold))
+            }
+            .foregroundStyle(AdonisTheme.ink)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, minHeight: 52, alignment: .leading)
+            .background(
+              previewAsset == asset
+                ? AdonisTheme.butter.opacity(0.58)
+                : AdonisTheme.paper,
+              in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+            )
+          }
+          .buttonStyle(.plain)
+          .accessibilityLabel(asset.title(for: presentation.draft.recipe))
+          .accessibilityValue(previewAsset == asset ? "已选择" : "未选择")
+          .accessibilityIdentifier("creative-work-mode-\(asset.rawValue)")
         }
       }
-      .pickerStyle(.menu)
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .padding(.horizontal, 14)
-      .frame(minHeight: 52)
-      .background(
-        AdonisTheme.paper,
-        in: RoundedRectangle(cornerRadius: 16, style: .continuous)
-      )
-      .accessibilityIdentifier("creative-work-mode-menu")
     } else {
       Picker("对照查看", selection: $previewAsset) {
         ForEach(CreativeWorkPreviewAsset.allCases) { asset in
@@ -256,13 +277,20 @@ struct CreativeWorkView: View {
     switch presentation.draft.recipe {
     case .botanicalPoster: "本机创作"
     case .mythicGarden: "系统创作"
+    case .stickerTryOn: "本机试搭"
     }
+  }
+
+  private var outputDimensionsTitle: String {
+    let size = presentation.draft.image.size
+    return "\(Int(size.width.rounded())) × \(Int(size.height.rounded()))"
   }
 
   private var executionTagIcon: String {
     switch presentation.draft.recipe {
     case .botanicalPoster: "iphone"
     case .mythicGarden: "sparkles"
+    case .stickerTryOn: "tshirt"
     }
   }
 
@@ -272,13 +300,21 @@ struct CreativeWorkView: View {
       "人物、衣物、姿势和纯白边直接复用原图贴纸；背景、花影与文字由 Adonis 本机排版，不含 AI 重绘。"
     case .mythicGarden:
       "原始照片只作为创作参考；画面包含系统生成或重绘的人物、衣物和背景，请与原图对照后再收藏。"
+    case .stickerTryOn:
+      "人物与背景来自 OOTD 原始照片；衣物来自商品图，由本机裁切、缩放并覆盖到上身位置，不含 AI 重绘。"
     }
+  }
+
+  private var provenanceSummary: String? {
+    guard presentation.draft.recipe == .stickerTryOn else { return nil }
+    return "人物与背景来自 OOTD · 衣物来自商品图"
   }
 
   private var boundaryTitle: String {
     switch presentation.draft.recipe {
     case .botanicalPoster: "只是一张风格海报"
     case .mythicGarden: "人物和衣服都可能改变"
+    case .stickerTryOn: "只是一张贴纸试搭草图"
     }
   }
 
@@ -288,6 +324,8 @@ struct CreativeWorkView: View {
       "它不是试穿效果，也不代表一张真实拍摄的新照片。"
     case .mythicGarden:
       "请把它当作风格插画，不是试穿效果，也不是真实拍摄的新照片。"
+    case .stickerTryOn:
+      "它不预测尺码、合身度、垂坠、褶皱或真实遮挡，请只用来快速看看配色和轮廓。"
     }
   }
 }

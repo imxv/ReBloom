@@ -73,6 +73,8 @@ struct WardrobeItemDetailView: View {
             }
           }
 
+          StickerTryOnEntry(item: item)
+
           optionalDetails
 
           HStack(alignment: .top, spacing: 10) {

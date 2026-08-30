@@ -94,22 +94,18 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(scrollToHittable(boundary, in: app, attempts: 5))
     XCTAssertTrue(boundary.label.contains("人物和衣服都可能改变"))
 
-    let compare = app.segmentedControls["creative-work-mode-picker"]
-    let compareMenu = app.descendants(matching: .any)["creative-work-mode-menu"]
-    if compare.waitForExistence(timeout: 3) {
-      compare.buttons["原始照片"].tap()
-      XCTAssertTrue(preview.label.contains("原始照片"))
-      compare.buttons["永生花园"].tap()
-      XCTAssertTrue(preview.label.contains("永生花园"))
-    } else {
-      XCTAssertTrue(compareMenu.waitForExistence(timeout: 3))
-      compareMenu.tap()
-      app.buttons["原始照片"].tap()
-      XCTAssertTrue(preview.label.contains("原始照片"))
-      compareMenu.tap()
-      app.buttons["永生花园"].tap()
-      XCTAssertTrue(preview.label.contains("永生花园"))
-    }
+    selectCreativeWorkPreview(
+      assetID: "originalPhoto",
+      title: "原始照片",
+      preview: preview,
+      in: app
+    )
+    selectCreativeWorkPreview(
+      assetID: "work",
+      title: "永生花园",
+      preview: preview,
+      in: app
+    )
 
     let save = app.buttons["save-creative-work"]
     XCTAssertTrue(scrollToHittable(save, in: app, attempts: 8))
@@ -121,7 +117,9 @@ final class AdonisFlowUITests: XCTestCase {
     share.tap()
     XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
     app.buttons["关闭"].tap()
-    app.buttons["close-creative-work"].tap()
+    let closeWork = app.buttons["close-creative-work"]
+    XCTAssertTrue(scrollDownToHittable(closeWork, in: app, attempts: 8))
+    closeWork.tap()
 
     XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 4))
     app.terminate()
@@ -198,22 +196,18 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(scrollToHittable(provenance, in: app, attempts: 8))
     XCTAssertTrue(provenance.label.contains("不含 AI 重绘"))
 
-    let compare = app.segmentedControls["creative-work-mode-picker"]
-    let compareMenu = app.descendants(matching: .any)["creative-work-mode-menu"]
-    if compare.waitForExistence(timeout: 3) {
-      compare.buttons["原始照片"].tap()
-      XCTAssertTrue(preview.label.contains("原始照片"))
-      compare.buttons["花影海报"].tap()
-      XCTAssertTrue(preview.label.contains("花影海报"))
-    } else {
-      XCTAssertTrue(compareMenu.waitForExistence(timeout: 3))
-      compareMenu.tap()
-      app.buttons["原始照片"].tap()
-      XCTAssertTrue(preview.label.contains("原始照片"))
-      compareMenu.tap()
-      app.buttons["花影海报"].tap()
-      XCTAssertTrue(preview.label.contains("花影海报"))
-    }
+    selectCreativeWorkPreview(
+      assetID: "originalPhoto",
+      title: "原始照片",
+      preview: preview,
+      in: app
+    )
+    selectCreativeWorkPreview(
+      assetID: "work",
+      title: "花影海报",
+      preview: preview,
+      in: app
+    )
 
     let save = app.buttons["save-creative-work"]
     XCTAssertTrue(scrollToHittable(save, in: app, attempts: 8))
@@ -1225,6 +1219,141 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  func testCatalogTopCanCreateReviewSaveShareAndReopenStickerTryOn() {
+    let app = XCUIApplication()
+    let persistentStoreID = UUID().uuidString
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-persistent-store",
+        persistentStoreID,
+        "-ui-testing-wardrobe-import",
+        "-ui-testing-sticker-try-on",
+      ]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-02"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
+    app.buttons["save-today"].tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 4))
+    app.buttons["make-another"].tap()
+
+    app.tabBars.buttons["衣橱"].tap()
+    let addItem = app.buttons["add-test-wardrobe-item"]
+    XCTAssertTrue(addItem.waitForExistence(timeout: 5))
+    addItem.tap()
+    XCTAssertTrue(app.staticTexts["wardrobe-analysis-summary"].waitForExistence(timeout: 8))
+    let topCategory = app.buttons["wardrobe-category-上装"]
+    XCTAssertTrue(scrollToHittable(topCategory, in: app, attempts: 5))
+    topCategory.tap()
+
+    let tryOn = app.buttons["sticker-try-on-entry"]
+    XCTAssertTrue(scrollToHittable(tryOn, in: app, attempts: 8))
+    tryOn.tap()
+    XCTAssertTrue(
+      app.descendants(matching: .any)["sticker-try-on-processing"]
+        .waitForExistence(timeout: 3)
+    )
+
+    let preview = app.descendants(matching: .any)["creative-work-preview"]
+    XCTAssertTrue(preview.waitForExistence(timeout: 8))
+    XCTAssertTrue(preview.label.contains("贴纸试搭"))
+    let provenance = app.descendants(matching: .any)["creative-work-provenance"]
+    XCTAssertTrue(scrollToHittable(provenance, in: app, attempts: 8))
+    XCTAssertTrue(provenance.label.contains("不含 AI 重绘"))
+    XCTAssertTrue(provenance.label.contains("人物与背景来自 OOTD"))
+    XCTAssertTrue(provenance.label.contains("衣物来自商品图"))
+    let boundary = app.descendants(matching: .any)["creative-work-boundary"]
+    XCTAssertTrue(scrollToHittable(boundary, in: app, attempts: 5))
+    XCTAssertTrue(boundary.label.contains("贴纸试搭草图"))
+    XCTAssertTrue(boundary.label.contains("不预测尺码"))
+
+    selectCreativeWorkPreview(
+      assetID: "originalPhoto",
+      title: "原始照片",
+      preview: preview,
+      in: app
+    )
+    selectCreativeWorkPreview(
+      assetID: "work",
+      title: "贴纸试搭",
+      preview: preview,
+      in: app
+    )
+
+    let save = app.buttons["save-creative-work"]
+    XCTAssertTrue(scrollToHittable(save, in: app, attempts: 8))
+    save.tap()
+    XCTAssertTrue(app.buttons["作品已经收藏"].waitForExistence(timeout: 4))
+    let share = app.buttons["share-creative-work"]
+    XCTAssertTrue(scrollToHittable(share, in: app, attempts: 5))
+    share.tap()
+    XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
+    app.buttons["关闭"].tap()
+    app.buttons["close-creative-work"].tap()
+
+    app.terminate()
+    app.launch()
+    app.tabBars.buttons["花历"].tap()
+    let record = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(record.waitForExistence(timeout: 6))
+    record.tap()
+    let history = app.buttons["creative-work-history-entry"]
+    XCTAssertTrue(scrollToHittable(history, in: app, attempts: 10))
+    XCTAssertTrue(history.label.contains("贴纸试搭"))
+    history.tap()
+    XCTAssertTrue(preview.waitForExistence(timeout: 5))
+    XCTAssertTrue(preview.label.contains("贴纸试搭"))
+    keepScreenshot(named: "Adonis-sticker-try-on-history")
+  }
+
+  @MainActor
+  func testStickerTryOnCanBeStoppedWithoutOpeningOrChangingAWork() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-wardrobe-import",
+        "-ui-testing-sticker-try-on",
+        "-ui-testing-sticker-try-on-never-finishes",
+      ]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-02"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
+    app.buttons["save-today"].tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 4))
+    app.buttons["make-another"].tap()
+
+    app.tabBars.buttons["衣橱"].tap()
+    let addItem = app.buttons["add-test-wardrobe-item"]
+    XCTAssertTrue(addItem.waitForExistence(timeout: 5))
+    addItem.tap()
+    XCTAssertTrue(app.staticTexts["wardrobe-analysis-summary"].waitForExistence(timeout: 8))
+    let topCategory = app.buttons["wardrobe-category-上装"]
+    XCTAssertTrue(scrollToHittable(topCategory, in: app, attempts: 5))
+    topCategory.tap()
+
+    let tryOn = app.buttons["sticker-try-on-entry"]
+    XCTAssertTrue(scrollToHittable(tryOn, in: app, attempts: 8))
+    tryOn.tap()
+    let processing = app.descendants(matching: .any)["sticker-try-on-processing"]
+    XCTAssertTrue(processing.waitForExistence(timeout: 3))
+    app.buttons["sticker-try-on-cancel"].tap()
+
+    XCTAssertTrue(processing.waitForNonExistence(timeout: 4))
+    XCTAssertTrue(tryOn.waitForExistence(timeout: 3))
+    XCTAssertTrue(app.descendants(matching: .any)["wardrobe-item-detail"].exists)
+    XCTAssertFalse(app.descendants(matching: .any)["creative-work-preview"].exists)
+  }
+
+  @MainActor
   func testImageSharedFromAnotherAppAutomaticallyJoinsWardrobe() {
     let app = XCUIApplication()
     app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-shared-import"])
@@ -1424,10 +1553,9 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(addTestItem.waitForExistence(timeout: 5))
     addTestItem.tap()
     XCTAssertTrue(app.staticTexts["wardrobe-analysis-summary"].waitForExistence(timeout: 8))
-    for _ in 0..<3 {
-      app.swipeUp()
-    }
-    app.buttons["wardrobe-category-上装"].tap()
+    let topCategory = app.buttons["wardrobe-category-上装"]
+    XCTAssertTrue(scrollToHittable(topCategory, in: app, attempts: 8))
+    topCategory.tap()
     XCTAssertTrue(app.staticTexts["棕色上装"].waitForExistence(timeout: 3))
     app.buttons["完成"].tap()
 
@@ -1435,12 +1563,8 @@ final class AdonisFlowUITests: XCTestCase {
     app.buttons.matching(identifier: "wardrobe-item-card").firstMatch.tap()
 
     let confirm = app.buttons["wardrobe-history-confirm"]
-    for _ in 0..<4 where !confirm.isHittable {
-      app.swipeUp()
-    }
     XCTAssertTrue(confirm.waitForExistence(timeout: 4))
-    app.swipeUp()
-    XCTAssertTrue(confirm.isHittable)
+    XCTAssertTrue(scrollToHittable(confirm, in: app, attempts: 8))
     keepScreenshot(named: "Adonis-wardrobe-history-candidate")
     confirm.tap()
 
@@ -1525,5 +1649,25 @@ final class AdonisFlowUITests: XCTestCase {
       app.swipeDown()
     }
     return element.isHittable
+  }
+
+  @MainActor
+  private func selectCreativeWorkPreview(
+    assetID: String,
+    title: String,
+    preview: XCUIElement,
+    in app: XCUIApplication
+  ) {
+    let segmented = app.segmentedControls["creative-work-mode-picker"]
+    if segmented.waitForExistence(timeout: 2) {
+      XCTAssertTrue(scrollDownToHittable(segmented, in: app, attempts: 8))
+      segmented.buttons[title].tap()
+    } else {
+      let directButton = app.buttons["creative-work-mode-\(assetID)"]
+      XCTAssertTrue(directButton.waitForExistence(timeout: 3))
+      XCTAssertTrue(scrollDownToHittable(directButton, in: app, attempts: 8))
+      directButton.tap()
+    }
+    XCTAssertTrue(preview.label.contains(title))
   }
 }

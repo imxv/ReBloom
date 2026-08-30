@@ -16,6 +16,7 @@ final class PersonalDataControlTests: XCTestCase {
     let cardFilename = try fixture.store.savePNG(image, filename: "outfit-card.png")
     let creativeFilename = try fixture.store.savePNG(image, filename: "botanical-poster.png")
     let mythicFilename = try fixture.store.savePNG(image, filename: "mythic-garden.png")
+    let tryOnFilename = try fixture.store.savePNG(image, filename: "sticker-try-on.png")
     let observationFilename = try fixture.store.savePNG(image, filename: "observation.png")
     let wardrobeFilename = try fixture.store.savePNG(image, filename: "wardrobe.png")
     let visualSignature = try GarmentVisualSignatureAnalyzer().signature(for: image).encoded()
@@ -61,6 +62,15 @@ final class PersonalDataControlTests: XCTestCase {
       sourceOutfit: record
     )
     record.creativeWorks.append(mythicWork)
+    let tryOnWork = CreativeWork(
+      createdAt: Date(timeIntervalSince1970: 1_700_000_070),
+      recipe: .stickerTryOn,
+      imageFilename: tryOnFilename,
+      processingMilliseconds: 34,
+      executionMetadata: .stickerTryOn,
+      sourceOutfit: record
+    )
+    record.creativeWorks.append(tryOnWork)
     let item = WardrobeItem(
       createdAt: Date(timeIntervalSince1970: 1_700_000_100),
       name: "棕色上装",
@@ -89,6 +99,7 @@ final class PersonalDataControlTests: XCTestCase {
     fixture.context.insert(observation)
     fixture.context.insert(creativeWork)
     fixture.context.insert(mythicWork)
+    fixture.context.insert(tryOnWork)
     fixture.context.insert(item)
     fixture.context.insert(event)
     try fixture.context.save()
@@ -112,6 +123,7 @@ final class PersonalDataControlTests: XCTestCase {
     XCTAssertEqual(entries["media/\(cardFilename)"], imageData)
     XCTAssertEqual(entries["media/\(creativeFilename)"], imageData)
     XCTAssertEqual(entries["media/\(mythicFilename)"], imageData)
+    XCTAssertEqual(entries["media/\(tryOnFilename)"], imageData)
     XCTAssertEqual(entries["media/\(observationFilename)"], imageData)
     XCTAssertEqual(entries["media/\(wardrobeFilename)"], imageData)
     XCTAssertEqual(entries["shared-inbox/\(pending.id)"], imageData)
@@ -146,7 +158,7 @@ final class PersonalDataControlTests: XCTestCase {
       StickerQualityAssessor.version
     )
     let creativeWorks = try XCTUnwrap(manifest["creativeWorks"] as? [[String: Any]])
-    XCTAssertEqual(creativeWorks.count, 2)
+    XCTAssertEqual(creativeWorks.count, 3)
     let botanical = try XCTUnwrap(
       creativeWorks.first {
         $0["recipe"] as? String == CreativeRecipe.botanicalPoster.rawValue
@@ -214,6 +226,41 @@ final class PersonalDataControlTests: XCTestCase {
       mythic["quality"] as? String,
       CreativeQualityStatus.userReviewRequired.rawValue
     )
+    let tryOn = try XCTUnwrap(
+      creativeWorks.first {
+        $0["recipe"] as? String == CreativeRecipe.stickerTryOn.rawValue
+      }
+    )
+    XCTAssertEqual(tryOn["outfitID"] as? String, record.id.uuidString)
+    XCTAssertEqual(
+      tryOn["recipeVersion"] as? String,
+      AdonisProcessingVersion.stickerTryOn
+    )
+    XCTAssertEqual(
+      tryOn["provenance"] as? String,
+      VisualContentProvenance.programmaticComposition.rawValue
+    )
+    XCTAssertEqual(tryOn["containsAIGeneratedPixels"] as? Bool, false)
+    XCTAssertEqual(tryOn["processingMilliseconds"] as? Int, 34)
+    XCTAssertEqual(tryOn["imagePath"] as? String, "media/\(tryOnFilename)")
+    XCTAssertEqual(
+      tryOn["provider"] as? String,
+      CreativeProviderIdentifier.adonisLocalRenderer.rawValue
+    )
+    XCTAssertEqual(tryOn["providerRequestCount"] as? Int, 0)
+    XCTAssertEqual(tryOn["externalRequestCount"] as? Int, 0)
+    XCTAssertEqual(
+      tryOn["networkTransport"] as? String,
+      CreativeNetworkTransport.none.rawValue
+    )
+    XCTAssertEqual(
+      tryOn["externalCost"] as? String,
+      CreativeExternalCost.notApplicable.rawValue
+    )
+    XCTAssertEqual(
+      tryOn["quality"] as? String,
+      CreativeQualityStatus.userReviewRequired.rawValue
+    )
     let wardrobeItems = try XCTUnwrap(manifest["wardrobeItems"] as? [[String: Any]])
     XCTAssertEqual(
       wardrobeItems.first?["sourceImagePath"] as? String,
@@ -237,7 +284,7 @@ final class PersonalDataControlTests: XCTestCase {
     let pendingSharedImages = try XCTUnwrap(manifest["pendingSharedImages"] as? [String])
     XCTAssertEqual(pendingSharedImages, ["shared-inbox/\(pending.id)"])
     let visualAssets = try XCTUnwrap(manifest["visualAssets"] as? [[String: Any]])
-    XCTAssertEqual(visualAssets.count, 8)
+    XCTAssertEqual(visualAssets.count, 9)
     XCTAssertEqual(
       provenance(for: "media/\(sourceFilename)", in: visualAssets),
       VisualContentProvenance.userProvided.rawValue
@@ -257,6 +304,10 @@ final class PersonalDataControlTests: XCTestCase {
     XCTAssertEqual(
       provenance(for: "media/\(mythicFilename)", in: visualAssets),
       VisualContentProvenance.aiGenerated.rawValue
+    )
+    XCTAssertEqual(
+      provenance(for: "media/\(tryOnFilename)", in: visualAssets),
+      VisualContentProvenance.programmaticComposition.rawValue
     )
     let stickerAsset = try XCTUnwrap(
       visualAssets.first { $0["path"] as? String == "media/\(stickerFilename)" }

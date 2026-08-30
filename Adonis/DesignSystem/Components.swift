@@ -80,6 +80,7 @@ struct ContentProvenanceNotice: View {
   let provenance: VisualContentProvenance
   var detail: String?
   var identifier: String?
+  var summary: String?
 
   var body: some View {
     HStack(alignment: .top, spacing: 12) {
@@ -95,14 +96,14 @@ struct ContentProvenanceNotice: View {
             Text(provenance.title)
               .font(.system(.subheadline, design: .rounded, weight: .black))
             Text("·")
-            Text(provenance.summary)
+            Text(summary ?? provenance.summary)
               .font(.caption.weight(.semibold))
           }
 
           VStack(alignment: .leading, spacing: 2) {
             Text(provenance.title)
               .font(.system(.subheadline, design: .rounded, weight: .black))
-            Text(provenance.summary)
+            Text(summary ?? provenance.summary)
               .font(.caption.weight(.semibold))
           }
         }
@@ -127,7 +128,9 @@ struct ContentProvenanceNotice: View {
         .stroke(tint.opacity(0.46), lineWidth: 1)
     }
     .accessibilityElement(children: .combine)
-    .accessibilityLabel("\(provenance.title)，\(provenance.summary)。\(detail ?? provenance.detail)")
+    .accessibilityLabel(
+      "\(provenance.title)，\(summary ?? provenance.summary)。\(detail ?? provenance.detail)"
+    )
     .accessibilityIdentifier(identifier ?? "content-provenance-\(provenance.rawValue)")
   }
 

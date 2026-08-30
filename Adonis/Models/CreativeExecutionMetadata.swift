@@ -58,6 +58,15 @@ struct CreativeExecutionMetadata: Codable, Equatable, Sendable {
     quality: .sourcePixelsPreserved
   )
 
+  static let stickerTryOn = CreativeExecutionMetadata(
+    provider: .adonisLocalRenderer,
+    providerRequestCount: 0,
+    externalRequestCount: 0,
+    networkTransport: .none,
+    externalCost: .notApplicable,
+    quality: .userReviewRequired
+  )
+
   static let appleImagePlayground = CreativeExecutionMetadata(
     provider: .appleImagePlayground,
     providerRequestCount: 1,
