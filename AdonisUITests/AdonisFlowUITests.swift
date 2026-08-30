@@ -1237,6 +1237,60 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  func testCreateInputAutomaticallyRoutesHighConfidenceCatalogGarmentToWardrobe() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: ["-ui-testing", "-ui-testing-create-input-routing"]
+    )
+    app.launch()
+
+    let catalogImage = app.buttons["create-catalog-test-image"]
+    XCTAssertTrue(catalogImage.waitForExistence(timeout: 5))
+    XCTAssertTrue(scrollToHittable(catalogImage, in: app, attempts: 5))
+    catalogImage.tap()
+
+    let notice = app.descendants(matching: .any)["creation-wardrobe-import-notice"]
+    XCTAssertTrue(notice.waitForExistence(timeout: 8))
+    XCTAssertTrue(app.staticTexts["已收进衣橱"].exists)
+    XCTAssertFalse(app.staticTexts["result-title"].exists)
+    keepScreenshot(named: "Adonis-create-catalog-auto-route")
+
+    let openWardrobe = app.buttons["creation-open-wardrobe"]
+    XCTAssertTrue(scrollToHittable(openWardrobe, in: app, attempts: 3))
+    openWardrobe.tap()
+
+    XCTAssertTrue(app.staticTexts["棕色上装"].waitForExistence(timeout: 5))
+    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 1)
+  }
+
+  @MainActor
+  func testAmbiguousCatalogImageAsksBeforeSavingAfterStickerFailure() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: ["-ui-testing", "-ui-testing-create-input-routing"]
+    )
+    app.launch()
+
+    let catalogImage = app.buttons["create-ambiguous-catalog-test-image"]
+    XCTAssertTrue(catalogImage.waitForExistence(timeout: 5))
+    XCTAssertTrue(scrollToHittable(catalogImage, in: app, attempts: 6))
+    catalogImage.tap()
+
+    let confirmation = app.alerts["这张更像衣服图片"]
+    XCTAssertTrue(confirmation.waitForExistence(timeout: 10))
+    XCTAssertTrue(confirmation.buttons["收进衣橱"].exists)
+    XCTAssertFalse(app.staticTexts["result-title"].exists)
+    confirmation.buttons["收进衣橱"].tap()
+
+    let notice = app.descendants(matching: .any)["creation-wardrobe-import-notice"]
+    XCTAssertTrue(notice.waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["已收进衣橱"].exists)
+    app.buttons["creation-open-wardrobe"].tap()
+    XCTAssertTrue(app.staticTexts["棕色单品"].waitForExistence(timeout: 5))
+    XCTAssertEqual(app.buttons.matching(identifier: "wardrobe-item-card").count, 1)
+  }
+
+  @MainActor
   func testCatalogImageCanBeRememberedAndCorrectedWithOneTap() {
     let app = XCUIApplication()
     app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-wardrobe-import"])

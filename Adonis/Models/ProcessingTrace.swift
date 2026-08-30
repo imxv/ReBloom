@@ -33,6 +33,7 @@ enum AdonisProcessingVersion {
   static let rebloomSuggestion = "rebloom-suggestion-v1"
   static let rebloomReminder = "rebloom-reminder-v1"
   static let wardrobeAnalysis = "wardrobe-local-v2"
+  static let creationImageIntent = "creation-image-intent-v1"
   static let wardrobeImageUpgrade = "wardrobe-image-upgrade-v1"
   static let outfitObservation = "ootd-observation-local-v2"
   static let candidateMatching = "wardrobe-candidate-local-v2"

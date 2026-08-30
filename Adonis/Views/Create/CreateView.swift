@@ -21,12 +21,15 @@ struct CreateView: View {
   @State private var retryPhotoItem: PhotosPickerItem?
   @State private var activeFallbackCandidate: GenerationFallbackCandidate?
   @State private var cameraSheet: CameraSheet?
-  @State private var cameraAlert: CameraAccessAlert?
+  @State private var presentedCreateAlert: CreatePresentedAlert?
   @State private var isResolvingCameraAccess = false
   @State private var showSettings = false
   @State private var activeGenerationID: UUID?
   @State private var activeInputSource: EventInputSource?
   @State private var activePerformanceRecorder: GenerationPerformanceRecorder?
+  @State private var activeOperationKind: CreateOperationKind?
+  @State private var activeWardrobeCandidate: CreationWardrobeCandidate?
+  @State private var wardrobeImportNotice: CreationWardrobeImportNotice?
   @State private var deadlineController = GenerationDeadlineController()
 
   private let processor = StickerProcessor()
@@ -34,16 +37,22 @@ struct CreateView: View {
   private let cardRenderer = ShareCardRenderer()
   private let garmentObserver = OutfitGarmentObserver()
   private let creativeWorkStore = CreativeWorkStore()
+  private let wardrobeAnalyzer = WardrobeImageAnalyzer()
+  private let imageIntentRouter = CreationImageIntentRouter()
+  private let wardrobeImporter = WardrobeItemImportService()
   private let cameraAccessService: CameraAccessService
   private let creativeImageGenerator: any CreativeImageGenerating
+  private let onOpenWardrobe: () -> Void
 
   @MainActor
   init(
     cameraAccessService: CameraAccessService? = nil,
-    creativeImageGenerator: (any CreativeImageGenerating)? = nil
+    creativeImageGenerator: (any CreativeImageGenerating)? = nil,
+    onOpenWardrobe: @escaping () -> Void = {}
   ) {
     self.cameraAccessService = cameraAccessService ?? .live
     self.creativeImageGenerator = creativeImageGenerator ?? CreativeImageGeneratorFactory.make()
+    self.onOpenWardrobe = onOpenWardrobe
   }
 
   var body: some View {
@@ -51,20 +60,36 @@ struct CreateView: View {
       AdonisTheme.canvas
         .ignoresSafeArea()
 
-      ScrollView {
-        VStack(alignment: .leading, spacing: 26) {
-          header
-          hero
-          inputActions
-          sampleSection
-          privacyNote
+      ScrollViewReader { proxy in
+        ScrollView {
+          VStack(alignment: .leading, spacing: 26) {
+            header
+            hero
+            inputActions
+            if let wardrobeImportNotice {
+              wardrobeImportNoticeCard(wardrobeImportNotice)
+                .id("creation-wardrobe-import-anchor")
+            }
+            sampleSection
+            privacyNote
+          }
+          .padding(.horizontal, 20)
+          .padding(.top, 12)
+          .padding(.bottom, 36)
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 12)
-        .padding(.bottom, 36)
+        .scrollIndicators(.hidden)
+        .disabled(isProcessing)
+        .onChange(of: wardrobeImportNotice?.id) { _, noticeID in
+          guard noticeID != nil else { return }
+          if reduceMotion {
+            proxy.scrollTo("creation-wardrobe-import-anchor", anchor: .center)
+          } else {
+            withAnimation(.easeOut(duration: 0.28)) {
+              proxy.scrollTo("creation-wardrobe-import-anchor", anchor: .center)
+            }
+          }
+        }
       }
-      .scrollIndicators(.hidden)
-      .disabled(isProcessing)
 
       if isProcessing {
         ProcessingOverlay(
@@ -97,7 +122,7 @@ struct CreateView: View {
     }
     .sheet(item: $cameraSheet) { _ in
       CameraPicker { image in
-        Task { await generate(from: image, inputSource: .camera) }
+        Task { await loadCapturedPhoto(image) }
       }
       .ignoresSafeArea()
       .accessibilityIdentifier("camera-picker")
@@ -125,7 +150,7 @@ struct CreateView: View {
     } message: {
       Text(errorMessage ?? "请换一张照片再试。")
     }
-    .alert(item: $cameraAlert, content: cameraAccessAlert)
+    .alert(item: $presentedCreateAlert, content: createAlert)
   }
 
   private var header: some View {
@@ -209,7 +234,88 @@ struct CreateView: View {
       .buttonStyle(StickerButtonStyle())
       .disabled(isResolvingCameraAccess)
       .accessibilityIdentifier("take-photo")
+
+      #if DEBUG
+        if isUITestingCreateInputRouting {
+          Button {
+            Task { await loadUITestingCatalogPhoto(category: .top, confidence: 0.95) }
+          } label: {
+            Label("试一下商品图", systemImage: "tshirt.fill")
+              .font(.system(.headline, design: .rounded, weight: .bold))
+              .foregroundStyle(AdonisTheme.ink)
+              .frame(maxWidth: .infinity, minHeight: 52)
+              .background(
+                AdonisTheme.butter.opacity(0.58),
+                in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+              )
+          }
+          .buttonStyle(StickerButtonStyle())
+          .accessibilityIdentifier("create-catalog-test-image")
+
+          Button {
+            Task { await loadUITestingCatalogPhoto(category: nil, confidence: nil) }
+          } label: {
+            Label("试一下待确认商品图", systemImage: "questionmark.app.dashed")
+              .font(.system(.headline, design: .rounded, weight: .bold))
+              .foregroundStyle(AdonisTheme.ink)
+              .frame(maxWidth: .infinity, minHeight: 52)
+              .background(
+                AdonisTheme.lavender.opacity(0.4),
+                in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+              )
+          }
+          .buttonStyle(StickerButtonStyle())
+          .accessibilityIdentifier("create-ambiguous-catalog-test-image")
+        }
+      #endif
     }
+  }
+
+  private func wardrobeImportNoticeCard(_ notice: CreationWardrobeImportNotice) -> some View {
+    VStack(alignment: .leading, spacing: 14) {
+      HStack(alignment: .top, spacing: 12) {
+        Image(systemName: notice.systemImage)
+          .font(.system(size: 20, weight: .bold))
+          .foregroundStyle(AdonisTheme.leafInk)
+          .frame(width: 42, height: 42)
+          .background(AdonisTheme.leaf.opacity(0.2), in: Circle())
+          .accessibilityHidden(true)
+
+        VStack(alignment: .leading, spacing: 4) {
+          Text(notice.title)
+            .font(.system(.headline, design: .rounded, weight: .bold))
+            .foregroundStyle(AdonisTheme.ink)
+          Text(notice.detail)
+            .font(.subheadline)
+            .foregroundStyle(AdonisTheme.secondaryInk)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+      }
+
+      HStack(spacing: 12) {
+        Button("继续创作") {
+          wardrobeImportNotice = nil
+        }
+        .buttonStyle(.bordered)
+
+        Button("去衣橱") {
+          wardrobeImportNotice = nil
+          onOpenWardrobe()
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(AdonisTheme.pomegranate)
+        .accessibilityIdentifier("creation-open-wardrobe")
+      }
+    }
+    .padding(18)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .background(AdonisTheme.paper, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+    .overlay {
+      RoundedRectangle(cornerRadius: 22, style: .continuous)
+        .stroke(AdonisTheme.leaf.opacity(0.36), lineWidth: 1)
+    }
+    .accessibilityElement(children: .contain)
+    .accessibilityIdentifier("creation-wardrobe-import-notice")
   }
 
   private var sampleSection: some View {
@@ -251,6 +357,12 @@ struct CreateView: View {
     #endif
     return SampleCatalog.showcasePhotos
   }
+
+  #if DEBUG
+    private var isUITestingCreateInputRouting: Bool {
+      ProcessInfo.processInfo.arguments.contains("-ui-testing-create-input-routing")
+    }
+  #endif
 
   @ViewBuilder
   private var sampleSectionHeader: some View {
@@ -303,15 +415,24 @@ struct CreateView: View {
       isResolvingCameraAccess = false
       switch outcome {
       case .openCamera:
-        cameraAlert = nil
+        presentedCreateAlert = nil
         cameraSheet = .picker
       case .unavailable:
-        cameraAlert = .unavailable
+        presentedCreateAlert = .camera(.unavailable)
       case .permissionDenied:
-        cameraAlert = .permissionDenied
+        presentedCreateAlert = .camera(.permissionDenied)
       case .restricted:
-        cameraAlert = .restricted
+        presentedCreateAlert = .camera(.restricted)
       }
+    }
+  }
+
+  private func createAlert(for alert: CreatePresentedAlert) -> Alert {
+    switch alert {
+    case .camera(let issue):
+      cameraAccessAlert(for: issue)
+    case .wardrobeFallback(let candidate):
+      wardrobeFallbackAlert(for: candidate)
     }
   }
 
@@ -333,6 +454,17 @@ struct CreateView: View {
     }
   }
 
+  private func wardrobeFallbackAlert(for candidate: CreationWardrobeCandidate) -> Alert {
+    Alert(
+      title: Text("这张更像衣服图片"),
+      message: Text("这次没有做成人物贴纸。要把它收进衣橱吗？颜色和画面类型会在本机记住。"),
+      primaryButton: .default(Text("收进衣橱")) {
+        importPendingWardrobeCandidate(candidate)
+      },
+      secondaryButton: .cancel(Text("换一张"))
+    )
+  }
+
   private func openCameraSettings() {
     guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
     openURL(settingsURL)
@@ -340,60 +472,302 @@ struct CreateView: View {
 
   @MainActor
   private func loadPhoto(from item: PhotosPickerItem) async {
-    let loadID = UUID()
-    let recorder = GenerationPerformanceRecorder(usesPreparedSample: false)
-    activeGenerationID = loadID
-    activeInputSource = .photoLibrary
-    activePerformanceRecorder = recorder
-    retryInput = nil
-    retryPhotoItem = item
-    activeFallbackCandidate = nil
-    recorder.begin(.inputLoading)
-    armGenerationDeadline(for: loadID)
-    EventLogger.log(
-      .generationStarted,
-      inputSource: .photoLibrary,
-      processingVersion: AdonisProcessingVersion.generationPipeline,
-      in: modelContext
-    )
+    let (loadID, recorder) = beginImageInput(source: .photoLibrary, retryPhotoItem: item)
     do {
-      processingStage = .reading
-      isProcessing = true
       guard let data = try await item.loadTransferable(type: Data.self),
         let image = UIImage(data: data)
       else {
         throw StickerProcessingError.unreadableImage
       }
-      recorder.finish(.inputLoading)
       guard activeGenerationID == loadID else { return }
-      await generate(
-        from: image,
+      await routeLoadedImage(
+        data: data,
+        image: image,
         inputSource: .photoLibrary,
-        alreadyShowingProgress: true,
-        performanceRecorder: recorder,
-        startEventLogged: true,
-        generationID: loadID,
-        deadlineAlreadyArmed: true
+        operationID: loadID,
+        performanceRecorder: recorder
       )
     } catch {
-      guard activeGenerationID == loadID else { return }
-      deadlineController.cancel(generationID: loadID)
-      let trace = recorder.makeTrace(interrupted: true)
-      EventLogger.log(
-        .generationFailed,
-        detail: error.localizedDescription,
+      handleImageInputFailure(
+        error,
         inputSource: .photoLibrary,
-        processingVersion: AdonisProcessingVersion.generationPipeline,
-        generationPerformanceTrace: trace,
+        operationID: loadID,
+        performanceRecorder: recorder
+      )
+    }
+  }
+
+  @MainActor
+  private func loadCapturedPhoto(_ image: UIImage) async {
+    let (loadID, recorder) = beginImageInput(source: .camera)
+    do {
+      guard let data = image.jpegData(compressionQuality: 0.94) else {
+        throw StickerProcessingError.unreadableImage
+      }
+      await routeLoadedImage(
+        data: data,
+        image: image,
+        inputSource: .camera,
+        operationID: loadID,
+        performanceRecorder: recorder
+      )
+    } catch {
+      handleImageInputFailure(
+        error,
+        inputSource: .camera,
+        operationID: loadID,
+        performanceRecorder: recorder
+      )
+    }
+  }
+
+  #if DEBUG
+    @MainActor
+    private func loadUITestingCatalogPhoto(
+      category: WardrobeCategory?,
+      confidence: Double?
+    ) async {
+      let image = WardrobeTestImageFactory.brownCatalogShirt()
+      let (loadID, recorder) = beginImageInput(source: .testFixture)
+      do {
+        guard let data = image.pngData() else {
+          throw StickerProcessingError.unreadableImage
+        }
+        processingStage = .understanding
+        let detected = try await wardrobeAnalyzer.analyze(data: data)
+        let fixtureAnalysis = WardrobeImageAnalysis(
+          sourceKind: detected.sourceKind,
+          dominantColorName: detected.dominantColorName,
+          dominantColorHex: detected.dominantColorHex,
+          suggestedCategory: category,
+          categoryConfidence: confidence,
+          cleanBackgroundScore: detected.cleanBackgroundScore,
+          imageWidth: detected.imageWidth,
+          imageHeight: detected.imageHeight,
+          imageFingerprint: detected.imageFingerprint,
+          visualSignatureRawValue: detected.visualSignatureRawValue,
+          processingMilliseconds: detected.processingMilliseconds,
+          analysisVersion: detected.analysisVersion
+        )
+        await routeLoadedImage(
+          data: data,
+          image: image,
+          inputSource: .testFixture,
+          operationID: loadID,
+          performanceRecorder: recorder,
+          analysisOverride: fixtureAnalysis
+        )
+      } catch {
+        handleImageInputFailure(
+          error,
+          inputSource: .testFixture,
+          operationID: loadID,
+          performanceRecorder: recorder
+        )
+      }
+    }
+  #endif
+
+  @MainActor
+  private func beginImageInput(
+    source: EventInputSource,
+    retryPhotoItem: PhotosPickerItem? = nil
+  ) -> (id: UUID, recorder: GenerationPerformanceRecorder) {
+    let operationID = UUID()
+    let recorder = GenerationPerformanceRecorder(usesPreparedSample: false)
+    activeGenerationID = operationID
+    activeInputSource = source
+    activePerformanceRecorder = recorder
+    activeOperationKind = .routing
+    activeFallbackCandidate = nil
+    activeWardrobeCandidate = nil
+    wardrobeImportNotice = nil
+    retryInput = nil
+    self.retryPhotoItem = retryPhotoItem
+    processingStage = .reading
+    isProcessing = true
+    recorder.begin(.inputLoading)
+    armGenerationDeadline(for: operationID)
+    return (operationID, recorder)
+  }
+
+  @MainActor
+  private func routeLoadedImage(
+    data: Data,
+    image: UIImage,
+    inputSource: EventInputSource,
+    operationID: UUID,
+    performanceRecorder: GenerationPerformanceRecorder,
+    analysisOverride: WardrobeImageAnalysis? = nil
+  ) async {
+    processingStage = .understanding
+    let analysis: WardrobeImageAnalysis?
+    if let analysisOverride {
+      analysis = analysisOverride
+    } else {
+      analysis = try? await wardrobeAnalyzer.analyze(data: data)
+    }
+    guard activeGenerationID == operationID else { return }
+    performanceRecorder.finish(.inputLoading)
+
+    if let analysis {
+      switch imageIntentRouter.route(analysis) {
+      case .wardrobe:
+        persistWardrobeCandidate(
+          CreationWardrobeCandidate(
+            data: data,
+            analysis: analysis,
+            inputSource: inputSource,
+            route: .automatic
+          ),
+          operationID: operationID,
+          deadlineAlreadyArmed: true
+        )
+        return
+      case .creation(let offersWardrobeFallback):
+        let wardrobeCandidate =
+          offersWardrobeFallback
+          ? CreationWardrobeCandidate(
+            data: data,
+            analysis: analysis,
+            inputSource: inputSource,
+            route: .afterCreationFailure
+          ) : nil
+        await generate(
+          from: image,
+          inputSource: inputSource,
+          alreadyShowingProgress: true,
+          performanceRecorder: performanceRecorder,
+          generationID: operationID,
+          deadlineAlreadyArmed: true,
+          wardrobeCandidate: wardrobeCandidate
+        )
+        return
+      }
+    }
+
+    await generate(
+      from: image,
+      inputSource: inputSource,
+      alreadyShowingProgress: true,
+      performanceRecorder: performanceRecorder,
+      generationID: operationID,
+      deadlineAlreadyArmed: true
+    )
+  }
+
+  @MainActor
+  private func handleImageInputFailure(
+    _ error: Error,
+    inputSource: EventInputSource,
+    operationID: UUID,
+    performanceRecorder: GenerationPerformanceRecorder
+  ) {
+    guard activeGenerationID == operationID else { return }
+    deadlineController.cancel(generationID: operationID)
+    let trace = performanceRecorder.makeTrace(interrupted: true)
+    EventLogger.log(
+      .generationFailed,
+      detail: "input_read_failed;reason=\(error.localizedDescription)",
+      inputSource: inputSource,
+      processingVersion: CreationImageIntentRouter.version,
+      generationPerformanceTrace: trace,
+      in: modelContext
+    )
+    finishCreateOperation(operationID: operationID)
+    presentGenerationError(error.localizedDescription)
+  }
+
+  @MainActor
+  private func importPendingWardrobeCandidate(_ candidate: CreationWardrobeCandidate) {
+    let operationID = UUID()
+    activeGenerationID = operationID
+    activeInputSource = candidate.inputSource
+    activePerformanceRecorder = nil
+    activeOperationKind = .wardrobeImport
+    activeFallbackCandidate = nil
+    activeWardrobeCandidate = nil
+    retryInput = nil
+    retryPhotoItem = nil
+    processingStage = .remembering
+    isProcessing = true
+    persistWardrobeCandidate(
+      candidate,
+      operationID: operationID,
+      deadlineAlreadyArmed: false
+    )
+  }
+
+  @MainActor
+  private func persistWardrobeCandidate(
+    _ candidate: CreationWardrobeCandidate,
+    operationID: UUID,
+    deadlineAlreadyArmed: Bool
+  ) {
+    guard activeGenerationID == operationID else { return }
+    activeOperationKind = .wardrobeImport
+    processingStage = .remembering
+    EventLogger.log(
+      .wardrobeImportStarted,
+      detail: candidate.route.eventDetail,
+      inputSource: candidate.inputSource,
+      processingVersion: CreationImageIntentRouter.version,
+      in: modelContext
+    )
+
+    do {
+      let outcome = try wardrobeImporter.persist(
+        data: candidate.data,
+        analysis: candidate.analysis,
         in: modelContext
       )
-      activeGenerationID = nil
-      activeInputSource = nil
-      activePerformanceRecorder = nil
-      retryPhotoItem = nil
-      isProcessing = false
-      presentGenerationError(error.localizedDescription)
+      guard activeGenerationID == operationID else { return }
+      if deadlineAlreadyArmed {
+        deadlineController.cancel(generationID: operationID)
+      }
+      let eventKind: AppEventKind =
+        outcome.disposition == .added ? .wardrobeItemAdded : .wardrobeItemReused
+      EventLogger.log(
+        eventKind,
+        durationMilliseconds: candidate.analysis.processingMilliseconds,
+        detail: "\(outcome.eventDetail);\(candidate.route.eventDetail)",
+        inputSource: candidate.inputSource,
+        processingVersion: candidate.analysis.analysisVersion,
+        in: modelContext
+      )
+      finishCreateOperation(operationID: operationID)
+      wardrobeImportNotice = CreationWardrobeImportNotice(outcome: outcome)
+    } catch {
+      modelContext.rollback()
+      if deadlineAlreadyArmed {
+        deadlineController.cancel(generationID: operationID)
+      }
+      EventLogger.log(
+        .wardrobeImportFailed,
+        detail: "\(candidate.route.eventDetail);reason=\(error.localizedDescription)",
+        inputSource: candidate.inputSource,
+        processingVersion: candidate.analysis.analysisVersion,
+        in: modelContext
+      )
+      finishCreateOperation(operationID: operationID)
+      presentGenerationError(error.localizedDescription, title: "这次没有收进衣橱")
     }
+  }
+
+  @MainActor
+  private func finishCreateOperation(operationID: UUID) {
+    guard activeGenerationID == operationID else { return }
+    activeGenerationID = nil
+    activeInputSource = nil
+    activePerformanceRecorder = nil
+    activeOperationKind = nil
+    activeFallbackCandidate = nil
+    activeWardrobeCandidate = nil
+    selectedPhotoItem = nil
+    retryInput = nil
+    retryPhotoItem = nil
+    offersRetry = false
+    isProcessing = false
   }
 
   @MainActor
@@ -404,7 +778,8 @@ struct CreateView: View {
     performanceRecorder: GenerationPerformanceRecorder? = nil,
     startEventLogged: Bool = false,
     generationID: UUID? = nil,
-    deadlineAlreadyArmed: Bool = false
+    deadlineAlreadyArmed: Bool = false,
+    wardrobeCandidate: CreationWardrobeCandidate? = nil
   ) async {
     await generate(
       from: image,
@@ -414,7 +789,8 @@ struct CreateView: View {
       performanceRecorder: performanceRecorder,
       startEventLogged: startEventLogged,
       generationID: generationID,
-      deadlineAlreadyArmed: deadlineAlreadyArmed
+      deadlineAlreadyArmed: deadlineAlreadyArmed,
+      wardrobeCandidate: wardrobeCandidate
     )
   }
 
@@ -428,7 +804,8 @@ struct CreateView: View {
     performanceRecorder: GenerationPerformanceRecorder? = nil,
     startEventLogged: Bool = false,
     generationID suppliedGenerationID: UUID? = nil,
-    deadlineAlreadyArmed: Bool = false
+    deadlineAlreadyArmed: Bool = false,
+    wardrobeCandidate: CreationWardrobeCandidate? = nil
   ) async {
     let generationID = suppliedGenerationID ?? UUID()
     let recorder =
@@ -437,13 +814,16 @@ struct CreateView: View {
     activeGenerationID = generationID
     activeInputSource = inputSource
     activePerformanceRecorder = recorder
+    activeOperationKind = .generation
     activeFallbackCandidate = nil
+    activeWardrobeCandidate = wardrobeCandidate
     retryPhotoItem = nil
     retryInput = GenerationRetryInput(
       image: image,
       preparedSticker: preparedSticker,
       preparedMatteAssessment: preparedMatteAssessment,
-      inputSource: inputSource
+      inputSource: inputSource,
+      wardrobeCandidate: wardrobeCandidate
     )
     if !deadlineAlreadyArmed {
       armGenerationDeadline(for: generationID)
@@ -564,13 +944,7 @@ struct CreateView: View {
         generationPerformanceTrace: trace,
         in: modelContext
       )
-      activeGenerationID = nil
-      activeInputSource = nil
-      activePerformanceRecorder = nil
-      retryInput = nil
-      retryPhotoItem = nil
-      activeFallbackCandidate = nil
-      isProcessing = false
+      finishCreateOperation(operationID: generationID)
       draft = GenerationDraft(
         createdAt: date,
         sourceImage: image,
@@ -586,6 +960,7 @@ struct CreateView: View {
       )
     } catch {
       guard activeGenerationID == generationID else { return }
+      let wardrobeCandidate = activeWardrobeCandidate
       deadlineController.cancel(generationID: generationID)
       let trace = recorder.makeTrace(interrupted: true)
       EventLogger.log(
@@ -596,13 +971,13 @@ struct CreateView: View {
         generationPerformanceTrace: trace,
         in: modelContext
       )
-      activeGenerationID = nil
-      activeInputSource = nil
-      activePerformanceRecorder = nil
-      retryInput = nil
-      retryPhotoItem = nil
-      activeFallbackCandidate = nil
-      isProcessing = false
+      finishCreateOperation(operationID: generationID)
+      if let wardrobeCandidate {
+        errorMessage = nil
+        offersRetry = false
+        presentedCreateAlert = .wardrobeFallback(wardrobeCandidate)
+        return
+      }
       if let processingError = error as? StickerProcessingError,
         case .outputQualityTooLow(let assessment) = processingError
       {
@@ -619,23 +994,30 @@ struct CreateView: View {
   @MainActor
   private func cancelGeneration() {
     guard let generationID = activeGenerationID else { return }
+    let operationKind = activeOperationKind
+    let inputSource = activeInputSource
     deadlineController.cancel(generationID: generationID)
     let trace = activePerformanceRecorder?.makeTrace(interrupted: true)
-    activeGenerationID = nil
-    selectedPhotoItem = nil
-    isProcessing = false
-    EventLogger.log(
-      .generationCancelled,
-      inputSource: activeInputSource,
-      processingVersion: AdonisProcessingVersion.generationPipeline,
-      generationPerformanceTrace: trace,
-      in: modelContext
-    )
-    activeInputSource = nil
-    activePerformanceRecorder = nil
-    retryInput = nil
-    retryPhotoItem = nil
-    activeFallbackCandidate = nil
+    switch operationKind {
+    case .generation:
+      EventLogger.log(
+        .generationCancelled,
+        inputSource: inputSource,
+        processingVersion: AdonisProcessingVersion.generationPipeline,
+        generationPerformanceTrace: trace,
+        in: modelContext
+      )
+    case .wardrobeImport:
+      EventLogger.log(
+        .wardrobeImportCancelled,
+        inputSource: inputSource,
+        processingVersion: CreationImageIntentRouter.version,
+        in: modelContext
+      )
+    case .routing, .none:
+      break
+    }
+    finishCreateOperation(operationID: generationID)
   }
 
   @MainActor
@@ -657,13 +1039,25 @@ struct CreateView: View {
     guard activeGenerationID == generationID else { return }
     let trace = activePerformanceRecorder?.makeTrace(interrupted: true)
     let inputSource = activeInputSource
+    let operationKind = activeOperationKind
     let fallbackCandidate = activeFallbackCandidate
+    let wardrobeCandidate = activeWardrobeCandidate
     activeGenerationID = nil
     activeInputSource = nil
     activePerformanceRecorder = nil
+    activeOperationKind = nil
     activeFallbackCandidate = nil
+    activeWardrobeCandidate = nil
     selectedPhotoItem = nil
     isProcessing = false
+
+    guard operationKind == .generation else {
+      errorTitle = "读取照片花了太久"
+      offersRetry = retryPhotoItem != nil
+      errorMessage = "这张照片还没有读完，已经停止等待。可以再试一次，或换一张照片。"
+      return
+    }
+
     EventLogger.log(
       .generationTimedOut,
       detail: fallbackCandidate == nil
@@ -684,6 +1078,14 @@ struct CreateView: View {
       )
       return
     }
+    if let wardrobeCandidate {
+      retryInput = nil
+      retryPhotoItem = nil
+      offersRetry = false
+      errorMessage = nil
+      presentedCreateAlert = .wardrobeFallback(wardrobeCandidate)
+      return
+    }
     errorTitle = "这次等得有点久"
     offersRetry = retryInput != nil || retryPhotoItem != nil
     errorMessage = "处理超过 90 秒，已经停止等待。可以再试一次，或换一张照片。"
@@ -699,7 +1101,8 @@ struct CreateView: View {
           from: retryInput.image,
           preparedSticker: retryInput.preparedSticker,
           preparedMatteAssessment: retryInput.preparedMatteAssessment,
-          inputSource: retryInput.inputSource
+          inputSource: retryInput.inputSource,
+          wardrobeCandidate: retryInput.wardrobeCandidate
         )
       }
       return
@@ -831,6 +1234,65 @@ private struct GenerationRetryInput {
   let preparedSticker: UIImage?
   let preparedMatteAssessment: StickerQualityAssessment
   let inputSource: EventInputSource
+  let wardrobeCandidate: CreationWardrobeCandidate?
+}
+
+private enum CreateOperationKind: Equatable {
+  case routing
+  case generation
+  case wardrobeImport
+}
+
+private enum CreationWardrobeImportRoute {
+  case automatic
+  case afterCreationFailure
+
+  var eventDetail: String {
+    switch self {
+    case .automatic: "route=create_input_auto"
+    case .afterCreationFailure: "route=create_input_fallback"
+    }
+  }
+}
+
+private struct CreationWardrobeCandidate: Identifiable {
+  let id = UUID()
+  let data: Data
+  let analysis: WardrobeImageAnalysis
+  let inputSource: EventInputSource
+  let route: CreationWardrobeImportRoute
+}
+
+private struct CreationWardrobeImportNotice: Identifiable {
+  let id = UUID()
+  let title: String
+  let detail: String
+  let systemImage: String
+
+  init(outcome: WardrobeItemImportOutcome) {
+    switch outcome.disposition {
+    case .added:
+      title = "已收进衣橱"
+      detail = "\(outcome.item.name)已经记好了。颜色和画面类型只保存在本机，不需要再填资料。"
+      systemImage = "checkmark.circle.fill"
+    case .reused:
+      title = "衣橱里已经有它"
+      detail = "找到了已有的\(outcome.item.name)，没有重复添加。"
+      systemImage = "arrow.triangle.2.circlepath.circle.fill"
+    }
+  }
+}
+
+private enum CreatePresentedAlert: Identifiable {
+  case camera(CameraAccessAlert)
+  case wardrobeFallback(CreationWardrobeCandidate)
+
+  var id: String {
+    switch self {
+    case .camera(let issue): "camera-\(issue.id)"
+    case .wardrobeFallback(let candidate): "wardrobe-\(candidate.id.uuidString)"
+    }
+  }
 }
 
 private enum CameraSheet: String, Identifiable {

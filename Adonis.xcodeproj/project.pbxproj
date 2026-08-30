@@ -15,6 +15,7 @@
 		027B14DF89A1B5A4FA6CE39A /* AdonisAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7542B8C0510A10B16E226C8E /* AdonisAppDelegate.swift */; };
 		0383F37EB4CD45A47D50D350 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5A96B162481D212E146A1 /* CameraPicker.swift */; };
 		05A102A14D5F8953BA875A93 /* CameraAccessServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1E63F7937FAF7439D6F7C8 /* CameraAccessServiceTests.swift */; };
+		06A05D44805D06E3407E2EAA /* CreationImageIntentRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFF60679B8CA5BCAF241B5 /* CreationImageIntentRouterTests.swift */; };
 		083CDC61E99645D77389A7D5 /* sample-04.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A637377461748CC37830D9C /* sample-04.png */; };
 		08DF5267B88973D0A82557BE /* DigitalCabinetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E196866D055C4CF56DDF3E76 /* DigitalCabinetView.swift */; };
 		0D81BAFB9B079ECF42828A22 /* DigitalFigurineCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDCD90F138751C7EC752F214 /* DigitalFigurineCardView.swift */; };
@@ -36,6 +37,7 @@
 		23309718D6FDAAFF470997CF /* WardrobeItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290B068850AE398F3ACAC1A7 /* WardrobeItemDetailView.swift */; };
 		23E4BD6C46AED7CAA92EF29F /* MythicGardenCardRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85884C9FEC03D6CBDA77DFFB /* MythicGardenCardRenderer.swift */; };
 		275E8B3C4CA4488AF3AD2CBA /* DigitalFigurineCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 488238D5BC109C8E72A5B60F /* DigitalFigurineCardRendererTests.swift */; };
+		284667C6DA4992B75FB25DA2 /* CreationImageIntentRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE9F59DB28250B8424C6E9A /* CreationImageIntentRouter.swift */; };
 		2A3903CCF09460A04EDEFCF7 /* CreativeWorkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AA69B4A22D8C05F5AFABC1 /* CreativeWorkView.swift */; };
 		2B7D58916E4D410B778A9EEE /* SeasonalBloomCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B81EEAE568CAF877AFF6B8A /* SeasonalBloomCatalogTests.swift */; };
 		2BD67932C4F0FBD986AC5507 /* GenerationDeadlineController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECF3B88471C33864593324 /* GenerationDeadlineController.swift */; };
@@ -264,10 +266,12 @@
 		81B62D5D132AC85E01784E17 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		84136BBEA95D26BF94F117B2 /* StickerQualityAssessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerQualityAssessorTests.swift; sourceTree = "<group>"; };
 		85884C9FEC03D6CBDA77DFFB /* MythicGardenCardRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MythicGardenCardRenderer.swift; sourceTree = "<group>"; };
+		89AFF60679B8CA5BCAF241B5 /* CreationImageIntentRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreationImageIntentRouterTests.swift; sourceTree = "<group>"; };
 		8B8DB8DEFCD7D0A3C1AE2C1E /* sample-03-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03-sticker.png"; sourceTree = "<group>"; };
 		8C3F11BF77ECCA2BC7A4D5AB /* ModelStorePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStorePolicy.swift; sourceTree = "<group>"; };
 		8C79187C672D6932F46FD1BC /* AdonisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisApp.swift; sourceTree = "<group>"; };
 		8F9CEF90A526C494BB54FE1C /* WardrobeVisualSignatureBackfillServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeVisualSignatureBackfillServiceTests.swift; sourceTree = "<group>"; };
+		8FE9F59DB28250B8424C6E9A /* CreationImageIntentRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreationImageIntentRouter.swift; sourceTree = "<group>"; };
 		93561339C973C07D4E699E67 /* Adonis.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Adonis.entitlements; sourceTree = "<group>"; };
 		94AFB89D4E0698D5253B8179 /* sample-01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-01.png"; sourceTree = "<group>"; };
 		94E389967339AE810B636BC5 /* AdonisUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AdonisUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -429,6 +433,7 @@
 			children = (
 				B38F411331B65351C1CAD620 /* BotanicalPosterRenderer.swift */,
 				7C03A1F1A7D0EEB66DEFF4A0 /* CameraAccessService.swift */,
+				8FE9F59DB28250B8424C6E9A /* CreationImageIntentRouter.swift */,
 				0186D2D1F78413A6E49A667B /* CreativeImageGenerator.swift */,
 				C1B1A15E8C6B70949C15A9F4 /* CreativeWorkStore.swift */,
 				25E8AFAA6F0C9A18F809F167 /* DigitalCabinetCatalog.swift */,
@@ -557,6 +562,7 @@
 				DAE9700DD179F9FED5BD0771 /* AccessibilityContractTests.swift */,
 				7AB1D2A5F0BB7417956978D1 /* BotanicalPosterRendererTests.swift */,
 				9E1E63F7937FAF7439D6F7C8 /* CameraAccessServiceTests.swift */,
+				89AFF60679B8CA5BCAF241B5 /* CreationImageIntentRouterTests.swift */,
 				DA10D5FA1DB989DA878F60C5 /* CreativeExecutionMetadataTests.swift */,
 				26730AA330FC08E9991185AE /* CreativeRecipeTests.swift */,
 				434321784CD9E2B92951B1A1 /* CreativeWorkPersistenceTests.swift */,
@@ -765,6 +771,7 @@
 				4509285B952C40CC075B1C2B /* AccessibilityContractTests.swift in Sources */,
 				9F532669F1BA869ADF5A67DA /* BotanicalPosterRendererTests.swift in Sources */,
 				05A102A14D5F8953BA875A93 /* CameraAccessServiceTests.swift in Sources */,
+				06A05D44805D06E3407E2EAA /* CreationImageIntentRouterTests.swift in Sources */,
 				10D1927B65014AB7464E6E52 /* CreativeExecutionMetadataTests.swift in Sources */,
 				1ADB0DC38AD01A93CD87900E /* CreativeRecipeTests.swift in Sources */,
 				1F8D3FF50DA0A69824798E86 /* CreativeWorkPersistenceTests.swift in Sources */,
@@ -820,6 +827,7 @@
 				0383F37EB4CD45A47D50D350 /* CameraPicker.swift in Sources */,
 				14BFCF74C380ED0981B92AFC /* Components.swift in Sources */,
 				9E01DF7A621C13A85C8BC96F /* CreateView.swift in Sources */,
+				284667C6DA4992B75FB25DA2 /* CreationImageIntentRouter.swift in Sources */,
 				EB1229F8ACFF36730AC95C0A /* CreativeExecutionMetadata.swift in Sources */,
 				8DC15267F1F14B1DDA0A9125 /* CreativeImageGenerator.swift in Sources */,
 				01AF3D91BEAB7FF812586147 /* CreativeRecipe.swift in Sources */,

@@ -19,7 +19,7 @@ struct AppRootView: View {
   var body: some View {
     TabView(selection: $selection) {
       NavigationStack {
-        CreateView()
+        CreateView(onOpenWardrobe: { selection = .wardrobe })
       }
       .tabItem {
         Label("创作", systemImage: "sparkles.rectangle.stack.fill")
