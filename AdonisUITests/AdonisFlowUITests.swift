@@ -687,6 +687,77 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  func testPreparedStickerCanBeSavedToPhotosWithoutLeavingResult() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: ["-ui-testing", "-ui-testing-photo-save-success"]
+    )
+    app.launch()
+
+    let firstSample = app.buttons["sample-01"]
+    XCTAssertTrue(firstSample.waitForExistence(timeout: 8))
+    firstSample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 8))
+
+    let saveSticker = app.buttons["save-sticker-to-photos"]
+    XCTAssertTrue(scrollToHittable(saveSticker, in: app, attempts: 10))
+    XCTAssertEqual(saveSticker.label, "存透明贴纸")
+    saveSticker.tap()
+
+    let saved = XCTNSPredicateExpectation(
+      predicate: NSPredicate(format: "label == %@", "贴纸已存到相册"),
+      object: saveSticker
+    )
+    XCTAssertEqual(XCTWaiter.wait(for: [saved], timeout: 4), .completed)
+    XCTAssertTrue(app.staticTexts["result-title"].exists)
+    XCTAssertFalse(app.alerts.element.exists)
+    keepScreenshot(named: "Adonis-sticker-saved-to-photos")
+  }
+
+  @MainActor
+  func testDeniedPhotoSaveOffersStickerShareWithoutLosingResult() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: ["-ui-testing", "-ui-testing-photo-save-denied"]
+    )
+    app.launch()
+
+    let firstSample = app.buttons["sample-01"]
+    XCTAssertTrue(firstSample.waitForExistence(timeout: 8))
+    firstSample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 8))
+
+    let saveSticker = app.buttons["save-sticker-to-photos"]
+    XCTAssertTrue(scrollToHittable(saveSticker, in: app, attempts: 10))
+    saveSticker.tap()
+
+    let failure = app.descendants(matching: .any)["photo-save-failure"]
+    XCTAssertTrue(failure.waitForExistence(timeout: 4))
+    XCTAssertTrue(failure.label.contains("没有存进相册"))
+    XCTAssertTrue(failure.label.contains("权限"))
+    XCTAssertTrue(failure.label.contains("原贴纸还在"))
+    XCTAssertEqual(saveSticker.label, "再试一次")
+    XCTAssertFalse(app.alerts.element.exists)
+    keepScreenshot(named: "Adonis-photo-save-permission-fallback")
+
+    let shareFallback = app.buttons["photo-save-share-fallback"]
+    XCTAssertTrue(scrollToHittable(shareFallback, in: app, attempts: 5))
+    XCTAssertEqual(shareFallback.label, "分享贴纸")
+    XCTAssertEqual(
+      app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "分享")).count,
+      1
+    )
+    shareFallback.tap()
+
+    XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
+    app.buttons["关闭"].tap()
+    XCTAssertTrue(app.staticTexts["result-title"].exists)
+    XCTAssertTrue(
+      app.segmentedControls["result-mode-picker"].buttons["透明贴纸"].isSelected
+    )
+  }
+
+  @MainActor
   func testPreparedSampleCanBeCollectedAndFoundInBloomCalendar() throws {
     let app = XCUIApplication()
     app.launchArguments.append("-ui-testing")

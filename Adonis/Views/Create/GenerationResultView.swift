@@ -5,6 +5,7 @@ struct GenerationResultView: View {
   let draft: GenerationDraft
   let initiallySaved: Bool
   let creativeImageGenerator: any CreativeImageGenerating
+  let photoLibrarySaver: PhotoLibrarySaver
   let onSave: () throws -> Void
   let onSaveCreative: (CreativeWorkDraft) throws -> Void
   let onReset: () -> Void
@@ -18,6 +19,7 @@ struct GenerationResultView: View {
   @State private var showCuratedStylePicker = false
   @State private var digitalFigurineCard: DigitalFigurineCardPresentation?
   @State private var creativeWork: CreativeWorkPresentation?
+  @State private var photoSaveState: StickerPhotoSaveState = .idle
   @State private var saveError: String?
   @State private var figurineError: String?
   @State private var creativeWorkError: String?
@@ -31,6 +33,7 @@ struct GenerationResultView: View {
     draft: GenerationDraft,
     initiallySaved: Bool,
     creativeImageGenerator: any CreativeImageGenerating,
+    photoLibrarySaver: PhotoLibrarySaver = .configuredForCurrentProcess,
     onSave: @escaping () throws -> Void,
     onSaveCreative: @escaping (CreativeWorkDraft) throws -> Void,
     onReset: @escaping () -> Void
@@ -38,6 +41,7 @@ struct GenerationResultView: View {
     self.draft = draft
     self.initiallySaved = initiallySaved
     self.creativeImageGenerator = creativeImageGenerator
+    self.photoLibrarySaver = photoLibrarySaver
     self.onSave = onSave
     self.onSaveCreative = onSaveCreative
     self.onReset = onReset
@@ -687,34 +691,129 @@ struct GenerationResultView: View {
 
       AccessibilityAdaptiveStack(spacing: 12) {
         Button {
-          showShare = true
+          saveStickerToPhotos()
         } label: {
-          Label("分享", systemImage: "square.and.arrow.up")
-            .font(.system(.headline, design: .rounded, weight: .bold))
-            .foregroundStyle(AdonisTheme.ink)
-            .frame(maxWidth: .infinity, minHeight: 52)
-            .background(
-              .white.opacity(0.78), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+          HStack(spacing: 8) {
+            if photoSaveState == .saving {
+              ProgressView()
+                .tint(AdonisTheme.ink)
+            } else {
+              Image(
+                systemName: photoSaveState == .saved
+                  ? "checkmark.circle.fill" : "square.and.arrow.down"
+              )
+            }
+            Text(photoSaveState.buttonTitle)
+          }
+          .font(.system(.headline, design: .rounded, weight: .bold))
+          .foregroundStyle(AdonisTheme.ink)
+          .frame(maxWidth: .infinity, minHeight: 52)
+          .background(
+            AdonisTheme.leaf.opacity(0.22),
+            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+          )
         }
         .buttonStyle(StickerButtonStyle())
-        .accessibilityIdentifier("share-result")
+        .disabled(photoSaveState == .saving || photoSaveState == .saved)
+        .accessibilityIdentifier("save-sticker-to-photos")
 
         Button {
-          onReset()
-          dismiss()
+          if photoSaveState.isFailure {
+            mode = .sticker
+          }
+          showShare = true
         } label: {
-          Label("再做一张", systemImage: "arrow.clockwise")
-            .font(.system(.headline, design: .rounded, weight: .bold))
-            .foregroundStyle(AdonisTheme.ink)
-            .frame(maxWidth: .infinity, minHeight: 52)
-            .background(
-              AdonisTheme.butter.opacity(0.72),
-              in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+          Label(
+            photoSaveState.isFailure ? "分享贴纸" : "分享",
+            systemImage: "square.and.arrow.up"
+          )
+          .font(.system(.headline, design: .rounded, weight: .bold))
+          .foregroundStyle(AdonisTheme.ink)
+          .frame(maxWidth: .infinity, minHeight: 52)
+          .background(
+            .white.opacity(0.78), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
         .buttonStyle(StickerButtonStyle())
-        .accessibilityIdentifier("make-another")
+        .accessibilityIdentifier(
+          photoSaveState.isFailure ? "photo-save-share-fallback" : "share-result"
+        )
+      }
+
+      if case .failed(let error) = photoSaveState {
+        photoSaveFailureNotice(error)
+      }
+
+      Button {
+        onReset()
+        dismiss()
+      } label: {
+        Label("再做一张", systemImage: "arrow.clockwise")
+          .font(.system(.headline, design: .rounded, weight: .bold))
+          .foregroundStyle(AdonisTheme.ink)
+          .frame(maxWidth: .infinity, minHeight: 52)
+          .background(
+            AdonisTheme.butter.opacity(0.72),
+            in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+      }
+      .buttonStyle(StickerButtonStyle())
+      .accessibilityIdentifier("make-another")
+    }
+  }
+
+  private func saveStickerToPhotos() {
+    guard photoSaveState != .saving, photoSaveState != .saved else { return }
+    photoSaveState = .saving
+    Task { @MainActor in
+      do {
+        try await photoLibrarySaver.save(draft.stickerImage)
+        photoSaveState = .saved
+        EventLogger.log(
+          .stickerPhotoSaved,
+          detail: "asset=sticker",
+          inputSource: draft.inputSource,
+          in: modelContext
+        )
+      } catch {
+        let saveError = error as? PhotoLibrarySaveError ?? .writeFailed
+        photoSaveState = .failed(saveError)
+        EventLogger.log(
+          .stickerPhotoSaveFailed,
+          detail: "asset=sticker;reason=\(saveError.eventCode)",
+          inputSource: draft.inputSource,
+          in: modelContext
+        )
       }
     }
+  }
+
+  private func photoSaveFailureNotice(_ error: PhotoLibrarySaveError) -> some View {
+    HStack(alignment: .top, spacing: 10) {
+      Image(systemName: "photo.badge.exclamationmark")
+        .font(.system(size: 18, weight: .bold))
+        .foregroundStyle(AdonisTheme.ink)
+        .frame(width: 28, height: 28)
+        .accessibilityHidden(true)
+
+      VStack(alignment: .leading, spacing: 5) {
+        Text("没有存进相册")
+          .font(.system(.headline, design: .rounded, weight: .bold))
+          .foregroundStyle(AdonisTheme.ink)
+        Text(error.localizedDescription)
+          .font(.subheadline)
+          .foregroundStyle(AdonisTheme.secondaryInk)
+        Text("原贴纸还在，可以点“分享贴纸”继续，收藏也不受影响。")
+          .font(.footnote)
+          .foregroundStyle(AdonisTheme.secondaryInk)
+      }
+      .fixedSize(horizontal: false, vertical: true)
+    }
+    .padding(15)
+    .background(
+      AdonisTheme.butter.opacity(0.46),
+      in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+    )
+    .accessibilityElement(children: .combine)
+    .accessibilityIdentifier("photo-save-failure")
   }
 
   private var saveButtonTitle: String {
@@ -728,5 +827,26 @@ struct GenerationResultView: View {
       return draft.completionMode.resultTitle
     }
     return draft.qualityAssessment.requiresReview ? "先看看这张贴纸" : "今天开了一朵花"
+  }
+}
+
+private enum StickerPhotoSaveState: Equatable {
+  case idle
+  case saving
+  case saved
+  case failed(PhotoLibrarySaveError)
+
+  var buttonTitle: String {
+    switch self {
+    case .idle: "存透明贴纸"
+    case .saving: "正在保存贴纸"
+    case .saved: "贴纸已存到相册"
+    case .failed: "再试一次"
+    }
+  }
+
+  var isFailure: Bool {
+    if case .failed = self { return true }
+    return false
   }
 }

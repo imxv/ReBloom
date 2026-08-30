@@ -120,6 +120,8 @@ enum AppEventKind: String {
   case generationQualityRejected
   case outfitSaved
   case outfitDeleted
+  case stickerPhotoSaved
+  case stickerPhotoSaveFailed
   case digitalFigurineCardCreated
   case digitalFigurineCardShareOpened
   case creativeWorkGenerationStarted
@@ -166,6 +168,8 @@ enum AppEventKind: String {
     case .generationQualityRejected: "贴纸质量未通过"
     case .outfitSaved: "保存穿搭"
     case .outfitDeleted: "删除穿搭"
+    case .stickerPhotoSaved: "贴纸存入相册"
+    case .stickerPhotoSaveFailed: "贴纸未存入相册"
     case .digitalFigurineCardCreated: "生成手办收藏卡"
     case .digitalFigurineCardShareOpened: "打开手办卡分享"
     case .creativeWorkGenerationStarted: "开始生成创作作品"
