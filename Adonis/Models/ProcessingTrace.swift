@@ -20,7 +20,8 @@ enum EventInputSource: String, Sendable {
 
 enum AdonisProcessingVersion {
   static let sticker = "sticker-vision-edge-refine-v2"
-  static let stickerQuality = "sticker-quality-raw-and-delivery-v2"
+  static let stickerSourceFidelity = "sticker-source-fidelity-v1"
+  static let stickerQuality = "sticker-quality-raw-fidelity-delivery-v3"
   static let shareCard = "share-card-v1"
   static let digitalFigurineCard = "digital-figurine-card-v1"
   static let botanicalPoster = "botanical-poster-v1"
@@ -41,7 +42,7 @@ enum AdonisProcessingVersion {
   static let wardrobeHistoryMatching = "wardrobe-history-backfill-v1"
   static let sharedWardrobeInbox = SharedImageInbox.version
   static let generationPipeline =
-    "\(sticker)+\(stickerQuality)+\(shareCard)+\(outfitObservation)"
+    "\(sticker)+\(stickerSourceFidelity)+\(stickerQuality)+\(shareCard)+\(outfitObservation)"
 }
 
 enum GenerationPerformanceStage: String, CaseIterable, Codable, Sendable {

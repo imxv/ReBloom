@@ -8,6 +8,7 @@ struct StickerProcessingResult {
   let elapsedMilliseconds: Int
   let foregroundCoverage: Double
   let rawMatteAssessment: StickerQualityAssessment
+  let sourceFidelityAssessment: StickerQualityAssessment
 }
 
 struct StickerProcessor {
@@ -29,13 +30,16 @@ struct StickerProcessor {
         image: result.image,
         elapsedMilliseconds: milliseconds,
         foregroundCoverage: result.rawMatteReport.foregroundCoverage,
-        rawMatteAssessment: result.rawMatteReport.assessment
+        rawMatteAssessment: result.rawMatteReport.assessment,
+        sourceFidelityAssessment: result.sourceFidelityReport.assessment
       )
     }.value
   }
 
   private static func processSynchronously(_ image: UIImage) throws -> (
-    image: UIImage, rawMatteReport: RawMatteQualityReport
+    image: UIImage,
+    rawMatteReport: RawMatteQualityReport,
+    sourceFidelityReport: StickerSourceFidelityReport
   ) {
     guard
       let source = CIImage(
@@ -100,6 +104,11 @@ struct StickerProcessor {
       coarseMask: CIImage(cvPixelBuffer: maskBuffer)
     )
     let mask = matte.mask
+    let sourceFidelityReport = StickerSourceFidelityAssessor.assessSynchronously(
+      source: source,
+      subject: matte.subject,
+      mask: mask
+    )
 
     let outlineRadius = max(12, min(sourceExtent.width, sourceExtent.height) * 0.014)
     let padding = ceil(outlineRadius * 2.25)
@@ -155,7 +164,8 @@ struct StickerProcessor {
     let deliveryImage = ensureMinimumLongEdge(cropped, minimum: 1_536) ?? cropped
     return (
       UIImage(cgImage: deliveryImage, scale: image.scale, orientation: .up),
-      rawMatteReport
+      rawMatteReport,
+      sourceFidelityReport
     )
   }
 

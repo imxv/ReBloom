@@ -97,6 +97,7 @@
 		9B602EBDC60D54899EEC2A88 /* CreativeWorkStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B1A15E8C6B70949C15A9F4 /* CreativeWorkStore.swift */; };
 		9E01DF7A621C13A85C8BC96F /* CreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F443048A8AB2396EC8490E /* CreateView.swift */; };
 		9F532669F1BA869ADF5A67DA /* BotanicalPosterRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB1D2A5F0BB7417956978D1 /* BotanicalPosterRendererTests.swift */; };
+		9FC987B25EAA658A079CD409 /* StickerSourceFidelityAssessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4AAE339A2F47C684422A875 /* StickerSourceFidelityAssessor.swift */; };
 		A2EE6457FD6A5063FF426A21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 110BE262F9946F560C99A9F5 /* Assets.xcassets */; };
 		A3C31C98F4B24DB19FBF59B0 /* ModelStorePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3F11BF77ECCA2BC7A4D5AB /* ModelStorePolicy.swift */; };
 		A4B0FE56940EA5F4BA8757B1 /* StickerTryOnRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D283843786FEC37B1CDECF1A /* StickerTryOnRenderer.swift */; };
@@ -112,6 +113,7 @@
 		AF2F7F5C8C190F1FE8B1B9B5 /* regression-baseline.json in Resources */ = {isa = PBXBuildFile; fileRef = FDAAA9947C77EB91D4FB6673 /* regression-baseline.json */; };
 		B025F76F64788BA52A25BFBE /* VisualContentProvenance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E35A62405F04F4C91FD146 /* VisualContentProvenance.swift */; };
 		B35B3060779D997EAE415A31 /* MonthlyLookbookRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408C9AA9D74B072D0D2B914D /* MonthlyLookbookRendererTests.swift */; };
+		B7784EC444E9858C331A12DA /* StickerSourceFidelityAssessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E2FCF2970976A7D6F9345D0 /* StickerSourceFidelityAssessorTests.swift */; };
 		B8E00E8E01CF44D38A6F50C0 /* WardrobeImageAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344C0FB1909A7A7BC018E316 /* WardrobeImageAnalyzer.swift */; };
 		B91099B5CE86DAFF6F01CD6E /* SeasonalBloomCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B770746CA1D17ADDA6BB6C0 /* SeasonalBloomCatalog.swift */; };
 		B9540D2F881B8B9964CA15EC /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12FE82838AC414CFC2DB702A /* ShareViewController.swift */; };
@@ -231,6 +233,7 @@
 		488238D5BC109C8E72A5B60F /* DigitalFigurineCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalFigurineCardRendererTests.swift; sourceTree = "<group>"; };
 		4A637377461748CC37830D9C /* sample-04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-04.png"; sourceTree = "<group>"; };
 		4D05F8A9D74EA80804DC6A13 /* ProcessingTrace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingTrace.swift; sourceTree = "<group>"; };
+		4E2FCF2970976A7D6F9345D0 /* StickerSourceFidelityAssessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerSourceFidelityAssessorTests.swift; sourceTree = "<group>"; };
 		51B14671AF376DB8E9B11E1E /* WardrobeHistoryMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeHistoryMatcherTests.swift; sourceTree = "<group>"; };
 		53AA69B4A22D8C05F5AFABC1 /* CreativeWorkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeWorkView.swift; sourceTree = "<group>"; };
 		57F443048A8AB2396EC8490E /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
@@ -289,6 +292,7 @@
 		BEE29B87471D0B83F42701EE /* MediaStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStoreTests.swift; sourceTree = "<group>"; };
 		C1B1A15E8C6B70949C15A9F4 /* CreativeWorkStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeWorkStore.swift; sourceTree = "<group>"; };
 		C41C63FE0943B218F96DECA0 /* WardrobeItemImageUpgradeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemImageUpgradeView.swift; sourceTree = "<group>"; };
+		C4AAE339A2F47C684422A875 /* StickerSourceFidelityAssessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerSourceFidelityAssessor.swift; sourceTree = "<group>"; };
 		C7465AE6ACD185AA0E329EA9 /* WardrobeCandidateMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeCandidateMatcher.swift; sourceTree = "<group>"; };
 		C84B9E71530DDF935E512FE1 /* GarmentObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarmentObservation.swift; sourceTree = "<group>"; };
 		C88F3E9DA33A9CF6B2A875C1 /* LocalSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSettingsView.swift; sourceTree = "<group>"; };
@@ -458,6 +462,7 @@
 				3C39A08871E7FA9D441EFA0C /* StickerMatteRefiner.swift */,
 				5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */,
 				9E8A29F732DC9640A560F982 /* StickerQualityAssessor.swift */,
+				C4AAE339A2F47C684422A875 /* StickerSourceFidelityAssessor.swift */,
 				EE91E92DAF327FBEA50C6384 /* StickerTryOnDeliveryQualityGate.swift */,
 				D283843786FEC37B1CDECF1A /* StickerTryOnRenderer.swift */,
 				C7465AE6ACD185AA0E329EA9 /* WardrobeCandidateMatcher.swift */,
@@ -590,6 +595,7 @@
 				9FB8BA212918235F17CA5D29 /* StickerMatteRefinerTests.swift */,
 				4718CD6CE45E819A6AC83529 /* StickerProcessorTests.swift */,
 				84136BBEA95D26BF94F117B2 /* StickerQualityAssessorTests.swift */,
+				4E2FCF2970976A7D6F9345D0 /* StickerSourceFidelityAssessorTests.swift */,
 				25E40D15D0065F44DBB5AA9D /* StickerTryOnRendererTests.swift */,
 				75B8591003804E662E9435F6 /* VisualContentProvenanceTests.swift */,
 				9E2ED59B556B639C01144CF3 /* WardrobeCandidateMatcherTests.swift */,
@@ -799,6 +805,7 @@
 				2CB39E3DDC2657480846D84E /* StickerMatteRefinerTests.swift in Sources */,
 				4AFB40403A8C7A8584F3CEE9 /* StickerProcessorTests.swift in Sources */,
 				32CA5F7642FEEC25E743F46E /* StickerQualityAssessorTests.swift in Sources */,
+				B7784EC444E9858C331A12DA /* StickerSourceFidelityAssessorTests.swift in Sources */,
 				D6FB5F738BE15198F3C00A1D /* StickerTryOnRendererTests.swift in Sources */,
 				1CCF473DA8BAD7E4925CADF6 /* VisualContentProvenanceTests.swift in Sources */,
 				833D591989DF8A521A68D1C1 /* WardrobeCandidateMatcherTests.swift in Sources */,
@@ -874,6 +881,7 @@
 				38385A8843FD7D39731262D1 /* StickerProcessor.swift in Sources */,
 				148602CF072B947FCFB05C98 /* StickerQualityAssessment.swift in Sources */,
 				A6BCE233749F8E06DE8D9CB4 /* StickerQualityAssessor.swift in Sources */,
+				9FC987B25EAA658A079CD409 /* StickerSourceFidelityAssessor.swift in Sources */,
 				2EAE4369D2BD6AEE3C58AD76 /* StickerTryOnDeliveryQualityGate.swift in Sources */,
 				E17514A945CF405250F4245F /* StickerTryOnEntry.swift in Sources */,
 				A4B0FE56940EA5F4BA8757B1 /* StickerTryOnRenderer.swift in Sources */,

@@ -6,13 +6,15 @@ struct StickerQualityAssessor {
   func assess(
     sticker: UIImage,
     foregroundCoverage: Double,
-    rawMatteAssessment: StickerQualityAssessment = .acceptable
+    rawMatteAssessment: StickerQualityAssessment = .acceptable,
+    sourceFidelityAssessment: StickerQualityAssessment = .acceptable
   ) async -> StickerQualityAssessment {
     await Task.detached(priority: .userInitiated) {
       Self.assessSynchronously(
         sticker: sticker,
         foregroundCoverage: foregroundCoverage,
-        rawMatteAssessment: rawMatteAssessment
+        rawMatteAssessment: rawMatteAssessment,
+        sourceFidelityAssessment: sourceFidelityAssessment
       )
     }.value
   }
@@ -20,10 +22,14 @@ struct StickerQualityAssessor {
   static func assessSynchronously(
     sticker: UIImage,
     foregroundCoverage: Double,
-    rawMatteAssessment: StickerQualityAssessment = .acceptable
+    rawMatteAssessment: StickerQualityAssessment = .acceptable,
+    sourceFidelityAssessment: StickerQualityAssessment = .acceptable
   ) -> StickerQualityAssessment {
     if rawMatteAssessment.isRejected {
       return rawMatteAssessment
+    }
+    if sourceFidelityAssessment.isRejected {
+      return sourceFidelityAssessment
     }
     guard let measurement = StickerQualityMeasurement(image: sticker) else {
       return StickerQualityAssessment(level: .rejected, issues: [.subjectMissing])

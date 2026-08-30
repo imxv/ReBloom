@@ -22,6 +22,7 @@ sample-regression: project
 		-only-testing:AdonisTests/StickerMatteRefinerTests \
 		-only-testing:AdonisTests/StickerProcessorTests \
 		-only-testing:AdonisTests/RawMatteQualityAssessorTests \
+		-only-testing:AdonisTests/StickerSourceFidelityAssessorTests \
 		-only-testing:AdonisTests/StickerQualityAssessorTests
 
 accessibility-regression: project

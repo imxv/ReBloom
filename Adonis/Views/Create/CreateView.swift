@@ -859,7 +859,8 @@ struct CreateView: View {
           image: preparedSticker,
           elapsedMilliseconds: 0,
           foregroundCoverage: 0,
-          rawMatteAssessment: preparedMatteAssessment
+          rawMatteAssessment: preparedMatteAssessment,
+          sourceFidelityAssessment: .acceptable
         )
       } else {
         processed = try await processor.process(image)
@@ -875,7 +876,8 @@ struct CreateView: View {
       let qualityAssessment = await qualityAssessor.assess(
         sticker: processed.image,
         foregroundCoverage: processed.foregroundCoverage,
-        rawMatteAssessment: processed.rawMatteAssessment
+        rawMatteAssessment: processed.rawMatteAssessment,
+        sourceFidelityAssessment: processed.sourceFidelityAssessment
       )
       recorder.finish(.qualityAssessment)
       guard activeGenerationID == generationID else { return }

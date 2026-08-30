@@ -170,10 +170,19 @@ final class ProcessingTraceTests: XCTestCase {
     )
   }
 
-  func testGenerationPipelineIncludesRawMatteAndDeliveryQualityAssessment() {
+  func testGenerationPipelineIncludesRawMatteSourceFidelityAndDeliveryQualityAssessment() {
+    XCTAssertEqual(
+      StickerSourceFidelityAssessor.version,
+      "sticker-source-fidelity-v1"
+    )
     XCTAssertEqual(
       StickerQualityAssessor.version,
-      "sticker-quality-raw-and-delivery-v2"
+      "sticker-quality-raw-fidelity-delivery-v3"
+    )
+    XCTAssertTrue(
+      AdonisProcessingVersion.generationPipeline.contains(
+        StickerSourceFidelityAssessor.version
+      )
     )
     XCTAssertTrue(
       AdonisProcessingVersion.generationPipeline.contains(StickerQualityAssessor.version)

@@ -105,12 +105,30 @@ final class StickerQualityAssessorTests: XCTestCase {
     XCTAssertTrue(assessment.issues.contains(.edgeMayIncludeBackground))
   }
 
+  func testSourceFidelityRejectionOverridesDeliveryReadySticker() throws {
+    let sticker = try XCTUnwrap(SampleCatalog.photos.first?.preparedStickerImage())
+    let sourceFidelityAssessment = StickerQualityAssessment(
+      level: .rejected,
+      issues: [.sourcePixelsChanged]
+    )
+
+    let assessment = StickerQualityAssessor.assessSynchronously(
+      sticker: sticker,
+      foregroundCoverage: 0.3,
+      sourceFidelityAssessment: sourceFidelityAssessment
+    )
+
+    XCTAssertEqual(assessment.level, .rejected)
+    XCTAssertTrue(assessment.issues.contains(.sourcePixelsChanged))
+  }
+
   func testRejectedQualityCopyNeverOffersAnUnavailableStickerPreview() {
     let rejectedIssues: [StickerQualityIssue] = [
       .subjectMissing,
       .subjectFragmented,
       .backgroundNotSeparated,
       .backgroundAdhesionSuspected,
+      .sourcePixelsChanged,
     ]
 
     for issue in rejectedIssues {

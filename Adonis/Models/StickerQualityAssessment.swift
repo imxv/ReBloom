@@ -14,6 +14,7 @@ enum StickerQualityIssue: String, Codable, CaseIterable, Hashable, Sendable {
   case edgeMayIncludeBackground = "edge_may_include_background"
   case outlineMayBeBroken = "outline_may_be_broken"
   case subjectTooSmall = "subject_too_small"
+  case sourcePixelsChanged = "source_pixels_changed"
 }
 
 struct StickerQualityAssessment: Codable, Equatable, Hashable, Sendable {
@@ -56,6 +57,9 @@ struct StickerQualityAssessment: Codable, Equatable, Hashable, Sendable {
 
   var userDetail: String {
     if isRejected {
+      if issues.contains(.sourcePixelsChanged) {
+        return "检测到处理结果改变了人物或衣物的颜色或细节，这张不会继续做成收藏卡。请换一张照片再试，原始照片不会被修改。"
+      }
       if issues.contains(.backgroundAdhesionSuspected) {
         return "人物旁边带进了较大块背景，这张不会继续做成收藏卡。换一张人物与家具、墙面更分开的照片吧。"
       }
