@@ -17,6 +17,8 @@ final class OutfitRecord {
   var stickerQualityVersion: String = AdonisProcessingVersion.stickerQuality
   @Relationship(deleteRule: .cascade, inverse: \GarmentObservation.outfit)
   var garmentObservations: [GarmentObservation] = []
+  @Relationship(deleteRule: .cascade, inverse: \CreativeWork.sourceOutfit)
+  var creativeWorks: [CreativeWork] = []
 
   var stickerQualityAssessment: StickerQualityAssessment {
     StickerQualityAssessment(
@@ -41,7 +43,8 @@ final class OutfitRecord {
     generationCompletionMode: GenerationCompletionMode = .complete,
     stickerQualityAssessment: StickerQualityAssessment = .acceptable,
     stickerQualityVersion: String = AdonisProcessingVersion.stickerQuality,
-    garmentObservations: [GarmentObservation] = []
+    garmentObservations: [GarmentObservation] = [],
+    creativeWorks: [CreativeWork] = []
   ) {
     self.id = id
     self.createdAt = createdAt
@@ -56,5 +59,6 @@ final class OutfitRecord {
     self.stickerQualityIssueRawValues = stickerQualityAssessment.issueRawValues
     self.stickerQualityVersion = stickerQualityVersion
     self.garmentObservations = garmentObservations
+    self.creativeWorks = creativeWorks
   }
 }

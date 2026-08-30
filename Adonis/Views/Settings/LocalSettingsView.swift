@@ -7,6 +7,7 @@ struct LocalSettingsView: View {
   @Environment(\.modelContext) private var modelContext
   @Query(sort: \AppEvent.createdAt, order: .reverse) private var events: [AppEvent]
   @Query private var records: [OutfitRecord]
+  @Query private var creativeWorks: [CreativeWork]
   @Query private var items: [WardrobeItem]
   @Query private var observations: [GarmentObservation]
 
@@ -61,7 +62,7 @@ struct LocalSettingsView: View {
       Button("全部删除", role: .destructive, action: clearAllData)
       Button("取消", role: .cancel) {}
     } message: {
-      Text("会删除原图、贴纸、收藏卡、衣橱、处理记录和待导入图片，无法撤销。")
+      Text("会删除原图、贴纸、收藏卡、创作作品、衣橱、处理记录和待导入图片，无法撤销。")
     }
     .alert("已经清空本地数据", isPresented: $showClearSuccess) {
       Button("知道了", role: .cancel) {}
@@ -113,6 +114,7 @@ struct LocalSettingsView: View {
   private var localContentSection: some View {
     Section("本地内容") {
       privacyCount("穿搭记录", count: records.count, identifier: "privacy-outfit-count")
+      privacyCount("创作作品", count: creativeWorks.count, identifier: "privacy-creative-count")
       privacyCount("衣橱单品", count: items.count, identifier: "privacy-wardrobe-count")
       privacyCount(
         "待确认线索",
@@ -151,7 +153,7 @@ struct LocalSettingsView: View {
     } header: {
       Text("带走或删除")
     } footer: {
-      Text("导出包包含原图、贴纸、收藏卡、衣橱和本机处理记录。全部删除还会清空尚未导入的分享图片，无法撤销。")
+      Text("导出包包含原图、贴纸、收藏卡、创作作品、衣橱和本机处理记录。全部删除还会清空尚未导入的分享图片，无法撤销。")
     }
   }
 

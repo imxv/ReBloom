@@ -11,8 +11,10 @@ struct OutfitDetailView: View {
   @State private var visualAsset: OutfitVisualAsset
   @State private var showShare = false
   @State private var digitalFigurineCard: DigitalFigurineCardPresentation?
+  @State private var selectedCreativeWork: CreativeWorkPresentation?
   @State private var showDeleteConfirmation = false
   @State private var figurineError: String?
+  @State private var creativeWorkError: String?
 
   init(record: OutfitRecord, onDelete: @escaping () -> Void) {
     self.record = record
@@ -52,6 +54,10 @@ struct OutfitDetailView: View {
 
           DigitalFigurineCardEntry {
             makeDigitalFigurineCard()
+          }
+
+          if !record.creativeWorks.isEmpty {
+            creativeWorksSection
           }
 
           OutfitGarmentObservationsView(observations: record.garmentObservations)
@@ -115,6 +121,20 @@ struct OutfitDetailView: View {
         )
       }
     }
+    .sheet(item: $selectedCreativeWork) { presentation in
+      CreativeWorkView(
+        presentation: presentation,
+        onShareOpened: {
+          EventLogger.log(
+            .creativeWorkShareOpened,
+            detail: presentation.draft.recipe.traceDetail,
+            processingVersion: presentation.draft.recipe.version,
+            in: modelContext
+          )
+        }
+      )
+      .presentationDetents([.large])
+    }
     .alert(
       "手办卡还没做好",
       isPresented: Binding(
@@ -126,6 +146,17 @@ struct OutfitDetailView: View {
     } message: {
       Text(figurineError ?? "请稍后再试。")
     }
+    .alert(
+      "作品暂时打不开",
+      isPresented: Binding(
+        get: { creativeWorkError != nil },
+        set: { if !$0 { creativeWorkError = nil } }
+      )
+    ) {
+      Button("知道了", role: .cancel) {}
+    } message: {
+      Text(creativeWorkError ?? "请稍后再试。")
+    }
     .confirmationDialog("删除这一天？", isPresented: $showDeleteConfirmation) {
       Button("删除", role: .destructive) {
         onDelete()
@@ -133,8 +164,78 @@ struct OutfitDetailView: View {
       }
       Button("取消", role: .cancel) {}
     } message: {
-      Text("原图、贴纸和收藏卡都会从当前设备移除。")
+      Text("原图、贴纸、收藏卡和这一天收藏的创作都会从当前设备移除。")
     }
+  }
+
+  private var creativeWorksSection: some View {
+    VStack(alignment: .leading, spacing: 12) {
+      HStack(alignment: .firstTextBaseline) {
+        VStack(alignment: .leading, spacing: 3) {
+          Text("收藏的创作")
+            .font(.system(.headline, design: .rounded, weight: .black))
+            .foregroundStyle(AdonisTheme.ink)
+          Text("从这一天继续长出来的版本")
+            .font(.caption)
+            .foregroundStyle(AdonisTheme.secondaryInk)
+        }
+        Spacer(minLength: 8)
+        Text("\(record.creativeWorks.count) 张")
+          .font(.caption.weight(.bold))
+          .foregroundStyle(AdonisTheme.pomegranateInk)
+      }
+
+      ForEach(
+        record.creativeWorks.sorted {
+          $0.createdAt == $1.createdAt
+            ? $0.id.uuidString < $1.id.uuidString : $0.createdAt > $1.createdAt
+        }
+      ) { work in
+        Button {
+          open(work)
+        } label: {
+          HStack(spacing: 13) {
+            StoredImageView(filename: work.imageFilename, contentMode: .fill)
+              .frame(width: 68, height: 88)
+              .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+              .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 4) {
+              Text(work.recipe.title)
+                .font(.system(.subheadline, design: .rounded, weight: .black))
+                .foregroundStyle(AdonisTheme.ink)
+              Text("本机创作 · \(work.processingMilliseconds) 毫秒")
+                .font(.caption)
+                .foregroundStyle(AdonisTheme.secondaryInk)
+              Text("可对照原图、再次分享")
+                .font(.caption2)
+                .foregroundStyle(AdonisTheme.secondaryInk)
+            }
+
+            Spacer(minLength: 4)
+            Image(systemName: "chevron.right")
+              .font(.system(size: 13, weight: .black))
+              .foregroundStyle(AdonisTheme.ink)
+              .accessibilityHidden(true)
+          }
+          .padding(12)
+          .background(
+            AdonisTheme.lavender.opacity(0.2),
+            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+          )
+        }
+        .buttonStyle(StickerButtonStyle())
+        .accessibilityLabel(
+          "\(work.recipe.title)，本机创作，可对照原图、再次分享"
+        )
+        .accessibilityIdentifier("creative-work-history-entry")
+      }
+    }
+    .padding(16)
+    .background(
+      AdonisTheme.paper,
+      in: RoundedRectangle(cornerRadius: 22, style: .continuous)
+    )
   }
 
   @ViewBuilder
@@ -237,6 +338,27 @@ struct OutfitDetailView: View {
       image: image,
       bloomNumber: record.bloomNumber,
       date: record.createdAt
+    )
+  }
+
+  private func open(_ work: CreativeWork) {
+    guard let workImage = MediaStore.shared.image(filename: work.imageFilename),
+      let sourceImage = MediaStore.shared.image(filename: record.sourceImageFilename)
+    else {
+      creativeWorkError = "这张作品或它的原始照片暂时无法读取。原记录没有丢失，可以稍后再试。"
+      return
+    }
+
+    selectedCreativeWork = CreativeWorkPresentation(
+      draft: CreativeWorkDraft(
+        id: work.id,
+        createdAt: work.createdAt,
+        recipe: work.recipe,
+        image: workImage,
+        processingMilliseconds: work.processingMilliseconds
+      ),
+      sourceImage: sourceImage,
+      isSaved: true
     )
   }
 }

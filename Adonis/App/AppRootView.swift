@@ -175,5 +175,14 @@ private enum AppTab: Hashable {
 
 #Preview {
   AppRootView()
-    .modelContainer(for: [OutfitRecord.self, WardrobeItem.self, AppEvent.self], inMemory: true)
+    .modelContainer(
+      for: [
+        OutfitRecord.self,
+        GarmentObservation.self,
+        CreativeWork.self,
+        WardrobeItem.self,
+        AppEvent.self,
+      ],
+      inMemory: true
+    )
 }

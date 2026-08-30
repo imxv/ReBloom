@@ -8,7 +8,7 @@ struct PersonalDataArchive: Identifiable, Sendable {
 }
 
 struct PersonalDataArchiveService {
-  static let formatVersion = "adonis-personal-data-v5"
+  static let formatVersion = "adonis-personal-data-v6"
   static let exportDirectoryName = "AdonisExports"
 
   private let mediaStore: MediaStore
@@ -152,6 +152,7 @@ struct PersonalDataDeletionService {
   @MainActor
   func deleteAll(in modelContext: ModelContext, inbox: SharedImageInbox) throws {
     do {
+      try modelContext.fetch(FetchDescriptor<CreativeWork>()).forEach(modelContext.delete)
       try modelContext.fetch(FetchDescriptor<GarmentObservation>()).forEach(modelContext.delete)
       try modelContext.fetch(FetchDescriptor<OutfitRecord>()).forEach(modelContext.delete)
       try modelContext.fetch(FetchDescriptor<WardrobeItem>()).forEach(modelContext.delete)
@@ -219,6 +220,7 @@ private struct PersonalDataManifest: Encodable, Sendable {
   let adonisAutomaticNetworkUpload = false
   let systemBackupControlledByIOS = true
   let outfits: [ExportedOutfit]
+  let creativeWorks: [ExportedCreativeWork]
   let wardrobeItems: [ExportedWardrobeItem]
   let garmentObservations: [ExportedGarmentObservation]
   let processingEvents: [ExportedAppEvent]
@@ -240,64 +242,79 @@ private struct PersonalDataManifest: Encodable, Sendable {
     self.exportedAt = exportedAt
     self.appVersion = appVersion
     outfits = records.sorted { $0.createdAt < $1.createdAt }.map(ExportedOutfit.init)
+    creativeWorks =
+      records
+      .flatMap(\.creativeWorks)
+      .sorted { $0.createdAt < $1.createdAt }
+      .map(ExportedCreativeWork.init)
     wardrobeItems = items.sorted { $0.createdAt < $1.createdAt }.map(ExportedWardrobeItem.init)
     garmentObservations = observations.sorted { $0.createdAt < $1.createdAt }.map(
       ExportedGarmentObservation.init
     )
     processingEvents = events.sorted { $0.createdAt < $1.createdAt }.map(ExportedAppEvent.init)
-    visualAssets =
-      (records.flatMap { record in
-        [
-          ExportedVisualAsset(
-            path: "media/\(record.sourceImageFilename)",
-            role: "outfit_original_photo",
-            provenance: .userProvided,
-            ownerID: record.id
-          ),
-          ExportedVisualAsset(
-            path: "media/\(record.stickerImageFilename)",
-            role: "outfit_sticker",
-            provenance: .derivedFromOriginal,
-            ownerID: record.id,
-            qualityAssessment: record.stickerQualityAssessment,
-            qualityAssessmentVersion: record.stickerQualityVersion
-          ),
-          ExportedVisualAsset(
-            path: "media/\(record.cardImageFilename)",
-            role: "outfit_share_card",
-            provenance: .programmaticComposition,
-            ownerID: record.id,
-            qualityAssessment: record.stickerQualityAssessment,
-            qualityAssessmentVersion: record.stickerQualityVersion
-          ),
-        ]
-      }
-      + items.map { item in
+    let outfitAssets: [ExportedVisualAsset] = records.flatMap { record in
+      [
         ExportedVisualAsset(
-          path: "media/\(item.imageFilename)",
-          role: "wardrobe_item_image",
-          provenance: item.sourceKind == .outfitObservation
-            ? .derivedFromOriginal
-            : .userProvided,
-          ownerID: item.id
-        )
-      }
-      + observations.map { observation in
-        ExportedVisualAsset(
-          path: "media/\(observation.previewImageFilename)",
-          role: "garment_observation_preview",
-          provenance: .recognitionSuggestion,
-          ownerID: observation.id
-        )
-      }
-      + pendingSharedImagePaths.map { path in
-        ExportedVisualAsset(
-          path: path,
-          role: "pending_shared_image",
+          path: "media/\(record.sourceImageFilename)",
+          role: "outfit_original_photo",
           provenance: .userProvided,
-          ownerID: nil
-        )
-      }).sorted { lhs, rhs in
+          ownerID: record.id
+        ),
+        ExportedVisualAsset(
+          path: "media/\(record.stickerImageFilename)",
+          role: "outfit_sticker",
+          provenance: .derivedFromOriginal,
+          ownerID: record.id,
+          qualityAssessment: record.stickerQualityAssessment,
+          qualityAssessmentVersion: record.stickerQualityVersion
+        ),
+        ExportedVisualAsset(
+          path: "media/\(record.cardImageFilename)",
+          role: "outfit_share_card",
+          provenance: .programmaticComposition,
+          ownerID: record.id,
+          qualityAssessment: record.stickerQualityAssessment,
+          qualityAssessmentVersion: record.stickerQualityVersion
+        ),
+      ]
+    }
+    let creativeAssets: [ExportedVisualAsset] = records.flatMap(\.creativeWorks).map { work in
+      ExportedVisualAsset(
+        path: "media/\(work.imageFilename)",
+        role: "creative_work",
+        provenance: work.provenance,
+        ownerID: work.id
+      )
+    }
+    let wardrobeAssets: [ExportedVisualAsset] = items.map { item in
+      ExportedVisualAsset(
+        path: "media/\(item.imageFilename)",
+        role: "wardrobe_item_image",
+        provenance: item.sourceKind == .outfitObservation
+          ? .derivedFromOriginal
+          : .userProvided,
+        ownerID: item.id
+      )
+    }
+    let observationAssets: [ExportedVisualAsset] = observations.map { observation in
+      ExportedVisualAsset(
+        path: "media/\(observation.previewImageFilename)",
+        role: "garment_observation_preview",
+        provenance: .recognitionSuggestion,
+        ownerID: observation.id
+      )
+    }
+    let pendingAssets: [ExportedVisualAsset] = pendingSharedImagePaths.map { path in
+      ExportedVisualAsset(
+        path: path,
+        role: "pending_shared_image",
+        provenance: .userProvided,
+        ownerID: nil
+      )
+    }
+    visualAssets =
+      (outfitAssets + creativeAssets + wardrobeAssets + observationAssets + pendingAssets).sorted {
+        lhs, rhs in
         lhs.path == rhs.path ? lhs.role < rhs.role : lhs.path < rhs.path
       }
     mediaFiles = mediaPaths.sorted()
@@ -370,6 +387,31 @@ private struct ExportedOutfit: Encodable, Sendable {
     stickerQualityIssues = record.stickerQualityAssessment.issues.map(\.rawValue)
     stickerQualityRequiresReview = record.stickerQualityAssessment.requiresReview
     stickerQualityVersion = record.stickerQualityVersion
+  }
+}
+
+private struct ExportedCreativeWork: Encodable, Sendable {
+  let id: UUID
+  let createdAt: Date
+  let outfitID: UUID?
+  let recipe: String
+  let recipeVersion: String
+  let imagePath: String
+  let provenance: String
+  let containsAIGeneratedPixels: Bool
+  let processingMilliseconds: Int
+
+  @MainActor
+  init(_ work: CreativeWork) {
+    id = work.id
+    createdAt = work.createdAt
+    outfitID = work.sourceOutfit?.id
+    recipe = work.recipeRawValue
+    recipeVersion = work.recipeVersion
+    imagePath = "media/\(work.imageFilename)"
+    provenance = work.provenanceRawValue
+    containsAIGeneratedPixels = work.containsAIGeneratedPixels
+    processingMilliseconds = work.processingMilliseconds
   }
 }
 

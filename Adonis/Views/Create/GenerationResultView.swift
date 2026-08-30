@@ -5,6 +5,7 @@ struct GenerationResultView: View {
   let draft: GenerationDraft
   let initiallySaved: Bool
   let onSave: () throws -> Void
+  let onSaveCreative: (CreativeWorkDraft) throws -> Void
   let onReset: () -> Void
 
   @Environment(\.dismiss) private var dismiss
@@ -14,18 +15,22 @@ struct GenerationResultView: View {
   @State private var isSaved: Bool
   @State private var showShare = false
   @State private var digitalFigurineCard: DigitalFigurineCardPresentation?
+  @State private var creativeWork: CreativeWorkPresentation?
   @State private var saveError: String?
   @State private var figurineError: String?
+  @State private var creativeWorkError: String?
 
   init(
     draft: GenerationDraft,
     initiallySaved: Bool,
     onSave: @escaping () throws -> Void,
+    onSaveCreative: @escaping (CreativeWorkDraft) throws -> Void,
     onReset: @escaping () -> Void
   ) {
     self.draft = draft
     self.initiallySaved = initiallySaved
     self.onSave = onSave
+    self.onSaveCreative = onSaveCreative
     self.onReset = onReset
     _mode = State(
       initialValue: draft.completionMode == .basicStickerFallback
@@ -73,6 +78,10 @@ struct GenerationResultView: View {
 
           ContentProvenanceNotice(provenance: mode.provenance)
 
+          BotanicalPosterEntry {
+            makeBotanicalPoster()
+          }
+
           DigitalFigurineCardEntry {
             makeDigitalFigurineCard()
           }
@@ -91,6 +100,25 @@ struct GenerationResultView: View {
     .sheet(isPresented: $showShare) {
       ActivityView(items: [selectedImage])
         .presentationDetents([.medium, .large])
+    }
+    .sheet(item: $creativeWork) { presentation in
+      CreativeWorkView(
+        presentation: presentation,
+        onSave: {
+          try onSaveCreative(presentation.draft)
+          isSaved = true
+        },
+        onShareOpened: {
+          EventLogger.log(
+            .creativeWorkShareOpened,
+            detail: presentation.draft.recipe.traceDetail,
+            inputSource: draft.inputSource,
+            processingVersion: presentation.draft.recipe.version,
+            in: modelContext
+          )
+        }
+      )
+      .presentationDetents([.large])
     }
     .sheet(item: $digitalFigurineCard) { presentation in
       DigitalFigurineCardView(presentation: presentation) {
@@ -123,6 +151,17 @@ struct GenerationResultView: View {
       Button("知道了", role: .cancel) {}
     } message: {
       Text(figurineError ?? "请稍后再试。")
+    }
+    .alert(
+      "海报还没做好",
+      isPresented: Binding(
+        get: { creativeWorkError != nil },
+        set: { if !$0 { creativeWorkError = nil } }
+      )
+    ) {
+      Button("知道了", role: .cancel) {}
+    } message: {
+      Text(creativeWorkError ?? "请稍后再试。")
     }
   }
 
@@ -304,6 +343,46 @@ struct GenerationResultView: View {
       image: image,
       bloomNumber: draft.bloomNumber,
       date: draft.createdAt
+    )
+  }
+
+  private func makeBotanicalPoster() {
+    let startedAt = ContinuousClock.now
+    guard
+      let image = BotanicalPosterRenderer().render(
+        sticker: draft.stickerImage,
+        bloomNumber: draft.bloomNumber,
+        date: draft.createdAt
+      )
+    else {
+      creativeWorkError = "这张透明贴纸暂时无法排进花影海报，可以稍后再试。"
+      return
+    }
+
+    let elapsed = startedAt.duration(to: ContinuousClock.now)
+    let milliseconds = max(
+      0,
+      Int(elapsed.components.seconds * 1_000)
+        + Int(elapsed.components.attoseconds / 1_000_000_000_000_000)
+    )
+    let creativeDraft = CreativeWorkDraft(
+      createdAt: .now,
+      recipe: .botanicalPoster,
+      image: image,
+      processingMilliseconds: milliseconds
+    )
+    EventLogger.log(
+      .creativeWorkCreated,
+      durationMilliseconds: milliseconds,
+      detail: creativeDraft.recipe.traceDetail,
+      inputSource: draft.inputSource,
+      processingVersion: creativeDraft.recipe.version,
+      in: modelContext
+    )
+    creativeWork = CreativeWorkPresentation(
+      draft: creativeDraft,
+      sourceImage: draft.sourceImage,
+      isSaved: false
     )
   }
 

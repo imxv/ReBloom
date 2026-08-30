@@ -48,7 +48,7 @@ sample-04 仍然是已知困难案例，没有为了测试变绿而删除或修�
 
 - `OutfitRecord` 保存质量级别、问题代码和检查版本；重新进入花历后不会丢失提示。
 - 本地事件新增“贴纸建议复查”和“贴纸质量未通过”，只记录状态与问题代码，不记录图片内容。
-- 当前个人数据导出格式为 `adonis-personal-data-v5`；质量字段与生成性能结构、结果完成模式保持不变，v5 另增衣橱视觉签名字段。
+- 当前个人数据导出格式为 `adonis-personal-data-v6`；质量字段与生成性能结构、结果完成模式保持不变，v6 在既有衣橱视觉签名之外新增用户明确收藏的创作作品，不改变本切片的贴纸质量契约。
 - `outfits` 保存 `stickerQualityLevel`、`stickerQualityIssues`、`stickerQualityRequiresReview` 和 `stickerQualityVersion`。
 - 透明贴纸与收藏卡对应的 `visualAssets` 保存质量状态；原始照片不伪造贴纸质量字段。
 

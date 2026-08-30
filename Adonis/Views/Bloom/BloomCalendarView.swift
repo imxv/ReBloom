@@ -801,6 +801,7 @@ struct BloomCalendarView: View {
         record.stickerImageFilename,
         record.cardImageFilename,
       ] + record.garmentObservations.map(\.previewImageFilename)
+      + record.creativeWorks.map(\.imageFilename)
     modelContext.delete(record)
     do {
       try modelContext.save()

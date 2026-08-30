@@ -14,6 +14,7 @@ final class PersonalDataControlTests: XCTestCase {
     let sourceFilename = try fixture.store.savePNG(image, filename: "outfit-source.png")
     let stickerFilename = try fixture.store.savePNG(image, filename: "outfit-sticker.png")
     let cardFilename = try fixture.store.savePNG(image, filename: "outfit-card.png")
+    let creativeFilename = try fixture.store.savePNG(image, filename: "botanical-poster.png")
     let observationFilename = try fixture.store.savePNG(image, filename: "observation.png")
     let wardrobeFilename = try fixture.store.savePNG(image, filename: "wardrobe.png")
     let visualSignature = try GarmentVisualSignatureAnalyzer().signature(for: image).encoded()
@@ -41,6 +42,14 @@ final class PersonalDataControlTests: XCTestCase {
       outfit: record
     )
     record.garmentObservations.append(observation)
+    let creativeWork = CreativeWork(
+      createdAt: Date(timeIntervalSince1970: 1_700_000_050),
+      recipe: .botanicalPoster,
+      imageFilename: creativeFilename,
+      processingMilliseconds: 87,
+      sourceOutfit: record
+    )
+    record.creativeWorks.append(creativeWork)
     let item = WardrobeItem(
       createdAt: Date(timeIntervalSince1970: 1_700_000_100),
       name: "棕色上装",
@@ -67,6 +76,7 @@ final class PersonalDataControlTests: XCTestCase {
     )
     fixture.context.insert(record)
     fixture.context.insert(observation)
+    fixture.context.insert(creativeWork)
     fixture.context.insert(item)
     fixture.context.insert(event)
     try fixture.context.save()
@@ -88,6 +98,7 @@ final class PersonalDataControlTests: XCTestCase {
     XCTAssertEqual(entries["media/\(sourceFilename)"], imageData)
     XCTAssertEqual(entries["media/\(stickerFilename)"], imageData)
     XCTAssertEqual(entries["media/\(cardFilename)"], imageData)
+    XCTAssertEqual(entries["media/\(creativeFilename)"], imageData)
     XCTAssertEqual(entries["media/\(observationFilename)"], imageData)
     XCTAssertEqual(entries["media/\(wardrobeFilename)"], imageData)
     XCTAssertEqual(entries["shared-inbox/\(pending.id)"], imageData)
@@ -96,6 +107,7 @@ final class PersonalDataControlTests: XCTestCase {
       try JSONSerialization.jsonObject(with: manifestData) as? [String: Any]
     )
     XCTAssertEqual(manifest["formatVersion"] as? String, PersonalDataArchiveService.formatVersion)
+    XCTAssertEqual(manifest["formatVersion"] as? String, "adonis-personal-data-v6")
     XCTAssertEqual(manifest["storage"] as? String, "local_app_storage")
     XCTAssertEqual(manifest["adonisAutomaticNetworkUpload"] as? Bool, false)
     XCTAssertEqual(manifest["systemBackupControlledByIOS"] as? Bool, true)
@@ -120,6 +132,25 @@ final class PersonalDataControlTests: XCTestCase {
       outfits.first?["stickerQualityVersion"] as? String,
       StickerQualityAssessor.version
     )
+    let creativeWorks = try XCTUnwrap(manifest["creativeWorks"] as? [[String: Any]])
+    XCTAssertEqual(creativeWorks.count, 1)
+    XCTAssertEqual(creativeWorks.first?["outfitID"] as? String, record.id.uuidString)
+    XCTAssertEqual(
+      creativeWorks.first?["recipe"] as? String, CreativeRecipe.botanicalPoster.rawValue)
+    XCTAssertEqual(
+      creativeWorks.first?["recipeVersion"] as? String,
+      AdonisProcessingVersion.botanicalPoster
+    )
+    XCTAssertEqual(
+      creativeWorks.first?["provenance"] as? String,
+      VisualContentProvenance.programmaticComposition.rawValue
+    )
+    XCTAssertEqual(creativeWorks.first?["containsAIGeneratedPixels"] as? Bool, false)
+    XCTAssertEqual(creativeWorks.first?["processingMilliseconds"] as? Int, 87)
+    XCTAssertEqual(
+      creativeWorks.first?["imagePath"] as? String,
+      "media/\(creativeFilename)"
+    )
     let wardrobeItems = try XCTUnwrap(manifest["wardrobeItems"] as? [[String: Any]])
     XCTAssertEqual(
       wardrobeItems.first?["sourceImagePath"] as? String,
@@ -143,7 +174,7 @@ final class PersonalDataControlTests: XCTestCase {
     let pendingSharedImages = try XCTUnwrap(manifest["pendingSharedImages"] as? [String])
     XCTAssertEqual(pendingSharedImages, ["shared-inbox/\(pending.id)"])
     let visualAssets = try XCTUnwrap(manifest["visualAssets"] as? [[String: Any]])
-    XCTAssertEqual(visualAssets.count, 6)
+    XCTAssertEqual(visualAssets.count, 7)
     XCTAssertEqual(
       provenance(for: "media/\(sourceFilename)", in: visualAssets),
       VisualContentProvenance.userProvided.rawValue
@@ -154,6 +185,10 @@ final class PersonalDataControlTests: XCTestCase {
     )
     XCTAssertEqual(
       provenance(for: "media/\(cardFilename)", in: visualAssets),
+      VisualContentProvenance.programmaticComposition.rawValue
+    )
+    XCTAssertEqual(
+      provenance(for: "media/\(creativeFilename)", in: visualAssets),
       VisualContentProvenance.programmaticComposition.rawValue
     )
     let stickerAsset = try XCTUnwrap(
@@ -234,6 +269,7 @@ final class PersonalDataControlTests: XCTestCase {
     let sourceFilename = try fixture.store.savePNG(image, filename: "source.png")
     let stickerFilename = try fixture.store.savePNG(image, filename: "sticker.png")
     let cardFilename = try fixture.store.savePNG(image, filename: "card.png")
+    let creativeFilename = try fixture.store.savePNG(image, filename: "creative.png")
     let previewFilename = try fixture.store.savePNG(image, filename: "preview.png")
     let wardrobeFilename = try fixture.store.savePNG(image, filename: "wardrobe.png")
     let record = OutfitRecord(
@@ -249,8 +285,16 @@ final class PersonalDataControlTests: XCTestCase {
       outfit: record
     )
     record.garmentObservations.append(observation)
+    let creativeWork = CreativeWork(
+      recipe: .botanicalPoster,
+      imageFilename: creativeFilename,
+      processingMilliseconds: 42,
+      sourceOutfit: record
+    )
+    record.creativeWorks.append(creativeWork)
     fixture.context.insert(record)
     fixture.context.insert(observation)
+    fixture.context.insert(creativeWork)
     fixture.context.insert(
       WardrobeItem(name: "蓝色上装", imageFilename: wardrobeFilename)
     )
@@ -268,6 +312,7 @@ final class PersonalDataControlTests: XCTestCase {
 
     XCTAssertEqual(try fixture.context.fetchCount(FetchDescriptor<OutfitRecord>()), 0)
     XCTAssertEqual(try fixture.context.fetchCount(FetchDescriptor<GarmentObservation>()), 0)
+    XCTAssertEqual(try fixture.context.fetchCount(FetchDescriptor<CreativeWork>()), 0)
     XCTAssertEqual(try fixture.context.fetchCount(FetchDescriptor<WardrobeItem>()), 0)
     XCTAssertEqual(try fixture.context.fetchCount(FetchDescriptor<AppEvent>()), 0)
     XCTAssertTrue(try fixture.store.storedFileURLs().isEmpty)
@@ -281,6 +326,7 @@ final class PersonalDataControlTests: XCTestCase {
     let schema = Schema([
       OutfitRecord.self,
       GarmentObservation.self,
+      CreativeWork.self,
       WardrobeItem.self,
       AppEvent.self,
     ])

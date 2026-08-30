@@ -33,6 +33,7 @@ struct CreateView: View {
   private let qualityAssessor = StickerQualityAssessor()
   private let cardRenderer = ShareCardRenderer()
   private let garmentObserver = OutfitGarmentObserver()
+  private let creativeWorkStore = CreativeWorkStore()
   private let cameraAccessService: CameraAccessService
 
   @MainActor
@@ -81,6 +82,10 @@ struct CreateView: View {
         draft: draft,
         initiallySaved: records.contains(where: { $0.id == draft.id }),
         onSave: { try save(draft) },
+        onSaveCreative: { creativeWork in
+          try save(draft)
+          try save(creativeWork, for: draft)
+        },
         onReset: { self.draft = nil }
       )
     }
@@ -764,6 +769,27 @@ struct CreateView: View {
         in: modelContext
       )
     }
+  }
+
+  @MainActor
+  private func save(_ creativeWork: CreativeWorkDraft, for draft: GenerationDraft) throws {
+    let outfitID = draft.id
+    let descriptor = FetchDescriptor<OutfitRecord>(
+      predicate: #Predicate { $0.id == outfitID }
+    )
+    guard let outfit = try modelContext.fetch(descriptor).first else {
+      throw CreativeWorkStoreError.missingSourceOutfit
+    }
+
+    _ = try creativeWorkStore.save(creativeWork, for: outfit, in: modelContext)
+    EventLogger.log(
+      .creativeWorkSaved,
+      durationMilliseconds: creativeWork.processingMilliseconds,
+      detail: creativeWork.recipe.traceDetail,
+      inputSource: draft.inputSource,
+      processingVersion: creativeWork.recipe.version,
+      in: modelContext
+    )
   }
 }
 

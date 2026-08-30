@@ -12,6 +12,7 @@ struct AdonisApp: App {
     let schema = Schema([
       OutfitRecord.self,
       GarmentObservation.self,
+      CreativeWork.self,
       WardrobeItem.self,
       AppEvent.self,
     ])

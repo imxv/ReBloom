@@ -3,6 +3,80 @@ import XCTest
 
 final class AdonisFlowUITests: XCTestCase {
   @MainActor
+  func testGeneratedStickerCreatesTraceableBotanicalPosterReadyToCompareSaveAndShare() {
+    let app = XCUIApplication()
+    let persistentStoreID = UUID().uuidString
+    app.launchArguments.append(
+      contentsOf: ["-ui-testing", "-ui-testing-persistent-store", persistentStoreID]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
+
+    let entry = app.buttons["botanical-poster-entry"]
+    XCTAssertTrue(scrollToHittable(entry, in: app, attempts: 10))
+    entry.tap()
+
+    let preview = app.descendants(matching: .any)["creative-work-preview"]
+    XCTAssertTrue(preview.waitForExistence(timeout: 6))
+    XCTAssertTrue(preview.label.contains("花影海报"))
+    let provenance = app.descendants(matching: .any)["creative-work-provenance"]
+    XCTAssertTrue(scrollToHittable(provenance, in: app, attempts: 8))
+    XCTAssertTrue(provenance.label.contains("不含 AI 重绘"))
+
+    let compare = app.segmentedControls["creative-work-mode-picker"]
+    let compareMenu = app.descendants(matching: .any)["creative-work-mode-menu"]
+    if compare.waitForExistence(timeout: 3) {
+      compare.buttons["原始照片"].tap()
+      XCTAssertTrue(preview.label.contains("原始照片"))
+      compare.buttons["花影海报"].tap()
+      XCTAssertTrue(preview.label.contains("花影海报"))
+    } else {
+      XCTAssertTrue(compareMenu.waitForExistence(timeout: 3))
+      compareMenu.tap()
+      app.buttons["原始照片"].tap()
+      XCTAssertTrue(preview.label.contains("原始照片"))
+      compareMenu.tap()
+      app.buttons["花影海报"].tap()
+      XCTAssertTrue(preview.label.contains("花影海报"))
+    }
+
+    let save = app.buttons["save-creative-work"]
+    XCTAssertTrue(scrollToHittable(save, in: app, attempts: 8))
+    save.tap()
+    XCTAssertTrue(app.buttons["作品已经收藏"].waitForExistence(timeout: 5))
+
+    let share = app.buttons["share-creative-work"]
+    XCTAssertTrue(scrollToHittable(share, in: app, attempts: 5))
+    share.tap()
+    XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
+    app.buttons["关闭"].tap()
+    app.buttons["close-creative-work"].tap()
+
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 4))
+    app.terminate()
+    app.launch()
+    app.tabBars.buttons["花历"].tap()
+
+    let record = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(record.waitForExistence(timeout: 5))
+    record.tap()
+
+    let savedEntry = app.buttons["creative-work-history-entry"]
+    XCTAssertTrue(scrollToHittable(savedEntry, in: app, attempts: 10))
+    savedEntry.tap()
+    XCTAssertTrue(preview.waitForExistence(timeout: 5))
+    XCTAssertTrue(preview.label.contains("花影海报"))
+    XCTAssertTrue(scrollToHittable(provenance, in: app, attempts: 8))
+    XCTAssertTrue(provenance.label.contains("不含 AI 重绘"))
+    keepScreenshot(named: "Adonis-botanical-poster-history")
+  }
+
+  @MainActor
   func testDeniedCameraPermissionOffersSettingsWithoutOpeningCamera() {
     let app = XCUIApplication()
     app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-camera-denied"])
