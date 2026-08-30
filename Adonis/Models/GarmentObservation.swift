@@ -14,6 +14,7 @@ final class GarmentObservation {
   var stateRawValue: String
   var matchedWardrobeItemID: UUID?
   var rejectedWardrobeItemIDsRawValue: String
+  var visualSignatureRawValue: String?
   var observerVersion: String
   var outfit: OutfitRecord?
 
@@ -57,6 +58,7 @@ final class GarmentObservation {
     state: GarmentObservationState = .pending,
     matchedWardrobeItemID: UUID? = nil,
     rejectedWardrobeItemIDs: Set<UUID> = [],
+    visualSignatureRawValue: String? = nil,
     observerVersion: String = AdonisProcessingVersion.outfitObservation,
     outfit: OutfitRecord? = nil
   ) {
@@ -75,6 +77,7 @@ final class GarmentObservation {
       .map(\.uuidString)
       .sorted()
       .joined(separator: ",")
+    self.visualSignatureRawValue = visualSignatureRawValue
     self.observerVersion = observerVersion
     self.outfit = outfit
   }

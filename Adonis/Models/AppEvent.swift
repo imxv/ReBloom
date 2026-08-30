@@ -139,6 +139,8 @@ enum AppEventKind: String {
   case wardrobeImageUpgradeStarted
   case wardrobeImageUpgradeSucceeded
   case wardrobeImageUpgradeFailed
+  case wardrobeVisualSignaturesBackfilled
+  case wardrobeVisualSignatureBackfillFailed
   case garmentObservationsCreated
   case garmentObservationLinked
   case garmentObservationRejected
@@ -176,6 +178,8 @@ enum AppEventKind: String {
     case .wardrobeImageUpgradeStarted: "开始补充商品图"
     case .wardrobeImageUpgradeSucceeded: "商品图更新成功"
     case .wardrobeImageUpgradeFailed: "商品图更新失败"
+    case .wardrobeVisualSignaturesBackfilled: "补齐衣物画面线索"
+    case .wardrobeVisualSignatureBackfillFailed: "衣物画面线索补齐失败"
     case .garmentObservationsCreated: "发现穿搭线索"
     case .garmentObservationLinked: "关联已有单品"
     case .garmentObservationRejected: "排除候选单品"

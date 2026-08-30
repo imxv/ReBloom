@@ -4,7 +4,7 @@ SCHEME := Adonis
 DESTINATION := platform=iOS Simulator,name=iPhone 17 Pro,OS=latest
 DERIVED_DATA := .derivedData
 
-.PHONY: project build test sample-regression accessibility-regression permission-regression persistence-regression performance-regression lookbook-regression figurine-regression cabinet-regression seasonal-regression rebloom-regression rebloom-reminder-regression lint format analyze check clean
+.PHONY: project build test sample-regression accessibility-regression permission-regression persistence-regression wardrobe-visual-regression performance-regression lookbook-regression figurine-regression cabinet-regression seasonal-regression rebloom-regression rebloom-reminder-regression lint format analyze check clean
 
 project:
 	./scripts/xcodegen.sh generate --spec project.yml
@@ -35,6 +35,16 @@ persistence-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
 		-only-testing:AdonisTests/ModelStorePolicyTests \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testCollectedOutfitSurvivesProcessTerminationAndRelaunch
+
+wardrobe-visual-regression: project
+	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
+		-only-testing:AdonisTests/GarmentVisualSignatureTests \
+		-only-testing:AdonisTests/WardrobeCandidateMatcherTests \
+		-only-testing:AdonisTests/WardrobeVisualSignatureBackfillServiceTests \
+		-only-testing:AdonisTests/WardrobeImageAnalyzerTests \
+		-only-testing:AdonisTests/OutfitGarmentObserverTests \
+		-only-testing:AdonisTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testOutfitCluesStayProvisionalUntilOneTapConfirmation
 
 performance-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \

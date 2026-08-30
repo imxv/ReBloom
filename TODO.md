@@ -64,6 +64,8 @@
 
   当前进展：[数字手办贴纸首轮视觉样片实验](docs/experiments/2026-08-29-sticker-prototype.md)、[iOS 本地 Demo 验证记录](docs/verification/2026-08-29-ios-local-demo.md)与 [固定样片回归基线验证](docs/verification/2026-08-30-sample-regression-baseline.md)。四张样片已生成真实 Alpha、可逐字节重现并保留困难案例，但仍需真机、扩充固定样本和用户价值验证。
 - [ ] **ADO-007：验证商品图与 OOTD 的衣物匹配。** 比较商品图、平铺图和穿着照片，确认哪些情况能自动关联、哪些必须轻量询问。
+
+  已完成零额外输入的本机视觉签名工程切片：受控图案样本中，同图案候选可排在同色纯色干扰项之前；真实 UI 样片只显示“画面线索有限”，仍须用户点击确认。尚缺授权的商品图、同款 OOTD 与相似干扰衣物固定集和误候选统计，因此任务保持未完成。证据见 [衣橱视觉线索排序验证记录](docs/verification/2026-08-30-wardrobe-visual-matching.md)。
 - [ ] **ADO-008：进行首次用户测试。** 至少邀请五位符合启动场景的用户，在没有讲解的情况下使用原型并记录卡点。
 - [ ] **ADO-009：根据验证结果确定 MVP。** 删除不能稳定产生价值或明显增加心智负担的能力。
 
@@ -88,7 +90,7 @@ M0 退出条件：
 - [x] **ADO-107：实现最小历史视图。** 花历按日期显示记录，并能再次打开、分享或删除。
 - [ ] **ADO-108：完成真实设备或目标浏览器回归。** 验证上传、生成、保存、重试和删除的完整链路。
 
-  模拟器当前 126 项测试（103 个单元测试与 23 个 UI 流程测试）、最大辅助字号与增强对比度界面检查、前后台恢复、已收藏记录进程终止后重新启动恢复、图片像素检查、90 秒超时降级、月度贴纸 Lookbook、2.5D 数字手办收藏卡、数字展柜、四季花历、“再次盛开”、一次性提醒工程链路、生成性能诊断和通用 iOS 真机架构 Release 构建已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[冷启动持久化验证](docs/verification/2026-08-30-cold-launch-persistence.md)、[无障碍与前后台恢复验证](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[月度贴纸 Lookbook 验证](docs/verification/2026-08-30-monthly-lookbook.md)、[数字手办收藏卡验证](docs/verification/2026-08-30-digital-figurine-card.md)、[数字展柜验证](docs/verification/2026-08-30-digital-cabinet.md)、[四季花历验证](docs/verification/2026-08-30-seasonal-bloom.md)、[再次盛开验证](docs/verification/2026-08-30-rebloom-suggestion.md)、[再次盛开一次性提醒验证](docs/verification/2026-08-30-rebloom-reminder.md)、[固定样片回归基线](docs/verification/2026-08-30-sample-regression-baseline.md)、[贴纸低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)、[生成超时与基础贴纸降级验证](docs/verification/2026-08-30-generation-timeout-fallback.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)、[生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)与 [生成性能和预算验证](docs/verification/2026-08-30-generation-performance-budget.md)。
+  模拟器当前 134 项测试（111 个单元测试与 23 个 UI 流程测试）、最大辅助字号与增强对比度界面检查、前后台恢复、已收藏记录进程终止后重新启动恢复、图片像素检查、90 秒超时降级、月度贴纸 Lookbook、2.5D 数字手办收藏卡、数字展柜、四季花历、“再次盛开”、一次性提醒工程链路、生成性能诊断和通用 iOS 真机架构 Release 构建已通过；真实 iPhone 当前离线，因此 ADO-108 保持未完成。证据见 [验证记录](docs/verification/2026-08-29-ios-local-demo.md)、[冷启动持久化验证](docs/verification/2026-08-30-cold-launch-persistence.md)、[无障碍与前后台恢复验证](docs/verification/2026-08-30-accessibility-and-lifecycle.md)、[月度贴纸 Lookbook 验证](docs/verification/2026-08-30-monthly-lookbook.md)、[数字手办收藏卡验证](docs/verification/2026-08-30-digital-figurine-card.md)、[数字展柜验证](docs/verification/2026-08-30-digital-cabinet.md)、[四季花历验证](docs/verification/2026-08-30-seasonal-bloom.md)、[再次盛开验证](docs/verification/2026-08-30-rebloom-suggestion.md)、[再次盛开一次性提醒验证](docs/verification/2026-08-30-rebloom-reminder.md)、[固定样片回归基线](docs/verification/2026-08-30-sample-regression-baseline.md)、[贴纸低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)、[生成超时与基础贴纸降级验证](docs/verification/2026-08-30-generation-timeout-fallback.md)、[OOTD 单品补商品图验证](docs/verification/2026-08-29-ootd-product-image-upgrade.md)、[衣橱历史穿着回填验证](docs/verification/2026-08-29-wardrobe-history-backfill.md)、[衣橱视觉线索排序验证](docs/verification/2026-08-30-wardrobe-visual-matching.md)、[购物应用图片分享验证](docs/verification/2026-08-29-shopping-app-image-share.md)、[本地数据导出和删除验证](docs/verification/2026-08-29-local-data-controls.md)、[生成内容来源标识验证](docs/verification/2026-08-29-content-provenance.md)与 [生成性能和预算验证](docs/verification/2026-08-30-generation-performance-budget.md)。
 
 M1 退出条件：新用户无需建立衣橱即可完成一次真实 OOTD 记录，并能再次找到或删除它。
 
@@ -102,10 +104,10 @@ M1 退出条件：新用户无需建立衣橱即可完成一次真实 OOTD 记�
 
   ADO-201 至 ADO-203 的专项证据：[衣橱轻量导入验证记录](docs/verification/2026-08-29-wardrobe-import.md)。
 - [x] **ADO-204：实现 OOTD 衣物发现。** 已从透明人物贴纸中尽力保留上身与下身画面线索；低信号时保持空白，线索与衣橱单品分离并随 OOTD 级联删除。
-- [ ] **ADO-205：实现候选衣物匹配。** 已依据类别、颜色与图片来源给出最多 3 个本地候选，并排除用户否定项；尚无身份级证据，因此没有实现高置信度自动关联，本任务保持未完成。
+- [ ] **ADO-205：实现候选衣物匹配。** 已依据类别、颜色、图片来源和本机颜色/明暗/纹理签名给出最多 3 个本地候选，并排除用户否定项；旧记录会静默回填签名，弱证据明确显示为“画面线索有限”。受控样本已证明排序契约，但尚无授权真实对照集与身份级证据，因此没有实现高置信度自动关联，本任务保持未完成。
 - [x] **ADO-206：实现一次点击纠正。** 已支持分类纠正，以及 OOTD 线索的“就是它”“不是这件”“这是新衣服”“先不管”；只有明确选择新衣服才会创建单品。
 
-  ADO-204 至 ADO-206 当前状态与专项证据：[OOTD 衣物线索与确认验证记录](docs/verification/2026-08-29-ootd-garment-observations.md)。
+  ADO-204 至 ADO-206 当前状态与专项证据：[OOTD 衣物线索与确认验证记录](docs/verification/2026-08-29-ootd-garment-observations.md)与 [衣橱视觉线索排序验证记录](docs/verification/2026-08-30-wardrobe-visual-matching.md)。
 - [x] **ADO-207：支持从购物应用分享图片。** 已实现系统分享扩展：其他 App 可把最多 5 张商品图或截图交给 Adonis，主 App 下次活跃时自动在本机分析并收进衣橱；完全相同图片复用已有单品，失败项保留供重试。当前没有网页抓取、商品链接解析或 SKU 获取，链接能力留到后续单独验证。证据见 [购物应用图片分享验证记录](docs/verification/2026-08-29-shopping-app-image-share.md)。
 - [x] **ADO-208：回填历史穿着关系。** 后来添加商品图时，可关联过去出现过的同一件衣服。
 
@@ -151,7 +153,7 @@ M4 退出条件：历史数据可以生成用户愿意再次打开、保存或�
 - [x] **ADO-Q03：固定回归样本集。** 四张用户授权原图、透明贴纸、处理版本、哈希、像素指标、覆盖标签和已知缺陷已进入统一清单；`make sample-regression` 会执行宿主机字节级重生成、iOS 像素门槛、四张收藏卡和模拟器/真机 Vision 边界测试。基线可防止静默退化，但不替代 ADO-005 的素材扩充或 ADO-006 的泛化与用户价值验证。证据见 [固定样片回归基线验证记录](docs/verification/2026-08-30-sample-regression-baseline.md)。
 - [ ] **ADO-Q04：失败与降级。** 为超时、低质量、识别不确定和供应商不可用提供用户可理解的结果。
 
-  已完成两个本地纵向切片。贴纸低质量路径在正常结果时不打扰，结构可疑时允许检查后收藏，明显破损时拒绝误导收藏卡；第 4 张困难样片稳定进入“建议复查”。生成路径现在有 90 秒用户等待上限：无合格中间产物时可同图重试或换图，有通过结构检查的贴纸与收藏卡时直接交付基础贴纸；迟到结果不能覆盖页面，降级状态会保留到花历、事件与 `adonis-personal-data-v4` 导出。识别建议继续要求用户确认。当前没有联网供应商，因此真实供应商不可用、弱网与联网重试尚未实现，任务保持未完成。证据见 [贴纸低质量降级验证记录](docs/verification/2026-08-30-sticker-quality-degradation.md)与 [生成超时和基础贴纸降级验证记录](docs/verification/2026-08-30-generation-timeout-fallback.md)。
+  已完成两个本地纵向切片。贴纸低质量路径在正常结果时不打扰，结构可疑时允许检查后收藏，明显破损时拒绝误导收藏卡；第 4 张困难样片稳定进入“建议复查”。生成路径现在有 90 秒用户等待上限：无合格中间产物时可同图重试或换图，有通过结构检查的贴纸与收藏卡时直接交付基础贴纸；迟到结果不能覆盖页面，降级状态会保留到花历、事件与 `adonis-personal-data-v5` 导出。识别建议继续要求用户确认。当前没有联网供应商，因此真实供应商不可用、弱网与联网重试尚未实现，任务保持未完成。证据见 [贴纸低质量降级验证记录](docs/verification/2026-08-30-sticker-quality-degradation.md)与 [生成超时和基础贴纸降级验证记录](docs/verification/2026-08-30-generation-timeout-fallback.md)。
 - [ ] **ADO-Q05：成本与时延预算。** 在选定供应方案前记录真实请求成本、重试和后处理开销。
 
   已完成本地链路预算切片：从输入可用到结果或终止，按“读取照片 / 抠图与白边 / 结构检查 / 收藏卡排版 / 衣物线索”记录端到端与分阶段耗时；成功、失败、超时和取消都持久化，中断终态保留阶段，设置页显示 45 秒目标、平均耗时、最慢阶段、重试与外部请求。90 秒用户等待边界与迟到结果隔离已经实现。当前没有网络请求，因此重试与外部请求真实值为 0、外部费用为“不适用”；内置样片明确标记为演示链路。真实供应商成本、联网重试和真机实时 Vision 时延仍未实现，因此任务保持未完成。证据见 [生成性能与预算验证记录](docs/verification/2026-08-30-generation-performance-budget.md)与 [生成超时和基础贴纸降级验证记录](docs/verification/2026-08-30-generation-timeout-fallback.md)。

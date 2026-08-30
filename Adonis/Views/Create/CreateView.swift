@@ -736,6 +736,7 @@ struct CreateView: View {
           dominantColorHex: draftObservation.dominantColorHex,
           confidence: draftObservation.confidence,
           previewImageFilename: previewFilename,
+          visualSignatureRawValue: draftObservation.visualSignatureRawValue,
           observerVersion: draftObservation.observerVersion,
           outfit: record
         )

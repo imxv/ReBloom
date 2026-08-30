@@ -45,6 +45,7 @@ enum WardrobeItemImageUpdater {
     item.imageWidth = analysis.imageWidth
     item.imageHeight = analysis.imageHeight
     item.imageFingerprint = analysis.imageFingerprint
+    item.visualSignatureRawValue = analysis.visualSignatureRawValue
     item.analysisVersion = analysis.analysisVersion
 
     if previousCategory == .uncategorized {

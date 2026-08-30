@@ -27,10 +27,11 @@ enum AdonisProcessingVersion {
   static let seasonalBloom = "seasonal-bloom-v1"
   static let rebloomSuggestion = "rebloom-suggestion-v1"
   static let rebloomReminder = "rebloom-reminder-v1"
-  static let wardrobeAnalysis = "wardrobe-local-v1"
+  static let wardrobeAnalysis = "wardrobe-local-v2"
   static let wardrobeImageUpgrade = "wardrobe-image-upgrade-v1"
-  static let outfitObservation = "ootd-observation-local-v1"
-  static let candidateMatching = "wardrobe-candidate-local-v1"
+  static let outfitObservation = "ootd-observation-local-v2"
+  static let candidateMatching = "wardrobe-candidate-local-v2"
+  static let wardrobeVisualSignature = GarmentVisualSignature.currentVersion
   static let wardrobeHistoryMatching = "wardrobe-history-backfill-v1"
   static let sharedWardrobeInbox = SharedImageInbox.version
   static let generationPipeline =

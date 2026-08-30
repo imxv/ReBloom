@@ -14,6 +14,7 @@ struct AppRootView: View {
   @State private var didPrepareUITestReminderRoute = false
 
   private let sharedImportCoordinator = SharedWardrobeImportCoordinator()
+  private let visualSignatureBackfillService = WardrobeVisualSignatureBackfillService()
 
   var body: some View {
     TabView(selection: $selection) {
@@ -56,6 +57,7 @@ struct AppRootView: View {
     .tint(AdonisTheme.pomegranate)
     .task {
       await receiveSharedWardrobeImages()
+      await backfillWardrobeVisualSignatures()
       prepareUITestReminderRouteIfNeeded()
       receivePendingNavigationRoute(navigationRouter.pendingRebloomRoute)
     }
@@ -65,6 +67,28 @@ struct AppRootView: View {
     .onChange(of: scenePhase) { _, newPhase in
       guard newPhase == .active else { return }
       Task { await receiveSharedWardrobeImages() }
+    }
+  }
+
+  @MainActor
+  private func backfillWardrobeVisualSignatures() async {
+    do {
+      let summary = try await visualSignatureBackfillService.backfill(in: modelContext)
+      guard summary.updatedCount > 0 else { return }
+      EventLogger.log(
+        .wardrobeVisualSignaturesBackfilled,
+        detail:
+          "items=\(summary.itemCount);observations=\(summary.observationCount);skipped=\(summary.skippedCount)",
+        processingVersion: AdonisProcessingVersion.wardrobeVisualSignature,
+        in: modelContext
+      )
+    } catch {
+      EventLogger.log(
+        .wardrobeVisualSignatureBackfillFailed,
+        detail: "reason=storage",
+        processingVersion: AdonisProcessingVersion.wardrobeVisualSignature,
+        in: modelContext
+      )
     }
   }
 

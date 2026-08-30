@@ -10,6 +10,7 @@ struct GarmentObservationDraft: Identifiable {
   let dominantColorHex: String?
   let confidence: Double
   let previewImage: UIImage
+  let visualSignatureRawValue: String?
   let observerVersion: String
 
   init(
@@ -20,6 +21,7 @@ struct GarmentObservationDraft: Identifiable {
     dominantColorHex: String?,
     confidence: Double,
     previewImage: UIImage,
+    visualSignatureRawValue: String? = nil,
     observerVersion: String = AdonisProcessingVersion.outfitObservation
   ) {
     self.id = id
@@ -29,6 +31,7 @@ struct GarmentObservationDraft: Identifiable {
     self.dominantColorHex = dominantColorHex
     self.confidence = confidence
     self.previewImage = previewImage
+    self.visualSignatureRawValue = visualSignatureRawValue
     self.observerVersion = observerVersion
   }
 }
@@ -113,7 +116,10 @@ struct OutfitGarmentObserver {
         dominantColorName: facts.colorName,
         dominantColorHex: facts.colorHex,
         confidence: facts.confidence,
-        previewImage: preview
+        previewImage: preview,
+        visualSignatureRawValue: try? GarmentVisualSignatureAnalyzer()
+          .signature(for: preview)
+          .encoded()
       )
     }
   }

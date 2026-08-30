@@ -8,7 +8,7 @@ struct PersonalDataArchive: Identifiable, Sendable {
 }
 
 struct PersonalDataArchiveService {
-  static let formatVersion = "adonis-personal-data-v4"
+  static let formatVersion = "adonis-personal-data-v5"
   static let exportDirectoryName = "AdonisExports"
 
   private let mediaStore: MediaStore
@@ -390,6 +390,8 @@ private struct ExportedWardrobeItem: Encodable, Sendable {
   let imageWidth: Int
   let imageHeight: Int
   let imageFingerprint: String?
+  let visualSignature: String?
+  let visualSignatureVersion: String?
   let analysisVersion: String?
 
   @MainActor
@@ -410,6 +412,10 @@ private struct ExportedWardrobeItem: Encodable, Sendable {
     imageWidth = item.imageWidth
     imageHeight = item.imageHeight
     imageFingerprint = item.imageFingerprint
+    visualSignature = item.visualSignatureRawValue
+    visualSignatureVersion =
+      item.visualSignatureRawValue
+      .flatMap(GarmentVisualSignature.init(encoded:))?.version
     analysisVersion = item.analysisVersion
   }
 }
@@ -427,6 +433,8 @@ private struct ExportedGarmentObservation: Encodable, Sendable {
   let state: String
   let matchedWardrobeItemID: UUID?
   let rejectedWardrobeItemIDs: [UUID]
+  let visualSignature: String?
+  let visualSignatureVersion: String?
   let observerVersion: String
 
   @MainActor
@@ -445,6 +453,10 @@ private struct ExportedGarmentObservation: Encodable, Sendable {
     rejectedWardrobeItemIDs = observation.rejectedWardrobeItemIDs.sorted {
       $0.uuidString < $1.uuidString
     }
+    visualSignature = observation.visualSignatureRawValue
+    visualSignatureVersion =
+      observation.visualSignatureRawValue
+      .flatMap(GarmentVisualSignature.init(encoded:))?.version
     observerVersion = observation.observerVersion
   }
 }

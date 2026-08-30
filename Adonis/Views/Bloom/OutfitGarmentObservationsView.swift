@@ -61,7 +61,7 @@ struct OutfitGarmentObservationsView: View {
           )
         }
       }
-      Text("本机识别建议只会留成线索，点一下确认后才会影响衣橱。")
+      Text("商品图会让本机更容易比较颜色和纹理，但仍只留作候选；点一下才会关联。")
         .font(.footnote)
         .foregroundStyle(AdonisTheme.secondaryInk)
         .lineSpacing(2)
@@ -177,6 +177,7 @@ struct OutfitGarmentObservationsView: View {
         suggestedCategory: observation.suggestedCategory,
         imageWidth: image.cgImage?.width ?? 0,
         imageHeight: image.cgImage?.height ?? 0,
+        visualSignatureRawValue: observation.visualSignatureRawValue,
         analysisVersion: observation.observerVersion
       )
       modelContext.insert(item)
@@ -317,7 +318,8 @@ private struct GarmentObservationCard: View {
             CandidateRow(candidate: candidate)
           }
           .buttonStyle(StickerButtonStyle())
-          .accessibilityLabel("就是\(candidate.item.name)")
+          .accessibilityLabel(candidateAccessibilityLabel(candidate))
+          .accessibilityHint("点两下才会确认就是这件；Adonis 不会自动关联。")
           .accessibilityIdentifier("garment-candidate-\(candidate.item.name)")
         }
       }
@@ -350,6 +352,11 @@ private struct GarmentObservationCard: View {
         .accessibilityIdentifier("garment-dismiss-\(observation.slot.rawValue)")
       }
     }
+  }
+
+  private func candidateAccessibilityLabel(_ candidate: WardrobeMatchCandidate) -> String {
+    let reason = candidate.reasonText.isEmpty ? "信息有限，需要你确认" : candidate.reasonText
+    return "候选，\(candidate.item.name)，\(reason)"
   }
 
   private var linkedContent: some View {
@@ -432,7 +439,9 @@ private struct CandidateRow: View {
         Text(candidate.reasonText.isEmpty ? "信息有限，需要你确认" : candidate.reasonText)
           .font(.caption2)
           .foregroundStyle(AdonisTheme.secondaryInk)
-          .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+          .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+          .fixedSize(horizontal: false, vertical: true)
+          .accessibilityIdentifier("garment-candidate-reason")
       }
       Text("就是它")
         .font(.system(.caption, design: .rounded, weight: .black))

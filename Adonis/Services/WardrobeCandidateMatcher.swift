@@ -3,6 +3,7 @@ import Foundation
 struct WardrobeMatchCandidate: Identifiable {
   let item: WardrobeItem
   let score: Double
+  let visualSimilarity: Double?
   let reasons: [String]
 
   var id: UUID { item.id }
@@ -52,10 +53,21 @@ struct WardrobeCandidateMatcher {
 
     let sourceScore: Double = item.sourceKind == .catalogImage ? 1 : 0.55
     let observationConfidence = min(1, max(0, observation.confidence))
-    let score =
+    let legacyScore =
       (categoryScore * 0.56 + colorScore * 0.36 + sourceScore * 0.08)
       * (0.86 + observationConfidence * 0.14)
-    guard score >= 0.42 else { return nil }
+    guard legacyScore >= 0.42 else { return nil }
+
+    let visualSimilarity = visualSimilarity(observation: observation, item: item)
+    let score: Double
+    if let visualSimilarity {
+      score =
+        (categoryScore * 0.4 + colorScore * 0.22 + visualSimilarity * 0.3
+          + sourceScore * 0.08)
+        * (0.86 + observationConfidence * 0.14)
+    } else {
+      score = legacyScore
+    }
 
     var reasons: [String] = []
     if categoryScore == 1 {
@@ -69,7 +81,35 @@ struct WardrobeCandidateMatcher {
     if item.sourceKind == .catalogImage {
       reasons.append("有商品图")
     }
-    return WardrobeMatchCandidate(item: item, score: score, reasons: reasons)
+    if let visualSimilarity {
+      if visualSimilarity >= 0.82 {
+        reasons.append("画面线索更接近")
+      } else if visualSimilarity >= 0.68 {
+        reasons.append("画面线索接近")
+      } else {
+        reasons.append("画面线索有限")
+      }
+    }
+    return WardrobeMatchCandidate(
+      item: item,
+      score: score,
+      visualSimilarity: visualSimilarity,
+      reasons: reasons
+    )
+  }
+
+  private func visualSimilarity(
+    observation: GarmentObservation,
+    item: WardrobeItem
+  ) -> Double? {
+    guard let observationRawValue = observation.visualSignatureRawValue,
+      let itemRawValue = item.visualSignatureRawValue,
+      let observationSignature = GarmentVisualSignature(encoded: observationRawValue),
+      let itemSignature = GarmentVisualSignature(encoded: itemRawValue)
+    else {
+      return nil
+    }
+    return observationSignature.similarity(to: itemSignature).overall
   }
 
   private func colorSimilarity(_ lhs: String?, _ rhs: String?) -> Double {

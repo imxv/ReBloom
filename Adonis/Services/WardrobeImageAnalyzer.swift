@@ -14,6 +14,7 @@ struct WardrobeImageAnalysis: Equatable, Sendable {
   let imageWidth: Int
   let imageHeight: Int
   let imageFingerprint: String
+  let visualSignatureRawValue: String?
   let processingMilliseconds: Int
   let analysisVersion: String
 
@@ -118,6 +119,9 @@ struct WardrobeImageAnalyzer {
       excludingWhiteBackground: background.sourceKind == .catalogImage
     )
     let category = bestEffortCategory(for: image)
+    let visualSignatureRawValue = try? GarmentVisualSignatureAnalyzer()
+      .signature(for: image)
+      .encoded()
     let elapsed = start.duration(to: .now)
     let milliseconds =
       Int(elapsed.components.seconds * 1_000)
@@ -133,6 +137,7 @@ struct WardrobeImageAnalyzer {
       imageWidth: image.width,
       imageHeight: image.height,
       imageFingerprint: SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined(),
+      visualSignatureRawValue: visualSignatureRawValue,
       processingMilliseconds: milliseconds,
       analysisVersion: version
     )

@@ -49,7 +49,7 @@
 - 本地事件使用独立终态“处理超时”，并保存同一口径的中断性能轨迹。
 - 事件细节只记录 `deadline_ms=90000` 和 `fallback=unavailable` 或 `fallback=basic_sticker`，不包含图片、路径或用户内容。
 - 本地设置分别显示成功、失败、超时与取消次数；最近一次链路可以显示超时及其中断阶段。
-- 个人数据导出格式为 `adonis-personal-data-v4`，每条 OOTD 通过 `generationCompletionMode` 保留完整结果或基础贴纸降级事实。
+- 个人数据导出格式当前为 `adonis-personal-data-v5`，每条 OOTD 通过 `generationCompletionMode` 保留完整结果或基础贴纸降级事实；v5 新增的衣橱视觉签名不改变本切片的超时字段。
 
 ## 6. 专项自动验证
 

@@ -19,6 +19,7 @@ final class WardrobeItem {
   var imageWidth: Int = 0
   var imageHeight: Int = 0
   var imageFingerprint: String?
+  var visualSignatureRawValue: String?
   var analysisVersion: String?
 
   var category: WardrobeCategory {
@@ -61,6 +62,7 @@ final class WardrobeItem {
     imageWidth: Int = 0,
     imageHeight: Int = 0,
     imageFingerprint: String? = nil,
+    visualSignatureRawValue: String? = nil,
     analysisVersion: String? = nil
   ) {
     self.id = id
@@ -79,6 +81,7 @@ final class WardrobeItem {
     self.imageWidth = imageWidth
     self.imageHeight = imageHeight
     self.imageFingerprint = imageFingerprint
+    self.visualSignatureRawValue = visualSignatureRawValue
     self.analysisVersion = analysisVersion
   }
 }

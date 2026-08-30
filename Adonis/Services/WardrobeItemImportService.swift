@@ -72,6 +72,7 @@ struct WardrobeItemImportService {
         imageWidth: analysis.imageWidth,
         imageHeight: analysis.imageHeight,
         imageFingerprint: analysis.imageFingerprint,
+        visualSignatureRawValue: analysis.visualSignatureRawValue,
         analysisVersion: analysis.analysisVersion
       )
       modelContext.insert(item)

@@ -179,6 +179,7 @@ final class WardrobeItemImageUpgradeTests: XCTestCase {
       imageWidth: 480,
       imageHeight: 640,
       imageFingerprint: fingerprint,
+      visualSignatureRawValue: nil,
       processingMilliseconds: 12,
       analysisVersion: AdonisProcessingVersion.wardrobeAnalysis
     )

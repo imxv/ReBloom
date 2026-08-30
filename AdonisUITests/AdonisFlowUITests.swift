@@ -1122,6 +1122,9 @@ final class AdonisFlowUITests: XCTestCase {
     }
     XCTAssertTrue(candidate.waitForExistence(timeout: 3))
     XCTAssertTrue(candidate.isHittable)
+    XCTAssertTrue(candidate.label.contains("候选"), candidate.label)
+    XCTAssertTrue(candidate.label.contains("有商品图"), candidate.label)
+    XCTAssertTrue(candidate.label.contains("画面线索"), candidate.label)
     keepScreenshot(named: "Adonis-outfit-candidate")
 
     candidate.tap()

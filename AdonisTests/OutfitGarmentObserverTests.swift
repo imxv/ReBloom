@@ -18,6 +18,7 @@ final class OutfitGarmentObserverTests: XCTestCase {
     XCTAssertGreaterThanOrEqual(upper.confidence, 0.28)
     XCTAssertLessThanOrEqual(upper.confidence, 0.78)
     XCTAssertGreaterThan(upper.previewImage.size.width, 20)
+    XCTAssertNotNil(upper.visualSignatureRawValue)
     XCTAssertEqual(upper.observerVersion, AdonisProcessingVersion.outfitObservation)
   }
 

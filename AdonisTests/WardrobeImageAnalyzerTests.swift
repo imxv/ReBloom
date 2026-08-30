@@ -20,6 +20,7 @@ final class WardrobeImageAnalyzerTests: XCTestCase {
     XCTAssertEqual(analysis.imageWidth, 180)
     XCTAssertEqual(analysis.imageHeight, 240)
     XCTAssertEqual(analysis.imageFingerprint.count, 64)
+    XCTAssertNotNil(analysis.visualSignatureRawValue)
     XCTAssertEqual(analysis.analysisVersion, AdonisProcessingVersion.wardrobeAnalysis)
   }
 
@@ -59,6 +60,7 @@ final class WardrobeImageAnalyzerTests: XCTestCase {
       imageWidth: 100,
       imageHeight: 160,
       imageFingerprint: String(repeating: "a", count: 64),
+      visualSignatureRawValue: nil,
       processingMilliseconds: 8,
       analysisVersion: AdonisProcessingVersion.wardrobeAnalysis
     )

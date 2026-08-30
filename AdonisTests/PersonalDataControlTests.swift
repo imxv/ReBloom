@@ -16,6 +16,7 @@ final class PersonalDataControlTests: XCTestCase {
     let cardFilename = try fixture.store.savePNG(image, filename: "outfit-card.png")
     let observationFilename = try fixture.store.savePNG(image, filename: "observation.png")
     let wardrobeFilename = try fixture.store.savePNG(image, filename: "wardrobe.png")
+    let visualSignature = try GarmentVisualSignatureAnalyzer().signature(for: image).encoded()
 
     let record = OutfitRecord(
       createdAt: Date(timeIntervalSince1970: 1_700_000_000),
@@ -36,6 +37,7 @@ final class PersonalDataControlTests: XCTestCase {
       slot: .upperBody,
       confidence: 0.72,
       previewImageFilename: observationFilename,
+      visualSignatureRawValue: visualSignature,
       outfit: record
     )
     record.garmentObservations.append(observation)
@@ -45,7 +47,8 @@ final class PersonalDataControlTests: XCTestCase {
       category: .top,
       imageFilename: wardrobeFilename,
       sourceKind: .catalogImage,
-      dominantColorName: "棕色"
+      dominantColorName: "棕色",
+      visualSignatureRawValue: visualSignature
     )
     let performanceTrace = GenerationPerformanceTrace(
       totalMilliseconds: 680,
@@ -122,10 +125,20 @@ final class PersonalDataControlTests: XCTestCase {
       wardrobeItems.first?["sourceImagePath"] as? String,
       "media/\(wardrobeFilename)"
     )
+    XCTAssertEqual(wardrobeItems.first?["visualSignature"] as? String, visualSignature)
+    XCTAssertEqual(
+      wardrobeItems.first?["visualSignatureVersion"] as? String,
+      GarmentVisualSignature.currentVersion
+    )
     let observations = try XCTUnwrap(manifest["garmentObservations"] as? [[String: Any]])
     XCTAssertEqual(
       observations.first?["derivedPreviewPath"] as? String,
       "media/\(observationFilename)"
+    )
+    XCTAssertEqual(observations.first?["visualSignature"] as? String, visualSignature)
+    XCTAssertEqual(
+      observations.first?["visualSignatureVersion"] as? String,
+      GarmentVisualSignature.currentVersion
     )
     let pendingSharedImages = try XCTUnwrap(manifest["pendingSharedImages"] as? [String])
     XCTAssertEqual(pendingSharedImages, ["shared-inbox/\(pending.id)"])

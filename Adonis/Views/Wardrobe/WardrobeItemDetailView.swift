@@ -80,7 +80,7 @@ struct WardrobeItemDetailView: View {
               .foregroundStyle(AdonisTheme.leafInk)
               .frame(width: 22)
               .accessibilityHidden(true)
-            Text("颜色和款式只在当前设备上分析；图片不会因为加入衣橱而上传。")
+            Text("颜色和画面线索只在当前设备上分析；图片不会因为加入衣橱而上传。")
               .font(.footnote)
               .foregroundStyle(AdonisTheme.secondaryInk)
               .lineSpacing(3)
@@ -184,7 +184,7 @@ struct WardrobeItemDetailView: View {
       if item.analysisVersion != nil {
         ContentProvenanceNotice(
           provenance: .recognitionSuggestion,
-          detail: "颜色、画面类型与未确认分类来自本机分析；你手动选择的分类始终优先。"
+          detail: "颜色、画面类型、纹理线索与未确认分类来自本机分析；你手动选择的分类始终优先。"
         )
       }
     }
