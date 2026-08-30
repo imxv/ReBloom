@@ -218,7 +218,7 @@ struct CreateView: View {
 
       ScrollView(.horizontal) {
         HStack(spacing: 14) {
-          ForEach(SampleCatalog.photos) { sample in
+          ForEach(samplesForDisplay) { sample in
             SamplePhotoButton(sample: sample) {
               guard let image = sample.image(),
                 let sticker = sample.preparedStickerImage()
@@ -230,6 +230,7 @@ struct CreateView: View {
                 await generate(
                   from: image,
                   preparedSticker: sticker,
+                  preparedMatteAssessment: sample.preparedMatteAssessment,
                   inputSource: .preparedSample
                 )
               }
@@ -240,6 +241,15 @@ struct CreateView: View {
       }
       .scrollIndicators(.hidden)
     }
+  }
+
+  private var samplesForDisplay: [SamplePhoto] {
+    #if DEBUG
+      if ProcessInfo.processInfo.arguments.contains("-ui-testing-show-rejected-sample") {
+        return SampleCatalog.photos
+      }
+    #endif
+    return SampleCatalog.showcasePhotos
   }
 
   @ViewBuilder
@@ -412,6 +422,7 @@ struct CreateView: View {
   private func generate(
     from image: UIImage,
     preparedSticker: UIImage?,
+    preparedMatteAssessment: StickerQualityAssessment = .acceptable,
     inputSource: EventInputSource,
     alreadyShowingProgress: Bool = false,
     performanceRecorder: GenerationPerformanceRecorder? = nil,
@@ -431,6 +442,7 @@ struct CreateView: View {
     retryInput = GenerationRetryInput(
       image: image,
       preparedSticker: preparedSticker,
+      preparedMatteAssessment: preparedMatteAssessment,
       inputSource: inputSource
     )
     if !deadlineAlreadyArmed {
@@ -466,7 +478,8 @@ struct CreateView: View {
         processed = StickerProcessingResult(
           image: preparedSticker,
           elapsedMilliseconds: 0,
-          foregroundCoverage: 0
+          foregroundCoverage: 0,
+          rawMatteAssessment: preparedMatteAssessment
         )
       } else {
         processed = try await processor.process(image)
@@ -481,7 +494,8 @@ struct CreateView: View {
       recorder.begin(.qualityAssessment)
       let qualityAssessment = await qualityAssessor.assess(
         sticker: processed.image,
-        foregroundCoverage: processed.foregroundCoverage
+        foregroundCoverage: processed.foregroundCoverage,
+        rawMatteAssessment: processed.rawMatteAssessment
       )
       recorder.finish(.qualityAssessment)
       guard activeGenerationID == generationID else { return }
@@ -493,7 +507,7 @@ struct CreateView: View {
           processingVersion: StickerQualityAssessor.version,
           in: modelContext
         )
-        throw StickerProcessingError.outputQualityTooLow
+        throw StickerProcessingError.outputQualityTooLow(qualityAssessment)
       }
       if qualityAssessment.requiresReview {
         EventLogger.log(
@@ -589,7 +603,16 @@ struct CreateView: View {
       retryPhotoItem = nil
       activeFallbackCandidate = nil
       isProcessing = false
-      presentGenerationError(error.localizedDescription)
+      if let processingError = error as? StickerProcessingError,
+        case .outputQualityTooLow(let assessment) = processingError
+      {
+        presentGenerationError(
+          assessment.userDetail,
+          title: assessment.userTitle
+        )
+      } else {
+        presentGenerationError(error.localizedDescription)
+      }
     }
   }
 
@@ -675,6 +698,7 @@ struct CreateView: View {
         await generate(
           from: retryInput.image,
           preparedSticker: retryInput.preparedSticker,
+          preparedMatteAssessment: retryInput.preparedMatteAssessment,
           inputSource: retryInput.inputSource
         )
       }
@@ -687,8 +711,11 @@ struct CreateView: View {
   }
 
   @MainActor
-  private func presentGenerationError(_ message: String) {
-    errorTitle = "这次没有生成成功"
+  private func presentGenerationError(
+    _ message: String,
+    title: String = "这次没有生成成功"
+  ) {
+    errorTitle = title
     offersRetry = false
     retryInput = nil
     retryPhotoItem = nil
@@ -802,6 +829,7 @@ struct CreateView: View {
 private struct GenerationRetryInput {
   let image: UIImage
   let preparedSticker: UIImage?
+  let preparedMatteAssessment: StickerQualityAssessment
   let inputSource: EventInputSource
 }
 
@@ -829,7 +857,7 @@ private enum CameraAccessAlert: String, Identifiable {
   var message: String {
     switch self {
     case .unavailable:
-      "可以选择相册照片，或先用下面的四张样片体验完整流程。"
+      "可以选择相册照片，或先用下面的内置样片体验完整流程。"
     case .permissionDenied:
       "要拍一张新照片，请先在系统设置里允许 Adonis 使用相机。你也可以继续从相册选择。"
     case .restricted:

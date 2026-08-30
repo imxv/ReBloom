@@ -7,6 +7,7 @@ struct StickerProcessingResult {
   let image: UIImage
   let elapsedMilliseconds: Int
   let foregroundCoverage: Double
+  let rawMatteAssessment: StickerQualityAssessment
 }
 
 struct StickerProcessor {
@@ -27,13 +28,14 @@ struct StickerProcessor {
       return StickerProcessingResult(
         image: result.image,
         elapsedMilliseconds: milliseconds,
-        foregroundCoverage: result.coverage
+        foregroundCoverage: result.rawMatteReport.foregroundCoverage,
+        rawMatteAssessment: result.rawMatteReport.assessment
       )
     }.value
   }
 
   private static func processSynchronously(_ image: UIImage) throws -> (
-    image: UIImage, coverage: Double
+    image: UIImage, rawMatteReport: RawMatteQualityReport
   ) {
     guard
       let source = CIImage(
@@ -86,8 +88,10 @@ struct StickerProcessor {
       let maskBuffer = observation.pixelBuffer
     #endif
 
-    let coverage = foregroundCoverage(of: maskBuffer)
-    guard coverage > 0.015 else {
+    let rawMatteReport = RawMatteQualityAssessor.assessSynchronously(
+      mask: CIImage(cvPixelBuffer: maskBuffer)
+    )
+    guard rawMatteReport.foregroundCoverage > 0.015 else {
       throw StickerProcessingError.personNotFound
     }
 
@@ -157,57 +161,10 @@ struct StickerProcessor {
         extraMargin: Int(padding * 0.35)
       ) ?? fullCGImage
     let deliveryImage = ensureMinimumLongEdge(cropped, minimum: 1_536) ?? cropped
-    return (UIImage(cgImage: deliveryImage, scale: image.scale, orientation: .up), coverage)
-  }
-
-  private static func foregroundCoverage(of pixelBuffer: CVPixelBuffer) -> Double {
-    let image = CIImage(cvPixelBuffer: pixelBuffer)
-    let extent = image.extent.integral
-    let sampleSize: CGFloat = 96
-    let scale = min(sampleSize / extent.width, sampleSize / extent.height, 1)
-    let sampled = image.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
-
-    guard
-      let cgImage = context.createCGImage(
-        sampled,
-        from: sampled.extent.integral,
-        format: .RGBA8,
-        colorSpace: CGColorSpace(name: CGColorSpace.sRGB)
-      )
-    else {
-      return 0
-    }
-
-    let width = cgImage.width
-    let height = cgImage.height
-    let bytesPerPixel = 4
-    let bytesPerRow = width * bytesPerPixel
-    var pixels = [UInt8](repeating: 0, count: height * bytesPerRow)
-
-    guard
-      let bitmap = CGContext(
-        data: &pixels,
-        width: width,
-        height: height,
-        bitsPerComponent: 8,
-        bytesPerRow: bytesPerRow,
-        space: CGColorSpaceCreateDeviceRGB(),
-        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-          | CGBitmapInfo.byteOrder32Big.rawValue
-      )
-    else {
-      return 0
-    }
-    bitmap.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
-
-    var foregroundPixels = 0
-    for y in 0..<height {
-      for x in 0..<width where pixels[y * bytesPerRow + x * bytesPerPixel] > 24 {
-        foregroundPixels += 1
-      }
-    }
-
-    return Double(foregroundPixels) / Double(max(width * height, 1))
+    return (
+      UIImage(cgImage: deliveryImage, scale: image.scale, orientation: .up),
+      rawMatteReport
+    )
   }
 
   private static func cropToLargestVisibleComponent(
@@ -336,7 +293,7 @@ enum StickerProcessingError: LocalizedError {
   case personNotFound
   case renderFailed
   case simulatorVisionUnavailable
-  case outputQualityTooLow
+  case outputQualityTooLow(StickerQualityAssessment)
 
   var errorDescription: String? {
     switch self {
@@ -350,8 +307,8 @@ enum StickerProcessingError: LocalizedError {
       "贴纸生成到最后一步时失败了，请再试一次。"
     case .simulatorVisionUnavailable:
       "当前模拟器无法运行本机人像模型。请先用内置样片体验完整流程，或在 iPhone 上选择自己的照片。"
-    case .outputQualityTooLow:
-      "人物轮廓没有分干净。换一张人物更完整、与背景颜色更分开的照片吧。原图不会被修改。"
+    case .outputQualityTooLow(let assessment):
+      assessment.userDetail
     }
   }
 }

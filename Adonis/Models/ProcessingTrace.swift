@@ -20,7 +20,7 @@ enum EventInputSource: String, Sendable {
 
 enum AdonisProcessingVersion {
   static let sticker = "sticker-vision-v1"
-  static let stickerQuality = "sticker-quality-structural-v1"
+  static let stickerQuality = "sticker-quality-raw-and-delivery-v2"
   static let shareCard = "share-card-v1"
   static let digitalFigurineCard = "digital-figurine-card-v1"
   static let botanicalPoster = "botanical-poster-v1"
@@ -54,7 +54,7 @@ enum GenerationPerformanceStage: String, CaseIterable, Codable, Sendable {
     switch self {
     case .inputLoading: "读取照片"
     case .subjectExtraction: "抠图与白边"
-    case .qualityAssessment: "结构检查"
+    case .qualityAssessment: "蒙版与成品检查"
     case .shareCardComposition: "收藏卡排版"
     case .garmentObservation: "衣物线索"
     }

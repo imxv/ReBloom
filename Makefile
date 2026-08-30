@@ -20,6 +20,7 @@ sample-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
 		-only-testing:AdonisTests/SampleRegressionTests \
 		-only-testing:AdonisTests/StickerProcessorTests \
+		-only-testing:AdonisTests/RawMatteQualityAssessorTests \
 		-only-testing:AdonisTests/StickerQualityAssessorTests
 
 accessibility-regression: project

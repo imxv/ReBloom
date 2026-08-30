@@ -7,7 +7,7 @@ final class SampleRegressionTests: XCTestCase {
   func testBaselineManifestMatchesAuthorizedCatalog() throws {
     let manifest = try loadManifest()
 
-    XCTAssertEqual(manifest.schemaVersion, 1)
+    XCTAssertEqual(manifest.schemaVersion, 2)
     XCTAssertEqual(manifest.name, "adonis-authorized-sample-regression")
     XCTAssertEqual(manifest.authorization.kind, "user_provided")
     XCTAssertEqual(manifest.authorization.receivedOn, "2026-08-29")
@@ -30,6 +30,21 @@ final class SampleRegressionTests: XCTestCase {
       XCTAssertTrue(isSHA256(baseline.sticker.sha256), baseline.sticker.resourceName)
       XCTAssertFalse(baseline.coverageTags.isEmpty, baseline.id)
       XCTAssertFalse(baseline.knownLimitations.isEmpty, baseline.id)
+      XCTAssertEqual(
+        baseline.preparedMatteAssessment.level,
+        sample.preparedMatteAssessment.level.rawValue,
+        baseline.id
+      )
+      XCTAssertEqual(
+        baseline.preparedMatteAssessment.issues,
+        sample.preparedMatteAssessment.issues.map(\.rawValue),
+        baseline.id
+      )
+      XCTAssertEqual(
+        baseline.showInShowcase,
+        SampleCatalog.showcasePhotos.contains(sample),
+        baseline.id
+      )
 
       let source = try XCTUnwrap(sample.image())
       let sourceImage = try XCTUnwrap(source.cgImage)
@@ -81,14 +96,14 @@ final class SampleRegressionTests: XCTestCase {
     }
   }
 
-  func testEveryAuthorizedStickerRendersAnOpaqueShareCard() throws {
+  func testEveryShowcaseStickerRendersAnOpaqueShareCard() throws {
     let fixedDate = try XCTUnwrap(
       Calendar(identifier: .gregorian).date(
         from: DateComponents(year: 2026, month: 8, day: 29)
       )
     )
 
-    for (index, sample) in SampleCatalog.photos.enumerated() {
+    for (index, sample) in SampleCatalog.showcasePhotos.enumerated() {
       let sticker = try XCTUnwrap(sample.preparedStickerImage())
       let card = ShareCardRenderer().render(
         sticker: sticker,
@@ -158,6 +173,13 @@ private struct RegressionBaselineManifest: Decodable {
     let sticker: StickerAsset
     let coverageTags: [String]
     let knownLimitations: [String]
+    let preparedMatteAssessment: PreparedMatteAssessment
+    let showInShowcase: Bool
+  }
+
+  struct PreparedMatteAssessment: Decodable {
+    let level: String
+    let issues: [String]
   }
 
   struct SourceAsset: Decodable {

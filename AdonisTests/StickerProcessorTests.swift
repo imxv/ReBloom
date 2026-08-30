@@ -11,6 +11,8 @@ final class StickerProcessorTests: XCTestCase {
       do {
         let result = try await StickerProcessor().process(source)
         try assertShareReadySticker(result.image, sampleName: sample.resourceName)
+        XCTAssertGreaterThan(result.foregroundCoverage, 0.015)
+        XCTAssertFalse(result.rawMatteAssessment.issues.contains(.subjectMissing))
       } catch let error as StickerProcessingError {
         guard case .simulatorVisionUnavailable = error else {
           return XCTFail("模拟器应真实生成贴纸或报告 Vision 能力边界，实际为 \(error)")
@@ -21,6 +23,8 @@ final class StickerProcessorTests: XCTestCase {
         let source = try XCTUnwrap(sample.image(), "无法读取 \(sample.resourceName)")
         let result = try await StickerProcessor().process(source)
         try assertShareReadySticker(result.image, sampleName: sample.resourceName)
+        XCTAssertGreaterThan(result.foregroundCoverage, 0.015)
+        XCTAssertFalse(result.rawMatteAssessment.issues.contains(.subjectMissing))
       }
     #endif
   }

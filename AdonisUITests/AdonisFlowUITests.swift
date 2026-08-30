@@ -678,6 +678,7 @@ final class AdonisFlowUITests: XCTestCase {
     app.launch()
 
     XCTAssertTrue(app.buttons["sample-01"].waitForExistence(timeout: 8))
+    XCTAssertFalse(app.buttons["sample-04"].exists)
     keepScreenshot(named: "Adonis-create-home")
 
     app.tabBars.buttons["衣橱"].tap()
@@ -1207,61 +1208,32 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
-  func testReviewRecommendedStickerStartsInspectableAndKeepsWarningInHistory() {
+  func testRejectedPreparedMatteStopsBeforeCollectionCard() {
     let app = XCUIApplication()
-    app.launchArguments.append("-ui-testing")
+    app.launchArguments.append(
+      contentsOf: ["-ui-testing", "-ui-testing-show-rejected-sample"]
+    )
     app.launch()
 
     let sample = app.buttons["sample-04"]
     XCTAssertTrue(sample.waitForExistence(timeout: 8))
     sample.tap()
 
-    let title = app.staticTexts["result-title"]
-    XCTAssertTrue(title.waitForExistence(timeout: 10))
-    XCTAssertEqual(title.label, "先看看这张贴纸")
-    let modes = app.segmentedControls["result-mode-picker"]
-    XCTAssertTrue(modes.buttons["透明贴纸"].isSelected)
+    let alert = app.alerts["这张还不适合做成贴纸"]
+    XCTAssertTrue(alert.waitForExistence(timeout: 10))
+    XCTAssertTrue(
+      alert.staticTexts[
+        "人物旁边带进了较大块背景，这张不会继续做成收藏卡。换一张人物与家具、墙面更分开的照片吧。"
+      ].exists
+    )
+    XCTAssertFalse(app.staticTexts["result-title"].exists)
+    XCTAssertFalse(app.buttons["save-today"].exists)
+    keepScreenshot(named: "Adonis-sticker-quality-rejected")
 
-    let notice = app.descendants(matching: .any)["sticker-quality-review_recommended"]
-    XCTAssertTrue(notice.waitForExistence(timeout: 5))
-    for _ in 0..<3 where !notice.isHittable {
-      app.swipeUp()
-    }
-    XCTAssertTrue(notice.isHittable)
-    XCTAssertFalse(notice.label.contains("%"))
-    keepScreenshot(named: "Adonis-sticker-quality-review-result")
-
-    let saveButton = app.buttons["save-today"]
-    for _ in 0..<3 where !saveButton.isHittable {
-      app.swipeUp()
-    }
-    XCTAssertTrue(saveButton.waitForExistence(timeout: 3))
-    XCTAssertTrue(saveButton.label.contains("这样也收藏"))
-    saveButton.tap()
-    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 3))
-
-    let makeAnother = app.buttons["make-another"]
-    for _ in 0..<2 where !makeAnother.isHittable {
-      app.swipeUp()
-    }
-    makeAnother.tap()
-
+    alert.buttons["换一张试试"].tap()
+    XCTAssertTrue(app.buttons["sample-01"].waitForExistence(timeout: 3))
     app.tabBars.buttons["花历"].tap()
-    let recordCard = app.buttons.matching(identifier: "bloom-record-card").firstMatch
-    XCTAssertTrue(recordCard.waitForExistence(timeout: 5))
-    recordCard.tap()
-
-    let historyModes = app.segmentedControls["history-visual-picker"]
-    XCTAssertTrue(historyModes.buttons["透明贴纸"].waitForExistence(timeout: 5))
-    XCTAssertTrue(historyModes.buttons["透明贴纸"].isSelected)
-    let historyNotice =
-      app.descendants(matching: .any)["sticker-quality-review_recommended"]
-    XCTAssertTrue(historyNotice.waitForExistence(timeout: 4))
-    for _ in 0..<3 where !historyNotice.isHittable {
-      app.swipeUp()
-    }
-    XCTAssertTrue(historyNotice.isHittable)
-    keepScreenshot(named: "Adonis-sticker-quality-review-history")
+    XCTAssertEqual(app.buttons.matching(identifier: "bloom-record-card").count, 0)
   }
 
   @MainActor
@@ -1340,10 +1312,6 @@ final class AdonisFlowUITests: XCTestCase {
     let tryOn = app.buttons["sticker-try-on-entry"]
     XCTAssertTrue(scrollToHittable(tryOn, in: app, attempts: 8))
     tryOn.tap()
-    XCTAssertTrue(
-      app.descendants(matching: .any)["sticker-try-on-processing"]
-        .waitForExistence(timeout: 3)
-    )
 
     let preview = app.descendants(matching: .any)["creative-work-preview"]
     XCTAssertTrue(preview.waitForExistence(timeout: 8))

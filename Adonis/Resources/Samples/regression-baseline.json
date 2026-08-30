@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "name": "adonis-authorized-sample-regression",
   "authorization": {
     "kind": "user_provided",
@@ -36,6 +36,11 @@
           "nonWhiteOpaqueRatio": 0.255346
         }
       },
+      "preparedMatteAssessment": {
+        "level": "acceptable",
+        "issues": []
+      },
+      "showInShowcase": true,
       "coverageTags": ["standing", "light_clothing", "handheld_drink", "handbag"],
       "knownLimitations": [
         "左手饮料与发丝周围仍有少量灰白分割残留，作为边缘噪声基线保留。"
@@ -64,6 +69,11 @@
           "nonWhiteOpaqueRatio": 0.367591
         }
       },
+      "preparedMatteAssessment": {
+        "level": "acceptable",
+        "issues": []
+      },
+      "showInShowcase": true,
       "coverageTags": ["standing", "dark_clothing", "large_blank_background", "metallic_bag"],
       "knownLimitations": [
         "金属包、左侧身体与长椅接触处仍夹带墙面和座椅残留。"
@@ -92,6 +102,11 @@
           "nonWhiteOpaqueRatio": 0.561990
         }
       },
+      "preparedMatteAssessment": {
+        "level": "acceptable",
+        "issues": []
+      },
+      "showInShowcase": true,
       "coverageTags": ["standing", "complex_background", "wide_leg_pants", "face_occlusion"],
       "knownLimitations": [
         "头发、肩部与店内复杂背景交界处仍有少量灰白残留。"
@@ -120,6 +135,11 @@
           "nonWhiteOpaqueRatio": 0.328369
         }
       },
+      "preparedMatteAssessment": {
+        "level": "rejected",
+        "issues": ["background_adhesion_suspected"]
+      },
+      "showInShowcase": false,
       "coverageTags": ["seated", "dark_clothing", "dark_background", "crossed_legs"],
       "knownLimitations": [
         "抬腿与浅色软垫紧邻，当前会把大块软垫并入主体；这是明确失败边界，不是合格抠图示例。"

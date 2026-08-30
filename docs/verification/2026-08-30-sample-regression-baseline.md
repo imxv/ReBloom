@@ -1,19 +1,19 @@
 # 2026-08-30 固定样片回归基线验证
 
-> 结论：ADO-Q03 的首批固定回归集已建立并通过专项门禁。它能阻止当前四张授权样片、透明贴纸和收藏卡静默退化，但不等于 ADO-005 的素材覆盖已经完整，也不等于 ADO-006 的真实设备与用户价值已经验证。
+> 结论：ADO-Q03 的首批固定回归集已建立并通过专项门禁。它能阻止当前四张授权原图与透明贴纸静默退化，并保证只有人工复核可用的三张样片进入收藏卡展示；它不等于 ADO-005 的素材覆盖已经完整，也不等于 ADO-006 的真实设备与用户价值已经验证。
 
 ## 1. 样片来源与范围
 
 四张原图均由用户在 2026-08-29 的 Adonis 开发会话中明确提供。仓库文件与会话附件逐字节一致；没有把外部社交平台图片复制进样本集。授权类型、接收日期、处理版本、文件哈希、尺寸、覆盖标签和已知缺陷统一记录在 `Adonis/Resources/Samples/regression-baseline.json`。
 
-| 样片 | 原图 | 固定贴纸 | 覆盖 | 目检结论 |
+| 样片 | 原图 | 固定贴纸 | 覆盖 | 目检与产品路由 |
 | --- | --- | --- | --- | --- |
-| sample-01 | [1080 × 1440](../../Adonis/Resources/Samples/sample-01.png) | [846 × 1536](../../Adonis/Resources/Samples/sample-01-sticker.png) | 站姿、浅色穿搭、饮料、手提包 | 人物、饮料和包保留；左手与发丝周围有少量灰白残留。 |
-| sample-02 | [1080 × 1440](../../Adonis/Resources/Samples/sample-02.png) | [548 × 1536](../../Adonis/Resources/Samples/sample-02-sticker.png) | 站姿、深色穿搭、大面积留白、金属包 | 人物和包保留；身体、包与墙面或长椅接触处夹带残留。 |
-| sample-03 | [1080 × 1440](../../Adonis/Resources/Samples/sample-03.png) | [530 × 1536](../../Adonis/Resources/Samples/sample-03-sticker.png) | 复杂背景、宽松裤装、脸部遮挡 | 托盘、手和衣服图案保留；头发与肩部附近有灰白残留。 |
-| sample-04 | [1080 × 1440](../../Adonis/Resources/Samples/sample-04.png) | [1174 × 1536](../../Adonis/Resources/Samples/sample-04-sticker.png) | 坐姿、深色衣物、深色背景、交叠腿部 | 人物和靴子保留，但浅色软垫被大块并入主体；这是明确失败边界。 |
+| sample-01 | [1080 × 1440](../../Adonis/Resources/Samples/sample-01.png) | [846 × 1536](../../Adonis/Resources/Samples/sample-01-sticker.png) | 站姿、浅色穿搭、饮料、手提包 | 人物、饮料和包保留；左手与发丝周围有少量灰白残留。A 级，进入普通样片入口。 |
+| sample-02 | [1080 × 1440](../../Adonis/Resources/Samples/sample-02.png) | [548 × 1536](../../Adonis/Resources/Samples/sample-02-sticker.png) | 站姿、深色穿搭、大面积留白、金属包 | 人物和包保留；身体、包与墙面或长椅接触处夹带残留。A 级，进入普通样片入口。 |
+| sample-03 | [1080 × 1440](../../Adonis/Resources/Samples/sample-03.png) | [530 × 1536](../../Adonis/Resources/Samples/sample-03-sticker.png) | 复杂背景、宽松裤装、脸部遮挡 | 托盘、手和衣服图案保留；头发与肩部附近有灰白残留。A 级，进入普通样片入口。 |
+| sample-04 | [1080 × 1440](../../Adonis/Resources/Samples/sample-04.png) | [1174 × 1536](../../Adonis/Resources/Samples/sample-04-sticker.png) | 坐姿、深色衣物、深色背景、交叠腿部 | 人物和靴子保留，但浅色软垫被大块并入主体。C 级拒绝，从普通入口隐藏且不生成用户收藏卡。 |
 
-sample-04 不是“挑选出的成功案例”。保留它是为了保证后续处理不能悄悄变得更差，也提醒产品在 ADO-Q04 中对低质量结果提供可理解的降级。
+sample-04 不是“挑选出的成功案例”。保留它是为了保证后续处理不能悄悄变得更差，也提醒产品在 ADO-Q04 中对低质量结果提供可理解的降级。`regression-baseline.json` schema v2 会同时记录人工抠图结论和 `showInShowcase`，并与 App 内目录互相校验。
 
 ## 2. 基线契约
 
@@ -54,7 +54,7 @@ Xcode 会在打包时重新编码 PNG，因此编码文件哈希必须在 macOS 
 | sample-03 | 0.317574 | 0.652610 | 0.029815 | 0.999976 | 1.000000 | 0.561990 |
 | sample-04 | 0.505384 | 0.361590 | 0.133025 | 0.995040 | 1.000000 | 0.328369 |
 
-四张贴纸还分别进入 `ShareCardRenderer`，每张必须生成 1080 × 1440、全像素不透明的收藏卡；结果作为 XCTest 附件保留。
+只有前三张 A 级展示样片进入 `ShareCardRenderer`，每张必须生成 1080 × 1440、全像素不透明的收藏卡；sample-04 继续参与文件、重生成和像素回归，但不会为了测试附件绕过质量闸门生成用户收藏卡。
 
 这些指标可以发现背景矩形、Alpha 丢失、白边消失、空图、尺寸下降和显著结构漂移。它们不能判断脸是否“更像本人”或某一块残留是否审美可接受，因此逐图目检仍是基线更新的必要条件。
 
@@ -79,17 +79,17 @@ make sample-regression
 
 - 四张原图与四张贴纸哈希校验通过。
 - 四张贴纸在 macOS Vision 链路中重新生成，全部与仓库结果逐字节一致。
-- 11 个专项 XCTest 通过，0 失败；其中新增 5 个结构质量检查测试，确保前三张正常、第 4 张建议复查，并覆盖背景未分离与空主体拒绝。
-- 专项结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_04-11-10-+0800.xcresult`。
-- 从完整结果包导出的四张收藏卡附件已逐张目检：尺寸、标题、编号、日期、来源声明和主体排版均可读；sample-04 的浅色软垫误并入也在卡面中如实可见。
-
-- `make check` 通过：严格 `swift-format` 与通用 iOS 设备静态分析均成功。
-- `make test` 通过：58 个单元测试与 15 个 UI 流程测试，共 73 项、0 失败。
-- 完整结果包：`.derivedData/Logs/Test/Test-Adonis-2026.08.30_04-05-02-+0800.xcresult`。
+- schema v2 清单强制四张样片的人工抠图结论、问题代码与普通入口路由和 App 目录一致。
+- 原始蒙版受控测试覆盖空主体、严重碎裂、大块不确定背景粘连和可复查模糊边缘。
+- 三张展示样片的收藏卡附件已目检；sample-04 只保留原图与透明贴纸失败基线。
+- `make sample-regression` 共 20 项通过，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_18-53-20-+0800.xcresult`。
+- `make check` 的严格 `swift-format` 与通用 iOS 设备静态分析通过。
+- 完整 `make test` 共 176 项通过、0 失败、0 跳过，其中 145 个单元测试、31 个真实模拟器 UI 流程；`xcresulttool` 独立汇总一致，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_18-53-37-+0800.xcresult`。
+- Release 通用 iOS 构建成功，主 App 与分享扩展均由 `file` 确认为 Mach-O 64-bit arm64；真实 iPhone 运行仍未验证。
 
 专项门禁与完整产品回归都已执行；两者仍不能代替真实 iPhone 证据。
 
-困难样片目前会触发可见但不阻断收藏的质量提示，详见 [贴纸低质量降级验证记录](2026-08-30-sticker-quality-degradation.md)。
+困难样片现在稳定触发 C 级拒绝，不进入普通样片入口、结果页或花历，详见 [贴纸低质量降级验证记录](2026-08-30-sticker-quality-degradation.md)。
 
 ## 5. 基线更新规则
 
@@ -108,7 +108,7 @@ make sample-regression
 - 真实 iPhone 的实时 Vision 输出是否与 macOS 预处理结果具有同等质量。
 - 半身、多人、透明材质、蓬松头发、严重遮挡和商品图等缺失场景。
 - 当前四张样片之外的泛化质量、耗时和失败率。
-- sample-04 的软垫误并入问题已经解决；当前只是被稳定记录。
+- sample-04 的软垫误并入问题并未被修复；当前只是被稳定记录、从成功入口移除并在生成路由中正确拒绝。
 - 用户是否真的愿意保存或分享这些结果。
 
 因此 ADO-Q03 可以完成，ADO-005、ADO-006、ADO-008 和 ADO-108 继续保持未完成。

@@ -170,10 +170,10 @@ final class ProcessingTraceTests: XCTestCase {
     )
   }
 
-  func testGenerationPipelineIncludesStructuralQualityAssessment() {
+  func testGenerationPipelineIncludesRawMatteAndDeliveryQualityAssessment() {
     XCTAssertEqual(
       StickerQualityAssessor.version,
-      "sticker-quality-structural-v1"
+      "sticker-quality-raw-and-delivery-v2"
     )
     XCTAssertTrue(
       AdonisProcessingVersion.generationPipeline.contains(StickerQualityAssessor.version)

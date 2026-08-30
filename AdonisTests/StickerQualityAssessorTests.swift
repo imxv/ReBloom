@@ -5,24 +5,33 @@ import XCTest
 @testable import Adonis
 
 final class StickerQualityAssessorTests: XCTestCase {
+  func testShowcaseExcludesKnownRejectedMatteButRegressionCatalogKeepsIt() {
+    XCTAssertTrue(SampleCatalog.photos.contains(where: { $0.id == "sample-04" }))
+    XCTAssertFalse(SampleCatalog.showcasePhotos.contains(where: { $0.id == "sample-04" }))
+    XCTAssertFalse(
+      SampleCatalog.showcasePhotos.contains(where: \.preparedMatteAssessment.isRejected)
+    )
+  }
+
   func testAuthorizedSamplesHaveExpectedStructuralQualityLevels() throws {
     let expected: [String: StickerQualityLevel] = [
       "sample-01": .acceptable,
       "sample-02": .acceptable,
       "sample-03": .acceptable,
-      "sample-04": .reviewRecommended,
+      "sample-04": .rejected,
     ]
 
     for sample in SampleCatalog.photos {
       let sticker = try XCTUnwrap(sample.preparedStickerImage())
       let assessment = StickerQualityAssessor.assessSynchronously(
         sticker: sticker,
-        foregroundCoverage: 0
+        foregroundCoverage: 0,
+        rawMatteAssessment: sample.preparedMatteAssessment
       )
       XCTAssertEqual(assessment.level, expected[sample.id], sample.id)
 
       if sample.id == "sample-04" {
-        XCTAssertTrue(assessment.issues.contains(.edgeMayIncludeBackground))
+        XCTAssertTrue(assessment.issues.contains(.backgroundAdhesionSuspected))
       }
     }
   }
@@ -60,6 +69,57 @@ final class StickerQualityAssessorTests: XCTestCase {
 
     XCTAssertEqual(assessment.level, .rejected)
     XCTAssertTrue(assessment.issues.contains(.subjectMissing))
+  }
+
+  func testRawMatteRejectionOverridesDeliveryReadySticker() throws {
+    let sticker = try XCTUnwrap(SampleCatalog.photos.first?.preparedStickerImage())
+    let rawMatteAssessment = StickerQualityAssessment(
+      level: .rejected,
+      issues: [.backgroundAdhesionSuspected]
+    )
+
+    let assessment = StickerQualityAssessor.assessSynchronously(
+      sticker: sticker,
+      foregroundCoverage: 0.3,
+      rawMatteAssessment: rawMatteAssessment
+    )
+
+    XCTAssertEqual(assessment.level, .rejected)
+    XCTAssertTrue(assessment.issues.contains(.backgroundAdhesionSuspected))
+  }
+
+  func testRawMatteReviewSurvivesAcceptableDeliveryChecks() throws {
+    let sticker = try XCTUnwrap(SampleCatalog.photos.first?.preparedStickerImage())
+    let rawMatteAssessment = StickerQualityAssessment(
+      level: .reviewRecommended,
+      issues: [.edgeMayIncludeBackground]
+    )
+
+    let assessment = StickerQualityAssessor.assessSynchronously(
+      sticker: sticker,
+      foregroundCoverage: 0.3,
+      rawMatteAssessment: rawMatteAssessment
+    )
+
+    XCTAssertEqual(assessment.level, .reviewRecommended)
+    XCTAssertTrue(assessment.issues.contains(.edgeMayIncludeBackground))
+  }
+
+  func testRejectedQualityCopyNeverOffersAnUnavailableStickerPreview() {
+    let rejectedIssues: [StickerQualityIssue] = [
+      .subjectMissing,
+      .subjectFragmented,
+      .backgroundNotSeparated,
+      .backgroundAdhesionSuspected,
+    ]
+
+    for issue in rejectedIssues {
+      let assessment = StickerQualityAssessment(level: .rejected, issues: [issue])
+
+      XCTAssertTrue(assessment.userDetail.contains("不会继续做成收藏卡"), issue.rawValue)
+      XCTAssertTrue(assessment.userDetail.contains("换一张"), issue.rawValue)
+      XCTAssertFalse(assessment.userDetail.contains("先看看"), issue.rawValue)
+    }
   }
 
   func testAssessmentRoundTripsWithoutShowingScoresToUser() {
