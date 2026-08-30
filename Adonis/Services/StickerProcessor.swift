@@ -95,13 +95,11 @@ struct StickerProcessor {
       throw StickerProcessingError.personNotFound
     }
 
-    var mask = CIImage(cvPixelBuffer: maskBuffer)
-    let scaleX = sourceExtent.width / mask.extent.width
-    let scaleY = sourceExtent.height / mask.extent.height
-    mask =
-      mask
-      .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
-      .cropped(to: sourceExtent)
+    let matte = StickerMatteRefiner.extractSubject(
+      source: source,
+      coarseMask: CIImage(cvPixelBuffer: maskBuffer)
+    )
+    let mask = matte.mask
 
     let outlineRadius = max(12, min(sourceExtent.width, sourceExtent.height) * 0.014)
     let padding = ceil(outlineRadius * 2.25)
@@ -109,8 +107,8 @@ struct StickerProcessor {
       translationX: padding - sourceExtent.minX,
       y: padding - sourceExtent.minY
     )
-    let translatedSource = source.transformed(by: translation)
     let translatedMask = mask.transformed(by: translation)
+    let translatedSubject = matte.subject.transformed(by: translation)
     let canvas = CGRect(
       x: 0,
       y: 0,
@@ -135,13 +133,7 @@ struct StickerProcessor {
         kCIInputMaskImageKey: expandedMask,
       ]
     )
-    let subject = translatedSource.applyingFilter(
-      "CIBlendWithMask",
-      parameters: [
-        kCIInputBackgroundImageKey: clear,
-        kCIInputMaskImageKey: translatedMask,
-      ]
-    )
+    let subject = translatedSubject.cropped(to: canvas)
     let composited = subject.composited(over: outline).cropped(to: canvas)
 
     guard

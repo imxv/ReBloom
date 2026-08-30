@@ -8,10 +8,10 @@
 
 | 样片 | 原图 | 固定贴纸 | 覆盖 | 目检与产品路由 |
 | --- | --- | --- | --- | --- |
-| sample-01 | [1080 × 1440](../../Adonis/Resources/Samples/sample-01.png) | [846 × 1536](../../Adonis/Resources/Samples/sample-01-sticker.png) | 站姿、浅色穿搭、饮料、手提包 | 人物、饮料和包保留；左手与发丝周围有少量灰白残留。A 级，进入普通样片入口。 |
-| sample-02 | [1080 × 1440](../../Adonis/Resources/Samples/sample-02.png) | [548 × 1536](../../Adonis/Resources/Samples/sample-02-sticker.png) | 站姿、深色穿搭、大面积留白、金属包 | 人物和包保留；身体、包与墙面或长椅接触处夹带残留。A 级，进入普通样片入口。 |
-| sample-03 | [1080 × 1440](../../Adonis/Resources/Samples/sample-03.png) | [530 × 1536](../../Adonis/Resources/Samples/sample-03-sticker.png) | 复杂背景、宽松裤装、脸部遮挡 | 托盘、手和衣服图案保留；头发与肩部附近有灰白残留。A 级，进入普通样片入口。 |
-| sample-04 | [1080 × 1440](../../Adonis/Resources/Samples/sample-04.png) | [1174 × 1536](../../Adonis/Resources/Samples/sample-04-sticker.png) | 坐姿、深色衣物、深色背景、交叠腿部 | 人物和靴子保留，但浅色软垫被大块并入主体。C 级拒绝，从普通入口隐藏且不生成用户收藏卡。 |
+| sample-01 | [1080 × 1440](../../Adonis/Resources/Samples/sample-01.png) | [848 × 1536](../../Adonis/Resources/Samples/sample-01-sticker.png) | 站姿、浅色穿搭、饮料、手提包 | 人物、饮料和包保留；左手与发丝周围有少量灰白残留。A 级，进入普通样片入口。 |
+| sample-02 | [1080 × 1440](../../Adonis/Resources/Samples/sample-02.png) | [547 × 1536](../../Adonis/Resources/Samples/sample-02-sticker.png) | 站姿、深色穿搭、大面积留白、金属包 | 人物和包保留；身体、包与墙面或长椅接触处夹带残留。A 级，进入普通样片入口。 |
+| sample-03 | [1080 × 1440](../../Adonis/Resources/Samples/sample-03.png) | [529 × 1536](../../Adonis/Resources/Samples/sample-03-sticker.png) | 复杂背景、宽松裤装、脸部遮挡 | 托盘、手和衣服图案保留；头发与肩部附近有灰白残留。A 级，进入普通样片入口。 |
+| sample-04 | [1080 × 1440](../../Adonis/Resources/Samples/sample-04.png) | [1176 × 1536](../../Adonis/Resources/Samples/sample-04-sticker.png) | 坐姿、深色衣物、深色背景、交叠腿部 | 人物和靴子保留，但浅色软垫被大块并入主体。C 级拒绝，从普通入口隐藏且不生成用户收藏卡。 |
 
 sample-04 不是“挑选出的成功案例”。保留它是为了保证后续处理不能悄悄变得更差，也提醒产品在 ADO-Q04 中对低质量结果提供可理解的降级。`regression-baseline.json` schema v2 会同时记录人工抠图结论和 `showInShowcase`，并与 App 内目录互相校验。
 
@@ -27,12 +27,14 @@ sample-04 不是“挑选出的成功案例”。保留它是为了保证后续�
 
 | 样片 | 贴纸 SHA-256 |
 | --- | --- |
-| sample-01 | `d955397f25f7bf0b847d1f608a2423c91a820738a1989bbba8463148af029344` |
-| sample-02 | `5ce0d85742ffa585bb36da7d846ae073c28f6ef34a8e05fbc60e5657c578ea27` |
-| sample-03 | `62cfa4d8105d017eabd7e6e3548bd6735f98cc7c45fb3a5eb6ccfda63e5fe156` |
-| sample-04 | `893626428ebf7e8b9414f8d61dc409681cf994568d6d7ad6ddf2b11869fb566d` |
+| sample-01 | `c07053dcd70651c8951e4090d259b7f230b78123af47b88c95c8c007d4f0f616` |
+| sample-02 | `d2634c153cb6c7944e3e7b84a094af77e1b48afaa5eaf364e897ce9b2caff51a` |
+| sample-03 | `17be951440b4148a2a6c7abfb1e3975e876e4d95a1ccdad784d65a1a9c0640bf` |
+| sample-04 | `e89b89c7bb6258bb86eb8e13f54258f6cfffff2d3d46069340055972358329d9` |
 
 Xcode 会在打包时重新编码 PNG，因此编码文件哈希必须在 macOS 仓库边界校验；iOS XCTest 负责解码后的尺寸和像素结构，二者不能互相替代。
+
+当前 `sticker-vision-edge-refine-v2` 会在原始蒙版质量门禁之后，以原图亮度边缘引导 Alpha 过渡，并用 trimap 保留明确前景与背景；它只改变 Alpha，不重绘输入照片 RGB。实现契约、候选目检过程和真实设备边界见 [贴纸边缘细化验证记录](2026-08-30-sticker-edge-refinement.md)。
 
 ### iOS 像素与交付边界
 
@@ -49,10 +51,10 @@ Xcode 会在打包时重新编码 PNG，因此编码文件哈希必须在 macOS 
 
 | 样片 | 透明 | 不透明 | 半透明 | 最大主体 | 白色边界 | 非白主体 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| sample-01 | 0.634445 | 0.339869 | 0.025685 | 0.999949 | 1.000000 | 0.255346 |
-| sample-02 | 0.443072 | 0.470063 | 0.086865 | 1.000000 | 1.000000 | 0.367591 |
-| sample-03 | 0.317574 | 0.652610 | 0.029815 | 0.999976 | 1.000000 | 0.561990 |
-| sample-04 | 0.505384 | 0.361590 | 0.133025 | 0.995040 | 1.000000 | 0.328369 |
+| sample-01 | 0.634106 | 0.335876 | 0.030018 | 1.000000 | 1.000000 | 0.255095 |
+| sample-02 | 0.441315 | 0.466536 | 0.092149 | 1.000000 | 1.000000 | 0.367695 |
+| sample-03 | 0.316330 | 0.649192 | 0.034478 | 1.000000 | 1.000000 | 0.562904 |
+| sample-04 | 0.506044 | 0.358027 | 0.135929 | 0.995519 | 1.000000 | 0.326617 |
 
 只有前三张 A 级展示样片进入 `ShareCardRenderer`，每张必须生成 1080 × 1440、全像素不透明的收藏卡；sample-04 继续参与文件、重生成和像素回归，但不会为了测试附件绕过质量闸门生成用户收藏卡。
 
@@ -82,9 +84,9 @@ make sample-regression
 - schema v2 清单强制四张样片的人工抠图结论、问题代码与普通入口路由和 App 目录一致。
 - 原始蒙版受控测试覆盖空主体、严重碎裂、大块不确定背景粘连和可复查模糊边缘。
 - 三张展示样片的收藏卡附件已目检；sample-04 只保留原图与透明贴纸失败基线。
-- `make sample-regression` 共 20 项通过，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_18-53-20-+0800.xcresult`。
+- `make sample-regression` 共 23 项通过、0 失败、0 跳过，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_20-36-30-+0800.xcresult`。
 - `make check` 的严格 `swift-format` 与通用 iOS 设备静态分析通过。
-- 完整 `make test` 共 176 项通过、0 失败、0 跳过，其中 145 个单元测试、31 个真实模拟器 UI 流程；`xcresulttool` 独立汇总一致，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_18-53-37-+0800.xcresult`。
+- 完整 `make test` 共 185 项通过、0 失败、0 跳过，其中 153 个单元测试、32 个真实模拟器 UI 流程；`xcresulttool` 独立汇总一致，结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.30_20-37-45-+0800.xcresult`。
 - Release 通用 iOS 构建成功，主 App 与分享扩展均由 `file` 确认为 Mach-O 64-bit arm64；真实 iPhone 运行仍未验证。
 
 专项门禁与完整产品回归都已执行；两者仍不能代替真实 iPhone 证据。

@@ -36,13 +36,88 @@ guard let observation = request.results?.first else {
     throw GeneratorError.personNotFound
 }
 
-var mask = CIImage(cvPixelBuffer: observation.pixelBuffer)
-mask = mask
-    .transformed(by: CGAffineTransform(
-        scaleX: sourceExtent.width / mask.extent.width,
-        y: sourceExtent.height / mask.extent.height
+func restoreOrigin(of image: CIImage, to extent: CGRect) -> CIImage {
+    image
+        .transformed(by: CGAffineTransform(
+            translationX: extent.minX,
+            y: extent.minY
+        ))
+        .cropped(to: extent)
+}
+
+func constrainToTrimap(
+    refined: CIImage,
+    scaledCoarseMask: CIImage,
+    extent: CGRect
+) -> CIImage {
+    let definiteForeground = scaledCoarseMask.applyingFilter(
+        "CIColorThreshold",
+        parameters: ["inputThreshold": 0.99]
+    )
+    let possibleForeground = scaledCoarseMask.applyingFilter(
+        "CIColorThreshold",
+        parameters: ["inputThreshold": 0.01]
+    )
+    let black = CIImage(color: .black).cropped(to: extent)
+    let white = CIImage(color: .white).cropped(to: extent)
+    let bounded = refined.applyingFilter(
+        "CIBlendWithMask",
+        parameters: [
+            kCIInputBackgroundImageKey: black,
+            kCIInputMaskImageKey: possibleForeground,
+        ]
+    )
+    return white.applyingFilter(
+        "CIBlendWithMask",
+        parameters: [
+            kCIInputBackgroundImageKey: bounded,
+            kCIInputMaskImageKey: definiteForeground,
+        ]
+    ).cropped(to: extent)
+}
+
+func refineMatte(source: CIImage, coarseMask: CIImage) -> CIImage {
+    let sourceExtent = source.extent.integral
+    let maskExtent = coarseMask.extent.integral
+    let normalizedSource = source.transformed(by: CGAffineTransform(
+        translationX: -sourceExtent.minX,
+        y: -sourceExtent.minY
     ))
-    .cropped(to: sourceExtent)
+    let normalizedMask = coarseMask.transformed(by: CGAffineTransform(
+        translationX: -maskExtent.minX,
+        y: -maskExtent.minY
+    ))
+    let normalizedSourceExtent = CGRect(origin: .zero, size: sourceExtent.size).integral
+    let scaledMask = normalizedMask
+        .transformed(by: CGAffineTransform(
+            scaleX: sourceExtent.width / maskExtent.width,
+            y: sourceExtent.height / maskExtent.height
+        ))
+        .cropped(to: normalizedSourceExtent)
+
+    guard let filter = CIFilter(name: "CIEdgePreserveUpsampleFilter") else {
+        return restoreOrigin(of: scaledMask, to: sourceExtent)
+    }
+    filter.setValue(normalizedSource, forKey: kCIInputImageKey)
+    filter.setValue(normalizedMask, forKey: "inputSmallImage")
+    filter.setValue(3, forKey: "inputSpatialSigma")
+    filter.setValue(0.15, forKey: "inputLumaSigma")
+
+    let refined = (filter.outputImage ?? scaledMask).cropped(to: normalizedSourceExtent)
+    return restoreOrigin(
+        of: constrainToTrimap(
+            refined: refined,
+            scaledCoarseMask: scaledMask,
+            extent: normalizedSourceExtent
+        ),
+        to: sourceExtent
+    )
+}
+
+let mask = refineMatte(
+    source: source,
+    coarseMask: CIImage(cvPixelBuffer: observation.pixelBuffer)
+)
 
 let outlineRadius = max(12, min(sourceExtent.width, sourceExtent.height) * 0.014)
 let padding = ceil(outlineRadius * 2.25)

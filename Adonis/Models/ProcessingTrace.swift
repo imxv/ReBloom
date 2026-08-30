@@ -19,7 +19,7 @@ enum EventInputSource: String, Sendable {
 }
 
 enum AdonisProcessingVersion {
-  static let sticker = "sticker-vision-v1"
+  static let sticker = "sticker-vision-edge-refine-v2"
   static let stickerQuality = "sticker-quality-raw-and-delivery-v2"
   static let shareCard = "share-card-v1"
   static let digitalFigurineCard = "digital-figurine-card-v1"
