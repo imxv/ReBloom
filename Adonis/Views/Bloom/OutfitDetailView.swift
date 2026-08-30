@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import UIKit
 
 struct OutfitDetailView: View {
   @Bindable var record: OutfitRecord
@@ -10,11 +11,13 @@ struct OutfitDetailView: View {
   @Environment(\.modelContext) private var modelContext
   @State private var visualAsset: OutfitVisualAsset
   @State private var showShare = false
+  @State private var fidelityReviewSheet: StickerFidelityReviewSheetDestination?
   @State private var digitalFigurineCard: DigitalFigurineCardPresentation?
   @State private var selectedCreativeWork: CreativeWorkPresentation?
   @State private var showDeleteConfirmation = false
   @State private var figurineError: String?
   @State private var creativeWorkError: String?
+  @State private var fidelityReviewError: String?
 
   init(record: OutfitRecord, onDelete: @escaping () -> Void) {
     self.record = record
@@ -51,6 +54,14 @@ struct OutfitDetailView: View {
           }
 
           ContentProvenanceNotice(provenance: record.provenance(for: visualAsset))
+
+          if fidelityGeneratedImageFilename != nil {
+            StickerFidelityReviewEntry(
+              review: record.stickerFidelityReview,
+              onMatches: markFidelityAsMatching,
+              onChanged: openFidelityReview
+            )
+          }
 
           DigitalFigurineCardEntry {
             makeDigitalFigurineCard()
@@ -112,6 +123,20 @@ struct OutfitDetailView: View {
           .presentationDetents([.medium, .large])
       }
     }
+    .sheet(item: $fidelityReviewSheet) { _ in
+      if let originalImage = MediaStore.shared.image(filename: record.sourceImageFilename),
+        let fidelityGeneratedImageFilename,
+        let generatedImage = MediaStore.shared.image(filename: fidelityGeneratedImageFilename)
+      {
+        StickerFidelityReviewSheet(
+          originalImage: originalImage,
+          generatedImage: generatedImage,
+          initialReview: record.stickerFidelityReview,
+          onSave: storeFidelityReview
+        )
+        .presentationDetents([.large])
+      }
+    }
     .sheet(item: $digitalFigurineCard) { presentation in
       DigitalFigurineCardView(presentation: presentation) {
         EventLogger.log(
@@ -157,6 +182,17 @@ struct OutfitDetailView: View {
     } message: {
       Text(creativeWorkError ?? "请稍后再试。")
     }
+    .alert(
+      "评价没有保存",
+      isPresented: Binding(
+        get: { fidelityReviewError != nil },
+        set: { if !$0 { fidelityReviewError = nil } }
+      )
+    ) {
+      Button("知道了", role: .cancel) {}
+    } message: {
+      Text(fidelityReviewError ?? "请稍后再试。")
+    }
     .confirmationDialog("删除这一天？", isPresented: $showDeleteConfirmation) {
       Button("删除", role: .destructive) {
         onDelete()
@@ -166,6 +202,57 @@ struct OutfitDetailView: View {
     } message: {
       Text("原图、贴纸、收藏卡和这一天收藏的创作都会从当前设备移除。")
     }
+  }
+
+  private var fidelityGeneratedImageFilename: String? {
+    guard
+      StickerFidelityReview.canReview(
+        stickerProvenance: record.stickerProvenance,
+        hasAIStickerSource: record.aiStickerSourceImageFilename != nil
+      )
+    else { return nil }
+    return record.aiStickerSourceImageFilename
+  }
+
+  private func openFidelityReview() {
+    guard
+      let fidelityGeneratedImageFilename,
+      MediaStore.shared.image(filename: record.sourceImageFilename) != nil,
+      MediaStore.shared.image(filename: fidelityGeneratedImageFilename) != nil
+    else {
+      fidelityReviewError = "原图或 AI 贴纸源图暂时无法读取，收藏记录没有丢失。"
+      return
+    }
+    fidelityReviewSheet = .review
+  }
+
+  private func markFidelityAsMatching() {
+    do {
+      try storeFidelityReview(
+        StickerFidelityReview(
+          verdict: .matches,
+          reviewedAt: .now
+        )
+      )
+    } catch {
+      fidelityReviewError = error.localizedDescription
+    }
+  }
+
+  private func storeFidelityReview(_ review: StickerFidelityReview) throws {
+    do {
+      record.setStickerFidelityReview(review)
+      try modelContext.save()
+    } catch {
+      modelContext.rollback()
+      throw error
+    }
+    EventLogger.log(
+      .stickerFidelityReviewed,
+      detail: review.eventDetail,
+      processingVersion: StickerFidelityReview.version,
+      in: modelContext
+    )
   }
 
   private var creativeWorksSection: some View {

@@ -73,6 +73,7 @@ xcodebuild \
   test \
   -only-testing:AdonisTests/AccessibilityContractTests \
   -only-testing:AdonisUITests/AdonisFlowUITests/testAccessibleCoreFlowSurvivesBackgroundAndKeepsActionsReachable \
+  -only-testing:AdonisUITests/AdonisFlowUITests/testAIStickerFidelityReviewPersistsFromResultIntoHistory \
   -only-testing:AdonisUITests/AdonisFlowUITests/testGeneratedStickerCreatesTraceableBotanicalPosterReadyToCompareSaveAndShare \
   -only-testing:AdonisUITests/AdonisFlowUITests/testCuratedStyleGardenSelectsPersistsAndReopensFloralSketch \
   -only-testing:AdonisUITests/AdonisFlowUITests/testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt \

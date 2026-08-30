@@ -75,7 +75,7 @@ sample-04 的准备结果没有可随 App 交付的原始 Vision 蒙版，因此
 - 只有 A/B 结果可以形成 `GenerationDraft`；C 级拒绝不会生成收藏卡、保存按钮或 `OutfitRecord`。
 - `OutfitRecord` 继续保存 A/B 质量级别、问题代码和检查版本；重新进入花历后不会丢失建议复查提示。
 - 本地事件“贴纸建议复查”和“贴纸质量未通过”只记录级别与问题代码，不记录图片内容。
-- 当前个人数据导出格式 `adonis-personal-data-v7` 继续为已保存结果写入 `stickerQualityLevel`、`stickerQualityIssues`、`stickerQualityRequiresReview` 和 `stickerQualityVersion`。
+- 当前个人数据导出格式 `adonis-personal-data-v9` 继续为已保存结果写入 `stickerQualityLevel`、`stickerQualityIssues`、`stickerQualityRequiresReview` 和 `stickerQualityVersion`。
 - 被拒绝结果没有可导出的视觉资产；其失败事件仍遵循不保存图片、路径或用户文本的事件边界。
 
 ## 5. 界面证据

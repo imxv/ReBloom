@@ -6,8 +6,9 @@ struct GenerationResultView: View {
   let initiallySaved: Bool
   let creativeImageGenerator: any CreativeImageGenerating
   let photoLibrarySaver: PhotoLibrarySaver
-  let onSave: () throws -> Void
-  let onSaveCreative: (CreativeWorkDraft) throws -> Void
+  let onSave: (StickerFidelityReview?) throws -> Void
+  let onSaveCreative: (CreativeWorkDraft, StickerFidelityReview?) throws -> Void
+  let onFidelityReview: (StickerFidelityReview) throws -> Void
   let onReset: () -> Void
 
   @Environment(\.dismiss) private var dismiss
@@ -17,12 +18,15 @@ struct GenerationResultView: View {
   @State private var isSaved: Bool
   @State private var showShare = false
   @State private var showCuratedStylePicker = false
+  @State private var fidelityReviewSheet: StickerFidelityReviewSheetDestination?
   @State private var digitalFigurineCard: DigitalFigurineCardPresentation?
   @State private var creativeWork: CreativeWorkPresentation?
+  @State private var fidelityReview: StickerFidelityReview?
   @State private var photoSaveState: StickerPhotoSaveState = .idle
   @State private var saveError: String?
   @State private var figurineError: String?
   @State private var creativeWorkError: String?
+  @State private var fidelityReviewError: String?
   @State private var activeSystemCreativeID: UUID?
   @State private var activeSystemCreativeRecipe: CreativeRecipe?
   @State private var systemCreativeTimer: CreativeGenerationAttemptTimer?
@@ -34,8 +38,10 @@ struct GenerationResultView: View {
     initiallySaved: Bool,
     creativeImageGenerator: any CreativeImageGenerating,
     photoLibrarySaver: PhotoLibrarySaver = .configuredForCurrentProcess,
-    onSave: @escaping () throws -> Void,
-    onSaveCreative: @escaping (CreativeWorkDraft) throws -> Void,
+    initialFidelityReview: StickerFidelityReview? = nil,
+    onSave: @escaping (StickerFidelityReview?) throws -> Void,
+    onSaveCreative: @escaping (CreativeWorkDraft, StickerFidelityReview?) throws -> Void,
+    onFidelityReview: @escaping (StickerFidelityReview) throws -> Void,
     onReset: @escaping () -> Void
   ) {
     self.draft = draft
@@ -44,12 +50,14 @@ struct GenerationResultView: View {
     self.photoLibrarySaver = photoLibrarySaver
     self.onSave = onSave
     self.onSaveCreative = onSaveCreative
+    self.onFidelityReview = onFidelityReview
     self.onReset = onReset
     _mode = State(
       initialValue: draft.completionMode == .basicStickerFallback
         || draft.qualityAssessment.requiresReview ? .sticker : .shareCard
     )
     _isSaved = State(initialValue: initiallySaved)
+    _fidelityReview = State(initialValue: initialFidelityReview)
   }
 
   var body: some View {
@@ -91,6 +99,14 @@ struct GenerationResultView: View {
 
           ContentProvenanceNotice(provenance: draft.provenance(for: mode))
 
+          if reviewableAIStickerSourceImage != nil {
+            StickerFidelityReviewEntry(
+              review: fidelityReview,
+              onMatches: markFidelityAsMatching,
+              onChanged: { fidelityReviewSheet = .review }
+            )
+          }
+
           BotanicalPosterEntry {
             makeBotanicalPoster()
           }
@@ -130,6 +146,17 @@ struct GenerationResultView: View {
       ActivityView(items: [selectedImage])
         .presentationDetents([.medium, .large])
     }
+    .sheet(item: $fidelityReviewSheet) { _ in
+      if let reviewableAIStickerSourceImage {
+        StickerFidelityReviewSheet(
+          originalImage: draft.sourceImage,
+          generatedImage: reviewableAIStickerSourceImage,
+          initialReview: fidelityReview,
+          onSave: storeFidelityReview
+        )
+        .presentationDetents([.large])
+      }
+    }
     .sheet(isPresented: $showCuratedStylePicker) {
       CuratedStylePickerView { recipe in
         showCuratedStylePicker = false
@@ -141,7 +168,7 @@ struct GenerationResultView: View {
       CreativeWorkView(
         presentation: presentation,
         onSave: {
-          try onSaveCreative(presentation.draft)
+          try onSaveCreative(presentation.draft, fidelityReview)
           isSaved = true
         },
         onShareOpened: {
@@ -198,6 +225,17 @@ struct GenerationResultView: View {
       Button("知道了", role: .cancel) {}
     } message: {
       Text(creativeWorkError ?? "请稍后再试。")
+    }
+    .alert(
+      "评价没有保存",
+      isPresented: Binding(
+        get: { fidelityReviewError != nil },
+        set: { if !$0 { fidelityReviewError = nil } }
+      )
+    ) {
+      Button("知道了", role: .cancel) {}
+    } message: {
+      Text(fidelityReviewError ?? "请稍后再试。")
     }
     .onDisappear {
       cancelSystemCreative()
@@ -685,11 +723,21 @@ struct GenerationResultView: View {
     }
   }
 
+  private var reviewableAIStickerSourceImage: UIImage? {
+    guard
+      StickerFidelityReview.canReview(
+        stickerProvenance: draft.stickerProvenance,
+        hasAIStickerSource: draft.aiStickerSourceImage != nil
+      )
+    else { return nil }
+    return draft.aiStickerSourceImage
+  }
+
   private var actionButtons: some View {
     VStack(spacing: 12) {
       Button {
         do {
-          try onSave()
+          try onSave(fidelityReview)
           isSaved = true
         } catch {
           saveError = error.localizedDescription
@@ -773,6 +821,26 @@ struct GenerationResultView: View {
       .buttonStyle(StickerButtonStyle())
       .accessibilityIdentifier("make-another")
     }
+  }
+
+  private func markFidelityAsMatching() {
+    do {
+      try storeFidelityReview(
+        StickerFidelityReview(
+          verdict: .matches,
+          reviewedAt: .now
+        )
+      )
+    } catch {
+      fidelityReviewError = error.localizedDescription
+    }
+  }
+
+  private func storeFidelityReview(_ review: StickerFidelityReview) throws {
+    if isSaved {
+      try onFidelityReview(review)
+    }
+    fidelityReview = review
   }
 
   private func saveStickerToPhotos() {

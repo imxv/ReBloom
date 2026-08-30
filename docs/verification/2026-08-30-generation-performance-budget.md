@@ -33,9 +33,9 @@
 - `AppEvent` 使用可查询的可选字段保存性能版本、目标、AI 生成与后续阶段耗时、重试、执行元数据、样片标记和中断阶段。旧事件没有这些字段时仍可读取，不伪造历史性能。
 - 结构化性能总耗时是事件 `durationMilliseconds` 的权威来源，避免调用方同时传入两个不同数字。
 - 事件落库不再使用静默的 `try?`。失败时只写入事件类型、错误域和错误码到本机系统日志，不记录图片、文件路径、提示词或用户内容。
-- 个人数据导出当前为 `adonis-personal-data-v8`。`processingEvents.generationPerformance` 保存版本、总耗时、目标、预算状态、阶段字典、最慢与中断阶段、重试、样片标记和 provider 执行元数据；`outfits.generationCompletionMode` 独立保存完整结果或同一 AI 链路中的可交付降级。
+- 个人数据导出当前为 `adonis-personal-data-v9`。`processingEvents.generationPerformance` 保存版本、总耗时、目标、预算状态、阶段字典、最慢与中断阶段、重试、样片标记和 provider 执行元数据；`outfits.generationCompletionMode` 独立保存完整结果或同一 AI 链路中的可交付降级；可选人物/穿搭复核使用独立字段，不改变性能口径。
 
-以下是 2026-08-30 从测试附件导出的历史 v1 固定数据；它已使用系统 `tar` 独立读取，但不是当前 v8 / v2 结构：
+以下是 2026-08-30 从测试附件导出的历史 v1 固定数据；它已使用系统 `tar` 独立读取，但不是当前 v9 / v2 结构：
 
 ```json
 {
@@ -85,7 +85,7 @@ make performance-regression
 - 成功事件的结构化落库和总耗时唯一来源；
 - 失败事件的部分阶段、中断位置、重试与可用执行元数据；
 - 可控时钟下的阶段顺序、目标内与超目标结果、负值保护和终态冻结；
-- `adonis-personal-data-v8` TAR 中可由系统工具读取的性能结构、AI provider 元数据与结果完成模式；
+- `adonis-personal-data-v9` TAR 中可由系统工具读取的性能结构、AI provider 元数据与结果完成模式；
 - 内置样片完成后设置页显示 45 秒目标、最近终态、最慢阶段和本机费用边界；
 - 用户取消后设置页显示“取消处理”和“抠图与白边”中断位置；
 - 无可用中间产物的超时退出等待、提供恢复动作并隔离迟到结果；

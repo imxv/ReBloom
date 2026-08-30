@@ -2,7 +2,7 @@
 
 > 结论：Adonis 已提供不新增一级导航的本地数据控制入口。用户可以先查看本机内容数量，再生成标准 TAR 副本交给 iOS 系统分享面板，或经二次确认清空 SwiftData、媒体文件、App Group 待导入图片和临时导出包。
 >
-> 2026-08-31 更新：当前清单已升级为 `adonis-personal-data-v8`，增加 AI 不透明贴纸源、动态贴纸/卡片/派生作品来源，以及 AI 生成阶段和 provider 执行元数据。下文标明 v7 的条目与数量是升级前的历史验证证据；现行增量契约见 [AI 贴纸先生成后抠图验证记录](2026-08-31-ai-sticker-first-pipeline.md)。
+> 2026-08-31 更新：当前清单已升级为 `adonis-personal-data-v9`。v8 增加 AI 不透明贴纸源、动态贴纸/卡片/派生作品来源、AI 生成阶段和 provider 执行元数据；v9 增加可选人物/穿搭复核。下文标明 v7 与 v8 的条目、数量和结果包是升级前的历史验证证据；现行增量契约见 [AI 贴纸先生成后抠图验证记录](2026-08-31-ai-sticker-first-pipeline.md)与 [AI 贴纸人物与穿搭复核验证记录](2026-08-31-ai-sticker-fidelity-review.md)。
 
 ## 用户入口与低负担原则
 
@@ -31,7 +31,7 @@
 - `sourceImagePath`
 - `derivedPreviewPath`
 
-当前清单格式为 `adonis-personal-data-v8`。它包含 `visualAssets` 数组，为每个图片路径记录 `role`、`provenance`、`ownerID`、面向用户的 `disclosure`、`containsAIGeneratedPixels` 和 `requiresUserConfirmation`。OOTD 原图、商品图与待导入图片标为 `user_provided`；默认 AI 不透明贴纸源、透明贴纸、收藏卡及使用该贴纸的派生作品标为 `ai_generated`；历史直抠样片仍可标为 `derived_from_original`，衣物线索预览标为 `recognition_suggestion`。透明贴纸与收藏卡还保存结构质量字段；每条 OOTD 的 `generationCompletionMode` 区分完整结果与基础贴纸降级，并保存 AI provider 执行元数据。`creativeWorks` 保存来源 OOTD、配方、版本、图片路径、实际来源、是否含 AI 像素、耗时，以及 provider、请求、网络、费用和质量口径；系统未暴露的外部请求数显式写为 JSON `null`。`processingEvents.generationPerformance` 另行保存贴纸生成总耗时、AI 生成和本机处理阶段、中断位置、重试与执行元数据。它们都不嵌入图片内容或内部概念。衣橱单品和可信 OOTD 线索继续导出本机派生的视觉签名，它们不是商品身份或自动关联事实。详细规则见 [生成内容来源标识验证记录](2026-08-29-content-provenance.md)与 [AI 贴纸先生成后抠图验证记录](2026-08-31-ai-sticker-first-pipeline.md)。
+当前清单格式为 `adonis-personal-data-v9`。它包含 `visualAssets` 数组，为每个图片路径记录 `role`、`provenance`、`ownerID`、面向用户的 `disclosure`、`containsAIGeneratedPixels` 和 `requiresUserConfirmation`。OOTD 原图、商品图与待导入图片标为 `user_provided`；默认 AI 不透明贴纸源、透明贴纸、收藏卡及使用该贴纸的派生作品标为 `ai_generated`；历史直抠样片仍可标为 `derived_from_original`，衣物线索预览标为 `recognition_suggestion`。透明贴纸与收藏卡还保存结构质量字段；每条 OOTD 的 `generationCompletionMode` 区分完整结果与基础贴纸降级，并保存 AI provider 执行元数据；可选人物/穿搭复核另保存结论、固定问题、时间与版本。`creativeWorks` 保存来源 OOTD、配方、版本、图片路径、实际来源、是否含 AI 像素、耗时，以及 provider、请求、网络、费用和质量口径；系统未暴露的外部请求数显式写为 JSON `null`。`processingEvents.generationPerformance` 另行保存贴纸生成总耗时、AI 生成和本机处理阶段、中断位置、重试与执行元数据。它们都不嵌入图片内容或内部概念。衣橱单品和可信 OOTD 线索继续导出本机派生的视觉签名，它们不是商品身份或自动关联事实。详细规则见 [生成内容来源标识验证记录](2026-08-29-content-provenance.md)、[AI 贴纸先生成后抠图验证记录](2026-08-31-ai-sticker-first-pipeline.md)与 [AI 贴纸人物与穿搭复核验证记录](2026-08-31-ai-sticker-fidelity-review.md)。
 
 清单同时写明 `storage = local_app_storage`、`adonisAutomaticNetworkUpload = false` 和 `systemBackupControlledByIOS = true`。这表示 Adonis 本身没有自动网络上传；用户在下一步系统分享面板选择的 App 或位置仍可能接收该副本。
 

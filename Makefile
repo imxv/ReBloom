@@ -28,10 +28,12 @@ sample-regression: project
 ai-sticker-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
 		-only-testing:AdonisTests/AIStickerCreationPipelineTests \
+		-only-testing:AdonisTests/StickerFidelityReviewTests \
 		-only-testing:AdonisTests/ProcessingTraceTests/testAIStickerGenerationStageAndProviderMetadataSurviveEventPersistence \
 		-only-testing:AdonisTests/ShareCardRendererTests/testProvenanceFooterDisclosesAIGeneratedStickerPixels \
 		-only-testing:AdonisTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testMainCreationGeneratesAIStickerSourceBeforeTransparentStickerAndPersistsIt
+		-only-testing:AdonisUITests/AdonisFlowUITests/testMainCreationGeneratesAIStickerSourceBeforeTransparentStickerAndPersistsIt \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testAIStickerFidelityReviewPersistsFromResultIntoHistory
 
 accessibility-regression: project
 	./scripts/verify_accessibility_regression.sh

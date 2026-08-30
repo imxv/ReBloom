@@ -42,6 +42,11 @@ final class PersonalDataControlTests: XCTestCase {
       stickerQualityAssessment: StickerQualityAssessment(
         level: .reviewRecommended,
         issues: [.edgeMayIncludeBackground]
+      ),
+      stickerFidelityReview: StickerFidelityReview(
+        verdict: .changed,
+        issues: [.face, .clothing],
+        reviewedAt: Date(timeIntervalSince1970: 1_700_000_025)
       )
     )
     let observation = GarmentObservation(
@@ -167,7 +172,7 @@ final class PersonalDataControlTests: XCTestCase {
       try JSONSerialization.jsonObject(with: manifestData) as? [String: Any]
     )
     XCTAssertEqual(manifest["formatVersion"] as? String, PersonalDataArchiveService.formatVersion)
-    XCTAssertEqual(manifest["formatVersion"] as? String, "adonis-personal-data-v8")
+    XCTAssertEqual(manifest["formatVersion"] as? String, "adonis-personal-data-v9")
     XCTAssertEqual(manifest["storage"] as? String, "local_app_storage")
     XCTAssertEqual(manifest["adonisAutomaticNetworkUpload"] as? Bool, false)
     XCTAssertEqual(
@@ -219,6 +224,19 @@ final class PersonalDataControlTests: XCTestCase {
     XCTAssertEqual(
       outfits.first?["stickerQualityVersion"] as? String,
       StickerQualityAssessor.version
+    )
+    XCTAssertEqual(
+      outfits.first?["stickerFidelityVerdict"] as? String,
+      StickerFidelityVerdict.changed.rawValue
+    )
+    XCTAssertEqual(
+      outfits.first?["stickerFidelityIssues"] as? [String],
+      [StickerFidelityIssue.face.rawValue, StickerFidelityIssue.clothing.rawValue]
+    )
+    XCTAssertNotNil(outfits.first?["stickerFidelityReviewedAt"] as? String)
+    XCTAssertEqual(
+      outfits.first?["stickerFidelityReviewVersion"] as? String,
+      StickerFidelityReview.version
     )
     let creativeWorks = try XCTUnwrap(manifest["creativeWorks"] as? [[String: Any]])
     XCTAssertEqual(creativeWorks.count, 5)

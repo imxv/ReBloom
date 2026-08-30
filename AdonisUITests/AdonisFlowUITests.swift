@@ -3,6 +3,71 @@ import XCTest
 
 final class AdonisFlowUITests: XCTestCase {
   @MainActor
+  func testAIStickerFidelityReviewPersistsFromResultIntoHistory() {
+    let app = XCUIApplication()
+    let persistentStoreID = UUID().uuidString
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-persistent-store",
+        persistentStoreID,
+        "-ui-testing-ai-sticker-main-flow",
+      ]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 25))
+
+    let changed = app.buttons["sticker-fidelity-review-changed"]
+    XCTAssertTrue(scrollToHittable(changed, in: app, attempts: 12))
+    changed.tap()
+
+    let reviewSheet = app.descendants(matching: .any)["sticker-fidelity-review-sheet"]
+    XCTAssertTrue(reviewSheet.waitForExistence(timeout: 4))
+    XCTAssertTrue(app.images["sticker-fidelity-original-preview"].exists)
+    XCTAssertTrue(app.images["sticker-fidelity-generated-preview"].exists)
+    keepScreenshot(named: "Adonis-sticker-fidelity-review-sheet")
+
+    let faceIssue = app.buttons["sticker-fidelity-issue-face"]
+    XCTAssertTrue(scrollToHittable(faceIssue, in: app, attempts: 8))
+    faceIssue.tap()
+    let clothingIssue = app.buttons["sticker-fidelity-issue-clothing"]
+    XCTAssertTrue(scrollToHittable(clothingIssue, in: app, attempts: 8))
+    clothingIssue.tap()
+    let reviewSave = app.buttons["sticker-fidelity-review-save"]
+    XCTAssertTrue(scrollToHittable(reviewSave, in: app, attempts: 8))
+    reviewSave.tap()
+
+    let summary = app.descendants(matching: .any)["sticker-fidelity-review-summary"]
+    XCTAssertTrue(summary.waitForExistence(timeout: 4))
+    XCTAssertTrue(summary.label.contains("脸、衣服"))
+    keepScreenshot(named: "Adonis-sticker-fidelity-reviewed")
+
+    let save = app.buttons["save-today"]
+    XCTAssertTrue(scrollToHittable(save, in: app, attempts: 12))
+    save.tap()
+    XCTAssertTrue(app.buttons["今天已经收藏"].waitForExistence(timeout: 5))
+
+    let makeAnother = app.buttons["make-another"]
+    XCTAssertTrue(scrollToHittable(makeAnother, in: app, attempts: 6))
+    makeAnother.tap()
+    app.terminate()
+    app.launch()
+    app.tabBars.buttons["花历"].tap()
+    let record = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(record.waitForExistence(timeout: 6))
+    record.tap()
+
+    let historySummary = app.descendants(matching: .any)["sticker-fidelity-review-summary"]
+    XCTAssertTrue(scrollToHittable(historySummary, in: app, attempts: 12))
+    XCTAssertTrue(historySummary.label.contains("脸、衣服"))
+  }
+
+  @MainActor
   func testMainCreationGeneratesAIStickerSourceBeforeTransparentStickerAndPersistsIt() {
     let app = XCUIApplication()
     let persistentStoreID = UUID().uuidString

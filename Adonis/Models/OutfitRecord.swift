@@ -18,6 +18,10 @@ final class OutfitRecord {
   var stickerQualityLevelRawValue: String = StickerQualityLevel.acceptable.rawValue
   var stickerQualityIssueRawValues: String = ""
   var stickerQualityVersion: String = AdonisProcessingVersion.stickerQuality
+  var stickerFidelityVerdictRawValue: String?
+  var stickerFidelityIssueRawValues: String = ""
+  var stickerFidelityReviewedAt: Date?
+  var stickerFidelityReviewVersion: String?
   @Relationship(deleteRule: .cascade, inverse: \GarmentObservation.outfit)
   var garmentObservations: [GarmentObservation] = []
   @Relationship(deleteRule: .cascade, inverse: \CreativeWork.sourceOutfit)
@@ -46,6 +50,25 @@ final class OutfitRecord {
     )
   }
 
+  var stickerFidelityReview: StickerFidelityReview? {
+    guard
+      let stickerFidelityVerdictRawValue,
+      let verdict = StickerFidelityVerdict(rawValue: stickerFidelityVerdictRawValue),
+      let stickerFidelityReviewedAt
+    else {
+      return nil
+    }
+    let issues =
+      stickerFidelityIssueRawValues
+      .split(separator: ",")
+      .compactMap { StickerFidelityIssue(rawValue: String($0)) }
+    return StickerFidelityReview(
+      verdict: verdict,
+      issues: issues,
+      reviewedAt: stickerFidelityReviewedAt
+    )
+  }
+
   init(
     id: UUID = UUID(),
     createdAt: Date = .now,
@@ -61,6 +84,7 @@ final class OutfitRecord {
     generationCompletionMode: GenerationCompletionMode = .complete,
     stickerQualityAssessment: StickerQualityAssessment = .acceptable,
     stickerQualityVersion: String = AdonisProcessingVersion.stickerQuality,
+    stickerFidelityReview: StickerFidelityReview? = nil,
     garmentObservations: [GarmentObservation] = [],
     creativeWorks: [CreativeWork] = []
   ) {
@@ -81,8 +105,24 @@ final class OutfitRecord {
     self.stickerQualityLevelRawValue = stickerQualityAssessment.level.rawValue
     self.stickerQualityIssueRawValues = stickerQualityAssessment.issueRawValues
     self.stickerQualityVersion = stickerQualityVersion
+    self.stickerFidelityVerdictRawValue = stickerFidelityReview?.verdict.rawValue
+    self.stickerFidelityIssueRawValues =
+      stickerFidelityReview?.issues
+      .map(\.rawValue)
+      .joined(separator: ",") ?? ""
+    self.stickerFidelityReviewedAt = stickerFidelityReview?.reviewedAt
+    self.stickerFidelityReviewVersion = stickerFidelityReview.map { _ in
+      StickerFidelityReview.version
+    }
     self.garmentObservations = garmentObservations
     self.creativeWorks = creativeWorks
+  }
+
+  func setStickerFidelityReview(_ review: StickerFidelityReview) {
+    stickerFidelityVerdictRawValue = review.verdict.rawValue
+    stickerFidelityIssueRawValues = review.issues.map(\.rawValue).joined(separator: ",")
+    stickerFidelityReviewedAt = review.reviewedAt
+    stickerFidelityReviewVersion = StickerFidelityReview.version
   }
 
   func provenance(for asset: OutfitVisualAsset) -> VisualContentProvenance {

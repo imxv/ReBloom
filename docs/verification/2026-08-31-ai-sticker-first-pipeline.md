@@ -3,6 +3,8 @@
 > 状态：主链路、来源、持久化、Debug 产品回归、模拟器全量回归与 arm64 Release 构建已验证；真实 Apple 输出和真实 iPhone Vision 仍待验证。
 >
 > 对应任务：ADO-006、ADO-105、ADO-Q02、ADO-Q04、ADO-Q05、ADO-Q06
+>
+> 后续更新：当前个人数据清单为 `adonis-personal-data-v9`，并增加结果后的可选人物/穿搭复核；该增量见 [AI 贴纸人物与穿搭复核验证记录](2026-08-31-ai-sticker-fidelity-review.md)。下文 v8 与 214 项结果保留为本主链路落地时的历史证据。
 
 ## 1. 用户决定与生产契约
 
@@ -59,7 +61,7 @@
 
 收藏事务会同时保存 `source.png`、`ai-sticker-source.png`、`sticker.png` 与 `card.png`；任一步失败会回滚本次已写媒体。删除 OOTD 时也会删除可选 AI 源。
 
-`adonis-personal-data-v8` 增加：
+当时的 `adonis-personal-data-v8` 增加：
 
 - `outfit_ai_sticker_source` 视觉资产；
 - 每条 OOTD 的 AI 源路径、贴纸与收藏卡实际来源；
@@ -140,7 +142,7 @@ Release 构建不得包含或接受该 UI 测试入口。
 - 无签名 Release 通用 iOS 构建通过；`Adonis.app/Adonis` 为 arm64 Mach-O 可执行文件。
 - 对 Release 二进制执行字符串扫描，没有发现 `-ui-testing-ai-sticker-main-flow`，Debug AI 夹具未进入 Release 产物。
 - 首轮全量结果 `Test-Adonis-2026.08.31_02-00-05-+0800.xcresult` 暴露了一条仍期待旧“失败后收进衣橱”行为的测试；契约改为 AI 不可用时只允许换图，不绕过 AI 贴纸链路。
-- 次轮全量结果 `Test-Adonis-2026.08.31_02-17-38-+0800.xcresult` 的产品界面已显示、启用且位于屏幕内，但 XCUI 在可点击检查与实际点击间发生竞态；测试保留可点击断言并改为点击元素中心坐标。随后专项回归与最终 214 项全量回归均通过。
+- 次轮全量结果 `Test-Adonis-2026.08.31_02-17-38-+0800.xcresult` 的产品界面已显示、启用且位于屏幕内，但 XCUI 在可点击检查与实际点击间发生竞态；测试保留可点击断言并改为点击元素中心坐标。随后该版本的专项回归与 214 项全量回归均通过。
 
 这些结果证明当前代码、确定性夹具、模拟器产品链路和 arm64 构建边界；不把它们表述为真实 Apple 图片生成、真实 iPhone Vision、真实 PhotoKit、系统分享目的地或 VoiceOver 证明。
 

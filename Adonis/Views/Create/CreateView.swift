@@ -144,10 +144,17 @@ struct CreateView: View {
         draft: draft,
         initiallySaved: records.contains(where: { $0.id == draft.id }),
         creativeImageGenerator: creativeImageGenerator,
-        onSave: { try save(draft) },
-        onSaveCreative: { creativeWork in
-          try save(draft)
+        initialFidelityReview: records.first(where: { $0.id == draft.id })?
+          .stickerFidelityReview,
+        onSave: { fidelityReview in
+          try save(draft, stickerFidelityReview: fidelityReview)
+        },
+        onSaveCreative: { creativeWork, fidelityReview in
+          try save(draft, stickerFidelityReview: fidelityReview)
           try save(creativeWork, for: draft)
+        },
+        onFidelityReview: { review in
+          try save(review, for: draft)
         },
         onReset: { self.draft = nil }
       )
@@ -1244,7 +1251,10 @@ struct CreateView: View {
   }
 
   @MainActor
-  private func save(_ draft: GenerationDraft) throws {
+  private func save(
+    _ draft: GenerationDraft,
+    stickerFidelityReview: StickerFidelityReview? = nil
+  ) throws {
     guard !records.contains(where: { $0.id == draft.id }) else { return }
 
     let prefix = draft.id.uuidString.lowercased()
@@ -1290,7 +1300,8 @@ struct CreateView: View {
         stickerExecutionMetadata: draft.stickerExecutionMetadata,
         generationCompletionMode: draft.completionMode,
         stickerQualityAssessment: draft.qualityAssessment,
-        stickerQualityVersion: StickerQualityAssessor.version
+        stickerQualityVersion: StickerQualityAssessor.version,
+        stickerFidelityReview: stickerFidelityReview
       )
       modelContext.insert(record)
 
@@ -1328,6 +1339,15 @@ struct CreateView: View {
       processingVersion: AdonisProcessingVersion.generationPipeline,
       in: modelContext
     )
+    if let stickerFidelityReview {
+      EventLogger.log(
+        .stickerFidelityReviewed,
+        detail: stickerFidelityReview.eventDetail,
+        inputSource: draft.inputSource,
+        processingVersion: StickerFidelityReview.version,
+        in: modelContext
+      )
+    }
     if !draft.garmentObservations.isEmpty {
       EventLogger.log(
         .garmentObservationsCreated,
@@ -1337,6 +1357,35 @@ struct CreateView: View {
         in: modelContext
       )
     }
+  }
+
+  @MainActor
+  private func save(
+    _ review: StickerFidelityReview,
+    for draft: GenerationDraft
+  ) throws {
+    let draftID = draft.id
+    let descriptor = FetchDescriptor<OutfitRecord>(
+      predicate: #Predicate { $0.id == draftID }
+    )
+    guard let record = try modelContext.fetch(descriptor).first else {
+      throw StickerFidelityReviewSaveError.outfitMissing
+    }
+
+    do {
+      record.setStickerFidelityReview(review)
+      try modelContext.save()
+    } catch {
+      modelContext.rollback()
+      throw error
+    }
+    EventLogger.log(
+      .stickerFidelityReviewed,
+      detail: review.eventDetail,
+      inputSource: draft.inputSource,
+      processingVersion: StickerFidelityReview.version,
+      in: modelContext
+    )
   }
 
   @MainActor
@@ -1431,6 +1480,14 @@ private enum CameraSheet: String, Identifiable {
   case picker
 
   var id: String { rawValue }
+}
+
+private enum StickerFidelityReviewSaveError: LocalizedError {
+  case outfitMissing
+
+  var errorDescription: String? {
+    "这条收藏还没有保存好，请先点“收藏今天”再试。"
+  }
 }
 
 private enum CameraAccessAlert: String, Identifiable {

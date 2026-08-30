@@ -8,7 +8,7 @@ struct PersonalDataArchive: Identifiable, Sendable {
 }
 
 struct PersonalDataArchiveService {
-  static let formatVersion = "adonis-personal-data-v8"
+  static let formatVersion = "adonis-personal-data-v9"
   static let exportDirectoryName = "AdonisExports"
 
   private let mediaStore: MediaStore
@@ -387,6 +387,10 @@ private struct ExportedOutfit: Encodable, Sendable {
   let stickerQualityIssues: [String]
   let stickerQualityRequiresReview: Bool
   let stickerQualityVersion: String
+  let stickerFidelityVerdict: String?
+  let stickerFidelityIssues: [String]?
+  let stickerFidelityReviewedAt: Date?
+  let stickerFidelityReviewVersion: String?
 
   @MainActor
   init(_ record: OutfitRecord) {
@@ -407,6 +411,10 @@ private struct ExportedOutfit: Encodable, Sendable {
     stickerQualityIssues = record.stickerQualityAssessment.issues.map(\.rawValue)
     stickerQualityRequiresReview = record.stickerQualityAssessment.requiresReview
     stickerQualityVersion = record.stickerQualityVersion
+    stickerFidelityVerdict = record.stickerFidelityReview?.verdict.rawValue
+    stickerFidelityIssues = record.stickerFidelityReview?.issues.map(\.rawValue)
+    stickerFidelityReviewedAt = record.stickerFidelityReview?.reviewedAt
+    stickerFidelityReviewVersion = record.stickerFidelityReviewVersion
   }
 }
 
