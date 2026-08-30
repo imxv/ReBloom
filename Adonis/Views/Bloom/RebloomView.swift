@@ -7,17 +7,38 @@ private struct RebloomSharePresentation: Identifiable {
   let image: UIImage
 }
 
+private struct RebloomReminderAlert: Identifiable {
+  let id = UUID()
+  let message: String
+  let offersSettings: Bool
+}
+
 struct RebloomView: View {
   let onDelete: (OutfitRecord) -> Void
 
   @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var modelContext
+  @Environment(\.openURL) private var openURL
   @Query(sort: \OutfitRecord.createdAt, order: .reverse) private var records: [OutfitRecord]
   @Query(sort: \WardrobeItem.createdAt, order: .reverse) private var wardrobeItems: [WardrobeItem]
 
   @State private var selectedSuggestionID: RebloomSuggestionID?
   @State private var sharePresentation: RebloomSharePresentation?
   @State private var errorMessage: String?
+  @State private var scheduledReminderDate: Date?
+  @State private var isUpdatingReminder = false
+  @State private var reminderAlert: RebloomReminderAlert?
+
+  private let reminderService: RebloomReminderService
+
+  init(
+    initialSuggestionID: RebloomSuggestionID? = nil,
+    onDelete: @escaping (OutfitRecord) -> Void
+  ) {
+    self.onDelete = onDelete
+    reminderService = .live
+    _selectedSuggestionID = State(initialValue: initialSuggestionID)
+  }
 
   private var suggestions: [RebloomSuggestion] {
     RebloomCatalog().suggestions(records: records, wardrobeItems: wardrobeItems)
@@ -48,6 +69,7 @@ struct RebloomView: View {
               )
 
               boundaryNotice
+              reminderCard(for: suggestion)
               sourceOutfits(for: suggestion)
 
               if suggestions.count > 1 {
@@ -112,6 +134,9 @@ struct RebloomView: View {
       } message: {
         Text(errorMessage ?? "请稍后再试。")
       }
+      .task(id: suggestion?.id) {
+        await refreshReminderStatus(for: suggestion)
+      }
     }
   }
 
@@ -163,6 +188,140 @@ struct RebloomView: View {
       "是真实衣橱建议，不是试穿结果。这两件衣物都由你明确确认过，并且从未在同一条 OOTD 中确认过；这里只给穿法清单，不预言上身效果。"
     )
     .accessibilityIdentifier("rebloom-boundary")
+  }
+
+  private func reminderCard(for suggestion: RebloomSuggestion) -> some View {
+    VStack(alignment: .leading, spacing: 13) {
+      HStack(alignment: .top, spacing: 12) {
+        Image(systemName: scheduledReminderDate == nil ? "bell.badge" : "bell.fill")
+          .font(.system(size: 18, weight: .bold))
+          .foregroundStyle(AdonisTheme.pomegranateInk)
+          .frame(width: 42, height: 42)
+          .background(AdonisTheme.butter.opacity(0.42), in: Circle())
+          .accessibilityHidden(true)
+
+        VStack(alignment: .leading, spacing: 5) {
+          Text(scheduledReminderDate == nil ? "想在下周真的穿一次？" : "只提醒这一次")
+            .font(.system(.headline, design: .rounded, weight: .black))
+            .foregroundStyle(AdonisTheme.ink)
+          if let scheduledReminderDate {
+            Text(
+              "已约在 \(AdonisDateText.longDate(scheduledReminderDate))。安排其他组合时会替换这一条。"
+            )
+            .accessibilityIdentifier("rebloom-reminder-status")
+          } else {
+            Text("你主动点下按钮后，Adonis 才会申请通知权限，并在 7 天后把这组真实搭配送回来。")
+          }
+        }
+        .font(.footnote)
+        .foregroundStyle(AdonisTheme.secondaryInk)
+        .lineSpacing(2)
+        .fixedSize(horizontal: false, vertical: true)
+
+        Spacer(minLength: 0)
+      }
+
+      Text("全 App 同时最多一条，不会自动重复，也没有连续打卡；锁屏文案不显示衣物名称。")
+        .font(.caption)
+        .foregroundStyle(AdonisTheme.secondaryInk)
+        .fixedSize(horizontal: false, vertical: true)
+        .accessibilityIdentifier("rebloom-reminder-boundary")
+
+      Button {
+        Task { await toggleReminder(for: suggestion) }
+      } label: {
+        HStack(spacing: 8) {
+          if isUpdatingReminder {
+            ProgressView()
+              .tint(AdonisTheme.pomegranateInk)
+          } else {
+            Image(systemName: scheduledReminderDate == nil ? "bell.badge" : "bell.slash")
+          }
+          Text(scheduledReminderDate == nil ? "7 天后提醒我" : "取消这次提醒")
+            .font(.system(.subheadline, design: .rounded, weight: .black))
+        }
+        .frame(maxWidth: .infinity, minHeight: 46)
+      }
+      .buttonStyle(StickerButtonStyle())
+      .disabled(isUpdatingReminder)
+      .accessibilityIdentifier("rebloom-reminder-toggle")
+    }
+    .padding(15)
+    .background(
+      AdonisTheme.lavender.opacity(0.18),
+      in: RoundedRectangle(cornerRadius: 21, style: .continuous)
+    )
+    .overlay {
+      RoundedRectangle(cornerRadius: 21, style: .continuous)
+        .stroke(AdonisTheme.pomegranate.opacity(0.13), lineWidth: 1)
+    }
+    .alert(item: $reminderAlert) { alert in
+      if alert.offersSettings {
+        return Alert(
+          title: Text("通知没有打开"),
+          message: Text(alert.message),
+          primaryButton: .default(Text("打开系统设置"), action: openNotificationSettings),
+          secondaryButton: .cancel(Text("先不用"))
+        )
+      }
+      return Alert(
+        title: Text("提醒还没约好"),
+        message: Text(alert.message),
+        dismissButton: .cancel(Text("知道了"))
+      )
+    }
+  }
+
+  @MainActor
+  private func refreshReminderStatus(for suggestion: RebloomSuggestion?) async {
+    guard let suggestion else {
+      scheduledReminderDate = nil
+      return
+    }
+    let date = await reminderService.scheduledDate(for: suggestion.id)
+    guard self.suggestion?.id == suggestion.id else { return }
+    scheduledReminderDate = date
+  }
+
+  @MainActor
+  private func toggleReminder(for suggestion: RebloomSuggestion) async {
+    guard !isUpdatingReminder else { return }
+    isUpdatingReminder = true
+    defer { isUpdatingReminder = false }
+
+    if scheduledReminderDate != nil {
+      reminderService.cancel(for: suggestion.id)
+      scheduledReminderDate = nil
+      EventLogger.log(
+        .rebloomReminderCancelled,
+        detail: "reason=user_action",
+        processingVersion: AdonisProcessingVersion.rebloomReminder,
+        in: modelContext
+      )
+      return
+    }
+
+    do {
+      scheduledReminderDate = try await reminderService.schedule(for: suggestion.id)
+      EventLogger.log(
+        .rebloomReminderScheduled,
+        detail:
+          "delay_days=7;reason=\(suggestion.reasonEventValue);suggestion_count=\(suggestions.count)",
+        processingVersion: AdonisProcessingVersion.rebloomReminder,
+        in: modelContext
+      )
+    } catch {
+      let reminderError = error as? RebloomReminderError
+      reminderAlert = RebloomReminderAlert(
+        message: error.localizedDescription,
+        offersSettings: reminderError == .permissionDenied
+      )
+    }
+  }
+
+  private func openNotificationSettings() {
+    guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+    openURL(settingsURL)
   }
 
   private func sourceOutfits(for suggestion: RebloomSuggestion) -> some View {

@@ -137,13 +137,16 @@ struct PersonalDataArchiveService {
 struct PersonalDataDeletionService {
   private let mediaStore: MediaStore
   private let archiveService: PersonalDataArchiveService
+  private let reminderCleaner: any RebloomReminderCleaning
 
   init(
     mediaStore: MediaStore = .shared,
-    archiveService: PersonalDataArchiveService? = nil
+    archiveService: PersonalDataArchiveService? = nil,
+    reminderCleaner: any RebloomReminderCleaning = SystemRebloomReminderCleaner()
   ) {
     self.mediaStore = mediaStore
     self.archiveService = archiveService ?? PersonalDataArchiveService(mediaStore: mediaStore)
+    self.reminderCleaner = reminderCleaner
   }
 
   @MainActor
@@ -175,6 +178,7 @@ struct PersonalDataDeletionService {
     } catch {
       cleanupFailed = true
     }
+    reminderCleaner.removeAllRebloomReminders()
     if cleanupFailed {
       throw PersonalDataControlError.partialDeletion
     }

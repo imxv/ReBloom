@@ -26,6 +26,7 @@ enum AdonisProcessingVersion {
   static let digitalCabinet = "digital-cabinet-v1"
   static let seasonalBloom = "seasonal-bloom-v1"
   static let rebloomSuggestion = "rebloom-suggestion-v1"
+  static let rebloomReminder = "rebloom-reminder-v1"
   static let wardrobeAnalysis = "wardrobe-local-v1"
   static let wardrobeImageUpgrade = "wardrobe-image-upgrade-v1"
   static let outfitObservation = "ootd-observation-local-v1"

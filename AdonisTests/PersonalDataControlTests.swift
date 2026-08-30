@@ -260,6 +260,7 @@ final class PersonalDataControlTests: XCTestCase {
     XCTAssertTrue(try fixture.store.storedFileURLs().isEmpty)
     XCTAssertTrue(try fixture.inbox.pendingItems().isEmpty)
     XCTAssertFalse(FileManager.default.fileExists(atPath: staleExport.path))
+    XCTAssertEqual(fixture.reminderCleaner.removeCount, 1)
   }
 
   @MainActor
@@ -284,6 +285,7 @@ final class PersonalDataControlTests: XCTestCase {
       mediaStore: store,
       exportDirectory: exportDirectory
     )
+    let reminderCleaner = ReminderCleanerSpy()
     return try Fixture(
       context: ModelContext(container),
       store: store,
@@ -291,8 +293,10 @@ final class PersonalDataControlTests: XCTestCase {
       archiveService: archiveService,
       deletionService: PersonalDataDeletionService(
         mediaStore: store,
-        archiveService: archiveService
+        archiveService: archiveService,
+        reminderCleaner: reminderCleaner
       ),
+      reminderCleaner: reminderCleaner,
       root: root,
       exportDirectory: exportDirectory
     )
@@ -309,11 +313,20 @@ private struct Fixture {
   let inbox: SharedImageInbox
   let archiveService: PersonalDataArchiveService
   let deletionService: PersonalDataDeletionService
+  let reminderCleaner: ReminderCleanerSpy
   let root: URL
   let exportDirectory: URL
 
   func cleanup() {
     try? FileManager.default.removeItem(at: root)
+  }
+}
+
+private final class ReminderCleanerSpy: RebloomReminderCleaning {
+  private(set) var removeCount = 0
+
+  func removeAllRebloomReminders() {
+    removeCount += 1
   }
 }
 

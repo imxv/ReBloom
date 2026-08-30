@@ -5,7 +5,7 @@ enum RebloomSuggestionReason: Equatable {
   case pastOutfitRemix
 }
 
-struct RebloomSuggestionID: Hashable {
+struct RebloomSuggestionID: Hashable, Sendable {
   let topItemID: UUID
   let bottomItemID: UUID
 }

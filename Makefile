@@ -4,7 +4,7 @@ SCHEME := Adonis
 DESTINATION := platform=iOS Simulator,name=iPhone 17 Pro,OS=latest
 DERIVED_DATA := .derivedData
 
-.PHONY: project build test sample-regression accessibility-regression permission-regression persistence-regression performance-regression lookbook-regression figurine-regression cabinet-regression seasonal-regression rebloom-regression lint format analyze check clean
+.PHONY: project build test sample-regression accessibility-regression permission-regression persistence-regression performance-regression lookbook-regression figurine-regression cabinet-regression seasonal-regression rebloom-regression rebloom-reminder-regression lint format analyze check clean
 
 project:
 	./scripts/xcodegen.sh generate --spec project.yml
@@ -71,6 +71,12 @@ rebloom-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
 		-only-testing:AdonisTests/RebloomCatalogTests \
 		-only-testing:AdonisTests/RebloomCardRendererTests \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testConfirmedPiecesFromDifferentOutfitsCreateShareableRebloomSuggestion
+
+rebloom-reminder-regression: project
+	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
+		-only-testing:AdonisTests/RebloomReminderServiceTests \
+		-only-testing:AdonisTests/PersonalDataControlTests/testDeleteAllClearsModelsMediaSharedInboxAndTemporaryExports \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testConfirmedPiecesFromDifferentOutfitsCreateShareableRebloomSuggestion
 
 lint:

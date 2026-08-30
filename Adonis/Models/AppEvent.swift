@@ -126,6 +126,9 @@ enum AppEventKind: String {
   case seasonalBloomArchiveOpened
   case rebloomOpened
   case rebloomShareOpened
+  case rebloomReminderScheduled
+  case rebloomReminderCancelled
+  case rebloomReminderOpened
   case wardrobeItemAdded
   case wardrobeItemDeleted
   case wardrobeItemCorrected
@@ -160,6 +163,9 @@ enum AppEventKind: String {
     case .seasonalBloomArchiveOpened: "打开四季花历"
     case .rebloomOpened: "打开再次盛开"
     case .rebloomShareOpened: "打开再次盛开分享"
+    case .rebloomReminderScheduled: "安排再次盛开提醒"
+    case .rebloomReminderCancelled: "取消再次盛开提醒"
+    case .rebloomReminderOpened: "从提醒打开再次盛开"
     case .wardrobeItemAdded: "添加单品"
     case .wardrobeItemDeleted: "删除单品"
     case .wardrobeItemCorrected: "纠正单品"

@@ -2,6 +2,9 @@ import SwiftData
 import SwiftUI
 
 struct BloomCalendarView: View {
+  let rebloomRoute: RebloomRouteRequest?
+  let onConsumeRebloomRoute: (RebloomRouteRequest) -> Void
+
   @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @Environment(\.modelContext) private var modelContext
   @Query(sort: \OutfitRecord.createdAt, order: .reverse) private var records: [OutfitRecord]
@@ -13,11 +16,21 @@ struct BloomCalendarView: View {
   @State private var showDigitalCabinet = false
   @State private var showSeasonalBloomArchive = false
   @State private var showRebloom = false
+  @State private var selectedRebloomSuggestionID: RebloomSuggestionID?
+  @State private var reminderRouteMessage: String?
   @State private var deleteErrorMessage: String?
   @State private var lookbookErrorMessage: String?
 
   private let calendar = Calendar.current
   private let weekdayTitles = ["日", "一", "二", "三", "四", "五", "六"]
+
+  init(
+    rebloomRoute: RebloomRouteRequest? = nil,
+    onConsumeRebloomRoute: @escaping (RebloomRouteRequest) -> Void = { _ in }
+  ) {
+    self.rebloomRoute = rebloomRoute
+    self.onConsumeRebloomRoute = onConsumeRebloomRoute
+  }
 
   var body: some View {
     ZStack {
@@ -81,9 +94,12 @@ struct BloomCalendarView: View {
       }
     }
     .sheet(isPresented: $showRebloom) {
-      RebloomView { record in
-        delete(record)
-      }
+      RebloomView(
+        initialSuggestionID: selectedRebloomSuggestionID,
+        onDelete: { record in
+          delete(record)
+        }
+      )
     }
     .alert(
       "删除失败",
@@ -106,6 +122,25 @@ struct BloomCalendarView: View {
       Button("知道了", role: .cancel) {}
     } message: {
       Text(lookbookErrorMessage ?? "请稍后再试。")
+    }
+    .alert(
+      "提醒里的搭配已变化",
+      isPresented: Binding(
+        get: { reminderRouteMessage != nil },
+        set: { if !$0 { reminderRouteMessage = nil } }
+      )
+    ) {
+      Button("知道了", role: .cancel) {}
+    } message: {
+      Text(reminderRouteMessage ?? "花历已经按当前真实记录更新。")
+    }
+    .task(id: rebloomRoute?.id) {
+      openRoutedRebloomIfNeeded()
+    }
+    .task(id: rebloomReminderValidityKey) {
+      await RebloomReminderService.live.synchronize(
+        validSuggestionIDs: Set(rebloomSuggestions.map(\.id))
+      )
     }
   }
 
@@ -175,6 +210,37 @@ struct BloomCalendarView: View {
     )
   }
 
+  private var rebloomReminderValidityKey: String {
+    rebloomSuggestions
+      .map { RebloomReminderService.identifier(for: $0.id) }
+      .sorted()
+      .joined(separator: "|")
+  }
+
+  @MainActor
+  private func openRoutedRebloomIfNeeded() {
+    guard let route = rebloomRoute else { return }
+    defer { onConsumeRebloomRoute(route) }
+
+    if let requestedID = route.suggestionID {
+      guard rebloomSuggestions.contains(where: { $0.id == requestedID }) else {
+        reminderRouteMessage =
+          "原来那组衣物或来源 OOTD 已经变化，Adonis 没有把它补成仍然有效的建议。花历保留的是当前真实记录。"
+        return
+      }
+      selectedRebloomSuggestionID = requestedID
+    } else {
+      guard let firstSuggestion = rebloomSuggestions.first else {
+        reminderRouteMessage =
+          "现在没有仍然有效的新组合。等衣橱里再次出现两件明确确认、又没一起穿过的衣物时，入口会自然回来。"
+        return
+      }
+      selectedRebloomSuggestionID = firstSuggestion.id
+    }
+
+    showRebloom = true
+  }
+
   private func rebloomEntryCard(_ suggestion: RebloomSuggestion) -> some View {
     Button {
       EventLogger.log(
@@ -184,6 +250,7 @@ struct BloomCalendarView: View {
         processingVersion: AdonisProcessingVersion.rebloomSuggestion,
         in: modelContext
       )
+      selectedRebloomSuggestionID = suggestion.id
       showRebloom = true
     } label: {
       Group {

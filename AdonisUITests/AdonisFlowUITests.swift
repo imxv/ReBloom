@@ -533,7 +533,13 @@ final class AdonisFlowUITests: XCTestCase {
   @MainActor
   func testConfirmedPiecesFromDifferentOutfitsCreateShareableRebloomSuggestion() {
     let app = XCUIApplication()
-    app.launchArguments.append("-ui-testing")
+    let persistentStoreID = UUID().uuidString
+    let baseLaunchArguments = [
+      "-ui-testing",
+      "-ui-testing-persistent-store",
+      persistentStoreID,
+    ]
+    app.launchArguments = baseLaunchArguments + ["-ui-testing-rebloom-reminder-authorized"]
     app.launch()
 
     app.tabBars.buttons["花历"].tap()
@@ -580,11 +586,93 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(card.label.contains("今天可以直接照着穿"))
     keepScreenshot(named: "Adonis-rebloom-suggestion")
 
+    let reminderBoundary = app.descendants(matching: .any)["rebloom-reminder-boundary"]
+    XCTAssertTrue(reminderBoundary.waitForExistence(timeout: 4))
+    XCTAssertTrue(reminderBoundary.label.contains("不会自动重复"))
+    XCTAssertTrue(reminderBoundary.label.contains("锁屏文案不显示衣物名称"))
+    let reminderToggle = app.buttons["rebloom-reminder-toggle"]
+    XCTAssertTrue(scrollToHittable(reminderToggle, in: app, attempts: 8))
+    XCTAssertEqual(reminderToggle.label, "7 天后提醒我")
+
+    app.terminate()
+    app.launchArguments =
+      baseLaunchArguments + [
+        "-ui-testing-rebloom-reminder-denied",
+        "-ui-testing-open-rebloom-reminder",
+      ]
+    app.launch()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["rebloom-screen"]
+        .waitForExistence(timeout: 8)
+    )
+    let deniedReminderToggle = app.buttons["rebloom-reminder-toggle"]
+    XCTAssertTrue(scrollToHittable(deniedReminderToggle, in: app, attempts: 8))
+    deniedReminderToggle.tap()
+    let deniedAlert = app.alerts["通知没有打开"]
+    XCTAssertTrue(deniedAlert.waitForExistence(timeout: 4))
+    XCTAssertTrue(
+      app.staticTexts[
+        "通知没有打开。原搭配不会改变；需要时可以在系统设置里允许 Adonis 通知。"
+      ].exists
+    )
+    XCTAssertTrue(deniedAlert.buttons["打开系统设置"].exists)
+    XCTAssertTrue(deniedAlert.buttons["先不用"].exists)
+    keepScreenshot(named: "Adonis-rebloom-reminder-denied")
+    deniedAlert.buttons["先不用"].tap()
+    XCTAssertEqual(deniedReminderToggle.label, "7 天后提醒我")
+
+    app.terminate()
+    app.launchArguments =
+      baseLaunchArguments + [
+        "-ui-testing-rebloom-reminder-authorized",
+        "-ui-testing-open-rebloom-reminder",
+      ]
+    app.launch()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["rebloom-screen"]
+        .waitForExistence(timeout: 8)
+    )
+    let authorizedReminderToggle = app.buttons["rebloom-reminder-toggle"]
+    XCTAssertTrue(scrollToHittable(authorizedReminderToggle, in: app, attempts: 8))
+    XCTAssertEqual(authorizedReminderToggle.label, "7 天后提醒我")
+    authorizedReminderToggle.tap()
+    let reminderStatus = app.descendants(matching: .any)["rebloom-reminder-status"]
+    XCTAssertTrue(reminderStatus.waitForExistence(timeout: 4))
+    XCTAssertTrue(reminderStatus.label.contains("已约在"))
+    XCTAssertEqual(authorizedReminderToggle.label, "取消这次提醒")
+    authorizedReminderToggle.tap()
+    let cancelledExpectation = XCTNSPredicateExpectation(
+      predicate: NSPredicate(format: "label == %@", "7 天后提醒我"),
+      object: authorizedReminderToggle
+    )
+    XCTAssertEqual(XCTWaiter.wait(for: [cancelledExpectation], timeout: 4), .completed)
+    authorizedReminderToggle.tap()
+    XCTAssertTrue(reminderStatus.waitForExistence(timeout: 4))
+    XCTAssertEqual(authorizedReminderToggle.label, "取消这次提醒")
+    keepScreenshot(named: "Adonis-rebloom-reminder")
+
     let share = app.buttons["share-rebloom"]
-    XCTAssertTrue(scrollToHittable(share, in: app, attempts: 10))
+    XCTAssertTrue(scrollToHittable(share, in: app, attempts: 14))
     share.tap()
     XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
     app.buttons["关闭"].tap()
+
+    app.terminate()
+    app.launchArguments =
+      baseLaunchArguments + [
+        "-ui-testing-rebloom-reminder-authorized",
+        "-ui-testing-open-rebloom-reminder",
+      ]
+    app.launch()
+
+    XCTAssertTrue(
+      app.descendants(matching: .any)["rebloom-screen"]
+        .waitForExistence(timeout: 8)
+    )
+    XCTAssertTrue(app.descendants(matching: .any)["rebloom-boundary"].exists)
+    keepScreenshot(named: "Adonis-rebloom-reminder-return")
 
     let sourceOutfit = app.buttons.matching(identifier: "rebloom-source-outfit").firstMatch
     XCTAssertTrue(scrollToHittable(sourceOutfit, in: app, attempts: 8))

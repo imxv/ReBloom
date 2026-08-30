@@ -5,10 +5,13 @@ struct AppRootView: View {
   @Environment(\.modelContext) private var modelContext
   @Environment(\.scenePhase) private var scenePhase
 
+  @StateObject private var navigationRouter = AppNavigationRouter.shared
   @State private var selection: AppTab = .create
+  @State private var rebloomRoute: RebloomRouteRequest?
   @State private var sharedImportNotice: SharedWardrobeImportNotice?
   @State private var isProcessingSharedInbox = false
   @State private var didPrepareUITestInbox = false
+  @State private var didPrepareUITestReminderRoute = false
 
   private let sharedImportCoordinator = SharedWardrobeImportCoordinator()
 
@@ -37,7 +40,13 @@ struct AppRootView: View {
       .tag(AppTab.wardrobe)
 
       NavigationStack {
-        BloomCalendarView()
+        BloomCalendarView(
+          rebloomRoute: rebloomRoute,
+          onConsumeRebloomRoute: { route in
+            guard rebloomRoute?.id == route.id else { return }
+            rebloomRoute = nil
+          }
+        )
       }
       .tabItem {
         Label("花历", systemImage: "calendar.day.timeline.leading")
@@ -47,11 +56,45 @@ struct AppRootView: View {
     .tint(AdonisTheme.pomegranate)
     .task {
       await receiveSharedWardrobeImages()
+      prepareUITestReminderRouteIfNeeded()
+      receivePendingNavigationRoute(navigationRouter.pendingRebloomRoute)
+    }
+    .onChange(of: navigationRouter.pendingRebloomRoute) { _, route in
+      receivePendingNavigationRoute(route)
     }
     .onChange(of: scenePhase) { _, newPhase in
       guard newPhase == .active else { return }
       Task { await receiveSharedWardrobeImages() }
     }
+  }
+
+  @MainActor
+  private func receivePendingNavigationRoute(_ route: RebloomRouteRequest?) {
+    guard let route else { return }
+    guard rebloomRoute?.id != route.id else {
+      navigationRouter.consume(route)
+      return
+    }
+    selection = .blooms
+    rebloomRoute = route
+    navigationRouter.consume(route)
+    EventLogger.log(
+      .rebloomReminderOpened,
+      detail: "route=rebloom",
+      processingVersion: AdonisProcessingVersion.rebloomReminder,
+      in: modelContext
+    )
+  }
+
+  @MainActor
+  private func prepareUITestReminderRouteIfNeeded() {
+    #if DEBUG
+      guard !didPrepareUITestReminderRoute,
+        ProcessInfo.processInfo.arguments.contains("-ui-testing-open-rebloom-reminder")
+      else { return }
+      didPrepareUITestReminderRoute = true
+      navigationRouter.openCurrentRebloom()
+    #endif
   }
 
   @MainActor

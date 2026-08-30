@@ -4,6 +4,8 @@ import SwiftUI
 
 @main
 struct AdonisApp: App {
+  @UIApplicationDelegateAdaptor(AdonisAppDelegate.self) private var appDelegate
+
   private let modelContainer: ModelContainer
 
   init() {
