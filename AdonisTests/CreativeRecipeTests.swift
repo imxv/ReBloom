@@ -3,6 +3,32 @@ import XCTest
 @testable import Adonis
 
 final class CreativeRecipeTests: XCTestCase {
+  func testCuratedSystemRecipesOfferThreeDistinctOneTapResultsWithoutTechnicalTerms() {
+    let recipes = CreativeRecipe.curatedSystemRecipes
+
+    XCTAssertEqual(recipes, [.mythicGarden, .floralSketch, .moonlitTheater])
+    XCTAssertEqual(
+      recipes.compactMap(\.systemImageStyle),
+      [.illustration, .sketch, .animation]
+    )
+
+    for recipe in recipes {
+      XCTAssertTrue(recipe.requiresSystemImageGeneration)
+      XCTAssertEqual(recipe.provenance, .aiGenerated)
+      XCTAssertFalse(recipe.systemConcept.isEmpty)
+
+      let userFacingCopy = [
+        recipe.title,
+        recipe.subtitle,
+        recipe.preservedElements,
+        recipe.changedElements,
+      ].joined(separator: " ")
+      for hiddenTerm in ["Prompt", "Skill", "模型", "工作流"] {
+        XCTAssertFalse(userFacingCopy.localizedCaseInsensitiveContains(hiddenTerm))
+      }
+    }
+  }
+
   func testStickerTryOnIsAOneTapLocalCompositionWithExplicitFitBoundary() {
     let recipe = CreativeRecipe.stickerTryOn
 

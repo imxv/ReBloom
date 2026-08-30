@@ -4,6 +4,29 @@ import XCTest
 @testable import Adonis
 
 final class MythicGardenCardRendererTests: XCTestCase {
+  func testSystemRendererProducesAnOpaquePortraitCardForEveryCuratedRecipe() throws {
+    let generatedColor = UIColor(red: 0.19, green: 0.42, blue: 0.71, alpha: 1)
+    let generated = solidImage(color: generatedColor)
+
+    for recipe in CreativeRecipe.curatedSystemRecipes {
+      let card = try XCTUnwrap(
+        SystemCreativeCardRenderer().render(
+          generatedImage: generated,
+          recipe: recipe,
+          bloomNumber: 12,
+          date: Date(timeIntervalSince1970: 0)
+        )
+      )
+      let image = try XCTUnwrap(card.cgImage)
+
+      XCTAssertEqual(image.width, 1080, recipe.title)
+      XCTAssertEqual(image.height, 1440, recipe.title)
+      let pixels = try rgbaPixels(in: image)
+      XCTAssertEqual(minimumAlpha(in: pixels), 255, recipe.title)
+      XCTAssertGreaterThan(pixelCount(near: generatedColor, in: pixels), 500_000, recipe.title)
+    }
+  }
+
   func testContractMarksEveryShareableOutputAsAIGeneratedAndNotRealPhoto() {
     XCTAssertEqual(MythicGardenCardRenderer.provenance, .aiGenerated)
     XCTAssertEqual(

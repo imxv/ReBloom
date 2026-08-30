@@ -16,6 +16,8 @@ final class PersonalDataControlTests: XCTestCase {
     let cardFilename = try fixture.store.savePNG(image, filename: "outfit-card.png")
     let creativeFilename = try fixture.store.savePNG(image, filename: "botanical-poster.png")
     let mythicFilename = try fixture.store.savePNG(image, filename: "mythic-garden.png")
+    let floralFilename = try fixture.store.savePNG(image, filename: "floral-sketch.png")
+    let moonlitFilename = try fixture.store.savePNG(image, filename: "moonlit-theater.png")
     let tryOnFilename = try fixture.store.savePNG(image, filename: "sticker-try-on.png")
     let observationFilename = try fixture.store.savePNG(image, filename: "observation.png")
     let wardrobeFilename = try fixture.store.savePNG(image, filename: "wardrobe.png")
@@ -62,6 +64,24 @@ final class PersonalDataControlTests: XCTestCase {
       sourceOutfit: record
     )
     record.creativeWorks.append(mythicWork)
+    let floralWork = CreativeWork(
+      createdAt: Date(timeIntervalSince1970: 1_700_000_065),
+      recipe: .floralSketch,
+      imageFilename: floralFilename,
+      processingMilliseconds: 2_100,
+      executionMetadata: .appleImagePlayground,
+      sourceOutfit: record
+    )
+    record.creativeWorks.append(floralWork)
+    let moonlitWork = CreativeWork(
+      createdAt: Date(timeIntervalSince1970: 1_700_000_068),
+      recipe: .moonlitTheater,
+      imageFilename: moonlitFilename,
+      processingMilliseconds: 2_700,
+      executionMetadata: .appleImagePlayground,
+      sourceOutfit: record
+    )
+    record.creativeWorks.append(moonlitWork)
     let tryOnWork = CreativeWork(
       createdAt: Date(timeIntervalSince1970: 1_700_000_070),
       recipe: .stickerTryOn,
@@ -99,6 +119,8 @@ final class PersonalDataControlTests: XCTestCase {
     fixture.context.insert(observation)
     fixture.context.insert(creativeWork)
     fixture.context.insert(mythicWork)
+    fixture.context.insert(floralWork)
+    fixture.context.insert(moonlitWork)
     fixture.context.insert(tryOnWork)
     fixture.context.insert(item)
     fixture.context.insert(event)
@@ -123,6 +145,8 @@ final class PersonalDataControlTests: XCTestCase {
     XCTAssertEqual(entries["media/\(cardFilename)"], imageData)
     XCTAssertEqual(entries["media/\(creativeFilename)"], imageData)
     XCTAssertEqual(entries["media/\(mythicFilename)"], imageData)
+    XCTAssertEqual(entries["media/\(floralFilename)"], imageData)
+    XCTAssertEqual(entries["media/\(moonlitFilename)"], imageData)
     XCTAssertEqual(entries["media/\(tryOnFilename)"], imageData)
     XCTAssertEqual(entries["media/\(observationFilename)"], imageData)
     XCTAssertEqual(entries["media/\(wardrobeFilename)"], imageData)
@@ -158,7 +182,7 @@ final class PersonalDataControlTests: XCTestCase {
       StickerQualityAssessor.version
     )
     let creativeWorks = try XCTUnwrap(manifest["creativeWorks"] as? [[String: Any]])
-    XCTAssertEqual(creativeWorks.count, 3)
+    XCTAssertEqual(creativeWorks.count, 5)
     let botanical = try XCTUnwrap(
       creativeWorks.first {
         $0["recipe"] as? String == CreativeRecipe.botanicalPoster.rawValue
@@ -226,6 +250,40 @@ final class PersonalDataControlTests: XCTestCase {
       mythic["quality"] as? String,
       CreativeQualityStatus.userReviewRequired.rawValue
     )
+    for (recipe, version, filename) in [
+      (CreativeRecipe.floralSketch, AdonisProcessingVersion.floralSketch, floralFilename),
+      (CreativeRecipe.moonlitTheater, AdonisProcessingVersion.moonlitTheater, moonlitFilename),
+    ] {
+      let work = try XCTUnwrap(
+        creativeWorks.first { $0["recipe"] as? String == recipe.rawValue }
+      )
+      XCTAssertEqual(work["recipeVersion"] as? String, version)
+      XCTAssertEqual(
+        work["provenance"] as? String,
+        VisualContentProvenance.aiGenerated.rawValue
+      )
+      XCTAssertEqual(work["containsAIGeneratedPixels"] as? Bool, true)
+      XCTAssertEqual(work["imagePath"] as? String, "media/\(filename)")
+      XCTAssertEqual(
+        work["provider"] as? String,
+        CreativeProviderIdentifier.appleImagePlayground.rawValue
+      )
+      XCTAssertEqual(work["providerRequestCount"] as? Int, 1)
+      XCTAssertTrue(work.keys.contains("externalRequestCount"))
+      XCTAssertTrue(work["externalRequestCount"] is NSNull)
+      XCTAssertEqual(
+        work["networkTransport"] as? String,
+        CreativeNetworkTransport.systemManaged.rawValue
+      )
+      XCTAssertEqual(
+        work["externalCost"] as? String,
+        CreativeExternalCost.notExposed.rawValue
+      )
+      XCTAssertEqual(
+        work["quality"] as? String,
+        CreativeQualityStatus.userReviewRequired.rawValue
+      )
+    }
     let tryOn = try XCTUnwrap(
       creativeWorks.first {
         $0["recipe"] as? String == CreativeRecipe.stickerTryOn.rawValue
@@ -284,7 +342,7 @@ final class PersonalDataControlTests: XCTestCase {
     let pendingSharedImages = try XCTUnwrap(manifest["pendingSharedImages"] as? [String])
     XCTAssertEqual(pendingSharedImages, ["shared-inbox/\(pending.id)"])
     let visualAssets = try XCTUnwrap(manifest["visualAssets"] as? [[String: Any]])
-    XCTAssertEqual(visualAssets.count, 9)
+    XCTAssertEqual(visualAssets.count, 11)
     XCTAssertEqual(
       provenance(for: "media/\(sourceFilename)", in: visualAssets),
       VisualContentProvenance.userProvided.rawValue
@@ -303,6 +361,14 @@ final class PersonalDataControlTests: XCTestCase {
     )
     XCTAssertEqual(
       provenance(for: "media/\(mythicFilename)", in: visualAssets),
+      VisualContentProvenance.aiGenerated.rawValue
+    )
+    XCTAssertEqual(
+      provenance(for: "media/\(floralFilename)", in: visualAssets),
+      VisualContentProvenance.aiGenerated.rawValue
+    )
+    XCTAssertEqual(
+      provenance(for: "media/\(moonlitFilename)", in: visualAssets),
       VisualContentProvenance.aiGenerated.rawValue
     )
     XCTAssertEqual(
@@ -341,7 +407,7 @@ final class PersonalDataControlTests: XCTestCase {
       visualAssets.filter { asset in
         asset["containsAIGeneratedPixels"] as? Bool == true
       }.count,
-      1
+      3
     )
     let observationAsset = try XCTUnwrap(
       visualAssets.first { $0["path"] as? String == "media/\(observationFilename)" }

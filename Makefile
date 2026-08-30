@@ -100,6 +100,7 @@ creative-regression: project
 		-only-testing:AdonisTests/PersonalDataControlTests/testDeleteAllClearsModelsMediaSharedInboxAndTemporaryExports \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testGeneratedStickerCreatesTraceableBotanicalPosterReadyToCompareSaveAndShare \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testUnavailableSystemCreationDoesNotShowADeadEntry \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testCuratedStyleGardenSelectsPersistsAndReopensFloralSketch \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testSystemCreationCanBeCancelledWithoutChangingOriginalResult \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testSystemCreationTimeoutStopsWaitingAndKeepsOriginalResult

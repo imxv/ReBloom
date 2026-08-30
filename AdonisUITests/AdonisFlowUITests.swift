@@ -3,6 +3,99 @@ import XCTest
 
 final class AdonisFlowUITests: XCTestCase {
   @MainActor
+  func testCuratedStyleGardenSelectsPersistsAndReopensFloralSketch() {
+    let app = XCUIApplication()
+    let persistentStoreID = UUID().uuidString
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-persistent-store",
+        persistentStoreID,
+        "-ui-testing-system-creative",
+      ]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
+    sample.tap()
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
+
+    let garden = app.buttons["curated-style-garden-entry"]
+    XCTAssertTrue(scrollToHittable(garden, in: app, attempts: 12))
+    garden.tap()
+
+    let picker = app.descendants(matching: .any)["curated-style-picker"]
+    XCTAssertTrue(picker.waitForExistence(timeout: 4))
+    let mythic = app.buttons["curated-style-option-mythic_garden"]
+    let sketch = app.buttons["curated-style-option-floral_sketch"]
+    let theater = app.buttons["curated-style-option-moonlit_theater"]
+    XCTAssertTrue(mythic.exists)
+    XCTAssertTrue(sketch.exists)
+    XCTAssertTrue(theater.exists)
+    keepScreenshot(named: "Adonis-curated-style-picker")
+    XCTAssertTrue(scrollToHittable(sketch, in: app, attempts: 5))
+    sketch.tap()
+
+    let processing = app.descendants(matching: .any)["system-creative-processing"]
+    XCTAssertTrue(processing.waitForExistence(timeout: 3))
+    let status = app.descendants(matching: .any)["system-creative-status"]
+    XCTAssertTrue(status.exists)
+    XCTAssertTrue(status.label.contains("花神速写"))
+
+    let preview = app.descendants(matching: .any)["creative-work-preview"]
+    XCTAssertTrue(preview.waitForExistence(timeout: 8))
+    XCTAssertTrue(preview.label.contains("花神速写"))
+    let provenance = app.descendants(matching: .any)["creative-work-provenance"]
+    XCTAssertTrue(scrollToHittable(provenance, in: app, attempts: 8))
+    XCTAssertTrue(provenance.label.contains("AI 生成"))
+    let boundary = app.descendants(matching: .any)["creative-work-boundary"]
+    XCTAssertTrue(scrollToHittable(boundary, in: app, attempts: 5))
+    XCTAssertTrue(boundary.label.contains("人物和衣服都可能改变"))
+
+    selectCreativeWorkPreview(
+      assetID: "originalPhoto",
+      title: "原始照片",
+      preview: preview,
+      in: app
+    )
+    selectCreativeWorkPreview(
+      assetID: "work",
+      title: "花神速写",
+      preview: preview,
+      in: app
+    )
+
+    let save = app.buttons["save-creative-work"]
+    XCTAssertTrue(scrollToHittable(save, in: app, attempts: 8))
+    save.tap()
+    XCTAssertTrue(app.buttons["作品已经收藏"].waitForExistence(timeout: 5))
+    let share = app.buttons["share-creative-work"]
+    XCTAssertTrue(scrollToHittable(share, in: app, attempts: 5))
+    share.tap()
+    XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
+    app.buttons["关闭"].tap()
+    let closeWork = app.buttons["close-creative-work"]
+    XCTAssertTrue(scrollDownToHittable(closeWork, in: app, attempts: 8))
+    closeWork.tap()
+
+    app.terminate()
+    app.launch()
+    app.tabBars.buttons["花历"].tap()
+    let record = app.buttons.matching(identifier: "bloom-record-card").firstMatch
+    XCTAssertTrue(record.waitForExistence(timeout: 5))
+    record.tap()
+    let savedEntry = app.buttons["creative-work-history-entry"]
+    XCTAssertTrue(scrollToHittable(savedEntry, in: app, attempts: 10))
+    XCTAssertTrue(savedEntry.label.contains("花神速写"))
+    savedEntry.tap()
+    XCTAssertTrue(preview.waitForExistence(timeout: 5))
+    XCTAssertTrue(preview.label.contains("花神速写"))
+    keepScreenshot(named: "Adonis-floral-sketch-fixture-history")
+  }
+
+  @MainActor
   func testUnavailableSystemCreationDoesNotShowADeadEntry() {
     let app = XCUIApplication()
     app.launchArguments.append(
@@ -15,7 +108,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
     sample.tap()
     XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
-    XCTAssertFalse(app.buttons["mythic-garden-entry"].waitForExistence(timeout: 2))
+    XCTAssertFalse(app.buttons["curated-style-garden-entry"].waitForExistence(timeout: 2))
     XCTAssertTrue(app.buttons["botanical-poster-entry"].exists)
   }
 
@@ -38,9 +131,7 @@ final class AdonisFlowUITests: XCTestCase {
     sample.tap()
     XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
 
-    let entry = app.buttons["mythic-garden-entry"]
-    XCTAssertTrue(scrollToHittable(entry, in: app, attempts: 12))
-    entry.tap()
+    let entry = beginCuratedStyle("mythic_garden", in: app)
     let processing = app.descendants(matching: .any)["system-creative-processing"]
     XCTAssertTrue(processing.waitForExistence(timeout: 3))
     XCTAssertTrue(app.alerts["作品还没做好"].waitForExistence(timeout: 6))
@@ -75,9 +166,7 @@ final class AdonisFlowUITests: XCTestCase {
     sample.tap()
     XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
 
-    let entry = app.buttons["mythic-garden-entry"]
-    XCTAssertTrue(scrollToHittable(entry, in: app, attempts: 12))
-    entry.tap()
+    _ = beginCuratedStyle("mythic_garden", in: app)
     XCTAssertTrue(
       app.descendants(matching: .any)["system-creative-processing"].waitForExistence(
         timeout: 3
@@ -158,9 +247,7 @@ final class AdonisFlowUITests: XCTestCase {
     sample.tap()
     XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
 
-    let entry = app.buttons["mythic-garden-entry"]
-    XCTAssertTrue(scrollToHittable(entry, in: app, attempts: 12))
-    entry.tap()
+    let entry = beginCuratedStyle("mythic_garden", in: app)
     let processing = app.descendants(matching: .any)["system-creative-processing"]
     XCTAssertTrue(processing.waitForExistence(timeout: 3))
     app.buttons["system-creative-cancel"].tap()
@@ -1649,6 +1736,22 @@ final class AdonisFlowUITests: XCTestCase {
       app.swipeDown()
     }
     return element.isHittable
+  }
+
+  @MainActor
+  private func beginCuratedStyle(
+    _ recipeID: String,
+    in app: XCUIApplication
+  ) -> XCUIElement {
+    let garden = app.buttons["curated-style-garden-entry"]
+    XCTAssertTrue(scrollToHittable(garden, in: app, attempts: 12))
+    garden.tap()
+
+    let option = app.buttons["curated-style-option-\(recipeID)"]
+    XCTAssertTrue(option.waitForExistence(timeout: 4))
+    XCTAssertTrue(scrollToHittable(option, in: app, attempts: 5))
+    option.tap()
+    return garden
   }
 
   @MainActor

@@ -45,6 +45,7 @@
 		3349235E0874C5A68347AC94 /* MythicGardenCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D307ACD6D08833C51C92D1 /* MythicGardenCardRendererTests.swift */; };
 		38385A8843FD7D39731262D1 /* StickerProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */; };
 		3AB4A6945995AABAD839BE06 /* SystemCreativeProcessingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDDB6ADF12D6E255E462506 /* SystemCreativeProcessingOverlay.swift */; };
+		3C0AD41E60BDDA8EBBA579EB /* CuratedStyleGardenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B8B5D2DFF811118D369A61D /* CuratedStyleGardenView.swift */; };
 		3C9A8154794D56761BF03D4A /* WardrobeHistorySuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1AC57D0B3CE409AF9AA3B0 /* WardrobeHistorySuggestionsView.swift */; };
 		423AEFB97294ADDACA708B53 /* SharedImageInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9C4FA8A91B8CCA08F29DBB /* SharedImageInbox.swift */; };
 		444C652105F7620F3A0DBDD3 /* MediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 715F9375B113CB2BBE597E7F /* MediaStore.swift */; };
@@ -180,6 +181,7 @@
 		05DBA0C9DB94BDE4B6AA5635 /* AdonisShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AdonisShareExtension.entitlements; sourceTree = "<group>"; };
 		06D602C70C508E36FB89DD60 /* OutfitGarmentObservationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitGarmentObservationsView.swift; sourceTree = "<group>"; };
 		0AE5FB9960887C789F813E51 /* ShareCardRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRenderer.swift; sourceTree = "<group>"; };
+		0B8B5D2DFF811118D369A61D /* CuratedStyleGardenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CuratedStyleGardenView.swift; sourceTree = "<group>"; };
 		0BCEE85686A0D72974233370 /* SampleRegressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleRegressionTests.swift; sourceTree = "<group>"; };
 		0F065376A3FAD98445ED86F2 /* AppNavigationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigationRouter.swift; sourceTree = "<group>"; };
 		0F43E15401C8E12ECD95C624 /* CreativeWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeWork.swift; sourceTree = "<group>"; };
@@ -527,6 +529,7 @@
 				81B62D5D132AC85E01784E17 /* ActivityView.swift */,
 				FAD5A96B162481D212E146A1 /* CameraPicker.swift */,
 				53AA69B4A22D8C05F5AFABC1 /* CreativeWorkView.swift */,
+				0B8B5D2DFF811118D369A61D /* CuratedStyleGardenView.swift */,
 				FDCD90F138751C7EC752F214 /* DigitalFigurineCardView.swift */,
 				25339ED234813E24E8BB84CA /* GenerationFallbackNotice.swift */,
 				65B19E79DC35ECB753DE22B9 /* StoredImageView.swift */,
@@ -806,6 +809,7 @@
 				82B278990D3D32DEA723F93C /* CreativeWork.swift in Sources */,
 				9B602EBDC60D54899EEC2A88 /* CreativeWorkStore.swift in Sources */,
 				2A3903CCF09460A04EDEFCF7 /* CreativeWorkView.swift in Sources */,
+				3C0AD41E60BDDA8EBBA579EB /* CuratedStyleGardenView.swift in Sources */,
 				4DAFEFC95C30F69D81FB03FA /* DigitalCabinetCatalog.swift in Sources */,
 				08DF5267B88973D0A82557BE /* DigitalCabinetView.swift in Sources */,
 				93DA4A90032C3C2D88A6A3BD /* DigitalFigurineCardRenderer.swift in Sources */,

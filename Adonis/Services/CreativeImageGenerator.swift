@@ -145,7 +145,9 @@ struct SystemCreativeImageGenerator: CreativeImageGenerating {
 
       do {
         let creator = try await ImageCreator()
-        guard creator.availableStyles.contains(.illustration) else {
+        guard let requestedStyle = playgroundStyle(for: recipe),
+          creator.availableStyles.contains(requestedStyle)
+        else {
           throw CreativeGenerationError.unavailable
         }
         let concepts: [ImagePlaygroundConcept] = [
@@ -154,7 +156,7 @@ struct SystemCreativeImageGenerator: CreativeImageGenerating {
         ]
         for try await createdImage in creator.images(
           for: concepts,
-          style: .illustration,
+          style: requestedStyle,
           limit: 1
         ) {
           try Task.checkCancellation()
@@ -194,6 +196,16 @@ struct SystemCreativeImageGenerator: CreativeImageGenerating {
         .unsupportedSource
       @unknown default:
         .failed
+      }
+    }
+
+    @available(iOS 18.4, *)
+    private func playgroundStyle(for recipe: CreativeRecipe) -> ImagePlaygroundStyle? {
+      switch recipe.systemImageStyle {
+      case .illustration: .illustration
+      case .sketch: .sketch
+      case .animation: .animation
+      case nil: nil
       }
     }
   #endif
@@ -236,12 +248,12 @@ struct SystemCreativeImageGenerator: CreativeImageGenerating {
 
     func generate(
       sourceImage _: UIImage,
-      recipe _: CreativeRecipe
+      recipe: CreativeRecipe
     ) async throws -> CreativeProviderOutput {
       if arguments.contains("-ui-testing-system-creative-never-finishes") {
         try await Task.sleep(for: .seconds(120))
       } else {
-        try await Task.sleep(for: .seconds(2))
+        try await Task.sleep(for: .seconds(3))
       }
       try Task.checkCancellation()
 
@@ -252,16 +264,17 @@ struct SystemCreativeImageGenerator: CreativeImageGenerating {
         size: CGSize(width: 1_024, height: 1_024),
         format: format
       ).image { context in
-        UIColor(red: 0.18, green: 0.09, blue: 0.16, alpha: 1).setFill()
+        let palette = palette(for: recipe)
+        palette.background.setFill()
         context.fill(CGRect(x: 0, y: 0, width: 1_024, height: 1_024))
-        UIColor(red: 0.91, green: 0.34, blue: 0.42, alpha: 1).setFill()
+        palette.sun.setFill()
         context.cgContext.fillEllipse(in: CGRect(x: 544, y: 112, width: 390, height: 390))
-        UIColor(red: 0.53, green: 0.70, blue: 0.47, alpha: 1).setFill()
+        palette.figure.setFill()
         UIBezierPath(
           roundedRect: CGRect(x: 180, y: 168, width: 460, height: 742),
           cornerRadius: 220
         ).fill()
-        UIColor(red: 1, green: 0.89, blue: 0.62, alpha: 1).setStroke()
+        palette.line.setStroke()
         let path = UIBezierPath()
         path.move(to: CGPoint(x: 130, y: 860))
         path.addCurve(
@@ -273,6 +286,34 @@ struct SystemCreativeImageGenerator: CreativeImageGenerating {
         path.stroke()
       }
       return CreativeProviderOutput(image: image, executionMetadata: .uiTestFixture)
+    }
+
+    private func palette(for recipe: CreativeRecipe) -> (
+      background: UIColor, sun: UIColor, figure: UIColor, line: UIColor
+    ) {
+      switch recipe {
+      case .floralSketch:
+        (
+          UIColor(red: 0.94, green: 0.88, blue: 0.76, alpha: 1),
+          UIColor(red: 0.82, green: 0.22, blue: 0.22, alpha: 1),
+          UIColor(red: 0.20, green: 0.17, blue: 0.14, alpha: 1),
+          UIColor(red: 0.36, green: 0.51, blue: 0.31, alpha: 1)
+        )
+      case .moonlitTheater:
+        (
+          UIColor(red: 0.035, green: 0.08, blue: 0.25, alpha: 1),
+          UIColor(red: 1, green: 0.37, blue: 0.43, alpha: 1),
+          UIColor(red: 0.30, green: 0.68, blue: 0.82, alpha: 1),
+          UIColor(red: 1, green: 0.84, blue: 0.46, alpha: 1)
+        )
+      case .mythicGarden, .botanicalPoster, .stickerTryOn:
+        (
+          UIColor(red: 0.18, green: 0.09, blue: 0.16, alpha: 1),
+          UIColor(red: 0.91, green: 0.34, blue: 0.42, alpha: 1),
+          UIColor(red: 0.53, green: 0.70, blue: 0.47, alpha: 1),
+          UIColor(red: 1, green: 0.89, blue: 0.62, alpha: 1)
+        )
+      }
     }
   }
 #endif

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SystemCreativeProcessingOverlay: View {
+  let recipe: CreativeRecipe
   let onCancel: () -> Void
 
   var body: some View {
@@ -15,7 +16,7 @@ struct SystemCreativeProcessingOverlay: View {
           .accessibilityHidden(true)
 
         VStack(spacing: 7) {
-          Text("正在种下永生花园")
+          Text("正在打开\(recipe.title)")
             .font(.system(.title3, design: .rounded, weight: .black))
             .foregroundStyle(AdonisTheme.ink)
           Text("系统会重新绘制整张画面，最多等待 90 秒。原照片和贴纸不会改变。")
@@ -25,6 +26,11 @@ struct SystemCreativeProcessingOverlay: View {
             .lineSpacing(2)
             .fixedSize(horizontal: false, vertical: true)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(
+          "正在生成\(recipe.title)。系统会重新绘制整张画面，最多等待 90 秒。"
+        )
+        .accessibilityIdentifier("system-creative-status")
 
         Button("停止这次创作", role: .cancel, action: onCancel)
           .font(.system(.headline, design: .rounded, weight: .bold))
@@ -47,7 +53,6 @@ struct SystemCreativeProcessingOverlay: View {
       .padding(24)
     }
     .accessibilityElement(children: .contain)
-    .accessibilityLabel("正在生成永生花园。系统会重新绘制整张画面，最多等待 90 秒。")
     .accessibilityIdentifier("system-creative-processing")
   }
 }

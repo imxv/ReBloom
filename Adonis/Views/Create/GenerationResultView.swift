@@ -15,12 +15,14 @@ struct GenerationResultView: View {
   @State private var mode: OutfitVisualAsset
   @State private var isSaved: Bool
   @State private var showShare = false
+  @State private var showCuratedStylePicker = false
   @State private var digitalFigurineCard: DigitalFigurineCardPresentation?
   @State private var creativeWork: CreativeWorkPresentation?
   @State private var saveError: String?
   @State private var figurineError: String?
   @State private var creativeWorkError: String?
   @State private var activeSystemCreativeID: UUID?
+  @State private var activeSystemCreativeRecipe: CreativeRecipe?
   @State private var systemCreativeTimer: CreativeGenerationAttemptTimer?
   @State private var systemCreativeTask: Task<Void, Never>?
   @State private var systemCreativeDeadline = GenerationDeadlineController()
@@ -90,8 +92,8 @@ struct GenerationResultView: View {
           }
 
           if creativeImageGenerator.availability == .available {
-            MythicGardenEntry {
-              makeMythicGarden()
+            CuratedStyleGardenEntry {
+              showCuratedStylePicker = true
             }
           }
 
@@ -111,15 +113,25 @@ struct GenerationResultView: View {
       }
       .disabled(activeSystemCreativeID != nil)
 
-      if activeSystemCreativeID != nil {
-        SystemCreativeProcessingOverlay(onCancel: cancelSystemCreative)
-          .transition(.opacity)
-          .zIndex(3)
+      if let activeSystemCreativeRecipe {
+        SystemCreativeProcessingOverlay(
+          recipe: activeSystemCreativeRecipe,
+          onCancel: cancelSystemCreative
+        )
+        .transition(.opacity)
+        .zIndex(3)
       }
     }
     .sheet(isPresented: $showShare) {
       ActivityView(items: [selectedImage])
         .presentationDetents([.medium, .large])
+    }
+    .sheet(isPresented: $showCuratedStylePicker) {
+      CuratedStylePickerView { recipe in
+        showCuratedStylePicker = false
+        makeSystemCreative(recipe)
+      }
+      .presentationDetents([.large])
     }
     .sheet(item: $creativeWork) { presentation in
       CreativeWorkView(
@@ -410,21 +422,23 @@ struct GenerationResultView: View {
     )
   }
 
-  private func makeMythicGarden() {
+  private func makeSystemCreative(_ recipe: CreativeRecipe) {
     guard activeSystemCreativeID == nil else { return }
+    guard recipe.requiresSystemImageGeneration else { return }
 
     creativeWorkError = nil
     let generationID = UUID()
     let timer = CreativeGenerationAttemptTimer(startedAt: ContinuousClock.now)
     let attemptMetadata = creativeImageGenerator.executionMetadata
     activeSystemCreativeID = generationID
+    activeSystemCreativeRecipe = recipe
     systemCreativeTimer = timer
 
     EventLogger.log(
       .creativeWorkGenerationStarted,
-      detail: attemptMetadata.eventDetail(for: .mythicGarden),
+      detail: attemptMetadata.eventDetail(for: recipe),
       inputSource: draft.inputSource,
-      processingVersion: CreativeRecipe.mythicGarden.version,
+      processingVersion: recipe.version,
       in: modelContext
     )
 
@@ -443,17 +457,19 @@ struct GenerationResultView: View {
       do {
         let output = try await creativeImageGenerator.generate(
           sourceImage: draft.sourceImage,
-          recipe: .mythicGarden
+          recipe: recipe
         )
         try Task.checkCancellation()
-        finishMythicGarden(
+        finishSystemCreative(
           output: output,
+          recipe: recipe,
           generationID: generationID,
           timer: timer
         )
       } catch {
         failSystemCreative(
           error,
+          recipe: recipe,
           generationID: generationID,
           metadata: attemptMetadata,
           timer: timer
@@ -462,21 +478,24 @@ struct GenerationResultView: View {
     }
   }
 
-  private func finishMythicGarden(
+  private func finishSystemCreative(
     output: CreativeProviderOutput,
+    recipe: CreativeRecipe,
     generationID: UUID,
     timer: CreativeGenerationAttemptTimer
   ) {
     guard activeSystemCreativeID == generationID else { return }
     guard
-      let image = MythicGardenCardRenderer().render(
+      let image = SystemCreativeCardRenderer().render(
         generatedImage: output.image,
+        recipe: recipe,
         bloomNumber: draft.bloomNumber,
         date: draft.createdAt
       )
     else {
       failSystemCreative(
         CreativeGenerationError.noImage,
+        recipe: recipe,
         generationID: generationID,
         metadata: output.executionMetadata,
         timer: timer
@@ -487,12 +506,13 @@ struct GenerationResultView: View {
     let milliseconds = timer.elapsedMilliseconds()
     systemCreativeDeadline.cancel(generationID: generationID)
     activeSystemCreativeID = nil
+    activeSystemCreativeRecipe = nil
     systemCreativeTimer = nil
     systemCreativeTask = nil
 
     let creativeDraft = CreativeWorkDraft(
       createdAt: .now,
-      recipe: .mythicGarden,
+      recipe: recipe,
       image: image,
       processingMilliseconds: milliseconds,
       executionMetadata: output.executionMetadata
@@ -514,6 +534,7 @@ struct GenerationResultView: View {
 
   private func failSystemCreative(
     _ error: Error,
+    recipe: CreativeRecipe,
     generationID: UUID,
     metadata: CreativeExecutionMetadata,
     timer: CreativeGenerationAttemptTimer
@@ -531,11 +552,12 @@ struct GenerationResultView: View {
 
     systemCreativeDeadline.cancel(generationID: generationID)
     activeSystemCreativeID = nil
+    activeSystemCreativeRecipe = nil
     systemCreativeTimer = nil
     systemCreativeTask = nil
     let milliseconds = timer.elapsedMilliseconds()
     let detail =
-      metadata.eventDetail(for: .mythicGarden)
+      metadata.eventDetail(for: recipe)
       + ";error=\(generationError.eventCode)"
 
     switch generationError {
@@ -545,7 +567,7 @@ struct GenerationResultView: View {
         durationMilliseconds: milliseconds,
         detail: detail,
         inputSource: draft.inputSource,
-        processingVersion: CreativeRecipe.mythicGarden.version,
+        processingVersion: recipe.version,
         in: modelContext
       )
     case .timedOut:
@@ -554,7 +576,7 @@ struct GenerationResultView: View {
         durationMilliseconds: milliseconds,
         detail: detail,
         inputSource: draft.inputSource,
-        processingVersion: CreativeRecipe.mythicGarden.version,
+        processingVersion: recipe.version,
         in: modelContext
       )
       creativeWorkError = generationError.localizedDescription
@@ -564,7 +586,7 @@ struct GenerationResultView: View {
         durationMilliseconds: milliseconds,
         detail: detail,
         inputSource: draft.inputSource,
-        processingVersion: CreativeRecipe.mythicGarden.version,
+        processingVersion: recipe.version,
         in: modelContext
       )
       creativeWorkError = generationError.localizedDescription
@@ -574,10 +596,12 @@ struct GenerationResultView: View {
   private func cancelSystemCreative() {
     guard
       let generationID = activeSystemCreativeID,
+      let recipe = activeSystemCreativeRecipe,
       let timer = systemCreativeTimer
     else { return }
     let metadata = creativeImageGenerator.executionMetadata
     activeSystemCreativeID = nil
+    activeSystemCreativeRecipe = nil
     systemCreativeTimer = nil
     systemCreativeDeadline.cancel(generationID: generationID)
     let task = systemCreativeTask
@@ -586,9 +610,9 @@ struct GenerationResultView: View {
     EventLogger.log(
       .creativeWorkGenerationCancelled,
       durationMilliseconds: timer.elapsedMilliseconds(),
-      detail: metadata.eventDetail(for: .mythicGarden) + ";error=cancelled",
+      detail: metadata.eventDetail(for: recipe) + ";error=cancelled",
       inputSource: draft.inputSource,
-      processingVersion: CreativeRecipe.mythicGarden.version,
+      processingVersion: recipe.version,
       in: modelContext
     )
   }
@@ -599,7 +623,9 @@ struct GenerationResultView: View {
     timer: CreativeGenerationAttemptTimer
   ) {
     guard activeSystemCreativeID == generationID else { return }
+    guard let recipe = activeSystemCreativeRecipe else { return }
     activeSystemCreativeID = nil
+    activeSystemCreativeRecipe = nil
     systemCreativeTimer = nil
     let task = systemCreativeTask
     systemCreativeTask = nil
@@ -607,9 +633,9 @@ struct GenerationResultView: View {
     EventLogger.log(
       .creativeWorkGenerationTimedOut,
       durationMilliseconds: timer.elapsedMilliseconds(),
-      detail: metadata.eventDetail(for: .mythicGarden) + ";error=timed_out",
+      detail: metadata.eventDetail(for: recipe) + ";error=timed_out",
       inputSource: draft.inputSource,
-      processingVersion: CreativeRecipe.mythicGarden.version,
+      processingVersion: recipe.version,
       in: modelContext
     )
     creativeWorkError = CreativeGenerationError.timedOut.localizedDescription
