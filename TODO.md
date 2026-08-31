@@ -47,8 +47,9 @@
 - [x] 每个页面只保留一个主要动作。
 - [x] 结果页只突出“收藏今天”；“存透明贴纸 / 分享”并排作为次级动作，“再做一张”保持末级；数字手办以单个次级卡片入口出现，不增加模式、参数或模板选择。
 - [x] 为生成失败、模拟器能力不足和用户取消提供不打断主流程的降级方式。
+- [x] 内置样片在点击前直接展示“授权原图 → 固定透明贴纸”，整张卡仍一次点击，并明确标为内置样片与原图处理。
 
-当前证据：[iOS 本地 Demo 四屏与 UI 流程验证](docs/verification/2026-08-29-ios-local-demo.md)。真实用户无讲解测试仍属于 ADO-008。
+当前证据：[iOS 本地 Demo 四屏与 UI 流程验证](docs/verification/2026-08-29-ios-local-demo.md)与 [内置样片原图到贴纸预览验证](docs/verification/2026-08-31-sample-transformation-preview.md)。真实用户无讲解测试仍属于 ADO-008。
 
 完成标准：没有项目背景的人能够在不听讲解的情况下完成原型流程，并说出 Adonis 帮自己做了什么。
 
@@ -92,7 +93,7 @@ M0 退出条件：
 - [x] **ADO-107：实现最小历史视图。** 花历按日期显示记录，并能再次打开、分享或删除。
 - [ ] **ADO-108：完成真实设备或目标浏览器回归。** 验证上传、生成、保存、重试和删除的完整链路。
 
-  2026-08-31 当前完整全量回归已通过 218/218（179 个单元测试、39 个 UI 流程，0 失败、0 跳过），结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.31_12-06-09-+0800.xcresult`；旧 provider 隔离命令另运行 1 个显式禁用条件下的专项测试。前后台恢复、已收藏记录重启恢复、AI 不透明源先生成后抠图、能力不可用时的明确样片恢复、结果后可跳过的人物/穿搭复核、透明贴纸相册交付、三道贴纸质量闸门、90 秒超时、统一入口、衣橱、花历与下游收藏创作都包含在当前自动证据中。当前真机 iPhone 11 仍离线且不支持 Apple Intelligence，真实 iOS 27 SDK、目标真机、真实 provider、PhotoKit、Vision、系统分享目的地和弱网边界仍未验证，因此 ADO-108 保持未完成。核心证据见 [旧 provider 隔离验证](docs/verification/2026-08-31-legacy-image-creator-isolation.md)、[AI 生图不可用时的样片恢复验证](docs/verification/2026-08-31-unsupported-ai-sample-recovery.md)、[AI 贴纸先生成后抠图验证](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)、[AI 贴纸人物与穿搭复核验证](docs/verification/2026-08-31-ai-sticker-fidelity-review.md)、[透明贴纸存入相册验证](docs/verification/2026-08-31-sticker-photo-save.md)、[本地 Demo 验证](docs/verification/2026-08-29-ios-local-demo.md)、[固定样片回归](docs/verification/2026-08-30-sample-regression-baseline.md)、[生成超时验证](docs/verification/2026-08-30-generation-timeout-fallback.md)与 [生成性能验证](docs/verification/2026-08-30-generation-performance-budget.md)。
+  2026-08-31 当前完整全量回归已通过 219/219（179 个单元测试、40 个 UI 流程，0 失败、0 跳过），结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.31_12-52-03-+0800.xcresult`；旧 provider 隔离命令另运行 1 个显式禁用条件下的专项测试。前后台恢复、已收藏记录重启恢复、AI 不透明源先生成后抠图、能力不可用时的明确样片恢复、结果后可跳过的人物/穿搭复核、内置样片原图到贴纸预览、透明贴纸相册交付、三道贴纸质量闸门、90 秒超时、统一入口、衣橱、花历与下游收藏创作都包含在当前自动证据中。当前真机 iPhone 11 仍离线且不支持 Apple Intelligence，真实 iOS 27 SDK、目标真机、真实 provider、PhotoKit、Vision、系统分享目的地和弱网边界仍未验证，因此 ADO-108 保持未完成。核心证据见 [内置样片原图到贴纸预览验证](docs/verification/2026-08-31-sample-transformation-preview.md)、[旧 provider 隔离验证](docs/verification/2026-08-31-legacy-image-creator-isolation.md)、[AI 生图不可用时的样片恢复验证](docs/verification/2026-08-31-unsupported-ai-sample-recovery.md)、[AI 贴纸先生成后抠图验证](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)、[AI 贴纸人物与穿搭复核验证](docs/verification/2026-08-31-ai-sticker-fidelity-review.md)、[透明贴纸存入相册验证](docs/verification/2026-08-31-sticker-photo-save.md)、[本地 Demo 验证](docs/verification/2026-08-29-ios-local-demo.md)、[固定样片回归](docs/verification/2026-08-30-sample-regression-baseline.md)、[生成超时验证](docs/verification/2026-08-30-generation-timeout-fallback.md)与 [生成性能验证](docs/verification/2026-08-30-generation-performance-budget.md)。
 
   新增的 `make legacy-provider-isolation` 已证明：旧适配器禁用时可以完成通用 iOS Release 构建，二进制不含 `ImagePlayground` / `ImageCreator` 引用，运行时明确不可用。真实 iOS 27 SDK、目标 iPhone 和替代 provider 仍未验证，所以本任务状态不变。
 

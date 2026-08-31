@@ -428,20 +428,20 @@ struct CreateView: View {
   private var sampleSectionHeader: some View {
     if dynamicTypeSize.isAccessibilitySize {
       VStack(alignment: .leading, spacing: 4) {
-        Text("先用样片玩一下")
+        Text("看看照片怎么变成贴纸")
           .font(.system(.title3, design: .rounded, weight: .bold))
           .foregroundStyle(AdonisTheme.ink)
-        Text("全部本机处理")
+        Text("内置样片 · 本机处理")
           .font(.caption)
           .foregroundStyle(AdonisTheme.secondaryInk)
       }
     } else {
       HStack(alignment: .firstTextBaseline) {
-        Text("先用样片玩一下")
+        Text("看看照片怎么变成贴纸")
           .font(.system(.title3, design: .rounded, weight: .bold))
           .foregroundStyle(AdonisTheme.ink)
         Spacer()
-        Text("全部本机处理")
+        Text("内置样片 · 本机处理")
           .font(.caption)
           .foregroundStyle(AdonisTheme.secondaryInk)
       }
@@ -1598,31 +1598,23 @@ private struct SamplePhotoButton: View {
   var body: some View {
     Button(action: action) {
       VStack(alignment: .leading, spacing: 9) {
-        Group {
-          if let image = sample.image() {
-            Image(uiImage: image)
-              .resizable()
-              .scaledToFill()
-          } else {
-            AdonisTheme.lavender.opacity(0.4)
-          }
-        }
-        .frame(width: imageWidth, height: 176)
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay {
-          RoundedRectangle(cornerRadius: 16, style: .continuous)
-            .stroke(AdonisTheme.ink.opacity(0.08), lineWidth: 1)
-        }
+        SampleTransformationPreview(sample: sample, width: imageWidth)
 
         Text(sample.title)
           .font(.system(.subheadline, design: .rounded, weight: .bold))
           .foregroundStyle(AdonisTheme.ink)
 
-        Text(sample.subtitle)
-          .font(.caption2)
-          .foregroundStyle(AdonisTheme.secondaryInk)
-          .lineLimit(dynamicTypeSize.isAccessibilitySize ? 3 : 1)
-          .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: 3) {
+          Text("原图 → 透明贴纸")
+            .font(.system(.caption2, design: .rounded, weight: .bold))
+            .foregroundStyle(AdonisTheme.leafInk)
+
+          Text(sample.subtitle)
+            .font(.caption2)
+            .foregroundStyle(AdonisTheme.secondaryInk)
+            .lineLimit(dynamicTypeSize.isAccessibilitySize ? 3 : 1)
+            .fixedSize(horizontal: false, vertical: true)
+        }
       }
       .padding(9)
       .frame(width: cardWidth, alignment: .leading)
@@ -1630,16 +1622,122 @@ private struct SamplePhotoButton: View {
       .shadow(color: AdonisTheme.ink.opacity(0.08), radius: 10, y: 5)
     }
     .buttonStyle(StickerButtonStyle())
-    .accessibilityLabel("使用样片：\(sample.title)")
+    .accessibilityLabel(
+      "使用样片：\(sample.title)。原始照片变成透明贴纸，来自内置样片，属于原图处理。"
+    )
+    .accessibilityHint("点一下体验完整的贴纸和收藏卡流程")
     .accessibilityIdentifier(sample.id)
   }
 
   private var cardWidth: CGFloat {
-    dynamicTypeSize.isAccessibilitySize ? 220 : 162
+    dynamicTypeSize.isAccessibilitySize ? 256 : 214
   }
 
   private var imageWidth: CGFloat {
     cardWidth - 18
+  }
+}
+
+private struct SampleTransformationPreview: View {
+  let sample: SamplePhoto
+  let width: CGFloat
+
+  var body: some View {
+    HStack(spacing: 0) {
+      originalPreview
+        .frame(width: panelWidth, height: 176)
+        .clipped()
+
+      stickerPreview
+        .frame(width: panelWidth, height: 176)
+        .clipped()
+    }
+    .frame(width: width, height: 176)
+    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    .overlay {
+      RoundedRectangle(cornerRadius: 16, style: .continuous)
+        .stroke(AdonisTheme.ink.opacity(0.1), lineWidth: 1)
+    }
+    .overlay {
+      Image(systemName: "arrow.right")
+        .font(.system(size: 11, weight: .black))
+        .foregroundStyle(Color.white)
+        .frame(width: 28, height: 28)
+        .background(AdonisTheme.ink, in: Circle())
+        .overlay {
+          Circle().stroke(Color.white.opacity(0.9), lineWidth: 2)
+        }
+        .shadow(color: AdonisTheme.ink.opacity(0.18), radius: 5, y: 2)
+        .accessibilityHidden(true)
+    }
+    .accessibilityHidden(true)
+  }
+
+  private var panelWidth: CGFloat {
+    width / 2
+  }
+
+  private var originalPreview: some View {
+    ZStack(alignment: .topLeading) {
+      AdonisTheme.lavender.opacity(0.38)
+
+      if let image = sample.image() {
+        Image(uiImage: image)
+          .resizable()
+          .scaledToFill()
+          .frame(width: panelWidth, height: 176)
+          .clipped()
+      }
+
+      previewTag("原图", foreground: AdonisTheme.ink, background: Color.white.opacity(0.88))
+        .padding(8)
+    }
+  }
+
+  private var stickerPreview: some View {
+    ZStack(alignment: .topTrailing) {
+      AdonisTheme.butter.opacity(0.62)
+
+      Circle()
+        .fill(AdonisTheme.pomegranate.opacity(0.12))
+        .frame(width: 86, height: 86)
+        .offset(x: 28, y: 118)
+
+      Circle()
+        .fill(AdonisTheme.leaf.opacity(0.2))
+        .frame(width: 62, height: 62)
+        .offset(x: -52, y: -20)
+
+      if let sticker = sample.preparedStickerImage() {
+        Image(uiImage: sticker)
+          .resizable()
+          .scaledToFit()
+          .padding(.horizontal, 9)
+          .padding(.top, 25)
+          .padding(.bottom, 7)
+          .shadow(color: AdonisTheme.ink.opacity(0.15), radius: 5, y: 3)
+      }
+
+      previewTag(
+        "原图处理",
+        foreground: AdonisTheme.leafInk,
+        background: Color.white.opacity(0.9)
+      )
+      .padding(8)
+    }
+  }
+
+  private func previewTag(
+    _ title: String,
+    foreground: Color,
+    background: Color
+  ) -> some View {
+    Text(title)
+      .font(.system(size: 9, weight: .black, design: .rounded))
+      .foregroundStyle(foreground)
+      .padding(.horizontal, 7)
+      .padding(.vertical, 5)
+      .background(background, in: Capsule())
   }
 }
 

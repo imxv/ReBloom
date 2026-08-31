@@ -72,6 +72,7 @@ xcodebuild \
   -derivedDataPath .derivedData \
   test \
   -only-testing:AdonisTests/AccessibilityContractTests \
+  -only-testing:AdonisUITests/AdonisFlowUITests/testSampleCardExplainsOriginalPhotoBecomesTransparentSticker \
   -only-testing:AdonisUITests/AdonisFlowUITests/testAccessibleCoreFlowSurvivesBackgroundAndKeepsActionsReachable \
   -only-testing:AdonisUITests/AdonisFlowUITests/testAIStickerFidelityReviewPersistsFromResultIntoHistory \
   -only-testing:AdonisUITests/AdonisFlowUITests/testUnavailableAIStickerOffersAnHonestPreparedSampleRecovery \

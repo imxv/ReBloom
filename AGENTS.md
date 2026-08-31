@@ -30,6 +30,8 @@
 
 修改模型、提示、Vision 请求、蒙版、裁切、白边、缩放、样片资产或收藏卡渲染前，还必须完整阅读 [固定样片回归基线验证记录](docs/verification/2026-08-30-sample-regression-baseline.md)，并运行 `make sample-regression`。候选输出先生成到临时目录并逐张对照原图目检；不得只为让测试变绿而覆盖贴纸、重录指标或删除困难样本。
 
+修改创作首页内置样片的原图/贴纸预览、来源标签、卡片语义、宽度或入口文案前，还必须完整阅读 [内置样片原图到贴纸预览验证记录](docs/verification/2026-08-31-sample-transformation-preview.md)，并运行 `make accessibility-regression` 与 `make sample-regression`。预览只能使用 `SampleCatalog.showcasePhotos` 中已审核的固定原图和历史直抠贴纸，必须显示“内置样片 / 原图处理”，不得冒充当前设备实时 AI 生成、用户自己的照片或默认 AI 主链路证据；整张卡保持一次点击，不新增模式或确认。
+
 修改贴纸质量状态、原始蒙版、源像素保真比较、成品结构阈值、失败提示、展示样片、默认结果模式、收藏后的质量信息、质量事件或导出字段前，还必须完整阅读 [贴纸低质量降级验证记录](docs/verification/2026-08-30-sticker-quality-degradation.md)，并运行 `make sample-regression`。当前三道闸门分别证明原始蒙版结构、保留主体核心区的源 RGB/Alpha 没有被抠图处理链改写，以及成品透明通道/主体连通/纯白边等结构事实；AI 主链路中的“源”是 AI 不透明生成图，不是用户原图，因此闸门不能证明生成图保持了身份、脸、身体比例、姿势、衣物或配饰。sample-04 必须保留为历史直抠算法的 C 级大块背景粘连拒绝，不得冒充 AI 主链路证据。
 
 修改布局、文案、颜色、动效、导航、无障碍语义、处理浮层或前后台状态恢复前，还必须完整阅读 [无障碍与前后台恢复验证记录](docs/verification/2026-08-30-accessibility-and-lifecycle.md)，并运行 `make accessibility-regression`。当前门禁证明最大辅助字号、增强对比度、关键操作可达、处理取消和一次前后台往返；它不替代真实 VoiceOver、权限流程或真实 iPhone 验证。

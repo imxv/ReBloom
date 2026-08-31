@@ -3,6 +3,19 @@ import XCTest
 
 final class AdonisFlowUITests: XCTestCase {
   @MainActor
+  func testSampleCardExplainsOriginalPhotoBecomesTransparentSticker() {
+    let app = XCUIApplication()
+    app.launchArguments.append("-ui-testing")
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
+    XCTAssertTrue(sample.label.contains("原始照片变成透明贴纸"))
+    keepScreenshot(named: "Adonis-sample-transformation-preview")
+  }
+
+  @MainActor
   func testAIStickerFidelityReviewPersistsFromResultIntoHistory() {
     let app = XCUIApplication()
     let persistentStoreID = UUID().uuidString
