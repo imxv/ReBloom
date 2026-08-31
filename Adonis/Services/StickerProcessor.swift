@@ -295,6 +295,7 @@ enum StickerProcessingError: LocalizedError {
   case personNotFound
   case renderFailed
   case simulatorVisionUnavailable
+  case aiOutputMissingTransparency
   case outputQualityTooLow(StickerQualityAssessment)
 
   var errorDescription: String? {
@@ -309,6 +310,8 @@ enum StickerProcessingError: LocalizedError {
       "贴纸生成到最后一步时失败了，请再试一次。"
     case .simulatorVisionUnavailable:
       "当前模拟器无法运行本机人像模型。请先用内置样片体验完整流程，或在 iPhone 上选择自己的照片。"
+    case .aiOutputMissingTransparency:
+      "AI 返回的图片没有真实透明通道。这次不会把棋盘格或白底图当成贴纸，请再试一次。"
     case .outputQualityTooLow(let assessment):
       assessment.userDetail
     }

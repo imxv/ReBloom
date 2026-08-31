@@ -107,7 +107,9 @@ struct LocalSettingsView: View {
       }
       .padding(.vertical, 4)
     } footer: {
-      Text("只读取你主动选择或分享的图片。AI 贴纸会交给 Apple 系统图片生成，网络与费用信息由系统管理且未向 Adonis 公开；设备备份由你的 iOS 设置决定。")
+      Text(
+        "只读取你主动选择或分享的图片。原照片交给 Apple 系统生成 AI 底图；仅用户确认的 AI 底图会经 Adonis 服务转交图片模型生成透明 PNG。收藏不做 Adonis 云同步；设备备份由你的 iOS 设置决定。"
+      )
     }
   }
 
@@ -202,6 +204,12 @@ struct LocalSettingsView: View {
         LabeledContent("本地重试", value: "\(trace.retryCount) 次")
         if let metadata = trace.executionMetadata {
           LabeledContent("图片提供方", value: providerTitle(metadata.provider))
+          if let sourceProvider = metadata.sourceProvider {
+            LabeledContent("底图生成", value: providerTitle(sourceProvider))
+          }
+          if let extractionProvider = metadata.extractionProvider {
+            LabeledContent("透明处理", value: providerTitle(extractionProvider))
+          }
           LabeledContent("提供方请求", value: "\(metadata.providerRequestCount) 次")
           LabeledContent(
             "外部请求",
@@ -327,7 +335,10 @@ struct LocalSettingsView: View {
   private func providerTitle(_ provider: CreativeProviderIdentifier) -> String {
     switch provider {
     case .adonisLocalRenderer: "Adonis 本机"
+    case .aiStickerTwoPass: "两段 AI 贴纸链路"
     case .appleImagePlayground: "Apple 系统图片生成"
+    case .appleImagePlaygroundSheet: "Apple 系统 Image Playground"
+    case .openAIGPTImage: "GPT Image 透明处理"
     case .uiTestFixture: "测试夹具"
     case .unknown: "未知"
     }
@@ -335,6 +346,8 @@ struct LocalSettingsView: View {
 
   private func transportTitle(_ transport: CreativeNetworkTransport) -> String {
     switch transport {
+    case .developerProxy: "经 Adonis 服务"
+    case .mixedSystemAndDeveloperProxy: "系统托管 + Adonis 服务"
     case .none: "无"
     case .systemManaged: "由系统管理"
     case .unknown: "未知"

@@ -99,7 +99,7 @@ struct GenerationResultView: View {
 
           ContentProvenanceNotice(provenance: draft.provenance(for: mode))
 
-          if reviewableAIStickerSourceImage != nil {
+          if reviewableFinalAIStickerImage != nil {
             StickerFidelityReviewEntry(
               review: fidelityReview,
               onMatches: markFidelityAsMatching,
@@ -147,10 +147,10 @@ struct GenerationResultView: View {
         .presentationDetents([.medium, .large])
     }
     .sheet(item: $fidelityReviewSheet) { _ in
-      if let reviewableAIStickerSourceImage {
+      if let reviewableFinalAIStickerImage {
         StickerFidelityReviewSheet(
           originalImage: draft.sourceImage,
-          generatedImage: reviewableAIStickerSourceImage,
+          generatedImage: reviewableFinalAIStickerImage,
           initialReview: fidelityReview,
           onSave: storeFidelityReview
         )
@@ -723,14 +723,14 @@ struct GenerationResultView: View {
     }
   }
 
-  private var reviewableAIStickerSourceImage: UIImage? {
+  private var reviewableFinalAIStickerImage: UIImage? {
     guard
       StickerFidelityReview.canReview(
         stickerProvenance: draft.stickerProvenance,
         hasAIStickerSource: draft.aiStickerSourceImage != nil
       )
     else { return nil }
-    return draft.aiStickerSourceImage
+    return draft.stickerImage
   }
 
   private var actionButtons: some View {

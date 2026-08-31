@@ -5,10 +5,10 @@ import XCTest
 
 @MainActor
 final class AIStickerCreationPipelineTests: XCTestCase {
-  func testAIGeneratedOpaqueImageBecomesTheMattingInput() async throws {
+  func testAIGeneratedOpaqueImageBecomesTheTransparentEditInput() async throws {
     let sourceImage = solidImage(color: .red)
     let generatedImage = halfTransparentImage()
-    var capturedMattingInput: UIImage?
+    var capturedTransparentEditInput: UIImage?
     var stageOrder: [String] = []
     let metadata = CreativeExecutionMetadata.appleImagePlayground
     let pipeline = AIStickerCreationPipeline(
@@ -19,8 +19,8 @@ final class AIStickerCreationPipelineTests: XCTestCase {
         )
       ),
       extractSticker: { input in
-        stageOrder.append("matting")
-        capturedMattingInput = input
+        stageOrder.append("transparent_edit")
+        capturedTransparentEditInput = input
         return StickerProcessingResult(
           image: input,
           elapsedMilliseconds: 12,
@@ -34,14 +34,55 @@ final class AIStickerCreationPipelineTests: XCTestCase {
     let result = try await pipeline.createSticker(from: sourceImage) { _, _ in
       stageOrder.append("ai_source_ready")
     }
-    let mattingInput = try XCTUnwrap(capturedMattingInput)
+    let transparentEditInput = try XCTUnwrap(capturedTransparentEditInput)
 
-    XCTAssertEqual(pixel(in: mattingInput, x: 0, y: 0), [255, 255, 255, 255])
-    XCTAssertEqual(pixel(in: mattingInput, x: 1, y: 1), [0, 255, 0, 255])
+    XCTAssertEqual(pixel(in: transparentEditInput, x: 0, y: 0), [255, 255, 255, 255])
+    XCTAssertEqual(pixel(in: transparentEditInput, x: 1, y: 1), [0, 255, 0, 255])
     XCTAssertEqual(pixel(in: result.generatedSourceImage, x: 1, y: 1), [0, 255, 0, 255])
     XCTAssertEqual(result.executionMetadata, metadata)
-    XCTAssertEqual(stageOrder, ["ai_source_ready", "matting"])
-    XCTAssertNotEqual(pixel(in: mattingInput, x: 1, y: 1), pixel(in: sourceImage, x: 1, y: 1))
+    XCTAssertEqual(stageOrder, ["ai_source_ready", "transparent_edit"])
+    XCTAssertNotEqual(
+      pixel(in: transparentEditInput, x: 1, y: 1),
+      pixel(in: sourceImage, x: 1, y: 1)
+    )
+  }
+
+  func testUserApprovedSystemImageBecomesTheOnlyTransparentEditInput() async throws {
+    let sourceGenerator = UnavailableRecordingAIStickerSourceGenerator()
+    let approvedImage = halfTransparentImage()
+    var capturedTransparentEditInput: UIImage?
+    var stageOrder: [String] = []
+    let metadata = CreativeExecutionMetadata.appleImagePlaygroundSheet
+    let pipeline = AIStickerCreationPipeline(
+      sourceGenerator: sourceGenerator,
+      extractSticker: { input in
+        stageOrder.append("transparent_edit")
+        capturedTransparentEditInput = input
+        return StickerProcessingResult(
+          image: input,
+          elapsedMilliseconds: 9,
+          foregroundCoverage: 0.38,
+          rawMatteAssessment: .acceptable,
+          sourceFidelityAssessment: .acceptable
+        )
+      }
+    )
+
+    let result = try await pipeline.createSticker(
+      from: CreativeProviderOutput(
+        image: approvedImage,
+        executionMetadata: metadata
+      )
+    ) { _, _ in
+      stageOrder.append("approved_source_ready")
+    }
+    let transparentEditInput = try XCTUnwrap(capturedTransparentEditInput)
+
+    XCTAssertEqual(sourceGenerator.generateCallCount, 0)
+    XCTAssertEqual(pixel(in: transparentEditInput, x: 0, y: 0), [255, 255, 255, 255])
+    XCTAssertEqual(pixel(in: transparentEditInput, x: 1, y: 1), [0, 255, 0, 255])
+    XCTAssertEqual(result.executionMetadata, metadata)
+    XCTAssertEqual(stageOrder, ["approved_source_ready", "transparent_edit"])
   }
 
   func testCreativeAdapterUsesTheHiddenAIStickerSourceRecipe() async throws {
@@ -56,7 +97,37 @@ final class AIStickerCreationPipelineTests: XCTestCase {
     XCTAssertEqual(output.executionMetadata, .appleImagePlayground)
   }
 
-  func testUnavailableAIGenerationNeverFallsBackToMattingTheOriginal() async {
+  func testTwoPassPipelineRecordsBothAIProvidersWithoutClaimingUnknownRequests() async throws {
+    let pipeline = AIStickerCreationPipeline(
+      sourceGenerator: AIStickerSourceGeneratorStub(
+        output: CreativeProviderOutput(
+          image: solidImage(color: .brown),
+          executionMetadata: .appleImagePlaygroundSheet
+        )
+      ),
+      extractSticker: { input in
+        StickerProcessingResult(
+          image: input,
+          elapsedMilliseconds: 20,
+          foregroundCoverage: 0.4,
+          rawMatteAssessment: .acceptable,
+          sourceFidelityAssessment: .acceptable
+        )
+      },
+      extractionExecutionMetadata: .openAIGPTImageExtraction
+    )
+
+    let result = try await pipeline.createSticker(from: solidImage(color: .red))
+
+    XCTAssertEqual(result.executionMetadata.provider, .aiStickerTwoPass)
+    XCTAssertEqual(result.executionMetadata.providerRequestCount, 2)
+    XCTAssertNil(result.executionMetadata.externalRequestCount)
+    XCTAssertEqual(result.executionMetadata.networkTransport, .mixedSystemAndDeveloperProxy)
+    XCTAssertEqual(result.executionMetadata.sourceProvider, .appleImagePlaygroundSheet)
+    XCTAssertEqual(result.executionMetadata.extractionProvider, .openAIGPTImage)
+  }
+
+  func testUnavailableAIGenerationNeverCallsTransparentEditWithOriginal() async {
     let sourceImage = solidImage(color: .red)
     var extractorWasCalled = false
     let pipeline = AIStickerCreationPipeline(
@@ -198,5 +269,17 @@ private struct AIStickerSourceGeneratorStub: AIStickerSourceGenerating {
 
   func generateSource(from _: UIImage) async throws -> CreativeProviderOutput {
     output
+  }
+}
+
+@MainActor
+private final class UnavailableRecordingAIStickerSourceGenerator: AIStickerSourceGenerating {
+  let availability = CreativeGenerationAvailability.unavailable
+  let executionMetadata = CreativeExecutionMetadata.appleImagePlayground
+  private(set) var generateCallCount = 0
+
+  func generateSource(from _: UIImage) async throws -> CreativeProviderOutput {
+    generateCallCount += 1
+    throw CreativeGenerationError.unavailable
   }
 }

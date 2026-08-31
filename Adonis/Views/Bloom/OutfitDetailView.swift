@@ -211,7 +211,7 @@ struct OutfitDetailView: View {
         hasAIStickerSource: record.aiStickerSourceImageFilename != nil
       )
     else { return nil }
-    return record.aiStickerSourceImageFilename
+    return record.stickerImageFilename
   }
 
   private func openFidelityReview() {
@@ -220,7 +220,7 @@ struct OutfitDetailView: View {
       MediaStore.shared.image(filename: record.sourceImageFilename) != nil,
       MediaStore.shared.image(filename: fidelityGeneratedImageFilename) != nil
     else {
-      fidelityReviewError = "原图或 AI 贴纸源图暂时无法读取，收藏记录没有丢失。"
+      fidelityReviewError = "原图或最终 AI 贴纸暂时无法读取，收藏记录没有丢失。"
       return
     }
     fidelityReviewSheet = .review

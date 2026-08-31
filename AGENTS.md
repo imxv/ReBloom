@@ -12,19 +12,19 @@
 
 修改系统分享扩展、App Group 收件箱或从其他 App 导入衣橱图片的流程前，还必须完整阅读 [购物应用图片分享验证记录](docs/verification/2026-08-29-shopping-app-image-share.md)。当前只接收图片附件，最多 5 张；不得把它描述成商品页面抓取或商品链接解析。
 
-修改本地存储、图片文件、App Group、系统分享、个人数据导出或删除行为前，还必须完整阅读 [本地数据导出与删除验证记录](docs/verification/2026-08-29-local-data-controls.md)。Adonis 自己不上传或做账号云同步，但 iOS 系统设备备份由用户的系统设置控制；不得把“本地 App”描述成绝对不会进入任何系统备份。
+修改本地存储、图片文件、App Group、系统分享、个人数据导出或删除行为前，还必须完整阅读 [本地数据导出与删除验证记录](docs/verification/2026-08-29-local-data-controls.md)。Adonis 不做账号云同步；默认 AI 贴纸只会在用户确认第一步 AI 底图后，把该底图而不是用户原照片发送到 Adonis 透明处理服务。iOS 系统设备备份由用户的系统设置控制；不得把“本地 App”描述成绝对不会上传任何图片或进入任何系统备份。
 
 修改 SwiftData 模型容器、数据库位置、媒体文件位置、收藏事务或冷启动恢复行为前，还必须完整阅读 [已收藏 OOTD 冷启动持久化验证记录](docs/verification/2026-08-30-cold-launch-persistence.md)，并运行 `make persistence-regression`。当前门禁证明已收藏记录可在 iOS 模拟器的 App 进程终止并重新启动后恢复；它不证明未收藏草稿、真实 iPhone、整机重启、升级迁移或备份恢复。
 
 修改抠图、收藏卡、图片识别、补全、生成、试穿、风格创作、结果分享或图片导出清单前，还必须完整阅读 [生成内容来源标识验证记录](docs/verification/2026-08-29-content-provenance.md)。来源按实际像素动态决定：用户照片是“原始图片”；历史直抠样片可以是“原图处理”；默认透明贴纸由 AI 先生成再抠图，因此它、收藏卡及使用它的派生作品都必须保留“AI 生成”；衣橱分析属于“识别建议”。程序排版只能描述新增版式，不能抹掉输入中的 AI 来源。
 
-修改默认人物贴纸的生成顺序、隐藏配方、Apple `ImageCreator` 适配、不透明生成源、抠图输入、失败/超时恢复、来源、执行元数据、保存、删除、导出或 UI 测试夹具前，还必须完整阅读 [AI 贴纸先生成后抠图验证记录](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)与 [四张授权样片两段式视觉实验](docs/experiments/2026-08-31-ai-opaque-source-matting.md)，并运行 `make ai-sticker-regression`、`make ai-sticker-visual-regression`、`make sample-regression` 与 `make performance-regression`。生产主链路必须保持“用户原图 → AI 不透明贴纸图 → 对 AI 图抠图 → 透明贴纸”；AI 不可用、生成失败或抠图失败时不得静默退回用户原图直抠。背景干净、带 Alpha 或纯白边都不能证明人物与穿搭保真；两段必须分开评价。Debug 生成图、抠图夹具和 Codex 内置生图实验都不得描述成真实 Apple 输出、真实 iPhone、未来云端 provider 或人物/衣物保真证据。AI 贴纸不得生成事实性 OOTD 衣物线索。
+修改默认人物贴纸的生成顺序、隐藏配方、系统 Image Playground 确认页、不透明生成源、AI 透明处理、代理服务、提示、Alpha 校验、失败/超时恢复、来源、执行元数据、保存、删除、导出或 UI 测试夹具前，还必须完整阅读 [默认 AI 贴纸迁移到系统 Image Playground 验证记录](docs/verification/2026-08-31-image-playground-sheet-migration.md)、[AI 贴纸先生成后抠图验证记录](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)、[AI 二次透明处理验证记录](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)与 [四张授权样片两段式视觉实验](docs/experiments/2026-08-31-ai-opaque-source-matting.md)，并运行 `make ai-sticker-regression`、`make ai-sticker-visual-regression`、`make sample-regression`、`make performance-regression` 与 `make accessibility-regression`。生产主链路必须保持“用户原图 → 用户在系统页确认不透明 AI 贴纸底图 → 只把确认后的 AI 底图发送到开发者代理 → GPT Image 编辑返回真实透明 PNG → 客户端校验 Alpha 并程序化加纯白边”；默认人物链路不得再调用 Vision 人像抠图，也不得把用户原图发给第二段或静默回退原图直抠。服务端与客户端都必须拒绝无真实透明像素的白底/棋盘格、空图和明显碎裂主体；裁切不得只保留最大连通块而丢失分离的包、鞋或配饰。背景干净、带 Alpha 或纯白边仍不能证明人物与穿搭保真；结果后的可选复核应比较原图和最终贴纸。Debug 生成图、代理夹具和 Codex 内置生图实验都不得描述成真实 Apple/OpenAI 线上质量、真实 iPhone 或人物/衣物保真证据。AI 贴纸不得生成事实性 OOTD 衣物线索。
 
-修改 `ImageCreator` / `ImagePlayground` 编译条件、旧 provider 文件、SDK 版本、图片生成抽象或 provider 不可用行为前，还必须完整阅读 [Apple ImageCreator 旧适配器隔离验证记录](docs/verification/2026-08-31-legacy-image-creator-isolation.md)，并运行 `make legacy-provider-isolation`。Apple 已公告 `ImageCreator` 在 iOS 27 停止工作；当前实现只允许 iOS 26 SDK 构建启用旧适配器，未来 SDK 必须在二进制中没有该框架和符号，并诚实进入不可用恢复。接入云端 provider、上传用户图片或改变隐私边界仍需用户明确授权；客户端不得保存供应商密钥。
+修改 `ImageCreator` / `ImagePlayground` 编译条件、旧 provider 文件、SDK 版本、图片生成抽象或 provider 不可用行为前，还必须完整阅读 [默认 AI 贴纸迁移到系统 Image Playground 验证记录](docs/verification/2026-08-31-image-playground-sheet-migration.md)与 [Apple ImageCreator 旧适配器隔离验证记录](docs/verification/2026-08-31-legacy-image-creator-isolation.md)，并运行 `make legacy-provider-isolation`。Apple 已公告 `ImageCreator` 在 iOS 27 停止工作；当前实现只允许 iOS 26 SDK 构建启用旧程序化适配器，未来 SDK 二进制可以且应继续链接受支持的系统 Image Playground 界面，但必须没有 `ImageCreator` 符号。旧生成抽象不可用时必须诚实进入恢复；默认系统页路径单独以 `ImagePlaygroundViewController.isAvailable` 门控。用户已明确授权当前第二段只上传用户确认的 AI 底图；这不授权上传原照片、衣橱图片或扩展到其他用途。OpenAI 密钥只能在开发者控制的代理环境中，客户端不得保存供应商密钥。
 
 修改 AI 图片生成能力不可用提示、语言/设备门控、内置样片恢复、不可用按钮或样片来源前，还必须完整阅读 [AI 生图不可用时的样片恢复验证记录](docs/verification/2026-08-31-unsupported-ai-sample-recovery.md)，并运行 `make ai-sticker-regression`。样片只能由用户明确点击后进入，必须显示“来自内置样片”，保持“原图处理 / 程序排版”来源，且不得显示 AI 人物复核、自动收藏、替换用户照片或声称用户自己的照片已经生成成功。当前 iPhone 11 不支持 Apple Intelligence；内置样片恢复不是 provider 兼容方案。
 
-修改“这张还像你吗？”入口、人物与穿搭评价分类、原图/AI 源图对照、收藏前评价、历史修改、评价事件、SwiftData 字段或个人数据导出前，还必须完整阅读 [AI 贴纸人物与穿搭复核验证记录](docs/verification/2026-08-31-ai-sticker-fidelity-review.md)，并运行 `make ai-sticker-regression`、`make accessibility-regression` 与 `make persistence-regression`。复核必须保持为结果后的可选动作，不得变成上传前问卷或收藏门槛；它只评价 AI 源图相对用户原图的人物与穿搭变化，不得与蒙版、透明边缘或纯白边结构质量混为一谈。Debug 评价只能证明界面与数据链路，不能宣称真实 Apple 输出已经保真。
+修改“这张还像你吗？”入口、人物与穿搭评价分类、原图/最终 AI 贴纸对照、收藏前评价、历史修改、评价事件、SwiftData 字段或个人数据导出前，还必须完整阅读 [AI 贴纸人物与穿搭复核验证记录](docs/verification/2026-08-31-ai-sticker-fidelity-review.md)，并运行 `make ai-sticker-regression`、`make accessibility-regression` 与 `make persistence-regression`。复核必须保持为结果后的可选动作，不得变成上传前问卷或收藏门槛；它评价两段 AI 完成后的最终贴纸相对用户原图的人物与穿搭变化，不得与透明边缘或纯白边结构质量混为一谈。Debug 评价只能证明界面与数据链路，不能宣称真实 Apple/OpenAI 输出已经保真。
 
 修改结果页“存透明贴纸”、`PhotoLibrarySaver`、PhotoKit 授权、PNG 写入、权限拒绝/重试/分享兜底或相册保存事件前，还必须完整阅读 [透明贴纸存入相册验证记录](docs/verification/2026-08-31-sticker-photo-save.md)，并运行 `make photo-save-regression`、`make accessibility-regression` 与 `make test`。“收藏今天”与“存透明贴纸”必须保持为两个不同承诺；只有用户明确点击后才能请求 add-only 照片权限，不得自动保存。模拟器注入状态和 PNG 字节测试不能替代真实 iPhone 相册写入、透明通道、原始尺寸或设置往返证据。
 
@@ -32,15 +32,15 @@
 
 修改创作首页内置样片的原图/贴纸预览、来源标签、卡片语义、宽度或入口文案前，还必须完整阅读 [内置样片原图到贴纸预览验证记录](docs/verification/2026-08-31-sample-transformation-preview.md)，并运行 `make accessibility-regression` 与 `make sample-regression`。预览只能使用 `SampleCatalog.showcasePhotos` 中已审核的固定原图和历史直抠贴纸，必须显示“内置样片 / 原图处理”，不得冒充当前设备实时 AI 生成、用户自己的照片或默认 AI 主链路证据；整张卡保持一次点击，不新增模式或确认。
 
-修改贴纸质量状态、原始蒙版、源像素保真比较、成品结构阈值、失败提示、展示样片、默认结果模式、收藏后的质量信息、质量事件或导出字段前，还必须完整阅读 [贴纸低质量降级验证记录](docs/verification/2026-08-30-sticker-quality-degradation.md)，并运行 `make sample-regression`。当前三道闸门分别证明原始蒙版结构、保留主体核心区的源 RGB/Alpha 没有被抠图处理链改写，以及成品透明通道/主体连通/纯白边等结构事实；AI 主链路中的“源”是 AI 不透明生成图，不是用户原图，因此闸门不能证明生成图保持了身份、脸、身体比例、姿势、衣物或配饰。sample-04 必须保留为历史直抠算法的 C 级大块背景粘连拒绝，不得冒充 AI 主链路证据。
+修改贴纸质量状态、Alpha 校验、原始蒙版、源像素保真比较、成品结构阈值、失败提示、展示样片、默认结果模式、收藏后的质量信息、质量事件或导出字段前，还必须完整阅读 [贴纸低质量降级验证记录](docs/verification/2026-08-30-sticker-quality-degradation.md)与 [AI 二次透明处理验证记录](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)，并运行 `make ai-sticker-regression` 与 `make sample-regression`。默认 AI 主链路检查服务端 PNG Alpha、客户端透明比例/透明四角/主体覆盖/连通性和最终纯白边；它不再使用历史 Vision 原始蒙版或“源 RGB 不变”作为第二段 AI 的成功证明。sample-04 必须保留为历史直抠算法的 C 级问题样本，同时继续用于新 provider 的真实视觉验收；不得把本地夹具冒充线上质量。
 
 修改布局、文案、颜色、动效、导航、无障碍语义、处理浮层或前后台状态恢复前，还必须完整阅读 [无障碍与前后台恢复验证记录](docs/verification/2026-08-30-accessibility-and-lifecycle.md)，并运行 `make accessibility-regression`。当前门禁证明最大辅助字号、增强对比度、关键操作可达、处理取消和一次前后台往返；它不替代真实 VoiceOver、权限流程或真实 iPhone 验证。
 
 修改相机入口、相机权限判断、权限文案、系统设置恢复入口或相机弹窗状态前，还必须完整阅读 [相机权限恢复验证记录](docs/verification/2026-08-30-camera-permission-recovery.md)，并运行 `make permission-regression`。当前门禁使用可注入权限状态证明拒绝与系统限制的本地恢复界面，不替代真实系统授权弹窗、设置往返、实际拍摄或真实 iPhone 验证。
 
-修改生成阶段、耗时口径、45 秒目标、重试、外部请求、费用字段、处理事件、性能设置页或导出中的性能数据前，还必须完整阅读 [生成性能与预算验证记录](docs/verification/2026-08-30-generation-performance-budget.md)，并运行 `make performance-regression`。45 秒当前只是端到端测量目标，不是供应商 SLA；内置样片跳过实时 Vision，不能用它的速度代替真实照片、真机或联网供应商证据。
+修改生成阶段、耗时口径、45 秒目标、重试、外部请求、费用字段、处理事件、性能设置页或导出中的性能数据前，还必须完整阅读 [生成性能与预算验证记录](docs/verification/2026-08-30-generation-performance-budget.md)与 [AI 二次透明处理验证记录](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)，并运行 `make performance-regression`。45 秒当前只是端到端测量目标，不是供应商 SLA；内置样片和 Debug 网络夹具不能替代真实 Apple/OpenAI、弱网、真机或费用证据。
 
-修改 90 秒截止、截止任务、同图重试、迟到结果隔离、基础贴纸降级、降级持久化或超时文案前，还必须完整阅读 [生成超时与基础贴纸降级验证记录](docs/verification/2026-08-30-generation-timeout-fallback.md)，并运行 `make performance-regression`。超时降级只能使用本次 AI 生成链路中已经通过结构检查且完成收藏卡排版的中间产物，绝不能改用用户原图直抠；当前已强制退出用户等待并隔离迟到结果，但不得宣称底层 Apple 生成或 Vision 一定立即停止。
+修改 90/150 秒截止、截止任务、同图重试、迟到结果隔离、基础贴纸降级、降级持久化或超时文案前，还必须完整阅读 [生成超时与基础贴纸降级验证记录](docs/verification/2026-08-30-generation-timeout-fallback.md)与 [AI 二次透明处理验证记录](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)，并运行 `make performance-regression`。普通本机/旧链路与风格创作仍保留 90 秒；用户确认底图后的 GPT Image 透明处理允许 150 秒。超时降级只能使用本次 AI 生成链路中已经通过结构检查且完成收藏卡排版的中间产物，绝不能改用用户原图直抠；迟到结果不得改写页面或记录。
 
 修改月度 Lookbook 的月份筛选、最近条目上限、贴纸排版、来源页脚、花历入口、预览或分享流程前，还必须完整阅读 [月度贴纸 Lookbook 验证记录](docs/verification/2026-08-30-monthly-lookbook.md)，并运行 `make lookbook-regression`。当前画册只使用已收藏 OOTD 的透明贴纸并做程序排版；画册自身不新增 AI 像素，但只要任一输入贴纸由 AI 生成，成品就必须继承 AI 来源。空月份不出现入口，每月最多展示最近 6 次盛开，不得把它描述成新的 AI 风格创作或动态 Lookbook。
 
@@ -94,10 +94,10 @@
 - 识别出的颜色、类别、衣物区域和候选关系都只能标为“识别建议”，确认前不得作为事实。个人数据导出清单必须保留图片角色、来源类型、是否含 AI 像素和是否待确认。
 - 未获明确授权的第三方社交平台照片不得复制进测试素材或发布包。
 - 贴纸质量正常时不增加提示；建议复查时先展示透明贴纸，允许“这样也收藏”或直接“再做一张”，并把状态保留到花历与个人数据导出；结构明显失败时不生成误导收藏卡。
-- AI 贴纸人物与穿搭复核只在结果已经生成后可选出现；用户可以直接记为“像我”，或对照原图与 AI 不透明源图多选固定问题。不得增加自由文本、上传前必答项、自动上传或内部评分，也不得把用户未评价解释成质量通过。
-- 90 秒用户等待边界必须先清除活动生成 ID 再展示恢复界面；成功、失败、取消或重新挂载都要撤销旧截止任务。底层任务不响应取消时，迟到结果仍不得改写页面、事件或收藏记录。
+- AI 贴纸人物与穿搭复核只在结果已经生成后可选出现；用户可以直接记为“像我”，或对照原图与最终 AI 贴纸多选固定问题。不得增加自由文本、上传前必答项或内部评分，也不得把用户未评价解释成质量通过。
+- 90/150 秒用户等待边界必须先清除活动生成 ID 再展示恢复界面；成功、失败、取消或重新挂载都要撤销旧截止任务。底层任务不响应取消时，迟到结果仍不得改写页面、事件或收藏记录。
 - 成功、失败、超时和取消都应保存同一口径的端到端耗时；失败、超时或取消还要保留已经进行到的阶段。性能事件不得包含图片、文件路径、提示词或用户内容。
-- iOS 26 旧适配器调用 Apple 系统 `ImageCreator` 时必须记录 provider 请求为 1、外部请求数未知、网络为系统托管、费用未公开，不得擅自改写成离线、零网络或免费。旧适配器未编译或不可用时不得伪造请求或成功；衣橱、花历、历史直抠样片和纯程序排版本身的 Adonis 外部请求为 0，派生作品仍须继承输入的 AI 来源与执行事实。
+- 默认系统 Image Playground 与 GPT Image 透明编辑必须分别记录 source/extraction provider；两段成功时总 provider 请求为 2，Apple 阶段的外部请求仍未知，因此总外部请求不能伪装成已知。透明编辑至少有 1 次开发者代理请求、费用保持未知，且不得描述成离线、零网络或免费。衣橱、花历、历史直抠样片和纯程序排版本身的 Adonis 外部请求为 0，派生作品仍须继承输入的 AI 来源与执行事实。
 - 月度 Lookbook 应从花历中自然出现，不增加 Prompt、模型、风格或模板选择；只在当前可见月份存在已收藏记录时展示入口。成品必须说明贴纸来自已收藏 OOTD、画册由 Adonis 排版，并在任一贴纸含 AI 像素时保留 AI 来源。
 - 花影海报只作为贴纸结果中的一次点击成品，不增加 Prompt、Skill、模型、模板或参数；人物、衣物、姿势和纯白边必须直接沿用透明贴纸。只有用户明确收藏才持久化作品，且必须关联原 OOTD、支持原图对照、导出与完整清理。
 - “风格花园”只作为系统能力可用设备上的单一可选入口，不增加 Prompt、Skill、模型、模板或参数；入口内固定展示永生花园、花神速写和月光剧场，并在选择前统一说明会重绘人物、衣物和背景。生成后默认标为“AI 生成”并支持原图对照；90 秒、取消、失败和能力不可用都必须保留原贴纸结果，只有用户明确收藏才持久化并关联原 OOTD。未经真实设备和固定样本验证不得增加新配方或把目录数量描述成质量已经成立。
@@ -114,9 +114,9 @@
 
 - 修改 Swift 源码后运行 `make check`，执行严格 `swift-format` 检查与通用 iOS 设备静态分析。
 - 修改用户主链路、数据模型或图像处理后运行 `make test`；不能用单次编译代替 UI 与像素证据。
-- 修改默认 AI 贴纸主链路、能力不可用恢复或人物与穿搭复核时，额外运行 `make ai-sticker-regression`；它锁定 AI 生成图确实先于抠图、抠图输入不是用户原图、无原图直抠兜底、明确标注的内置样片恢复、模糊商品图不能绕过 AI 生成直接入衣橱、AI 来源与执行元数据、可选复核、保存导出及 Debug UI 产品链路。该命令不替代真实 Apple 输出、人物/穿搭保真、iPhone 11 provider 兼容或真实 iPhone Vision。
-- 修改 Apple 图片生成适配、SDK 条件或 provider 抽象时，额外运行 `make legacy-provider-isolation`；它执行禁用旧适配器的干净 Release 构建、检查 Mach-O 框架与未解析符号，并验证运行时诚实报告不可用。当前门禁模拟未来 SDK 不启用旧条件，不替代实际 Xcode 27 构建。
-- 修改模型、提示、分割或贴纸/收藏卡后处理时，额外运行 `make sample-regression`；它同时校验四组仓库哈希与 macOS Vision 字节级重生成、iOS 像素结构、原始蒙版、源像素保真与成品结构闸门，以及三张 A 级展示样片的收藏卡。C 级 sample-04 只保留失败回归，不生成用户收藏卡。
+- 修改默认 AI 贴纸主链路、系统确认页、透明代理、能力不可用恢复或人物与穿搭复核时，额外运行 `make ai-sticker-regression`；它同时运行 Node 代理契约与 iOS 测试，锁定用户先确认 AI 底图、第二段只上传该底图、服务端按 GPT Image 透明 PNG 契约请求、双端拒绝假透明、客户端程序化白边、无 Vision/原图直抠兜底、两段 provider 元数据、最终贴纸复核、保存导出及 Debug UI 产品链路。该命令不替代真实 Apple/OpenAI 请求、人物/穿搭保真、弱网、公开代理安全或真实 iPhone。
+- 修改 Apple 图片生成适配、SDK 条件或 provider 抽象时，额外运行 `make legacy-provider-isolation`；它执行禁用旧适配器的干净 Release 构建，确认受支持的系统 Image Playground 框架仍在、旧 `ImageCreator` 未解析符号已经移除，并验证旧程序化生成器诚实报告不可用。当前门禁模拟未来 SDK 不启用旧条件，不替代实际 Xcode 27 构建或真实系统页运行。
+- 修改模型、提示、分割或贴纸/收藏卡后处理时，额外运行 `make sample-regression`；它继续校验历史直抠样片的仓库哈希、macOS Vision 字节级重生成和成品结构，但不证明默认 GPT Image 透明编辑质量。新默认链路还必须运行 `make ai-sticker-regression`，并在具备服务端密钥时用授权样片做真实 provider 目检。C 级 sample-04 不得删除。
 - 修改布局、文案、颜色、动效、无障碍语义或生命周期状态时，额外运行 `make accessibility-regression`；脚本会临时启用最大辅助字号与增强对比度，覆盖 AI 贴纸复核在两图纵向对照、多选、保存与历史回看中的滚动可达性，并在退出时恢复模拟器设置。
 - 修改相机入口、权限状态、权限文案或设置恢复路径时，额外运行 `make permission-regression`；拒绝态必须提供系统设置入口，系统限制态不得承诺用户能在 App 设置中解除。
 - 修改透明贴纸存入相册、PhotoKit 权限、PNG 资源写入或失败后的重试/分享动作时，额外运行 `make photo-save-regression`；成功夹具只证明页面状态，PNG 单元测试只证明交给 PhotoKit 边界的字节，二者都不证明系统照片中已经得到透明 PNG。

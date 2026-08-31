@@ -30,12 +30,12 @@ if [[ ! -x "$binary_path" ]]; then
   exit 1
 fi
 
-if /usr/bin/otool -L "$binary_path" | rg -q 'ImagePlayground\.framework'; then
-  echo "Legacy-disabled Release binary still links ImagePlayground.framework." >&2
+if ! /usr/bin/otool -L "$binary_path" | rg -q 'ImagePlayground\.framework'; then
+  echo "Legacy-disabled Release binary is missing the supported Image Playground sheet." >&2
   exit 1
 fi
 
-if /usr/bin/nm -u "$binary_path" | rg -q 'ImagePlayground.*ImageCreator'; then
+if /usr/bin/nm -u "$binary_path" | rg -q 'ImageCreator'; then
   echo "Legacy-disabled Release binary still imports ImageCreator symbols." >&2
   exit 1
 fi
@@ -55,4 +55,4 @@ then
   exit 1
 fi
 
-echo "Verified legacy-disabled provider boundary: no ImageCreator/ImagePlayground binary references; runtime reports unavailable."
+echo "Verified provider boundary: the supported Image Playground sheet remains linked, legacy ImageCreator symbols are absent, and the old programmatic generator reports unavailable."

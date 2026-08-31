@@ -1,10 +1,12 @@
 # 2026-08-31 AI 贴纸先生成后抠图验证记录
 
-> 状态：主链路、来源、持久化、Debug 产品回归、模拟器全量回归与 arm64 Release 构建已验证；真实 Apple 输出和真实 iPhone Vision 仍待验证。
+> 状态：两段式主链路、来源、持久化、Debug 产品回归、模拟器全量回归与 arm64 Release 构建已验证；默认入口后来迁移到需要用户确认的系统 Image Playground，第二段也已由 Vision 迁移到 GPT Image，真实 Apple/OpenAI 输出与目标 iPhone 仍待验证。
 >
 > 对应任务：ADO-006、ADO-105、ADO-Q02、ADO-Q04、ADO-Q05、ADO-Q06
 >
-> 后续更新：当前个人数据清单为 `adonis-personal-data-v9`，并增加结果后的可选人物/穿搭复核；该增量见 [AI 贴纸人物与穿搭复核验证记录](2026-08-31-ai-sticker-fidelity-review.md)。下文 v8 与 214 项结果保留为本主链路落地时的历史证据。
+> 后续更新：当前个人数据清单为 `adonis-personal-data-v9`，并增加结果后的可选人物/穿搭复核；默认第一段又从程序化旧适配器迁移到系统 Image Playground 确认页。增量见 [AI 贴纸人物与穿搭复核验证记录](2026-08-31-ai-sticker-fidelity-review.md)与 [系统 Image Playground 迁移验证记录](2026-08-31-image-playground-sheet-migration.md)。下文 v8、214 项结果与旧适配器测试保留为两段式链路最初落地时的历史证据。
+>
+> 第二段后续更新：默认生产链路已经把本文所述的 `StickerProcessor` / Vision 抠图替换为“确认 AI 底图 → GPT Image 透明编辑 → 双端 Alpha 门禁 → 本机纯白边”。本文关于 Vision 的测试、截图和真机待验证项仅作为历史实现证据；现行契约见 [AI 二次透明处理验证记录](2026-08-31-ai-transparent-extraction-provider.md)。
 
 ## 1. 用户决定与生产契约
 
@@ -12,7 +14,8 @@
 
 ```text
 用户原始照片
-  → Apple ImageCreator 按隐藏配方生成不透明贴纸形象
+  → 系统 Image Playground 根据预置参考照片与固定概念生成图片
+  → 用户在系统页确认一张不透明 AI 贴纸形象
   → 将 AI 生成图压平为不透明白底图
   → StickerProcessor 只对这张 AI 图抠图、细化 Alpha 并加纯白边
   → 透明贴纸
@@ -23,7 +26,7 @@
 
 - 抠图输入必须是 AI 生成图，不是用户原图。
 - AI 能力不可用、生成失败或生成图抠图失败时，不得静默退回用户原图直抠。
-- 用户只选择或拍摄一张图片，不需要选择 Prompt、Skill、模型、风格或参数。
+- 用户只选择或拍摄一张图片，再在系统页确认结果；不需要选择 Prompt、Skill、模型、风格或参数。
 - 用户原图始终保留为对照；透明贴纸、收藏卡及使用它们的派生作品必须按实际情况标为“AI 生成”。
 - “尽量保持本人、姿势、衣物颜色与细节、鞋、包、配饰、头发和身体比例”是隐藏配方的目标，不是当前已经证明的质量保证。
 - AI 贴纸不得用于建立事实性 OOTD 衣物线索或自动污染衣橱。
@@ -34,15 +37,16 @@
 
 ### 2.1 AI 源与抠图顺序
 
-- `AIStickerCreationPipeline` 先通过 `CreativeAIStickerSourceGenerator` 调用 `.aiStickerSource`，拿到 provider 图片与执行元数据。
+- 默认页面把原图和 `.aiStickerSource` 的固定概念预置给 `ImagePlaygroundViewController`；只有用户确认后的图片和系统页执行元数据才进入 `AIStickerCreationPipeline` 的 provider-output 入口。
+- `AIStickerCreationPipeline` 的旧 source-image 入口仍可先通过 `CreativeAIStickerSourceGenerator` 获取 provider 图片，但不再由默认人物流程调用；它暂时只服务旧适配器和隔离测试。
 - provider 图片按实际像素尺寸压平到不透明白色画布；即使 provider 返回透明区域，进入抠图前也不再透明。
 - `onGeneratedSource` 在抠图前触发，用于结束 AI 生成计时、保存 provider 执行元数据并开始主体分割阶段。
 - `StickerExtractor` 只接收压平后的 AI 图。
-- `.aiStickerSource` 不进入用户可见的风格花园目录；当前映射到 Apple animation style，内部概念固定要求单人、完整人物、干净暖白背景、无文字、无边框和不裁肢体。
+- `.aiStickerSource` 不进入用户可见的风格花园目录；系统页在支持的系统版本上只允许 animation style，内部概念固定要求单人、完整人物、干净暖白背景、无文字、无边框和不裁肢体。
 
 ### 2.2 主页面与失败语义
 
-- `CreateView` 对真实相册或相机人物输入执行 AI 生成 → 抠图 → 质量闸门 → 收藏卡。
+- `CreateView` 对真实相册或相机人物输入执行系统 AI 生成与确认 → 抠图 → 质量闸门 → 收藏卡。
 - 失败事件使用稳定错误码并记录 `fallback=none`。
 - AI 能力不可用时明确说明系统创作能力尚未准备好；生成或抠图失败时允许重试或换图，不交付原图直抠替代品。
 - 超时降级只能交付同一次 AI 链路中已经通过结构检查并完成排版的中间结果。
@@ -115,11 +119,11 @@ make ai-sticker-regression
 
 ## 4. Debug UI 夹具与真实边界
 
-`-ui-testing-ai-sticker-main-flow` 只在 Debug 构建中生效：
+`-ui-testing-system-image-playground-main-flow` 只在 Debug 构建中生效，并与既有的确定性抠图夹具组合：
 
-1. 生成端把授权 sample-01 的已知透明贴纸合成到 1080 × 1440 不透明白底画布，作为确定性 AI 源夹具。
-2. 该生成图确实先到达抠图边界。
-3. 当前 iOS 26.5 模拟器无法创建 Vision 推理上下文，因此该单一参数下的 Debug extractor 返回对应授权样片的已知透明贴纸，以继续验证结果、来源、收藏和历史。
+1. 可见测试替身同时展示“上传参考”和“模拟 AI 底图”，不会把原图伪装成 AI 结果。
+2. 用户点确认后，替身把授权 sample-01 的已知透明贴纸合成到 1080 × 1440 不透明暖白画布，作为确定性 AI 源夹具；该图确实是唯一到达抠图边界的输入。
+3. 当前 iOS 26.5 模拟器无法创建 Vision 推理上下文，因此既有 Debug extractor 返回对应授权样片的已知透明贴纸，以继续验证结果、来源、收藏和历史。
 
 在加入第二段 Debug 夹具前，两次真实模拟器 Vision 尝试都稳定显示“这张 AI 贴纸还抠不干净”，没有改用原图直抠：
 
@@ -128,7 +132,7 @@ make ai-sticker-regression
 
 因此 UI 成功回归只证明产品链路。它不证明：
 
-- Apple `ImageCreator` 在真实设备可用；
+- Apple 系统 Image Playground 在真实设备生成并返回了图片；
 - Apple 真实输出会稳定保持本人、衣物、姿势和配饰；
 - 真实 iPhone Vision 能把该生成图抠干净；
 - Apple 实际网络行为、费用、时延或资源下载方式；
@@ -140,7 +144,7 @@ Release 构建不得包含或接受该 UI 测试入口。
 
 - `make check` 通过严格 Swift 格式检查与通用 iOS 静态分析。
 - 无签名 Release 通用 iOS 构建通过；`Adonis.app/Adonis` 为 arm64 Mach-O 可执行文件。
-- 对 Release 二进制执行字符串扫描，没有发现 `-ui-testing-ai-sticker-main-flow`，Debug AI 夹具未进入 Release 产物。
+- 对 Release 二进制执行字符串扫描，没有发现 Debug AI 主流程参数；系统页替身和确定性夹具未进入 Release 产物。
 - 首轮全量结果 `Test-Adonis-2026.08.31_02-00-05-+0800.xcresult` 暴露了一条仍期待旧“失败后收进衣橱”行为的测试；契约改为 AI 不可用时只允许换图，不绕过 AI 贴纸链路。
 - 次轮全量结果 `Test-Adonis-2026.08.31_02-17-38-+0800.xcresult` 的产品界面已显示、启用且位于屏幕内，但 XCUI 在可点击检查与实际点击间发生竞态；测试保留可点击断言并改为点击元素中心坐标。随后该版本的专项回归与 214 项全量回归均通过。
 

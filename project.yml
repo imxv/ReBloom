@@ -30,17 +30,25 @@ targets:
         CODE_SIGN_ENTITLEMENTS: Adonis/Resources/Adonis.entitlements
         PRODUCT_BUNDLE_IDENTIFIER: studio.adonis.localdemo
         PRODUCT_NAME: Adonis
-        INFOPLIST_KEY_CFBundleDisplayName: Adonis
-        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.photo-video
-        INFOPLIST_KEY_NSCameraUsageDescription: Adonis 使用相机拍摄你想制作成贴纸的照片。
-        INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription: Adonis 仅在你主动选择时把作品保存到相册。
-        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: true
-        INFOPLIST_KEY_UILaunchScreen_Generation: true
-        GENERATE_INFOPLIST_FILE: true
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TARGETED_DEVICE_FAMILY: "1"
         "SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos26.*]": "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR"
         "SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator26.*]": "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR"
+    info:
+      path: Adonis/Resources/Info.plist
+      properties:
+        ADONIS_STICKER_EXTRACTION_URL: "$(ADONIS_STICKER_EXTRACTION_URL)"
+        ADONIS_STICKER_PROXY_TOKEN: "$(ADONIS_STICKER_PROXY_TOKEN)"
+        CFBundleDisplayName: Adonis
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        LSApplicationCategoryType: public.app-category.photo-video
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        NSCameraUsageDescription: Adonis 使用相机拍摄你想制作成贴纸的照片。
+        NSPhotoLibraryAddUsageDescription: Adonis 仅在你主动选择时把作品保存到相册。
+        UIApplicationSupportsIndirectInputEvents: true
+        UILaunchScreen: {}
     scheme:
       gatherCoverageData: true
       testTargets:

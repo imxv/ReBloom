@@ -1,6 +1,6 @@
 # 2026-08-30 生成性能与预算验证
 
-> 当前结论（2026-08-31 更新）：ADO-Q05 的记录骨架已扩展到默认 AI 贴纸。`generation-performance-v2` 记录 AI 贴纸生成及后续阶段、45 秒目标、中断位置、重试和 provider 执行元数据。默认贴纸调用 Apple 系统 `ImageCreator`：provider 请求为 1、外部请求数未知、网络为系统托管、费用未公开，不能再把主链路写成全本机或 0 外部请求。下文 2026-08-30 的全本机数字是历史直抠样片基线；现行证据见 [AI 贴纸先生成后抠图验证记录](2026-08-31-ai-sticker-first-pipeline.md)。真实 Apple 成本、网络、重试和真机时延尚未证明，所以 ADO-Q05 保持未完成。
+> 当前结论（2026-08-31 更新）：ADO-Q05 的记录骨架已扩展到默认两段 AI 贴纸。`generation-performance-v2` 记录 AI 底图、AI 透明处理与本机白边阶段、45 秒目标、中断位置、重试和 provider 执行元数据。默认贴纸使用 Apple 系统 Image Playground 确认页，再经开发者代理调用 GPT Image；组合 provider 请求为 2，Apple 外部请求数未知，因此总外部请求保持未知。用户在系统页停留的时间计入端到端与 AI 底图阶段，但不运行后台截止；确认底图后的 GPT Image 透明处理允许 150 秒，普通本机与旧链路保持 90 秒。下文 2026-08-30 的全本机数字是历史直抠样片基线；现行证据见 [AI 二次透明处理验证记录](2026-08-31-ai-transparent-extraction-provider.md)与 [系统 Image Playground 迁移验证记录](2026-08-31-image-playground-sheet-migration.md)。真实 Apple/OpenAI 成本、网络、重试和真机时延尚未证明，所以 ADO-Q05 保持未完成。
 
 ## 1. 计时口径
 
@@ -18,13 +18,13 @@
 | 阶段 | 记录范围 | 特殊边界 |
 | --- | --- | --- |
 | `inputLoading` | 相册数据读取与 `UIImage` 解码 | 相机回调和内置样片没有这一段 |
-| `aiStickerGeneration` | Apple 系统生成不透明贴纸源 | provider 请求为 1；外部请求数、网络细节与费用由系统管理 |
+| `aiStickerGeneration` | Apple 系统页生成并由用户确认不透明贴纸源 | 系统页停留计入体验总耗时；provider 请求为 1，外部请求数、网络细节与费用由系统管理 |
 | `subjectExtraction` | Vision 主体分割、透明裁切与纯白贴纸边 | 内置样片复用预处理贴纸，仍标记 `usesPreparedSample = true`，不能代表实时 Vision |
 | `qualityAssessment` | 透明度、主体连通与白边结构检查 | 只判断结构事实，不代表人物或衣物语义保真 |
 | `shareCardComposition` | 1080 × 1440 收藏卡程序排版 | 不新增 AI 像素，但输入为 AI 贴纸时成品继承 AI 来源 |
 | `garmentObservation` | 可信直抠链路的上身与下身临时衣物线索 | 默认 AI 贴纸主链路跳过该事实推断 |
 
-当前性能契约版本为 `generation-performance-v2`，第一张最终结果的测量目标为 45,000 毫秒。45 秒来自产品规格，只用于测量是否达到目标，不是供应商 SLA。独立的 90 秒截止会强制界面退出等待并隔离迟到结果；它不代表底层 Apple 生成或 Vision 一定立即停止。完整边界见 [生成超时与基础贴纸降级验证记录](2026-08-30-generation-timeout-fallback.md)。
+当前性能契约版本为 `generation-performance-v2`，第一张最终结果的测量目标为 45,000 毫秒。45 秒来自产品规格，只用于测量是否达到目标，不是供应商 SLA。用户仍在系统 Image Playground 选择结果时不启用后台截止；用户确认后，独立的 150 秒 GPT Image 透明处理截止才会强制界面退出等待并隔离迟到结果。普通本机与旧创作链路仍使用 90 秒。取消等待不代表供应商底层请求一定立即停止。完整边界见 [生成超时与基础贴纸降级验证记录](2026-08-30-generation-timeout-fallback.md)与 [AI 二次透明处理验证记录](2026-08-31-ai-transparent-extraction-provider.md)。
 
 ## 2. 终态、持久化与隐私
 

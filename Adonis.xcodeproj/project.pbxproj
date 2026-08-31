@@ -30,6 +30,7 @@
 		17E549E80F389BD3C90C24D4 /* sample-01.png in Resources */ = {isa = PBXBuildFile; fileRef = 94AFB89D4E0698D5253B8179 /* sample-01.png */; };
 		1ADB0DC38AD01A93CD87900E /* CreativeRecipeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26730AA330FC08E9991185AE /* CreativeRecipeTests.swift */; };
 		1CCF473DA8BAD7E4925CADF6 /* VisualContentProvenanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B8591003804E662E9435F6 /* VisualContentProvenanceTests.swift */; };
+		1D1ED9302DC99C641349AF95 /* AITransparentStickerProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AB134D9D0B5B302749A3A9 /* AITransparentStickerProcessor.swift */; };
 		1D66DB546BDE1410DD5C83B8 /* OutfitGarmentObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0297B7A729F4B3D757F6A0A3 /* OutfitGarmentObserverTests.swift */; };
 		1E771E07BF3146CEE74A025F /* SharedImageInboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316737292FE33E782DAD2887 /* SharedImageInboxTests.swift */; };
 		1F8D3FF50DA0A69824798E86 /* CreativeWorkPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434321784CD9E2B92951B1A1 /* CreativeWorkPersistenceTests.swift */; };
@@ -56,6 +57,7 @@
 		423AEFB97294ADDACA708B53 /* SharedImageInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9C4FA8A91B8CCA08F29DBB /* SharedImageInbox.swift */; };
 		444C652105F7620F3A0DBDD3 /* MediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 715F9375B113CB2BBE597E7F /* MediaStore.swift */; };
 		4509285B952C40CC075B1C2B /* AccessibilityContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE9700DD179F9FED5BD0771 /* AccessibilityContractTests.swift */; };
+		46FD1A7A774DFDB3125EFF09 /* AIStickerCloudExtractionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567323B02BE0214E086149E9 /* AIStickerCloudExtractionClient.swift */; };
 		487651670CACA69C75D1D326 /* RebloomCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FBF20FA673EE72BD4158A65 /* RebloomCardRendererTests.swift */; };
 		4AFB40403A8C7A8584F3CEE9 /* StickerProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4718CD6CE45E819A6AC83529 /* StickerProcessorTests.swift */; };
 		4B48F7FAFFDCDD0B60EEC4CA /* GenerationDeadlineControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB3F360F1CC6879BF491D66 /* GenerationDeadlineControllerTests.swift */; };
@@ -81,9 +83,11 @@
 		756BD9C49D13F4E62E447528 /* AdonisFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2153A825703E5C59A02F6A3D /* AdonisFlowUITests.swift */; };
 		7648F7094EA366551F43714F /* AdonisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C79187C672D6932F46FD1BC /* AdonisApp.swift */; };
 		794A006056BB5F4413ABAACF /* SampleRegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCEE85686A0D72974233370 /* SampleRegressionTests.swift */; };
+		7D68F44C382531DD6E6A7593 /* AIStickerCloudExtractionClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B3BCED940CBF880CCD2365 /* AIStickerCloudExtractionClientTests.swift */; };
 		7EE2DB57549FDED619DBB09F /* RebloomReminderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E7FFB051D014061B059FD3 /* RebloomReminderService.swift */; };
 		815A5B905B64E5B39D732580 /* RebloomReminderServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731B7479B6CDFD9C4F132C94 /* RebloomReminderServiceTests.swift */; };
 		8226468E6D61A1DF20562B92 /* StickerFidelityReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B057DF4CAF96DCCA3D4A1D /* StickerFidelityReviewView.swift */; };
+		82403E6B7BCDA3EAC58F7D96 /* AITransparentStickerProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022BDAB538933A5B35791AF3 /* AITransparentStickerProcessorTests.swift */; };
 		82B278990D3D32DEA723F93C /* CreativeWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F43E15401C8E12ECD95C624 /* CreativeWork.swift */; };
 		833D591989DF8A521A68D1C1 /* WardrobeCandidateMatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2ED59B556B639C01144CF3 /* WardrobeCandidateMatcherTests.swift */; };
 		84E550994C1DD4E25B25F5D6 /* SharedImageInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9C4FA8A91B8CCA08F29DBB /* SharedImageInbox.swift */; };
@@ -102,6 +106,7 @@
 		9E01DF7A621C13A85C8BC96F /* CreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F443048A8AB2396EC8490E /* CreateView.swift */; };
 		9F532669F1BA869ADF5A67DA /* BotanicalPosterRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB1D2A5F0BB7417956978D1 /* BotanicalPosterRendererTests.swift */; };
 		9FC987B25EAA658A079CD409 /* StickerSourceFidelityAssessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4AAE339A2F47C684422A875 /* StickerSourceFidelityAssessor.swift */; };
+		A0B3DFCEB5A425D90CF52160 /* SystemImagePlaygroundStickerSourceSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C81B8A3F358E78ACD8FEA98 /* SystemImagePlaygroundStickerSourceSheet.swift */; };
 		A2EE6457FD6A5063FF426A21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 110BE262F9946F560C99A9F5 /* Assets.xcassets */; };
 		A3C31C98F4B24DB19FBF59B0 /* ModelStorePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3F11BF77ECCA2BC7A4D5AB /* ModelStorePolicy.swift */; };
 		A4B0FE56940EA5F4BA8757B1 /* StickerTryOnRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D283843786FEC37B1CDECF1A /* StickerTryOnRenderer.swift */; };
@@ -192,6 +197,7 @@
 
 /* Begin PBXFileReference section */
 		0186D2D1F78413A6E49A667B /* CreativeImageGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeImageGenerator.swift; sourceTree = "<group>"; };
+		022BDAB538933A5B35791AF3 /* AITransparentStickerProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITransparentStickerProcessorTests.swift; sourceTree = "<group>"; };
 		0297B7A729F4B3D757F6A0A3 /* OutfitGarmentObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitGarmentObserverTests.swift; sourceTree = "<group>"; };
 		04175832BBE55E7FE3292FE9 /* PhotoLibrarySaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibrarySaver.swift; sourceTree = "<group>"; };
 		05DBA0C9DB94BDE4B6AA5635 /* AdonisShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AdonisShareExtension.entitlements; sourceTree = "<group>"; };
@@ -241,10 +247,12 @@
 		47D307ACD6D08833C51C92D1 /* MythicGardenCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MythicGardenCardRendererTests.swift; sourceTree = "<group>"; };
 		488238D5BC109C8E72A5B60F /* DigitalFigurineCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalFigurineCardRendererTests.swift; sourceTree = "<group>"; };
 		4A637377461748CC37830D9C /* sample-04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-04.png"; sourceTree = "<group>"; };
+		4C81B8A3F358E78ACD8FEA98 /* SystemImagePlaygroundStickerSourceSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemImagePlaygroundStickerSourceSheet.swift; sourceTree = "<group>"; };
 		4D05F8A9D74EA80804DC6A13 /* ProcessingTrace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingTrace.swift; sourceTree = "<group>"; };
 		4E2FCF2970976A7D6F9345D0 /* StickerSourceFidelityAssessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerSourceFidelityAssessorTests.swift; sourceTree = "<group>"; };
 		51B14671AF376DB8E9B11E1E /* WardrobeHistoryMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeHistoryMatcherTests.swift; sourceTree = "<group>"; };
 		53AA69B4A22D8C05F5AFABC1 /* CreativeWorkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeWorkView.swift; sourceTree = "<group>"; };
+		567323B02BE0214E086149E9 /* AIStickerCloudExtractionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIStickerCloudExtractionClient.swift; sourceTree = "<group>"; };
 		57F443048A8AB2396EC8490E /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
 		5B81EEAE568CAF877AFF6B8A /* SeasonalBloomCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalBloomCatalogTests.swift; sourceTree = "<group>"; };
 		5D0994A465AE03BD4840F048 /* OutfitRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitRecord.swift; sourceTree = "<group>"; };
@@ -252,6 +260,7 @@
 		5DF7F47B91988E26DA9A22F3 /* StickerProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerProcessor.swift; sourceTree = "<group>"; };
 		5EA41B73134695077C4CA8B4 /* BloomCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloomCalendarView.swift; sourceTree = "<group>"; };
 		5F649CD7BB71A5A6E7ECFD77 /* AdonisDateText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisDateText.swift; sourceTree = "<group>"; };
+		61B3BCED940CBF880CCD2365 /* AIStickerCloudExtractionClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIStickerCloudExtractionClientTests.swift; sourceTree = "<group>"; };
 		6392E24759177B8122E2626C /* PersonalDataControlTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalDataControlTests.swift; sourceTree = "<group>"; };
 		63C068922FF4E44027CEB933 /* WardrobeTestImageFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeTestImageFactory.swift; sourceTree = "<group>"; };
 		646E1B8E7A4C66C109816B9A /* OutfitDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitDetailView.swift; sourceTree = "<group>"; };
@@ -274,6 +283,7 @@
 		7C03A1F1A7D0EEB66DEFF4A0 /* CameraAccessService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraAccessService.swift; sourceTree = "<group>"; };
 		7C1B423C8D9B768E0AB09434 /* sample-03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03.png"; sourceTree = "<group>"; };
 		7CE0C7B745956DBBB1F21759 /* CreativeExecutionMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeExecutionMetadata.swift; sourceTree = "<group>"; };
+		8112C20500D62200C7603DE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		819D78478E4502869C75481C /* GarmentVisualSignatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarmentVisualSignatureTests.swift; sourceTree = "<group>"; };
 		81B62D5D132AC85E01784E17 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		84136BBEA95D26BF94F117B2 /* StickerQualityAssessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerQualityAssessorTests.swift; sourceTree = "<group>"; };
@@ -310,6 +320,7 @@
 		C966E726B2F21933A2BA5344 /* MonthlyLookbookRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyLookbookRenderer.swift; sourceTree = "<group>"; };
 		C9763420D0D7B205869F673D /* PhotoLibrarySaverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibrarySaverTests.swift; sourceTree = "<group>"; };
 		CB7227972E1BB092B766EEF3 /* GenerationResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationResultView.swift; sourceTree = "<group>"; };
+		D1AB134D9D0B5B302749A3A9 /* AITransparentStickerProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITransparentStickerProcessor.swift; sourceTree = "<group>"; };
 		D283843786FEC37B1CDECF1A /* StickerTryOnRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerTryOnRenderer.swift; sourceTree = "<group>"; };
 		D491330C3A0032C97023EB7B /* PersonalDataArchiveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalDataArchiveService.swift; sourceTree = "<group>"; };
 		D4B057DF4CAF96DCCA3D4A1D /* StickerFidelityReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerFidelityReviewView.swift; sourceTree = "<group>"; };
@@ -409,6 +420,7 @@
 			children = (
 				57F443048A8AB2396EC8490E /* CreateView.swift */,
 				CB7227972E1BB092B766EEF3 /* GenerationResultView.swift */,
+				4C81B8A3F358E78ACD8FEA98 /* SystemImagePlaygroundStickerSourceSheet.swift */,
 			);
 			path = Create;
 			sourceTree = "<group>";
@@ -428,6 +440,7 @@
 			isa = PBXGroup;
 			children = (
 				93561339C973C07D4E699E67 /* Adonis.entitlements */,
+				8112C20500D62200C7603DE6 /* Info.plist */,
 				1DE3B998912D8490FDA4D823 /* Samples */,
 			);
 			path = Resources;
@@ -450,7 +463,9 @@
 		5001D869916DBC4A89DF42CE /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				567323B02BE0214E086149E9 /* AIStickerCloudExtractionClient.swift */,
 				F169EFF01F989F98CC5EC967 /* AIStickerCreationPipeline.swift */,
+				D1AB134D9D0B5B302749A3A9 /* AITransparentStickerProcessor.swift */,
 				B38F411331B65351C1CAD620 /* BotanicalPosterRenderer.swift */,
 				7C03A1F1A7D0EEB66DEFF4A0 /* CameraAccessService.swift */,
 				8FE9F59DB28250B8424C6E9A /* CreationImageIntentRouter.swift */,
@@ -583,7 +598,9 @@
 			isa = PBXGroup;
 			children = (
 				DAE9700DD179F9FED5BD0771 /* AccessibilityContractTests.swift */,
+				61B3BCED940CBF880CCD2365 /* AIStickerCloudExtractionClientTests.swift */,
 				2F0BD8ABCD06A07E1BEAED3A /* AIStickerCreationPipelineTests.swift */,
+				022BDAB538933A5B35791AF3 /* AITransparentStickerProcessorTests.swift */,
 				7AB1D2A5F0BB7417956978D1 /* BotanicalPosterRendererTests.swift */,
 				9E1E63F7937FAF7439D6F7C8 /* CameraAccessServiceTests.swift */,
 				89AFF60679B8CA5BCAF241B5 /* CreationImageIntentRouterTests.swift */,
@@ -795,7 +812,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D68F44C382531DD6E6A7593 /* AIStickerCloudExtractionClientTests.swift in Sources */,
 				C8AB4CC5D0BEEA37105FCDF7 /* AIStickerCreationPipelineTests.swift in Sources */,
+				82403E6B7BCDA3EAC58F7D96 /* AITransparentStickerProcessorTests.swift in Sources */,
 				4509285B952C40CC075B1C2B /* AccessibilityContractTests.swift in Sources */,
 				9F532669F1BA869ADF5A67DA /* BotanicalPosterRendererTests.swift in Sources */,
 				05A102A14D5F8953BA875A93 /* CameraAccessServiceTests.swift in Sources */,
@@ -844,7 +863,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46FD1A7A774DFDB3125EFF09 /* AIStickerCloudExtractionClient.swift in Sources */,
 				BC1760FC62A340D8002B0BEE /* AIStickerCreationPipeline.swift in Sources */,
+				1D1ED9302DC99C641349AF95 /* AITransparentStickerProcessor.swift in Sources */,
 				0081F47B332BDBDD4C4E1017 /* ActivityView.swift in Sources */,
 				7648F7094EA366551F43714F /* AdonisApp.swift in Sources */,
 				027B14DF89A1B5A4FA6CE39A /* AdonisAppDelegate.swift in Sources */,
@@ -915,6 +936,7 @@
 				A4B0FE56940EA5F4BA8757B1 /* StickerTryOnRenderer.swift in Sources */,
 				212E902D6EFF97FB6AC0FE1C /* StoredImageView.swift in Sources */,
 				3AB4A6945995AABAD839BE06 /* SystemCreativeProcessingOverlay.swift in Sources */,
+				A0B3DFCEB5A425D90CF52160 /* SystemImagePlaygroundStickerSourceSheet.swift in Sources */,
 				B025F76F64788BA52A25BFBE /* VisualContentProvenance.swift in Sources */,
 				72679204352E432C70016FBA /* WardrobeCandidateMatcher.swift in Sources */,
 				4F75F5C23890C809B5B1EDA3 /* WardrobeComponents.swift in Sources */,
@@ -978,13 +1000,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Adonis/Resources/Adonis.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Adonis;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photo-video";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Adonis 使用相机拍摄你想制作成贴纸的照片。";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Adonis 仅在你主动选择时把作品保存到相册。";
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_FILE = Adonis/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1161,13 +1177,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Adonis/Resources/Adonis.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Adonis;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photo-video";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Adonis 使用相机拍摄你想制作成贴纸的照片。";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Adonis 仅在你主动选择时把作品保存到相册。";
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_FILE = Adonis/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

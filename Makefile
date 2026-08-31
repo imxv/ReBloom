@@ -4,7 +4,7 @@ SCHEME := Adonis
 DESTINATION := platform=iOS Simulator,name=iPhone 17 Pro,OS=latest
 DERIVED_DATA := .derivedData
 
-.PHONY: project build test sample-regression ai-sticker-regression ai-sticker-visual-regression legacy-provider-isolation accessibility-regression permission-regression photo-save-regression persistence-regression wardrobe-visual-regression input-routing-regression performance-regression lookbook-regression figurine-regression cabinet-regression seasonal-regression rebloom-regression rebloom-reminder-regression creative-regression tryon-regression lint format analyze check clean
+.PHONY: project build test server-test sample-regression ai-sticker-regression ai-sticker-visual-regression legacy-provider-isolation accessibility-regression permission-regression photo-save-regression persistence-regression wardrobe-visual-regression input-routing-regression performance-regression lookbook-regression figurine-regression cabinet-regression seasonal-regression rebloom-regression rebloom-reminder-regression creative-regression tryon-regression lint format analyze check clean
 
 project:
 	./scripts/xcodegen.sh generate --spec project.yml
@@ -14,6 +14,9 @@ build: project
 
 test: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test
+
+server-test:
+	npm --prefix server test
 
 sample-regression: project
 	./scripts/verify_sample_regression.sh
@@ -26,14 +29,21 @@ sample-regression: project
 		-only-testing:AdonisTests/StickerQualityAssessorTests
 
 ai-sticker-regression: project
+	npm --prefix server test
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
 		-only-testing:AdonisTests/AIStickerCreationPipelineTests \
+		-only-testing:AdonisTests/AIStickerCloudExtractionClientTests \
+		-only-testing:AdonisTests/AITransparentStickerProcessorTests \
 		-only-testing:AdonisTests/StickerFidelityReviewTests \
+		-only-testing:AdonisTests/CreativeExecutionMetadataTests/testAppleSystemSheetHasDistinctTraceAndKeepsSystemBoundaryHonest \
+		-only-testing:AdonisTests/CreativeExecutionMetadataTests/testTwoPassStickerMetadataKeepsSourceAndTransparentEditProvidersDistinct \
+		-only-testing:AdonisTests/CreativeExecutionMetadataTests/testOlderExecutionMetadataStillDecodesWithoutTwoPassProviderFields \
 		-only-testing:AdonisTests/CreativeExecutionMetadataTests/testCreativeGenerationErrorsUseStableCodesAndPlainRecoveryCopy \
 		-only-testing:AdonisTests/ProcessingTraceTests/testAIStickerGenerationStageAndProviderMetadataSurviveEventPersistence \
 		-only-testing:AdonisTests/ShareCardRendererTests/testProvenanceFooterDisclosesAIGeneratedStickerPixels \
 		-only-testing:AdonisTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testMainCreationGeneratesAIStickerSourceBeforeTransparentStickerAndPersistsIt \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testCancellingSystemImagePlaygroundNeverSendsOriginalToTransparentStage \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testAIStickerFidelityReviewPersistsFromResultIntoHistory \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testAmbiguousInputDoesNotBypassUnavailableAIStickerGeneration \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testUnavailableAIStickerOffersAnHonestPreparedSampleRecovery

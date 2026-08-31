@@ -137,7 +137,7 @@ struct StickerFidelityReviewSheet: View {
 
         ScrollView {
           VStack(alignment: .leading, spacing: 20) {
-            Text("原图与 AI 贴纸源图对照")
+            Text("原图与最终 AI 贴纸对照")
               .font(.system(.title3, design: .rounded, weight: .black))
               .foregroundStyle(AdonisTheme.ink)
               .accessibilityIdentifier("sticker-fidelity-review-sheet")
@@ -235,7 +235,7 @@ struct StickerFidelityReviewSheet: View {
           identifier: "sticker-fidelity-original-preview"
         )
         reviewImage(
-          title: "AI 贴纸源图",
+          title: "最终 AI 贴纸",
           image: generatedImage,
           identifier: "sticker-fidelity-generated-preview"
         )
@@ -248,7 +248,7 @@ struct StickerFidelityReviewSheet: View {
           identifier: "sticker-fidelity-original-preview"
         )
         reviewImage(
-          title: "AI 贴纸源图",
+          title: "最终 AI 贴纸",
           image: generatedImage,
           identifier: "sticker-fidelity-generated-preview"
         )

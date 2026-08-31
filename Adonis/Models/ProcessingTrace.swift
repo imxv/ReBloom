@@ -19,7 +19,8 @@ enum EventInputSource: String, Sendable {
 }
 
 enum AdonisProcessingVersion {
-  static let aiStickerSource = "ai-sticker-source-apple-v1"
+  static let aiStickerSource = "ai-sticker-source-image-playground-sheet-v2"
+  static let aiTransparentSticker = "ai-transparent-sticker-gpt-image-outline-v1"
   static let sticker = "sticker-vision-edge-refine-v2"
   static let stickerSourceFidelity = "sticker-source-fidelity-v1"
   static let stickerQuality = "sticker-quality-raw-fidelity-delivery-v3"
@@ -43,7 +44,7 @@ enum AdonisProcessingVersion {
   static let wardrobeHistoryMatching = "wardrobe-history-backfill-v1"
   static let sharedWardrobeInbox = SharedImageInbox.version
   static let generationPipeline =
-    "\(aiStickerSource)+\(sticker)+\(stickerSourceFidelity)+\(stickerQuality)+\(shareCard)+\(outfitObservation)"
+    "\(aiStickerSource)+\(aiTransparentSticker)+\(stickerQuality)+\(shareCard)+\(outfitObservation)"
 }
 
 enum GenerationPerformanceStage: String, CaseIterable, Codable, Sendable {
@@ -58,8 +59,8 @@ enum GenerationPerformanceStage: String, CaseIterable, Codable, Sendable {
     switch self {
     case .inputLoading: "读取照片"
     case .aiStickerGeneration: "AI 贴纸底图"
-    case .subjectExtraction: "抠图与白边"
-    case .qualityAssessment: "蒙版与成品检查"
+    case .subjectExtraction: "AI 透明处理与白边"
+    case .qualityAssessment: "透明与成品检查"
     case .shareCardComposition: "收藏卡排版"
     case .garmentObservation: "衣物线索"
     }

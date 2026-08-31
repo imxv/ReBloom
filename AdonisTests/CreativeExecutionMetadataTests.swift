@@ -86,6 +86,63 @@ final class CreativeExecutionMetadataTests: XCTestCase {
     )
   }
 
+  func testAppleSystemSheetHasDistinctTraceAndKeepsSystemBoundaryHonest() {
+    let metadata = CreativeExecutionMetadata.appleImagePlaygroundSheet
+
+    XCTAssertEqual(metadata.provider, .appleImagePlaygroundSheet)
+    XCTAssertNotEqual(metadata.provider, .appleImagePlayground)
+    XCTAssertEqual(metadata.providerRequestCount, 1)
+    XCTAssertNil(metadata.externalRequestCount)
+    XCTAssertEqual(metadata.networkTransport, .systemManaged)
+    XCTAssertEqual(metadata.externalCost, .notExposed)
+    XCTAssertEqual(metadata.quality, .userReviewRequired)
+    XCTAssertEqual(
+      metadata.eventDetail(for: .aiStickerSource),
+      "recipe=ai_sticker_source;provenance=ai_generated;ai_pixels=true;provider=apple_image_playground_sheet;provider_requests=1;external_requests=unknown;network_transport=system_managed;external_cost=not_exposed;quality=user_review_required"
+    )
+  }
+
+  func testTwoPassStickerMetadataKeepsSourceAndTransparentEditProvidersDistinct() {
+    let metadata = CreativeExecutionMetadata.aiStickerTwoPass(
+      source: .appleImagePlaygroundSheet,
+      extraction: .openAIGPTImageExtraction
+    )
+
+    XCTAssertEqual(metadata.provider, .aiStickerTwoPass)
+    XCTAssertEqual(metadata.providerRequestCount, 2)
+    XCTAssertNil(metadata.externalRequestCount)
+    XCTAssertEqual(metadata.networkTransport, .mixedSystemAndDeveloperProxy)
+    XCTAssertEqual(metadata.externalCost, .unknown)
+    XCTAssertEqual(metadata.sourceProvider, .appleImagePlaygroundSheet)
+    XCTAssertEqual(metadata.extractionProvider, .openAIGPTImage)
+    XCTAssertTrue(
+      metadata.eventDetail(for: .aiStickerSource).contains(
+        "source_provider=apple_image_playground_sheet;extraction_provider=openai_gpt_image"
+      )
+    )
+  }
+
+  func testOlderExecutionMetadataStillDecodesWithoutTwoPassProviderFields() throws {
+    let data = Data(
+      """
+      {
+        "provider": "apple_image_playground",
+        "providerRequestCount": 1,
+        "externalRequestCount": null,
+        "networkTransport": "system_managed",
+        "externalCost": "not_exposed",
+        "quality": "user_review_required"
+      }
+      """.utf8
+    )
+
+    let metadata = try JSONDecoder().decode(CreativeExecutionMetadata.self, from: data)
+
+    XCTAssertNil(metadata.sourceProvider)
+    XCTAssertNil(metadata.extractionProvider)
+    XCTAssertEqual(metadata.provider, .appleImagePlayground)
+  }
+
   func testCreativeGenerationErrorsUseStableCodesAndPlainRecoveryCopy() {
     XCTAssertEqual(CreativeGenerationError.unavailable.eventCode, "unavailable")
     XCTAssertEqual(CreativeGenerationError.unsupportedSource.eventCode, "unsupported_source")

@@ -37,13 +37,16 @@ struct AIStickerCreationPipeline {
 
   private let sourceGenerator: any AIStickerSourceGenerating
   private let extractSticker: StickerExtractor
+  private let extractionExecutionMetadata: CreativeExecutionMetadata?
 
   init(
     sourceGenerator: any AIStickerSourceGenerating,
-    extractSticker: @escaping StickerExtractor
+    extractSticker: @escaping StickerExtractor,
+    extractionExecutionMetadata: CreativeExecutionMetadata? = nil
   ) {
     self.sourceGenerator = sourceGenerator
     self.extractSticker = extractSticker
+    self.extractionExecutionMetadata = extractionExecutionMetadata
   }
 
   func createSticker(
@@ -55,13 +58,30 @@ struct AIStickerCreationPipeline {
     }
 
     let providerOutput = try await sourceGenerator.generateSource(from: sourceImage)
+    return try await createSticker(
+      from: providerOutput,
+      onGeneratedSource: onGeneratedSource
+    )
+  }
+
+  func createSticker(
+    from providerOutput: CreativeProviderOutput,
+    onGeneratedSource: GeneratedSourceObserver = { _, _ in }
+  ) async throws -> AIStickerCreationResult {
     let generatedSourceImage = try makeOpaque(providerOutput.image)
     onGeneratedSource(generatedSourceImage, providerOutput.executionMetadata)
     let sticker = try await extractSticker(generatedSourceImage)
+    let executionMetadata =
+      extractionExecutionMetadata.map {
+        CreativeExecutionMetadata.aiStickerTwoPass(
+          source: providerOutput.executionMetadata,
+          extraction: $0
+        )
+      } ?? providerOutput.executionMetadata
     return AIStickerCreationResult(
       generatedSourceImage: generatedSourceImage,
       stickerProcessingResult: sticker,
-      executionMetadata: providerOutput.executionMetadata
+      executionMetadata: executionMetadata
     )
   }
 

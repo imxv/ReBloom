@@ -25,6 +25,10 @@ final class GenerationDeadlineControllerTests: XCTestCase {
       GenerationDeadlineController.productionTimeout,
       .seconds(90)
     )
+    XCTAssertEqual(
+      GenerationDeadlineController.aiTransparentProcessingTimeout,
+      .seconds(150)
+    )
     XCTAssertEqual(AppEventKind.generationTimedOut.title, "处理超时")
   }
 

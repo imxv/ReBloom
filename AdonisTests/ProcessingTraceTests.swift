@@ -207,10 +207,10 @@ final class ProcessingTraceTests: XCTestCase {
     )
   }
 
-  func testGenerationPipelineIncludesRawMatteSourceFidelityAndDeliveryQualityAssessment() {
+  func testGenerationPipelineIncludesTwoPassAITransparencyAndDeliveryQualityAssessment() {
     XCTAssertEqual(
-      StickerSourceFidelityAssessor.version,
-      "sticker-source-fidelity-v1"
+      AdonisProcessingVersion.aiTransparentSticker,
+      "ai-transparent-sticker-gpt-image-outline-v1"
     )
     XCTAssertEqual(
       StickerQualityAssessor.version,
@@ -218,11 +218,20 @@ final class ProcessingTraceTests: XCTestCase {
     )
     XCTAssertTrue(
       AdonisProcessingVersion.generationPipeline.contains(
-        StickerSourceFidelityAssessor.version
+        AdonisProcessingVersion.aiStickerSource
+      )
+    )
+    XCTAssertTrue(
+      AdonisProcessingVersion.generationPipeline.contains(
+        AdonisProcessingVersion.aiTransparentSticker
       )
     )
     XCTAssertTrue(
       AdonisProcessingVersion.generationPipeline.contains(StickerQualityAssessor.version)
+    )
+    XCTAssertFalse(
+      AdonisProcessingVersion.generationPipeline.contains(AdonisProcessingVersion.sticker),
+      "The default AI path must not advertise the legacy Vision extractor."
     )
     XCTAssertEqual(AppEventKind.generationQualityWarning.title, "贴纸建议复查")
     XCTAssertEqual(AppEventKind.generationQualityRejected.title, "贴纸质量未通过")

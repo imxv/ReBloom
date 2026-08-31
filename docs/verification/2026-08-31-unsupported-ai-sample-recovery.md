@@ -1,6 +1,6 @@
 # 2026-08-31 AI 生图不可用时的样片恢复验证记录
 
-> 状态：能力不可用提示、明确标注的内置样片恢复、来源边界、专项自动化与模拟器视觉结果已验证；用户自己的照片在 iPhone 11 上如何完成 AI 生图仍待供应方案决策。
+> 状态：能力不可用提示、明确标注的内置样片恢复、来源边界、专项自动化与模拟器视觉结果已有验证；支持 Apple Intelligence 的设备使用系统 Image Playground，再经 GPT Image 透明编辑。不支持设备的第一段生成，以及代理未配置、网络失败或透明结果不合格时的真实设备恢复仍待验证。现行第二段见 [AI 二次透明处理验证记录](2026-08-31-ai-transparent-extraction-provider.md)。
 >
 > 读者：以后修改 Adonis 默认 AI 贴纸 provider、能力门控或失败恢复的工程 Agent。
 >
@@ -14,8 +14,9 @@
 
 ```text
 用户照片
-  → AI 生成不透明贴纸源图
-  → 只对 AI 源图抠图
+  → 系统 Image Playground 生成并由用户确认不透明贴纸源图
+  → 只把 AI 源图发送到 Adonis 代理做 GPT Image 透明编辑
+  → 双端 Alpha 门禁与本机纯白边
   → 透明贴纸与收藏卡
 ```
 
@@ -32,7 +33,7 @@
 ## 2. 恢复流程与来源边界
 
 ```text
-AI provider 返回 unavailable / unsupportedLanguage
+系统 Image Playground 不可用，或旧 provider 返回 unavailable / unsupportedLanguage
   → 显示“当前设备不能生成 AI 贴纸”
   ├─ 先不用：清理恢复状态，留在创作页
   └─ 体验内置样片：加载首张授权展示样片
@@ -43,7 +44,7 @@ AI provider 返回 unavailable / unsupportedLanguage
 
 | 对象 | 来源与处理契约 |
 | --- | --- |
-| 失败的用户照片 | 没有生成 AI 源，不进入抠图，也不会被保存为样片结果 |
+| 失败的用户照片 | 没有生成 AI 源，不进入透明编辑，也不会被保存为样片结果 |
 | 内置样片原图 | 用户已授权的项目样片 |
 | 样片透明贴纸 | 历史预处理结果，来源为“原图处理” |
 | 样片收藏卡 | Adonis 程序排版，人物与衣物来自样片贴纸 |
@@ -87,7 +88,7 @@ AI provider 返回 unavailable / unsupportedLanguage
 - 没有 AI 人物与穿搭复核入口；
 - 卡片人物、纯白贴纸边与既有授权样片一致。
 
-这些证据证明恢复交互和来源诚实性，不证明 Apple 真实生图、用户照片的 AI 质量或真实 iPhone Vision。
+这些证据证明恢复交互和来源诚实性，不证明 Apple 真实生图、GPT Image 透明质量或真实 iPhone 完整链路。
 
 本功能最初切片中的完整 `make test` 与 `make accessibility-regression` 没有形成新的全量通过证据：
 
@@ -102,25 +103,25 @@ AI provider 返回 unavailable / unsupportedLanguage
 
 2026-08-31 的本机检查显示，现有真机是 iPhone 11（iOS 18.7.7），当前离线。Apple 的设备要求说明 Apple Intelligence 需要 iPhone 15 Pro 系列或 iPhone 16 及更新机型；因此 iPhone 11 即使重新连接，也不能运行依赖 Apple Intelligence 的 Image Playground 图片生成。[Apple 设备要求](https://support.apple.com/en-hk/121115)
 
-当前生产适配器只有 Apple `ImageCreator`。Apple 还已公告该 API 在 iOS 27 及以后停止工作，建议改用系统 Image Playground 界面或其他服务，因此它不能作为长期、全设备兼容方案。[Apple ImageCreator 停用公告](https://developer.apple.com/news/?id=dz9wvq0r)
+默认人物贴纸现已使用 Apple 支持的系统 Image Playground 界面；程序化 `ImageCreator` 只暂时服务尚未迁移的风格花园。Apple 已公告该旧 API 在 iOS 27 及以后停止工作，因此它不能作为长期、全设备兼容方案。[Apple ImageCreator 停用公告](https://developer.apple.com/news/?id=dz9wvq0r)
 
-要让 iPhone 11 处理用户自己的照片，仍需由产品负责人选择一条路线：
+支持 Apple Intelligence 的设备路线已经实现；如果还要让 iPhone 11 处理用户自己的照片，仍需由产品负责人选择一条兼容路线：
 
 1. 接入云端图片生成 API，并在上传前明确征得同意；供应商密钥从第一天起只放在开发者控制的后端或本地开发代理中，不得写入 App、源码、Info.plist 或客户端 Keychain。
-2. 只支持具备 Apple Intelligence 的新设备，并把生产交互迁移到 Apple 支持的系统 Image Playground 界面；iPhone 11 只可体验内置样片。
+2. 维持当前产品边界：只支持具备 Apple Intelligence 的新设备使用系统 Image Playground；iPhone 11 只可体验内置样片。
 3. 打包本地 Core ML 生图模型，接受包体、速度、内存与质量风险，并先做单独可行性实验。
 
-在这项选择完成前，不得把当前样片恢复描述成“iPhone 11 已支持用户照片 AI 贴纸”。
+在旧设备兼容路线确定前，不得把当前样片恢复描述成“iPhone 11 已支持用户照片 AI 贴纸”。默认系统页实现与真实设备待验证边界见 [系统 Image Playground 迁移验证记录](2026-08-31-image-playground-sheet-migration.md)。
 
 ## 6. 修改与回归清单
 
 修改能力不可用文案、provider 门控、样片入口或来源规则后：
 
 1. 运行 `make ai-sticker-regression`。
-2. 确认用户原图没有进入抠图器。
+2. 确认用户原图没有进入 GPT Image 透明编辑请求。
 3. 确认样片入口需要用户明确点击，结果显示“来自内置样片”。
 4. 确认样片结果没有 AI 来源和 AI 人物复核入口。
-5. 若改动生成/抠图或耗时边界，再运行 `make sample-regression` 与 `make performance-regression`。
+5. 若改动生成/透明编辑或耗时边界，再运行 `make ai-sticker-regression`、`make sample-regression` 与 `make performance-regression`。
 6. 真正更换 provider 后，补真实请求、真实输出、隐私、时延、费用和目标设备证据。
 
-`ImageCreator` 的 SDK 编译隔离、二进制符号门禁与云端密钥边界见 [Apple ImageCreator 旧适配器隔离验证记录](2026-08-31-legacy-image-creator-isolation.md)。
+默认系统页实现见 [系统 Image Playground 迁移验证记录](2026-08-31-image-playground-sheet-migration.md)；`ImageCreator` 的 SDK 编译隔离、二进制符号门禁与云端密钥边界见 [Apple ImageCreator 旧适配器隔离验证记录](2026-08-31-legacy-image-creator-isolation.md)。

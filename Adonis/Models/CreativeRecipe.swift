@@ -35,7 +35,7 @@ enum CreativeRecipe: String, CaseIterable, Codable, Identifiable, Sendable {
 
   var subtitle: String {
     switch self {
-    case .aiStickerSource: "先生成背景干净的贴纸形象，再做透明抠图"
+    case .aiStickerSource: "先生成贴纸形象，再做 AI 透明处理"
     case .botanicalPoster: "把今天放进一片会再次盛开的花影里"
     case .floralSketch: "把这一刻画成纸上的时装手稿"
     case .mythicGarden: "把这一刻重绘成阿多尼斯的永生花园"
@@ -73,7 +73,7 @@ enum CreativeRecipe: String, CaseIterable, Codable, Identifiable, Sendable {
 
   var changedElements: String {
     switch self {
-    case .aiStickerSource: "人物与衣物会由 AI 重绘，再移除生成背景"
+    case .aiStickerSource: "人物与衣物会经过两次 AI 处理，再移除生成背景"
     case .botanicalPoster: "改变背景、花影、文字和版式"
     case .floralSketch, .mythicGarden, .moonlitTheater: "人物、衣物、背景和画风都可能改变"
     case .stickerTryOn: "裁切、缩放并覆盖衣物图；不计算真实尺码、垂坠和遮挡"

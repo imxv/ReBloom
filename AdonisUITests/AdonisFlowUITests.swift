@@ -90,6 +90,7 @@ final class AdonisFlowUITests: XCTestCase {
         "-ui-testing-persistent-store",
         persistentStoreID,
         "-ui-testing-ai-sticker-main-flow",
+        "-ui-testing-system-image-playground-main-flow",
       ]
     )
     app.launch()
@@ -98,6 +99,16 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(sample.waitForExistence(timeout: 8))
     XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
     sample.tap()
+
+    let playgroundFixture =
+      app.descendants(matching: .any)["image-playground-fixture-sheet"]
+    XCTAssertTrue(playgroundFixture.waitForExistence(timeout: 8))
+    XCTAssertTrue(playgroundFixture.label.contains("系统 Image Playground 测试替身"))
+    XCTAssertTrue(
+      app.descendants(matching: .any)["image-playground-fixture-generated-preview"].exists
+    )
+    keepScreenshot(named: "Adonis-image-playground-source-approval")
+    app.buttons["image-playground-fixture-accept"].tap()
 
     XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 25))
     XCTAssertFalse(app.alerts.element.exists)
@@ -135,6 +146,34 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(historyPicker.buttons["透明贴纸"].waitForExistence(timeout: 3))
     historyPicker.buttons["透明贴纸"].tap()
     XCTAssertTrue(aiProvenance.waitForExistence(timeout: 3))
+  }
+
+  @MainActor
+  func testCancellingSystemImagePlaygroundNeverSendsOriginalToTransparentStage() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-ai-sticker-main-flow",
+        "-ui-testing-system-image-playground-main-flow",
+      ]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
+    sample.tap()
+
+    let playgroundFixture =
+      app.descendants(matching: .any)["image-playground-fixture-sheet"]
+    XCTAssertTrue(playgroundFixture.waitForExistence(timeout: 8))
+    app.buttons["image-playground-fixture-cancel"].tap()
+
+    XCTAssertTrue(playgroundFixture.waitForNonExistence(timeout: 5))
+    XCTAssertTrue(sample.waitForExistence(timeout: 5))
+    XCTAssertFalse(app.staticTexts["result-title"].exists)
+    XCTAssertFalse(app.alerts.element.exists)
   }
 
   @MainActor
@@ -268,7 +307,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(alert.waitForExistence(timeout: 8))
     XCTAssertTrue(
       alert.staticTexts[
-        "这次需要先生成背景干净的 AI 贴纸形象，再做透明抠图。当前设备或系统设置不支持这项能力。你可以先体验明确标注的内置样片；Adonis 不会用样片替换你的照片，也没有改用原图直接抠图。"
+        "这次需要先生成 AI 贴纸形象，再做 AI 透明处理。当前设备或系统设置不支持第一步生成。你可以先体验明确标注的内置样片；Adonis 不会用样片替换你的照片，也不会改用原图直接处理。"
       ].exists
     )
     XCTAssertFalse(alert.buttons["再试一次"].exists)
@@ -711,7 +750,7 @@ final class AdonisFlowUITests: XCTestCase {
     let interruptedStage =
       app.descendants(matching: .any)["performance-interrupted-stage"]
     XCTAssertTrue(scrollToHittable(interruptedStage, in: app, attempts: 3))
-    XCTAssertTrue(interruptedStage.label.contains("抠图与白边"))
+    XCTAssertTrue(interruptedStage.label.contains("AI 透明处理与白边"))
     keepScreenshot(named: "Adonis-performance-cancelled")
   }
 
@@ -1532,7 +1571,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(unavailableAlert.waitForExistence(timeout: 10))
     XCTAssertTrue(
       app.staticTexts[
-        "这次需要先生成背景干净的 AI 贴纸形象，再做透明抠图。当前设备或系统设置不支持这项能力。你可以先体验明确标注的内置样片；Adonis 不会用样片替换你的照片，也没有改用原图直接抠图。"
+        "这次需要先生成 AI 贴纸形象，再做 AI 透明处理。当前设备或系统设置不支持第一步生成。你可以先体验明确标注的内置样片；Adonis 不会用样片替换你的照片，也不会改用原图直接处理。"
       ].exists
     )
     XCTAssertTrue(unavailableAlert.buttons["先不用"].exists)

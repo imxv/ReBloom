@@ -3,6 +3,7 @@ import Foundation
 @MainActor
 final class GenerationDeadlineController {
   nonisolated static let productionTimeout: Duration = .seconds(90)
+  nonisolated static let aiTransparentProcessingTimeout: Duration = .seconds(150)
 
   typealias Sleeper = @Sendable (Duration) async throws -> Void
 

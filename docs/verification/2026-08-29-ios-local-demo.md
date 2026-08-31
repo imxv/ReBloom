@@ -2,7 +2,7 @@
 
 > 结论：模拟器核心闭环通过，通用 iOS 真机构建通过；真实 iPhone 运行待设备连接。
 >
-> 2026-08-31 更新：默认人物链路已改为“AI 生成不透明贴纸图 → 对生成图抠图”，并增加结果后的可选人物/穿搭复核；当前全量回归为 218 项（179 个单元测试、39 个 UI 流程，0 失败）。Apple `ImageCreator` 现只作为 iOS 26 旧适配器，未来 SDK 未选定替代 provider 时诚实报告不可用。下文 197 项、历史直抠样片和“没有 AI 像素”的表述是 2026-08-30 基线；现行契约与证据见 [AI 贴纸先生成后抠图验证记录](2026-08-31-ai-sticker-first-pipeline.md)、[AI 贴纸人物与穿搭复核验证记录](2026-08-31-ai-sticker-fidelity-review.md)与 [Apple ImageCreator 旧适配器隔离验证记录](2026-08-31-legacy-image-creator-isolation.md)。
+> 2026-08-31 更新：默认人物链路已改为“系统 Image Playground 生成并由用户确认不透明贴纸图 → GPT Image 透明编辑 → 双端 Alpha 门禁 → 本机纯白边”，并增加结果后的可选人物/穿搭复核。Apple `ImageCreator` 现只作为 iOS 26 旧适配器暂时服务风格花园；默认人物入口已经迁移到受支持的系统界面。下文 197 项、历史直抠样片和“没有 AI 像素”的表述是 2026-08-30 基线，后续测试总数也应以最新验证记录为准；现行契约见 [AI 二次透明处理验证记录](2026-08-31-ai-transparent-extraction-provider.md)、[系统 Image Playground 迁移验证记录](2026-08-31-image-playground-sheet-migration.md)与 [AI 贴纸人物与穿搭复核验证记录](2026-08-31-ai-sticker-fidelity-review.md)。
 
 ## 验证范围
 
