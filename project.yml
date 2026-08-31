@@ -39,6 +39,8 @@ targets:
         GENERATE_INFOPLIST_FILE: true
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TARGETED_DEVICE_FAMILY: "1"
+        "SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos26.*]": "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR"
+        "SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator26.*]": "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR"
     scheme:
       gatherCoverageData: true
       testTargets:

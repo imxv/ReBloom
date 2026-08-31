@@ -1,6 +1,6 @@
 # Adonis
 
-Adonis 是一个中文 iOS 原生本地 Demo：用户给它一张自拍或 OOTD，App 在设备上生成保留原图内容的透明贴纸和分享收藏卡，把当天结果记录进花历；商品图还可以从照片或其他 App 的系统分享面板直接收进衣橱。
+Adonis 是一个中文 iOS 原生本地 Demo：用户给它一张自拍或 OOTD，App 先生成不透明的 AI 贴纸图，再对这张生成图抠图，得到透明贴纸和分享收藏卡，并把当天结果记录进花历；商品图还可以从照片或其他 App 的系统分享面板直接收进衣橱。
 
 当前版本没有账号、服务端、付费 API、远程分析或公开部署。完整产品边界与验收标准见 [iOS 本地 Demo 实施说明](docs/ios-local-demo.md)。
 
@@ -19,6 +19,7 @@ open Adonis.xcodeproj
 make build
 make test
 make check
+make legacy-provider-isolation
 ```
 
 `make check` 使用当前 Xcode 工具链自带的 `swift-format` 做严格格式检查，并对通用 iOS 设备目标执行静态分析；`make format` 可以机械修正 Swift 排版。
@@ -44,7 +45,7 @@ make check
 - 衣物分类不确定时保持未分类，用户可点一下纠正；同一图片不会重复入库。
 - 记录不含图片内容的本地处理耗时与错误信息。
 
-当前 iOS 26.5 模拟器的 Vision 推理运行时不可用，因此四张内置样片使用项目脚本在 macOS 主机上预处理的真实透明结果，以便完整体验收藏、分享和花历链路。默认人物照片必须先得到 AI 不透明贴纸源，再对该源图抠图；AI 生图不可用时会明确提示，并只在用户主动选择后进入标注为“来自内置样片”的体验结果，不会把用户原图直接抠图或用样片冒充用户结果。四张授权照片的独立两段式视觉实验已经证明技术顺序可行，也证明“背景干净”并不等于人物与穿搭保真。当前 iPhone 11 不支持 Apple Intelligence，用户照片的长期 provider 方案仍待决定。详见 [主链路验证](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)、[两段式视觉实验](docs/experiments/2026-08-31-ai-opaque-source-matting.md)与 [不可用恢复验证](docs/verification/2026-08-31-unsupported-ai-sample-recovery.md)。
+当前 iOS 26.5 模拟器的 Vision 推理运行时不可用，因此四张内置样片使用项目脚本在 macOS 主机上预处理的真实透明结果，以便完整体验收藏、分享和花历链路。默认人物照片必须先得到 AI 不透明贴纸源，再对该源图抠图；AI 生图不可用时会明确提示，并只在用户主动选择后进入标注为“来自内置样片”的体验结果，不会把用户原图直接抠图或用样片冒充用户结果。四张授权照片的独立两段式视觉实验已经证明技术顺序可行，也证明“背景干净”并不等于人物与穿搭保真。当前 iPhone 11 不支持 Apple Intelligence；Apple `ImageCreator` 又将在 iOS 27 停止工作，现已被隔离为 iOS 26 旧适配器，用户照片的长期 provider 方案仍待决定。详见 [主链路验证](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)、[两段式视觉实验](docs/experiments/2026-08-31-ai-opaque-source-matting.md)、[旧适配器隔离验证](docs/verification/2026-08-31-legacy-image-creator-isolation.md)与 [不可用恢复验证](docs/verification/2026-08-31-unsupported-ai-sample-recovery.md)。
 
 衣橱的颜色与白底判断不依赖 Vision，因此可以在模拟器运行；类别建议在模拟器保持为空，在 iPhone 上才会尝试系统通用分类。它不是可靠的服饰匹配能力，边界和测试证据见 [衣橱轻量导入验证](docs/verification/2026-08-29-wardrobe-import.md)。
 

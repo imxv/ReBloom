@@ -67,6 +67,7 @@
 		555B402C6733BBBAD508CEAB /* GarmentVisualSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = B762AAEB67483462BA1E71B8 /* GarmentVisualSignature.swift */; };
 		58ADA66A0AF6CC51756E7D46 /* RebloomCardRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 405E45EA248468370ACD7F14 /* RebloomCardRenderer.swift */; };
 		5BA0D9A55BEA6B79239AE80A /* StickerMatteRefiner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C39A08871E7FA9D441EFA0C /* StickerMatteRefiner.swift */; };
+		5EA54A4394BF97FC49FD4869 /* LegacyImageCreatorGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39BDA4AB8C7C151063CCB2E5 /* LegacyImageCreatorGenerator.swift */; };
 		60C452EC3947CF4E67630CDD /* sample-03-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B8DB8DEFCD7D0A3C1AE2C1E /* sample-03-sticker.png */; };
 		645D4F21A10577FAA85918E1 /* PersonalDataArchiveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D491330C3A0032C97023EB7B /* PersonalDataArchiveService.swift */; };
 		64A19ED48E35F7B3EAAD0177 /* WardrobeHistoryMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35D054A4D8ABBFB0B58A60EB /* WardrobeHistoryMatcher.swift */; };
@@ -226,6 +227,7 @@
 		344C0FB1909A7A7BC018E316 /* WardrobeImageAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeImageAnalyzer.swift; sourceTree = "<group>"; };
 		35D054A4D8ABBFB0B58A60EB /* WardrobeHistoryMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeHistoryMatcher.swift; sourceTree = "<group>"; };
 		3817293121985A50BE799780 /* ShareCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRendererTests.swift; sourceTree = "<group>"; };
+		39BDA4AB8C7C151063CCB2E5 /* LegacyImageCreatorGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyImageCreatorGenerator.swift; sourceTree = "<group>"; };
 		3BD4BCD36C529595E5739647 /* RebloomCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RebloomCatalogTests.swift; sourceTree = "<group>"; };
 		3C39A08871E7FA9D441EFA0C /* StickerMatteRefiner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerMatteRefiner.swift; sourceTree = "<group>"; };
 		3DB3F360F1CC6879BF491D66 /* GenerationDeadlineControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationDeadlineControllerTests.swift; sourceTree = "<group>"; };
@@ -459,6 +461,7 @@
 				B4FA337AA391BD2C538ADBC1 /* EventLogger.swift */,
 				B762AAEB67483462BA1E71B8 /* GarmentVisualSignature.swift */,
 				2AECF3B88471C33864593324 /* GenerationDeadlineController.swift */,
+				39BDA4AB8C7C151063CCB2E5 /* LegacyImageCreatorGenerator.swift */,
 				715F9375B113CB2BBE597E7F /* MediaStore.swift */,
 				C966E726B2F21933A2BA5344 /* MonthlyLookbookRenderer.swift */,
 				85884C9FEC03D6CBDA77DFFB /* MythicGardenCardRenderer.swift */,
@@ -875,6 +878,7 @@
 				F7DF5679A1AF54ACC4237EA2 /* GenerationDraft.swift in Sources */,
 				A84CD8918099CFDDF3566BA1 /* GenerationFallbackNotice.swift in Sources */,
 				E7CD31E84502D5CFB742EE81 /* GenerationResultView.swift in Sources */,
+				5EA54A4394BF97FC49FD4869 /* LegacyImageCreatorGenerator.swift in Sources */,
 				DFC1900DF99A5B95BAD68800 /* LocalSettingsView.swift in Sources */,
 				444C652105F7620F3A0DBDD3 /* MediaStore.swift in Sources */,
 				A3C31C98F4B24DB19FBF59B0 /* ModelStorePolicy.swift in Sources */,
@@ -988,6 +992,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo;
 				PRODUCT_NAME = Adonis;
 				SDKROOT = iphoneos;
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos26.*]" = "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator26.*]" = "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -1169,6 +1175,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo;
 				PRODUCT_NAME = Adonis;
 				SDKROOT = iphoneos;
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos26.*]" = "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator26.*]" = "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;

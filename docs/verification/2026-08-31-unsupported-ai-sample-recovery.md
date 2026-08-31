@@ -89,12 +89,14 @@ AI provider 返回 unavailable / unsupportedLanguage
 
 这些证据证明恢复交互和来源诚实性，不证明 Apple 真实生图、用户照片的 AI 质量或真实 iPhone Vision。
 
-本轮完整 `make test` 与 `make accessibility-regression` 都没有形成新的全量通过证据：
+本功能最初切片中的完整 `make test` 与 `make accessibility-regression` 没有形成新的全量通过证据：
 
 - `.derivedData/Logs/Test/Test-Adonis-2026.08.31_09-00-19-+0800.xcresult` 中 179 个单元测试全部通过；UI 长跑暴露出一条仍断言旧文案的真实测试遗漏，已修复并用上述 10:19 结果验证。另两个 UI 流程在模拟器点击或分享层关闭时失败，随后已用上述 10:20 结果分别通过。模拟器再次出现约 15 分钟的动画空闲等待后，整套测试被人工中止，因此不能宣称当前 218 项全部通过。
 - 完整无障碍回归中，既有“再次盛开”测试在与本功能无关的滑动事件上等待 195 秒后超时，模拟器在若干 App 重启处还出现 5—15 分钟停顿，最终人工中止；脚本已恢复普通字号和默认对比度。
 
-不能用上述专项通过替代两套完整回归，但它们直接覆盖了本次新增界面、来源和无原图直抠契约。最近一次完整全量通过基线仍为改动前的 217 项（179 个单元测试与 38 个 UI 流程）；本切片新增了第 39 个 UI 流程。
+不能用上述专项通过替代当时的两套完整回归，但它们直接覆盖了本次新增界面、来源和无原图直抠契约。该切片完成时的完整全量通过基线仍为 217 项（179 个单元测试与 38 个 UI 流程）；本切片新增了第 39 个 UI 流程。
+
+后续同日的旧 provider 隔离切片重新跑通了当前完整套件：`Test-Adonis-2026.08.31_12-06-09-+0800.xcresult` 为 218/218 通过，其中 179 个单元测试、39 个 UI 流程、0 失败、0 跳过。隔离命令另运行 1 个只在显式禁用旧 provider 时编译的测试。它更新了工程回归基线，但不改变本节关于最初长跑失败的历史记录，也不证明真实 iPhone 或真实图片生成 provider。
 
 ## 5. 当前设备与 provider 决策边界
 
@@ -104,7 +106,7 @@ AI provider 返回 unavailable / unsupportedLanguage
 
 要让 iPhone 11 处理用户自己的照片，仍需由产品负责人选择一条路线：
 
-1. 接入云端图片生成 API，并在上传前明确征得同意；单机开发版可先把密钥放入 Keychain，对外测试前必须迁移到后端代理。
+1. 接入云端图片生成 API，并在上传前明确征得同意；供应商密钥从第一天起只放在开发者控制的后端或本地开发代理中，不得写入 App、源码、Info.plist 或客户端 Keychain。
 2. 只支持具备 Apple Intelligence 的新设备，并把生产交互迁移到 Apple 支持的系统 Image Playground 界面；iPhone 11 只可体验内置样片。
 3. 打包本地 Core ML 生图模型，接受包体、速度、内存与质量风险，并先做单独可行性实验。
 
@@ -120,3 +122,5 @@ AI provider 返回 unavailable / unsupportedLanguage
 4. 确认样片结果没有 AI 来源和 AI 人物复核入口。
 5. 若改动生成/抠图或耗时边界，再运行 `make sample-regression` 与 `make performance-regression`。
 6. 真正更换 provider 后，补真实请求、真实输出、隐私、时延、费用和目标设备证据。
+
+`ImageCreator` 的 SDK 编译隔离、二进制符号门禁与云端密钥边界见 [Apple ImageCreator 旧适配器隔离验证记录](2026-08-31-legacy-image-creator-isolation.md)。

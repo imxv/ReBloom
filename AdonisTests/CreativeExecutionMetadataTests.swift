@@ -1,8 +1,26 @@
+import UIKit
 import XCTest
 
 @testable import Adonis
 
 final class CreativeExecutionMetadataTests: XCTestCase {
+  #if ADONIS_LEGACY_PROVIDER_DISABLED
+    @MainActor
+    func testSystemGeneratorIsHonestlyUnavailableWithoutLegacyImageCreator() async {
+      let generator = SystemCreativeImageGenerator()
+
+      XCTAssertEqual(generator.availability, .unavailable)
+      do {
+        _ = try await generator.generate(sourceImage: UIImage(), recipe: .aiStickerSource)
+        XCTFail("A build without the legacy provider must not generate an image.")
+      } catch CreativeGenerationError.unavailable {
+        // Expected: the existing recovery UI can now offer retry or the labelled sample.
+      } catch {
+        XCTFail("Expected unavailable, received \(error).")
+      }
+    }
+  #endif
+
   func testStickerTryOnTraceIsLocalZeroRequestAndRequiresVisualReview() {
     let metadata = CreativeExecutionMetadata.stickerTryOn
 
