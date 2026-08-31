@@ -19,6 +19,7 @@ struct CreateView: View {
   @State private var offersRetry = false
   @State private var retryInput: GenerationRetryInput?
   @State private var retryPhotoItem: PhotosPickerItem?
+  @State private var preparedSampleRecovery: SamplePhoto?
   @State private var activeFallbackCandidate: GenerationFallbackCandidate?
   @State private var cameraSheet: CameraSheet?
   @State private var presentedCreateAlert: CreatePresentedAlert?
@@ -181,9 +182,19 @@ struct CreateView: View {
       if offersRetry {
         Button("再试一次", action: retryLastGeneration)
       }
-      Button(offersRetry ? "换一张照片" : "换一张试试", role: .cancel) {
+      if let preparedSampleRecovery {
+        Button("体验内置样片") {
+          startPreparedSampleRecovery(preparedSampleRecovery)
+        }
+      }
+      Button(
+        preparedSampleRecovery == nil
+          ? (offersRetry ? "换一张照片" : "换一张试试") : "先不用",
+        role: .cancel
+      ) {
         retryInput = nil
         retryPhotoItem = nil
+        preparedSampleRecovery = nil
         offersRetry = false
       }
     } message: {
@@ -1192,6 +1203,7 @@ struct CreateView: View {
   private func retryLastGeneration() {
     errorMessage = nil
     offersRetry = false
+    preparedSampleRecovery = nil
     if let retryInput {
       Task {
         await generate(
@@ -1214,12 +1226,14 @@ struct CreateView: View {
   private func presentGenerationError(
     _ message: String,
     title: String = "这次没有生成成功",
-    retry: GenerationRetryInput? = nil
+    retry: GenerationRetryInput? = nil,
+    preparedSampleRecovery: SamplePhoto? = nil
   ) {
     errorTitle = title
     offersRetry = retry != nil
     retryInput = retry
     retryPhotoItem = nil
+    self.preparedSampleRecovery = preparedSampleRecovery
     errorMessage = message
   }
 
@@ -1231,8 +1245,9 @@ struct CreateView: View {
     switch error {
     case .unavailable, .unsupportedLanguage:
       presentGenerationError(
-        "这次需要先生成一张背景干净的 AI 贴纸形象，再做透明抠图。当前系统能力不可用，Adonis 没有改用原照片直接抠图。",
-        title: "这台 iPhone 暂时不能生成 AI 贴纸"
+        "这次需要先生成背景干净的 AI 贴纸形象，再做透明抠图。当前设备或系统设置不支持这项能力。你可以先体验明确标注的内置样片；Adonis 不会用样片替换你的照片，也没有改用原图直接抠图。",
+        title: "当前设备不能生成 AI 贴纸",
+        preparedSampleRecovery: SampleCatalog.showcasePhotos.first
       )
     case .unsupportedSource, .personTooSmall:
       presentGenerationError(
@@ -1246,6 +1261,27 @@ struct CreateView: View {
         "AI 贴纸形象还没有成功生成，因此没有进入抠图，也没有改用原照片直接抠图。可以再试一次。",
         title: "AI 贴纸形象没有生成好",
         retry: retry
+      )
+    }
+  }
+
+  @MainActor
+  private func startPreparedSampleRecovery(_ sample: SamplePhoto) {
+    guard let image = sample.image(), let sticker = sample.preparedStickerImage() else {
+      presentGenerationError("样片没有正确打包进 App。")
+      return
+    }
+    errorMessage = nil
+    offersRetry = false
+    retryInput = nil
+    retryPhotoItem = nil
+    preparedSampleRecovery = nil
+    Task {
+      await generate(
+        from: image,
+        preparedSticker: sticker,
+        preparedMatteAssessment: sample.preparedMatteAssessment,
+        inputSource: .preparedSample
       )
     }
   }

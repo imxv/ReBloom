@@ -235,6 +235,52 @@ final class AdonisFlowUITests: XCTestCase {
   }
 
   @MainActor
+  func testUnavailableAIStickerOffersAnHonestPreparedSampleRecovery() {
+    let app = XCUIApplication()
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-ai-sticker-main-flow",
+        "-ui-testing-system-creative-unavailable",
+      ]
+    )
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
+    sample.tap()
+
+    let alert = app.alerts["当前设备不能生成 AI 贴纸"]
+    XCTAssertTrue(alert.waitForExistence(timeout: 8))
+    XCTAssertTrue(
+      alert.staticTexts[
+        "这次需要先生成背景干净的 AI 贴纸形象，再做透明抠图。当前设备或系统设置不支持这项能力。你可以先体验明确标注的内置样片；Adonis 不会用样片替换你的照片，也没有改用原图直接抠图。"
+      ].exists
+    )
+    XCTAssertFalse(alert.buttons["再试一次"].exists)
+    XCTAssertTrue(alert.buttons["先不用"].exists)
+    let recovery = alert.buttons["体验内置样片"]
+    guard recovery.waitForExistence(timeout: 2) else {
+      XCTFail("系统生图不可用时应提供明确的内置样片恢复入口")
+      return
+    }
+    recovery.tap()
+
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
+    let resultModeMenu = app.descendants(matching: .any)["result-mode-menu"]
+    let resultModePicker = app.segmentedControls["result-mode-picker"]
+    XCTAssertTrue(resultModeMenu.exists || resultModePicker.exists)
+    if resultModePicker.exists {
+      XCTAssertTrue(resultModePicker.buttons["收藏卡"].exists)
+      XCTAssertTrue(resultModePicker.buttons["透明贴纸"].exists)
+      XCTAssertTrue(resultModePicker.buttons["原始照片"].exists)
+    }
+    XCTAssertFalse(app.descendants(matching: .any)["sticker-fidelity-review-entry"].exists)
+    keepScreenshot(named: "Adonis-unavailable-ai-prepared-sample-recovery")
+  }
+
+  @MainActor
   func testSystemCreationTimeoutStopsWaitingAndKeepsOriginalResult() {
     let app = XCUIApplication()
     app.launchArguments.append(
@@ -1469,14 +1515,16 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(scrollToHittable(catalogImage, in: app, attempts: 6))
     catalogImage.tap()
 
-    let unavailableAlert = app.alerts["这台 iPhone 暂时不能生成 AI 贴纸"]
+    let unavailableAlert = app.alerts["当前设备不能生成 AI 贴纸"]
     XCTAssertTrue(unavailableAlert.waitForExistence(timeout: 10))
     XCTAssertTrue(
       app.staticTexts[
-        "这次需要先生成一张背景干净的 AI 贴纸形象，再做透明抠图。当前系统能力不可用，Adonis 没有改用原照片直接抠图。"
+        "这次需要先生成背景干净的 AI 贴纸形象，再做透明抠图。当前设备或系统设置不支持这项能力。你可以先体验明确标注的内置样片；Adonis 不会用样片替换你的照片，也没有改用原图直接抠图。"
       ].exists
     )
-    XCTAssertTrue(unavailableAlert.buttons["换一张试试"].exists)
+    XCTAssertTrue(unavailableAlert.buttons["先不用"].exists)
+    XCTAssertTrue(unavailableAlert.buttons["体验内置样片"].exists)
+    XCTAssertFalse(unavailableAlert.buttons["再试一次"].exists)
     XCTAssertFalse(unavailableAlert.buttons["收进衣橱"].exists)
     XCTAssertFalse(app.staticTexts["result-title"].exists)
     XCTAssertFalse(
@@ -1484,7 +1532,7 @@ final class AdonisFlowUITests: XCTestCase {
     )
     keepScreenshot(named: "Adonis-ai-sticker-unavailable-no-fallback")
 
-    unavailableAlert.buttons["换一张试试"].tap()
+    unavailableAlert.buttons["先不用"].tap()
     XCTAssertTrue(app.buttons["sample-01"].waitForExistence(timeout: 3))
     app.tabBars.buttons["衣橱"].tap()
     XCTAssertTrue(app.buttons["add-first-wardrobe-item"].waitForExistence(timeout: 5))

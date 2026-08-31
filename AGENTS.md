@@ -20,6 +20,8 @@
 
 修改默认人物贴纸的生成顺序、隐藏配方、Apple `ImageCreator` 适配、不透明生成源、抠图输入、失败/超时恢复、来源、执行元数据、保存、删除、导出或 UI 测试夹具前，还必须完整阅读 [AI 贴纸先生成后抠图验证记录](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)，并运行 `make ai-sticker-regression`、`make sample-regression` 与 `make performance-regression`。生产主链路必须保持“用户原图 → AI 不透明贴纸图 → 对 AI 图抠图 → 透明贴纸”；AI 不可用、生成失败或抠图失败时不得静默退回用户原图直抠。Debug 生成图和抠图夹具只证明产品链路，不得描述成真实 Apple 输出、真实 Vision 或人物/衣物保真证据。AI 贴纸不得生成事实性 OOTD 衣物线索。
 
+修改 AI 图片生成能力不可用提示、语言/设备门控、内置样片恢复、不可用按钮或样片来源前，还必须完整阅读 [AI 生图不可用时的样片恢复验证记录](docs/verification/2026-08-31-unsupported-ai-sample-recovery.md)，并运行 `make ai-sticker-regression`。样片只能由用户明确点击后进入，必须显示“来自内置样片”，保持“原图处理 / 程序排版”来源，且不得显示 AI 人物复核、自动收藏、替换用户照片或声称用户自己的照片已经生成成功。当前 iPhone 11 不支持 Apple Intelligence；内置样片恢复不是 provider 兼容方案。
+
 修改“这张还像你吗？”入口、人物与穿搭评价分类、原图/AI 源图对照、收藏前评价、历史修改、评价事件、SwiftData 字段或个人数据导出前，还必须完整阅读 [AI 贴纸人物与穿搭复核验证记录](docs/verification/2026-08-31-ai-sticker-fidelity-review.md)，并运行 `make ai-sticker-regression`、`make accessibility-regression` 与 `make persistence-regression`。复核必须保持为结果后的可选动作，不得变成上传前问卷或收藏门槛；它只评价 AI 源图相对用户原图的人物与穿搭变化，不得与蒙版、透明边缘或纯白边结构质量混为一谈。Debug 评价只能证明界面与数据链路，不能宣称真实 Apple 输出已经保真。
 
 修改结果页“存透明贴纸”、`PhotoLibrarySaver`、PhotoKit 授权、PNG 写入、权限拒绝/重试/分享兜底或相册保存事件前，还必须完整阅读 [透明贴纸存入相册验证记录](docs/verification/2026-08-31-sticker-photo-save.md)，并运行 `make photo-save-regression`、`make accessibility-regression` 与 `make test`。“收藏今天”与“存透明贴纸”必须保持为两个不同承诺；只有用户明确点击后才能请求 add-only 照片权限，不得自动保存。模拟器注入状态和 PNG 字节测试不能替代真实 iPhone 相册写入、透明通道、原始尺寸或设置往返证据。
@@ -108,7 +110,7 @@
 
 - 修改 Swift 源码后运行 `make check`，执行严格 `swift-format` 检查与通用 iOS 设备静态分析。
 - 修改用户主链路、数据模型或图像处理后运行 `make test`；不能用单次编译代替 UI 与像素证据。
-- 修改默认 AI 贴纸主链路或人物与穿搭复核时，额外运行 `make ai-sticker-regression`；它锁定 AI 生成图确实先于抠图、抠图输入不是用户原图、无原图直抠兜底、AI 来源与执行元数据、可选复核、保存导出及 Debug UI 产品链路。该命令不替代真实 Apple 输出、人物/穿搭保真或真实 iPhone Vision。
+- 修改默认 AI 贴纸主链路、能力不可用恢复或人物与穿搭复核时，额外运行 `make ai-sticker-regression`；它锁定 AI 生成图确实先于抠图、抠图输入不是用户原图、无原图直抠兜底、明确标注的内置样片恢复、模糊商品图不能绕过 AI 生成直接入衣橱、AI 来源与执行元数据、可选复核、保存导出及 Debug UI 产品链路。该命令不替代真实 Apple 输出、人物/穿搭保真、iPhone 11 provider 兼容或真实 iPhone Vision。
 - 修改模型、提示、分割或贴纸/收藏卡后处理时，额外运行 `make sample-regression`；它同时校验四组仓库哈希与 macOS Vision 字节级重生成、iOS 像素结构、原始蒙版、源像素保真与成品结构闸门，以及三张 A 级展示样片的收藏卡。C 级 sample-04 只保留失败回归，不生成用户收藏卡。
 - 修改布局、文案、颜色、动效、无障碍语义或生命周期状态时，额外运行 `make accessibility-regression`；脚本会临时启用最大辅助字号与增强对比度，覆盖 AI 贴纸复核在两图纵向对照、多选、保存与历史回看中的滚动可达性，并在退出时恢复模拟器设置。
 - 修改相机入口、权限状态、权限文案或设置恢复路径时，额外运行 `make permission-regression`；拒绝态必须提供系统设置入口，系统限制态不得承诺用户能在 App 设置中解除。

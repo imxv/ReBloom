@@ -54,7 +54,7 @@ enum CreativeGenerationError: LocalizedError, Equatable {
   var errorDescription: String? {
     switch self {
     case .unavailable:
-      "这台 iPhone 暂时没有准备好系统创作能力，可以继续使用花影海报。"
+      "当前设备或系统设置暂时无法使用系统图片生成。"
     case .unsupportedSource:
       "系统暂时读不懂这张照片，请换一张主体更清楚的照片。"
     case .personTooSmall:

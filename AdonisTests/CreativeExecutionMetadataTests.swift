@@ -74,9 +74,9 @@ final class CreativeExecutionMetadataTests: XCTestCase {
     XCTAssertEqual(CreativeGenerationError.personTooSmall.eventCode, "person_too_small")
     XCTAssertEqual(CreativeGenerationError.timedOut.eventCode, "timed_out")
     XCTAssertEqual(CreativeGenerationError.noImage.eventCode, "no_image")
-    XCTAssertTrue(
-      CreativeGenerationError.unavailable.localizedDescription.contains("这台 iPhone")
-    )
+    let unavailableDescription = CreativeGenerationError.unavailable.localizedDescription
+    XCTAssertTrue(unavailableDescription.contains("当前设备或系统设置"))
+    XCTAssertFalse(unavailableDescription.contains("花影海报"))
     XCTAssertTrue(
       CreativeGenerationError.personTooSmall.localizedDescription.contains("换一张")
     )
