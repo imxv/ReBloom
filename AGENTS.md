@@ -18,7 +18,7 @@
 
 修改抠图、收藏卡、图片识别、补全、生成、试穿、风格创作、结果分享或图片导出清单前，还必须完整阅读 [生成内容来源标识验证记录](docs/verification/2026-08-29-content-provenance.md)。来源按实际像素动态决定：用户照片是“原始图片”；历史直抠样片可以是“原图处理”；默认透明贴纸由 AI 先生成再抠图，因此它、收藏卡及使用它的派生作品都必须保留“AI 生成”；衣橱分析属于“识别建议”。程序排版只能描述新增版式，不能抹掉输入中的 AI 来源。
 
-修改默认人物贴纸的生成顺序、隐藏配方、Apple `ImageCreator` 适配、不透明生成源、抠图输入、失败/超时恢复、来源、执行元数据、保存、删除、导出或 UI 测试夹具前，还必须完整阅读 [AI 贴纸先生成后抠图验证记录](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)，并运行 `make ai-sticker-regression`、`make sample-regression` 与 `make performance-regression`。生产主链路必须保持“用户原图 → AI 不透明贴纸图 → 对 AI 图抠图 → 透明贴纸”；AI 不可用、生成失败或抠图失败时不得静默退回用户原图直抠。Debug 生成图和抠图夹具只证明产品链路，不得描述成真实 Apple 输出、真实 Vision 或人物/衣物保真证据。AI 贴纸不得生成事实性 OOTD 衣物线索。
+修改默认人物贴纸的生成顺序、隐藏配方、Apple `ImageCreator` 适配、不透明生成源、抠图输入、失败/超时恢复、来源、执行元数据、保存、删除、导出或 UI 测试夹具前，还必须完整阅读 [AI 贴纸先生成后抠图验证记录](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)与 [四张授权样片两段式视觉实验](docs/experiments/2026-08-31-ai-opaque-source-matting.md)，并运行 `make ai-sticker-regression`、`make ai-sticker-visual-regression`、`make sample-regression` 与 `make performance-regression`。生产主链路必须保持“用户原图 → AI 不透明贴纸图 → 对 AI 图抠图 → 透明贴纸”；AI 不可用、生成失败或抠图失败时不得静默退回用户原图直抠。背景干净、带 Alpha 或纯白边都不能证明人物与穿搭保真；两段必须分开评价。Debug 生成图、抠图夹具和 Codex 内置生图实验都不得描述成真实 Apple 输出、真实 iPhone、未来云端 provider 或人物/衣物保真证据。AI 贴纸不得生成事实性 OOTD 衣物线索。
 
 修改 AI 图片生成能力不可用提示、语言/设备门控、内置样片恢复、不可用按钮或样片来源前，还必须完整阅读 [AI 生图不可用时的样片恢复验证记录](docs/verification/2026-08-31-unsupported-ai-sample-recovery.md)，并运行 `make ai-sticker-regression`。样片只能由用户明确点击后进入，必须显示“来自内置样片”，保持“原图处理 / 程序排版”来源，且不得显示 AI 人物复核、自动收藏、替换用户照片或声称用户自己的照片已经生成成功。当前 iPhone 11 不支持 Apple Intelligence；内置样片恢复不是 provider 兼容方案。
 

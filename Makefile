@@ -4,7 +4,7 @@ SCHEME := Adonis
 DESTINATION := platform=iOS Simulator,name=iPhone 17 Pro,OS=latest
 DERIVED_DATA := .derivedData
 
-.PHONY: project build test sample-regression ai-sticker-regression accessibility-regression permission-regression photo-save-regression persistence-regression wardrobe-visual-regression input-routing-regression performance-regression lookbook-regression figurine-regression cabinet-regression seasonal-regression rebloom-regression rebloom-reminder-regression creative-regression tryon-regression lint format analyze check clean
+.PHONY: project build test sample-regression ai-sticker-regression ai-sticker-visual-regression accessibility-regression permission-regression photo-save-regression persistence-regression wardrobe-visual-regression input-routing-regression performance-regression lookbook-regression figurine-regression cabinet-regression seasonal-regression rebloom-regression rebloom-reminder-regression creative-regression tryon-regression lint format analyze check clean
 
 project:
 	./scripts/xcodegen.sh generate --spec project.yml
@@ -37,6 +37,9 @@ ai-sticker-regression: project
 		-only-testing:AdonisUITests/AdonisFlowUITests/testAIStickerFidelityReviewPersistsFromResultIntoHistory \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testAmbiguousInputDoesNotBypassUnavailableAIStickerGeneration \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testUnavailableAIStickerOffersAnHonestPreparedSampleRecovery
+
+ai-sticker-visual-regression:
+	ruby scripts/verify_ai_sticker_visual_experiment.rb
 
 accessibility-regression: project
 	./scripts/verify_accessibility_regression.sh

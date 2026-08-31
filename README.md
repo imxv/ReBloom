@@ -44,7 +44,7 @@ make check
 - 衣物分类不确定时保持未分类，用户可点一下纠正；同一图片不会重复入库。
 - 记录不含图片内容的本地处理耗时与错误信息。
 
-当前 iOS 26.5 模拟器的 Vision 推理运行时不可用，因此四张内置样片使用项目脚本在 macOS 主机上预处理的真实透明结果，以便完整体验收藏、分享和花历链路。默认人物照片必须先得到 AI 不透明贴纸源，再对该源图抠图；AI 生图不可用时会明确提示，并只在用户主动选择后进入标注为“来自内置样片”的体验结果，不会把用户原图直接抠图或用样片冒充用户结果。当前 iPhone 11 不支持 Apple Intelligence，用户照片的长期 provider 方案仍待决定。详见 [主链路验证](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)与 [不可用恢复验证](docs/verification/2026-08-31-unsupported-ai-sample-recovery.md)。
+当前 iOS 26.5 模拟器的 Vision 推理运行时不可用，因此四张内置样片使用项目脚本在 macOS 主机上预处理的真实透明结果，以便完整体验收藏、分享和花历链路。默认人物照片必须先得到 AI 不透明贴纸源，再对该源图抠图；AI 生图不可用时会明确提示，并只在用户主动选择后进入标注为“来自内置样片”的体验结果，不会把用户原图直接抠图或用样片冒充用户结果。四张授权照片的独立两段式视觉实验已经证明技术顺序可行，也证明“背景干净”并不等于人物与穿搭保真。当前 iPhone 11 不支持 Apple Intelligence，用户照片的长期 provider 方案仍待决定。详见 [主链路验证](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)、[两段式视觉实验](docs/experiments/2026-08-31-ai-opaque-source-matting.md)与 [不可用恢复验证](docs/verification/2026-08-31-unsupported-ai-sample-recovery.md)。
 
 衣橱的颜色与白底判断不依赖 Vision，因此可以在模拟器运行；类别建议在模拟器保持为空，在 iPhone 上才会尝试系统通用分类。它不是可靠的服饰匹配能力，边界和测试证据见 [衣橱轻量导入验证](docs/verification/2026-08-29-wardrobe-import.md)。
 

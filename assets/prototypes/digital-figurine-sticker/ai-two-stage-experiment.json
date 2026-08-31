@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "name": "adonis-ai-opaque-source-then-matting",
+  "generatedOn": "2026-08-31",
+  "authorization": {
+    "kind": "user_provided",
+    "sourceManifest": "Adonis/Resources/Samples/regression-baseline.json",
+    "externalSocialPlatformImagesIncluded": false
+  },
+  "generation": {
+    "tool": "Codex built-in image generation",
+    "model": "not_exposed",
+    "recipeVersion": "adonis-opaque-sticker-source-v1",
+    "outputContract": "opaque warm-white photographic sticker source",
+    "requestCount": 5,
+    "reproducibility": "nondeterministic; archived outputs are evidence, not a regeneration fixture"
+  },
+  "matting": {
+    "tool": "scripts/generate_sample_stickers.swift",
+    "version": "sticker-vision-edge-refine-v2",
+    "platform": "macOS Vision VNGeneratePersonSegmentationRequest + Core Image",
+    "minimumLongEdgePixels": 1536,
+    "alphaContract": {
+      "transparentAlphaMaximum": 7,
+      "opaqueAlphaMinimum": 248,
+      "minimumTransparentPixelRatio": 0.05,
+      "minimumOpaquePixelRatio": 0.05
+    }
+  },
+  "samples": [
+    {
+      "id": "sample-01",
+      "original": {
+        "path": "Adonis/Resources/Samples/sample-01.png",
+        "sha256": "eeab59ff1e4b4ef9e8413bdd6a6f0a0b823aef520c09d39a1321a23d67759829",
+        "width": 1080,
+        "height": 1440,
+        "hasAlpha": true
+      },
+      "aiSource": {
+        "path": "assets/prototypes/digital-figurine-sticker/ai-source-sample-01-v1.png",
+        "sha256": "225a3a1a6045a3f625e7af6ab58716cf1649765cdf8b2c9d234e6f268c0e6c10",
+        "width": 1086,
+        "height": 1448,
+        "hasAlpha": false,
+        "requestCount": 2
+      },
+      "sticker": {
+        "path": "assets/prototypes/digital-figurine-sticker/ai-source-sample-01-sticker-v1.png",
+        "sha256": "4a23e4c24a343235d52ca3911c25c3eb9f594c083e2c933905c7ee41dfd0395e",
+        "width": 819,
+        "height": 1536,
+        "hasAlpha": true
+      },
+      "manualFidelityReview": {
+        "status": "changed",
+        "issues": ["face", "pose", "clothing", "accessory"],
+        "notes": "第二次请求恢复了吸管与更多包袋细节，但脸、姿势、波点和若干配饰仍不是原图级保真。"
+      },
+      "manualMattingReview": {
+        "status": "acceptable",
+        "issues": [],
+        "notes": "主体完整，纯白边连续，没有街景或路柱粘连。"
+      },
+      "productEligibility": "experiment_only"
+    },
+    {
+      "id": "sample-02",
+      "original": {
+        "path": "Adonis/Resources/Samples/sample-02.png",
+        "sha256": "5899d410fe7f0c39a7f8225e5db8ce231755eeee154fe1bb453f227bd967bcdd",
+        "width": 1080,
+        "height": 1440,
+        "hasAlpha": true
+      },
+      "aiSource": {
+        "path": "assets/prototypes/digital-figurine-sticker/ai-source-sample-02-v1.png",
+        "sha256": "9fea8038f8d116dd96c3434ce9c7212979ddf6df3477d8df6c2100af7680d771",
+        "width": 1086,
+        "height": 1448,
+        "hasAlpha": false,
+        "requestCount": 1
+      },
+      "sticker": {
+        "path": "assets/prototypes/digital-figurine-sticker/ai-source-sample-02-sticker-v1.png",
+        "sha256": "dc7801229bc6140ac5c903ed18dd8debb4a7aece631085629d7747c22e06fe75",
+        "width": 518,
+        "height": 1536,
+        "hasAlpha": true
+      },
+      "manualFidelityReview": {
+        "status": "changed",
+        "issues": ["face", "pose", "accessory"],
+        "notes": "右手离开原来的墙面支撑姿势，脸与金属编织包的形状和纹理均发生变化。"
+      },
+      "manualMattingReview": {
+        "status": "review_recommended",
+        "issues": ["reflective_bag_faded"],
+        "notes": "人物轮廓干净，但浅色反光包在白底分割后明显变淡并丢失局部边缘。"
+      },
+      "productEligibility": "experiment_only"
+    },
+    {
+      "id": "sample-03",
+      "original": {
+        "path": "Adonis/Resources/Samples/sample-03.png",
+        "sha256": "34bf69017581655fe7bfacce63d935fbcbd05af3bb2857f9f06ac00f7dd0ae74",
+        "width": 1080,
+        "height": 1440,
+        "hasAlpha": true
+      },
+      "aiSource": {
+        "path": "assets/prototypes/digital-figurine-sticker/ai-source-sample-03-v1.png",
+        "sha256": "6479a1b04c487a6d4869984afb62631c3366a786e9f818e8f03965accdb7b926",
+        "width": 1086,
+        "height": 1448,
+        "hasAlpha": false,
+        "requestCount": 1
+      },
+      "sticker": {
+        "path": "assets/prototypes/digital-figurine-sticker/ai-source-sample-03-sticker-v1.png",
+        "sha256": "c5c9ed09c14c78526f39764b112b444c3b5d4090f036bfe8a007f9695fdf36ae",
+        "width": 556,
+        "height": 1536,
+        "hasAlpha": true
+      },
+      "manualFidelityReview": {
+        "status": "changed",
+        "issues": ["face", "clothing", "accessory", "missing_or_extra_content"],
+        "notes": "脸、胸前蝴蝶结、甜点和包袋细节被重绘；宽腿裤的整体关系仍保留。"
+      },
+      "manualMattingReview": {
+        "status": "acceptable",
+        "issues": [],
+        "notes": "复杂店内背景与其他人物被排除，主体和宽腿裤完整，纯白边连续。"
+      },
+      "productEligibility": "experiment_only"
+    },
+    {
+      "id": "sample-04",
+      "original": {
+        "path": "Adonis/Resources/Samples/sample-04.png",
+        "sha256": "ff47e939b5cd42f479182e5ecd81e00fc6ff9f06b119e822f8edba4485efba19",
+        "width": 1080,
+        "height": 1440,
+        "hasAlpha": true
+      },
+      "aiSource": {
+        "path": "assets/prototypes/digital-figurine-sticker/ai-source-sample-04-v1.png",
+        "sha256": "932131e3034f3540e449a494188b665c4edf18ddb315d44e42d721e5dec201ae",
+        "width": 1086,
+        "height": 1448,
+        "hasAlpha": false,
+        "requestCount": 1
+      },
+      "sticker": {
+        "path": "assets/prototypes/digital-figurine-sticker/ai-source-sample-04-sticker-v1.png",
+        "sha256": "d76d99dc8ae81426c76d31bdcac204b00b8d1017b199ecd888d19d3c711b7e4c",
+        "width": 1033,
+        "height": 1536,
+        "hasAlpha": true
+      },
+      "manualFidelityReview": {
+        "status": "changed",
+        "issues": ["face", "clothing", "accessory"],
+        "notes": "坐姿、交叠腿与长靴关系保留较好，但脸、上衣图形、手套和靴子细节仍被重绘。"
+      },
+      "manualMattingReview": {
+        "status": "rejected",
+        "issues": ["dark_accessory_became_translucent"],
+        "notes": "原本黑色的抬手手套与部分靴边在抠图后明显灰白和半透明，不能作为产品交付。"
+      },
+      "productEligibility": "experiment_only"
+    }
+  ]
+}

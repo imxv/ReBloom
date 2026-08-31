@@ -38,10 +38,10 @@ xcrun swift scripts/generate_sample_stickers.swift \
 
 | 派生文件 | SHA-256 |
 | --- | --- |
-| sample-01-sticker.png | `d955397f25f7bf0b847d1f608a2423c91a820738a1989bbba8463148af029344` |
-| sample-02-sticker.png | `5ce0d85742ffa585bb36da7d846ae073c28f6ef34a8e05fbc60e5657c578ea27` |
-| sample-03-sticker.png | `62cfa4d8105d017eabd7e6e3548bd6735f98cc7c45fb3a5eb6ccfda63e5fe156` |
-| sample-04-sticker.png | `893626428ebf7e8b9414f8d61dc409681cf994568d6d7ad6ddf2b11869fb566d` |
+| sample-01-sticker.png | `c07053dcd70651c8951e4090d259b7f230b78123af47b88c95c8c007d4f0f616` |
+| sample-02-sticker.png | `d2634c153cb6c7944e3e7b84a094af77e1b48afaa5eaf364e897ce9b2caff51a` |
+| sample-03-sticker.png | `17be951440b4148a2a6c7abfb1e3975e876e4d95a1ccdad784d65a1a9c0640bf` |
+| sample-04-sticker.png | `e89b89c7bb6258bb86eb8e13f54258f6cfffff2d3d46069340055972358329d9` |
 
 ## 当前覆盖与已知缺陷
 
