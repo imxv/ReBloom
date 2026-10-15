@@ -198,10 +198,10 @@ test("existing sticker assets keep their structural eligibility without changing
   for (let number = 1; number <= 4; number += 1) {
     const id = `sample-0${number}`;
     const paths = [
-      `../../Adonis/Resources/Samples/${id}-sticker.png`,
+      `../../ReBloom/Resources/Samples/${id}-sticker.png`,
       `../../assets/prototypes/digital-figurine-sticker/ai-source-${id}-sticker-v1.png`
     ];
-    if (number <= 3) paths.push(`../../Adonis/Resources/Samples/${id}-ai-sticker.png`);
+    if (number <= 3) paths.push(`../../ReBloom/Resources/Samples/${id}-ai-sticker.png`);
     for (const path of paths) {
       const png = readFileSync(new URL(path, import.meta.url));
       const original = Buffer.from(png);

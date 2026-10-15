@@ -15,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5DD80AB492E229CC181C91E6"
-               BuildableName = "Adonis.app"
-               BlueprintName = "Adonis"
-               ReferencedContainer = "container:Adonis.xcodeproj">
+               BlueprintIdentifier = "897BF2C5E2AB4B81E90E9EC1"
+               BuildableName = "ReBloom.app"
+               BlueprintName = "ReBloom"
+               ReferencedContainer = "container:ReBloom.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,10 +33,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5DD80AB492E229CC181C91E6"
-            BuildableName = "Adonis.app"
-            BlueprintName = "Adonis"
-            ReferencedContainer = "container:Adonis.xcodeproj">
+            BlueprintIdentifier = "897BF2C5E2AB4B81E90E9EC1"
+            BuildableName = "ReBloom.app"
+            BlueprintName = "ReBloom"
+            ReferencedContainer = "container:ReBloom.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -45,10 +45,10 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5E3120DDE7A5A5F2FED1F377"
-               BuildableName = "AdonisTests.xctest"
-               BlueprintName = "AdonisTests"
-               ReferencedContainer = "container:Adonis.xcodeproj">
+               BlueprintIdentifier = "FA54665C9E1CB204ABEE8FB4"
+               BuildableName = "ReBloomTests.xctest"
+               BlueprintName = "ReBloomTests"
+               ReferencedContainer = "container:ReBloom.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -56,10 +56,10 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7681C0B838837683D78A284D"
-               BuildableName = "AdonisUITests.xctest"
-               BlueprintName = "AdonisUITests"
-               ReferencedContainer = "container:Adonis.xcodeproj">
+               BlueprintIdentifier = "F2DD53E5DB2F0B20568A4EEA"
+               BuildableName = "ReBloomUITests.xctest"
+               BlueprintName = "ReBloomUITests"
+               ReferencedContainer = "container:ReBloom.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -80,10 +80,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5DD80AB492E229CC181C91E6"
-            BuildableName = "Adonis.app"
-            BlueprintName = "Adonis"
-            ReferencedContainer = "container:Adonis.xcodeproj">
+            BlueprintIdentifier = "897BF2C5E2AB4B81E90E9EC1"
+            BuildableName = "ReBloom.app"
+            BlueprintName = "ReBloom"
+            ReferencedContainer = "container:ReBloom.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -99,10 +99,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5DD80AB492E229CC181C91E6"
-            BuildableName = "Adonis.app"
-            BlueprintName = "Adonis"
-            ReferencedContainer = "container:Adonis.xcodeproj">
+            BlueprintIdentifier = "897BF2C5E2AB4B81E90E9EC1"
+            BuildableName = "ReBloom.app"
+            BlueprintName = "ReBloom"
+            ReferencedContainer = "container:ReBloom.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>

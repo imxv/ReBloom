@@ -8,10 +8,10 @@
 
 | 样片 | 原图 | 固定贴纸 | 覆盖 | 目检与产品路由 |
 | --- | --- | --- | --- | --- |
-| sample-01 | [1080 × 1440](../../Adonis/Resources/Samples/sample-01.png) | [848 × 1536](../../Adonis/Resources/Samples/sample-01-sticker.png) | 站姿、浅色穿搭、饮料、手提包 | 人物、饮料和包保留；左手与发丝周围有少量灰白残留。A 级，进入普通样片入口。 |
-| sample-02 | [1080 × 1440](../../Adonis/Resources/Samples/sample-02.png) | [547 × 1536](../../Adonis/Resources/Samples/sample-02-sticker.png) | 站姿、深色穿搭、大面积留白、金属包 | 人物和包保留；身体、包与墙面或长椅接触处夹带残留。A 级，进入普通样片入口。 |
-| sample-03 | [1080 × 1440](../../Adonis/Resources/Samples/sample-03.png) | [529 × 1536](../../Adonis/Resources/Samples/sample-03-sticker.png) | 复杂背景、宽松裤装、脸部遮挡 | 托盘、手和衣服图案保留；头发与肩部附近有灰白残留。A 级，进入普通样片入口。 |
-| sample-04 | [1080 × 1440](../../Adonis/Resources/Samples/sample-04.png) | [1176 × 1536](../../Adonis/Resources/Samples/sample-04-sticker.png) | 坐姿、深色衣物、深色背景、交叠腿部 | 人物和靴子保留，但浅色软垫被大块并入主体。C 级拒绝，从普通入口隐藏且不生成用户收藏卡。 |
+| sample-01 | [1080 × 1440](../../ReBloom/Resources/Samples/sample-01.png) | [848 × 1536](../../ReBloom/Resources/Samples/sample-01-sticker.png) | 站姿、浅色穿搭、饮料、手提包 | 人物、饮料和包保留；左手与发丝周围有少量灰白残留。A 级，进入普通样片入口。 |
+| sample-02 | [1080 × 1440](../../ReBloom/Resources/Samples/sample-02.png) | [547 × 1536](../../ReBloom/Resources/Samples/sample-02-sticker.png) | 站姿、深色穿搭、大面积留白、金属包 | 人物和包保留；身体、包与墙面或长椅接触处夹带残留。A 级，进入普通样片入口。 |
+| sample-03 | [1080 × 1440](../../ReBloom/Resources/Samples/sample-03.png) | [529 × 1536](../../ReBloom/Resources/Samples/sample-03-sticker.png) | 复杂背景、宽松裤装、脸部遮挡 | 托盘、手和衣服图案保留；头发与肩部附近有灰白残留。A 级，进入普通样片入口。 |
+| sample-04 | [1080 × 1440](../../ReBloom/Resources/Samples/sample-04.png) | [1176 × 1536](../../ReBloom/Resources/Samples/sample-04-sticker.png) | 坐姿、深色衣物、深色背景、交叠腿部 | 人物和靴子保留，但浅色软垫被大块并入主体。C 级拒绝，从普通入口隐藏且不生成用户收藏卡。 |
 
 sample-04 不是“挑选出的成功案例”。保留它是为了保证后续处理不能悄悄变得更差，也提醒产品在 ADO-Q04 中对低质量结果提供可理解的降级。`regression-baseline.json` schema v2 会同时记录人工抠图结论和 `showInShowcase`，并与 App 内目录互相校验。
 

@@ -4,7 +4,7 @@
   "generatedOn": "2026-08-31",
   "authorization": {
     "kind": "user_provided",
-    "sourceManifest": "Adonis/Resources/Samples/regression-baseline.json",
+    "sourceManifest": "ReBloom/Resources/Samples/regression-baseline.json",
     "externalSocialPlatformImagesIncluded": false
   },
   "generation": {
@@ -31,7 +31,7 @@
     {
       "id": "sample-01",
       "original": {
-        "path": "Adonis/Resources/Samples/sample-01.png",
+        "path": "ReBloom/Resources/Samples/sample-01.png",
         "sha256": "eeab59ff1e4b4ef9e8413bdd6a6f0a0b823aef520c09d39a1321a23d67759829",
         "width": 1080,
         "height": 1440,
@@ -67,7 +67,7 @@
     {
       "id": "sample-02",
       "original": {
-        "path": "Adonis/Resources/Samples/sample-02.png",
+        "path": "ReBloom/Resources/Samples/sample-02.png",
         "sha256": "5899d410fe7f0c39a7f8225e5db8ce231755eeee154fe1bb453f227bd967bcdd",
         "width": 1080,
         "height": 1440,
@@ -103,7 +103,7 @@
     {
       "id": "sample-03",
       "original": {
-        "path": "Adonis/Resources/Samples/sample-03.png",
+        "path": "ReBloom/Resources/Samples/sample-03.png",
         "sha256": "34bf69017581655fe7bfacce63d935fbcbd05af3bb2857f9f06ac00f7dd0ae74",
         "width": 1080,
         "height": 1440,
@@ -139,7 +139,7 @@
     {
       "id": "sample-04",
       "original": {
-        "path": "Adonis/Resources/Samples/sample-04.png",
+        "path": "ReBloom/Resources/Samples/sample-04.png",
         "sha256": "ff47e939b5cd42f479182e5ecd81e00fc6ff9f06b119e822f8edba4485efba19",
         "width": 1080,
         "height": 1440,

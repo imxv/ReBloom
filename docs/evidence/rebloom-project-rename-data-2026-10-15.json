@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-15",
+  "baselineCommit": "dd3ba1f1335aea3cd1f9a00681ad0310442a0c90",
+  "device": "iPhone 18 Pro",
+  "os": "iOS 27.0 Simulator",
+  "signing": "CODE_SIGNING_ALLOWED=NO",
+  "storeMode": "production default configuration; no -ui-testing or persistent-test-store argument",
+  "afterUpgrade": {
+    "containerPathChangedByInstall": true,
+    "oldMediaHashesPreserved": true,
+    "oldOutfitRowsUnchanged": true,
+    "storeUUIDUnchanged": true,
+    "modelMetadataUnchanged": true,
+    "outfitCount": 1,
+    "oldMediaFileCount": 4
+  },
+  "afterColdLaunch": {
+    "oldOutfitRowsPreserved": true,
+    "outfitCountAfterColdLaunch": 2,
+    "bloomNumbers": [
+      1,
+      2
+    ],
+    "oldMediaHashesPreserved": true,
+    "totalMediaFiles": 8,
+    "storeUUIDUnchanged": true,
+    "modelMetadataUnchanged": true
+  },
+  "groupContainerRuntimeVerified": false,
+  "groupContainerNote": "Original unsigned simulator installation did not expose group.studio.adonis.localdemo. App/extension entitlements remain byte-identical; signed App Group runtime was not tested.",
+  "navigationNote": "Reopening the old card used the existing Debug -ui-testing-open-rebloom-reminder route only to select the Bloom tab. It does not select an in-memory/test store. Initial upgrade launch, new collection, and final cold launch used no arguments.",
+  "artifacts": {
+    "project.yml": "9ff6d7d74331770082d01a6692c8bded825a1c59d804a298390a10aa170ed089",
+    "ReBloom.xcodeproj/project.pbxproj": "b9a93542e809feb9a6edf0264f0815c39bc10c482d44031ea48b2e71785ab7df",
+    "ReBloom/Resources/Adonis.entitlements": "7377b2a949e91add9ead20a62b6b7bf485caf7228619fa6eead7fd0010e73aae",
+    "ReBloomShareExtension/AdonisShareExtension.entitlements": "7377b2a949e91add9ead20a62b6b7bf485caf7228619fa6eead7fd0010e73aae",
+    "docs/evidence/rebloom-renamed-project-restored-2026-10-15.png": "e400f61718a44b9f2a8d567c8ea879185d073ebe6fd60ec959d68dfee0db04c1",
+    "docs/evidence/rebloom-renamed-project-cold-launch-2026-10-15.png": "07791fa428b5b276af36c80e2bccbc7c54212376a72af73da7a8702b1b1b7ce9"
+  },
+  "app": {
+    "CFBundleDisplayName": "ReBloom",
+    "CFBundleExecutable": "ReBloom",
+    "CFBundleIdentifier": "studio.adonis.localdemo",
+    "CFBundleName": "ReBloom",
+    "NSExtension": null
+  },
+  "extension": {
+    "CFBundleDisplayName": "收进 ReBloom",
+    "CFBundleExecutable": "ReBloomShareExtension",
+    "CFBundleIdentifier": "studio.adonis.localdemo.share",
+    "CFBundleName": "ReBloomShareExtension",
+    "NSExtension": {
+      "NSExtensionAttributes": {
+        "NSExtensionActivationRule": {
+          "NSExtensionActivationSupportsImageWithMaxCount": 5
+        }
+      },
+      "NSExtensionPointIdentifier": "com.apple.share-services",
+      "NSExtensionPrincipalClass": "AdonisShareExtension.ShareViewController"
+    }
+  }
+}

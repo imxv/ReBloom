@@ -1,4 +1,4 @@
-name: Adonis
+name: ReBloom
 
 options:
   bundleIdPrefix: studio.adonis
@@ -16,26 +16,27 @@ settings:
     ENABLE_USER_SCRIPT_SANDBOXING: true
 
 targets:
-  Adonis:
+  ReBloom:
     type: application
     platform: iOS
     sources:
-      - path: Adonis
-      - path: AdonisShared
+      - path: ReBloom
+      - path: ReBloomShared
     dependencies:
-      - target: AdonisShareExtension
+      - target: ReBloomShareExtension
         embed: true
     settings:
       base:
-        CODE_SIGN_ENTITLEMENTS: Adonis/Resources/Adonis.entitlements
+        CODE_SIGN_ENTITLEMENTS: ReBloom/Resources/Adonis.entitlements
         PRODUCT_BUNDLE_IDENTIFIER: studio.adonis.localdemo
-        PRODUCT_NAME: Adonis
+        PRODUCT_NAME: ReBloom
+        PRODUCT_MODULE_NAME: Adonis
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TARGETED_DEVICE_FAMILY: "1"
         "SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos26.*]": "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR"
         "SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator26.*]": "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR"
     info:
-      path: Adonis/Resources/Info.plist
+      path: ReBloom/Resources/Info.plist
       properties:
         ADONIS_STICKER_EXTRACTION_URL: "$(ADONIS_STICKER_EXTRACTION_URL)"
         ADONIS_STICKER_PROXY_TOKEN: "$(ADONIS_STICKER_PROXY_TOKEN)"
@@ -52,25 +53,26 @@ targets:
     scheme:
       gatherCoverageData: true
       testTargets:
-        - AdonisTests
-        - AdonisUITests
+        - ReBloomTests
+        - ReBloomUITests
 
-  AdonisShareExtension:
+  ReBloomShareExtension:
     type: app-extension
     platform: iOS
     sources:
-      - path: AdonisShareExtension
-      - path: AdonisShared
+      - path: ReBloomShareExtension
+      - path: ReBloomShared
     settings:
       base:
         APPLICATION_EXTENSION_API_ONLY: true
-        CODE_SIGN_ENTITLEMENTS: AdonisShareExtension/AdonisShareExtension.entitlements
+        CODE_SIGN_ENTITLEMENTS: ReBloomShareExtension/AdonisShareExtension.entitlements
         PRODUCT_BUNDLE_IDENTIFIER: studio.adonis.localdemo.share
-        PRODUCT_NAME: AdonisShareExtension
+        PRODUCT_NAME: ReBloomShareExtension
+        PRODUCT_MODULE_NAME: AdonisShareExtension
         SKIP_INSTALL: true
         TARGETED_DEVICE_FAMILY: "1"
     info:
-      path: AdonisShareExtension/Info.plist
+      path: ReBloomShareExtension/Info.plist
       properties:
         CFBundleDisplayName: 收进 ReBloom
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
@@ -82,25 +84,25 @@ targets:
             NSExtensionActivationRule:
               NSExtensionActivationSupportsImageWithMaxCount: 5
 
-  AdonisTests:
+  ReBloomTests:
     type: bundle.unit-test
     platform: iOS
     sources:
-      - path: AdonisTests
+      - path: ReBloomTests
     dependencies:
-      - target: Adonis
+      - target: ReBloom
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: studio.adonis.localdemo.tests
         GENERATE_INFOPLIST_FILE: true
 
-  AdonisUITests:
+  ReBloomUITests:
     type: bundle.ui-testing
     platform: iOS
     sources:
-      - path: AdonisUITests
+      - path: ReBloomUITests
     dependencies:
-      - target: Adonis
+      - target: ReBloom
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: studio.adonis.localdemo.uitests

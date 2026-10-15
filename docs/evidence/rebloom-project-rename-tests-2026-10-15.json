@@ -1,0 +1,52 @@
+{
+  "status": "verified",
+  "counts": {
+    "totalTestCount": 10,
+    "passedTests": 10,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "expectedFailures": 0
+  },
+  "startTime": 1792078261.564,
+  "finishTime": 1792078316.133,
+  "minimumTests": 1,
+  "requiredCoverage": {
+    "ReBloomTests": 9,
+    "ReBloomTests/MediaStoreTests": 1,
+    "ReBloomTests/ModelStorePolicyTests": 4,
+    "ReBloomTests/SharedImageInboxTests": 4,
+    "ReBloomUITests": 1,
+    "ReBloomUITests/AdonisFlowUITests/testCollectedOutfitSurvivesProcessTerminationAndRelaunch": 1
+  },
+  "testsByTarget": {
+    "ReBloomTests": 9,
+    "ReBloomUITests": 1
+  },
+  "passedTestIdentifiers": [
+    "ReBloomTests/MediaStoreTests/testPNGWriteReadDeleteAndResetStayInsideConfiguredDirectory",
+    "ReBloomTests/ModelStorePolicyTests/testPersistentStoreArgumentRequiresUITestingAndAValidUUID",
+    "ReBloomTests/ModelStorePolicyTests/testProductionLaunchUsesProductionStore",
+    "ReBloomTests/ModelStorePolicyTests/testUnitAndDefaultUITestLaunchesStayTransient",
+    "ReBloomTests/ModelStorePolicyTests/testValidPersistentUITestGetsAnIsolatedStoreURL",
+    "ReBloomTests/SharedImageInboxTests/testOversizedPixelDimensionsAreRejectedBeforeQueueing",
+    "ReBloomTests/SharedImageInboxTests/testQueueLimitRejectsMoreImagesWithoutOverwritingPendingData",
+    "ReBloomTests/SharedImageInboxTests/testUnreadableAndTinyImagesNeverEnterSharedInbox",
+    "ReBloomTests/SharedImageInboxTests/testValidImagesAreQueuedInOrderAndRemovedExplicitly",
+    "ReBloomUITests/AdonisFlowUITests/testCollectedOutfitSurvivesProcessTerminationAndRelaunch"
+  ],
+  "schemaVersion": "adonis-xcresult-verification-v1",
+  "verifiedAt": "2026-10-15T15:32:00.343406+00:00",
+  "bundle": "/Users/sunmozong/ReBloom/.artifacts/verified-tests/5bb8a7813998405499192b2fc429fb96/tests.xcresult",
+  "sourceReportSHA256": {
+    "summary": "2b835b471972ceddcbea69b527a8de1842225d3fdf61fcea535964f8f2e85c9e",
+    "tests": "ef1a3a83c447e84f3ac09ea32466190fde1bb8109afa0f1ae135240a91ee3800"
+  },
+  "devices": [
+    {
+      "deviceName": "iPhone 17 Pro",
+      "platform": "iOS Simulator",
+      "osVersion": "26.5"
+    }
+  ],
+  "scope": "Recorded XCTest execution only; not current checkout, screenshot review, real provider, or physical-device acceptance."
+}

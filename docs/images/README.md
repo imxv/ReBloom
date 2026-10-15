@@ -8,7 +8,7 @@ Captured on 2026-10-15 from the running app at commit `41ef0f0`, built with Xcod
 
 All three are native 1206 × 2622 PNG captures. They are unedited simulator screenshots, not mockups or generated UI. The sample sticker contains archived AI pixels; the collection and figurine cards are composed locally. No live Apple/OpenAI generation was performed for these captures. This run confirms these screens display the current brand; it does not establish physical-device, identity, clothing-fidelity, save-to-Photos or full regression acceptance.
 
-The app was launched without test fixture arguments. No app code or UI tests were added or changed for this documentation update. Existing sample-image permissions and provenance remain documented in [the sample catalog](../../Adonis/Resources/Samples/README.md).
+The app was launched without test fixture arguments. No app code or UI tests were added or changed for this documentation update. Existing sample-image permissions and provenance remain documented in [the sample catalog](../../ReBloom/Resources/Samples/README.md).
 
 | File | SHA-256 |
 | --- | --- |

@@ -65,7 +65,7 @@ make ai-sticker-visual-regression
 
 | 原图 | AI 不透明源图 | 第二段透明贴纸 |
 | --- | --- | --- |
-| ![sample-01 原图](../../Adonis/Resources/Samples/sample-01.png) | ![sample-01 AI 源图](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-01-v1.png) | ![sample-01 透明贴纸](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-01-sticker-v1.png) |
+| ![sample-01 原图](../../ReBloom/Resources/Samples/sample-01.png) | ![sample-01 AI 源图](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-01-v1.png) | ![sample-01 透明贴纸](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-01-sticker-v1.png) |
 
 - AI 保真：第二次请求恢复了吸管和更多包袋结构，但脸、身体姿势、波点位置和若干配饰仍有变化。
 - 抠图：主体完整，纯白边连续，没有带入街景或路柱。
@@ -75,7 +75,7 @@ make ai-sticker-visual-regression
 
 | 原图 | AI 不透明源图 | 第二段透明贴纸 |
 | --- | --- | --- |
-| ![sample-02 原图](../../Adonis/Resources/Samples/sample-02.png) | ![sample-02 AI 源图](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-02-v1.png) | ![sample-02 透明贴纸](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-02-sticker-v1.png) |
+| ![sample-02 原图](../../ReBloom/Resources/Samples/sample-02.png) | ![sample-02 AI 源图](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-02-v1.png) | ![sample-02 透明贴纸](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-02-sticker-v1.png) |
 
 - AI 保真：脸、右手靠墙姿势、金属编织包形状和纹理被重绘。
 - 抠图：人物轮廓干净，但浅色反光包在白底分割后明显变淡并丢失局部边缘。
@@ -85,7 +85,7 @@ make ai-sticker-visual-regression
 
 | 原图 | AI 不透明源图 | 第二段透明贴纸 |
 | --- | --- | --- |
-| ![sample-03 原图](../../Adonis/Resources/Samples/sample-03.png) | ![sample-03 AI 源图](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-03-v1.png) | ![sample-03 透明贴纸](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-03-sticker-v1.png) |
+| ![sample-03 原图](../../ReBloom/Resources/Samples/sample-03.png) | ![sample-03 AI 源图](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-03-v1.png) | ![sample-03 透明贴纸](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-03-sticker-v1.png) |
 
 - AI 保真：脸、胸前蝴蝶结、甜点和包袋细节被重绘；宽腿裤与整体站姿仍保留。
 - 抠图：店内背景和其他人物被排除，主体、裤腿和鞋完整，纯白边连续。
@@ -95,7 +95,7 @@ make ai-sticker-visual-regression
 
 | 原图 | AI 不透明源图 | 第二段透明贴纸 |
 | --- | --- | --- |
-| ![sample-04 原图](../../Adonis/Resources/Samples/sample-04.png) | ![sample-04 AI 源图](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-04-v1.png) | ![sample-04 透明贴纸](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-04-sticker-v1.png) |
+| ![sample-04 原图](../../ReBloom/Resources/Samples/sample-04.png) | ![sample-04 AI 源图](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-04-v1.png) | ![sample-04 透明贴纸](../../assets/prototypes/digital-figurine-sticker/ai-source-sample-04-sticker-v1.png) |
 
 - AI 保真：坐姿、交叠腿和长靴关系保持最好，但脸、上衣图形、手套和靴子细节仍被重绘。
 - 抠图：历史原图直抠会把浅色座椅并入主体；AI 白底解决了这类背景粘连，但黑色抬手手套和部分靴边被错误处理成灰白或半透明。

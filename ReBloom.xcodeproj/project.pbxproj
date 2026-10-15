@@ -1,0 +1,1337 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0175ED7E67C727801BB5CE12 /* StickerQualityAssessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83A05CD1CCB8779ABBAFFE61 /* StickerQualityAssessment.swift */; };
+		023EAA9433CBD23A4F5AA095 /* DigitalFigurineCardRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7712A8C4D4B60878D9341E96 /* DigitalFigurineCardRenderer.swift */; };
+		04365615BEF204CC3E0E2DDA /* MonthlyLookbookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DC483E68C7D091DBC9D49A /* MonthlyLookbookView.swift */; };
+		04BFEF56CCFA7F517D066252 /* CreativeRecipeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA40B953A6525E04B9D24274 /* CreativeRecipeTests.swift */; };
+		0A6E6D7745458CC48F8792E0 /* ProcessingTraceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFCBB5C7E1FF4A7B35B3207A /* ProcessingTraceTests.swift */; };
+		0D06C87EE94CAE375743E55A /* WardrobeItemImageUpgradeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D79CE18F4E6C2468D8E4DE0 /* WardrobeItemImageUpgradeTests.swift */; };
+		0D125CEEA25484A807EDC4D0 /* AIStickerCreationPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7DE10E6121F2D0DE1A65150 /* AIStickerCreationPipelineTests.swift */; };
+		0DE1C815E99738679BBF60B5 /* BotanicalPosterRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE21EB264D6AFE53A0AF418 /* BotanicalPosterRendererTests.swift */; };
+		0F851B3DE84041C645B7A0F6 /* OutfitGarmentObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D69ECAB19F7A2EEC7747CF2 /* OutfitGarmentObserverTests.swift */; };
+		1273BF08A3FA328E647A8C8D /* AdonisFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94388B6DABF91700362933D2 /* AdonisFlowUITests.swift */; };
+		1376A21D40FC1523EFF3AE4A /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6FF51081106B74B7983585C /* ShareViewController.swift */; };
+		15268CA604445B22BDA6D9E8 /* StickerMatteRefiner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E3D8AB2BDBAB62223440B2 /* StickerMatteRefiner.swift */; };
+		15F321158EF95DCF97446034 /* CreativeWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A1237A15087498F8CA3196 /* CreativeWork.swift */; };
+		18812DFF266A3D1139CE22DB /* AppNavigationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739F6F1A5E20E7836C891509 /* AppNavigationRouter.swift */; };
+		1A1EDD303FEDC1BE93AD42A2 /* CreativeExecutionMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB06C6FD9BEA91247DCE81EE /* CreativeExecutionMetadataTests.swift */; };
+		1A7074AEEFDC3B8CECCAD2A4 /* GarmentObservationPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AB0422D2E953A60595B706 /* GarmentObservationPersistenceTests.swift */; };
+		1BD0BE70D1F8DABF69FA1740 /* CreativeImageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44654E9C43B4974E7D3A0749 /* CreativeImageGenerator.swift */; };
+		1F6A240493F9C032B1247350 /* regression-baseline.json in Resources */ = {isa = PBXBuildFile; fileRef = 7FA8FB696A12C0716EF6B423 /* regression-baseline.json */; };
+		211D89A770914F144C250C85 /* WardrobeCandidateMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CBBC40D96ECC799D388AE8 /* WardrobeCandidateMatcher.swift */; };
+		287468B615ED7B77A13AC770 /* WardrobeImageAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A306EC028ACF9BD5E8B08 /* WardrobeImageAnalyzer.swift */; };
+		28F489040546F0DB79A8638B /* StickerTryOnRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC0B58655CBFD6780A919AE /* StickerTryOnRendererTests.swift */; };
+		2B4A22B47EE7BB005CA27034 /* WardrobeImageAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1015C7DE19A49978B76E402E /* WardrobeImageAnalyzerTests.swift */; };
+		2F66FD678DAEBD6DB93EC83F /* RebloomCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02174721D58A580470377CC /* RebloomCatalog.swift */; };
+		307F57E220406638D1F804C5 /* SharedImageInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = B581D6705A3C9A73C4919212 /* SharedImageInbox.swift */; };
+		30E86E538EC79F9962CC8C1E /* PersonalDataArchiveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C52C4078BD0D4EB9186CE1 /* PersonalDataArchiveService.swift */; };
+		328D92319E3502EC58F812C8 /* SampleCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287D28DDF8E57420DC2F8972 /* SampleCatalog.swift */; };
+		3303922EEB6948F4440FF18D /* AITransparentStickerProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35499DE95F432E76FCEC7000 /* AITransparentStickerProcessor.swift */; };
+		333D4A802E3A7E0507D35BCF /* RebloomCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E57AB99D54461A4BE5F14DC /* RebloomCardRendererTests.swift */; };
+		33C74DB471ABF0AC14EBBD2E /* SeasonalBloomCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56E992989FACECF51B54ADA /* SeasonalBloomCatalog.swift */; };
+		34F2B27C92728A247B55E260 /* AITransparentStickerProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EBC7875BE9E0A8F9B86630 /* AITransparentStickerProcessorTests.swift */; };
+		35A6FF3709896DBFA674EEA6 /* sample-01.png in Resources */ = {isa = PBXBuildFile; fileRef = 10E9E0F42F35CF7B561712E1 /* sample-01.png */; };
+		35ED057C29ED097EB06D1597 /* GarmentVisualSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AAD8170B817494E647AED40 /* GarmentVisualSignature.swift */; };
+		373EBF51BF677A69654D540D /* StickerQualityAssessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35CF78CB61E427E7F8D1B60 /* StickerQualityAssessor.swift */; };
+		37FB5BA6A756CB56F8931CD9 /* SystemCreativeProcessingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9A12D17A431C41415EBECA /* SystemCreativeProcessingOverlay.swift */; };
+		3878C32AE065CE55D4DFE184 /* SampleRegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307B76E398784C86BA33D987 /* SampleRegressionTests.swift */; };
+		3A198F0DAA7C7D482A1D2240 /* sample-01-ai-source.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD562F954A048FED2229C94 /* sample-01-ai-source.png */; };
+		3ACD02629F9B2E21B826A3B4 /* WardrobeVisualSignatureBackfillServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C8EB80F2EE6C6F9B8AAD9B /* WardrobeVisualSignatureBackfillServiceTests.swift */; };
+		3BA6261D3779AF671C6A5ADE /* SeasonalBloomCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C22B3553F9A5DB6AFD6EA86 /* SeasonalBloomCatalogTests.swift */; };
+		3C65993C3E1A78DE296EEA32 /* RawMatteQualityAssessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9B34D23572D0295A9CD778 /* RawMatteQualityAssessorTests.swift */; };
+		3D55C761DE9BF9B7A4A5D396 /* CameraAccessService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8D13CFDAB80B81BB3D2EA2 /* CameraAccessService.swift */; };
+		3DDBD4804FB4D30065CD755F /* SharedImageInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = B581D6705A3C9A73C4919212 /* SharedImageInbox.swift */; };
+		3DFDB801362532866DA2A619 /* SharedWardrobeImportCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5566CFFA3419CB9A1CB34714 /* SharedWardrobeImportCoordinatorTests.swift */; };
+		401411BE255BDF0BA897333A /* AdonisTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 255D52E7F3BCCDD61E0ADE3A /* AdonisTheme.swift */; };
+		40BF0B18972813ED215E60BF /* WardrobeHistorySuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5648B044340E377C6E6FD3 /* WardrobeHistorySuggestionsView.swift */; };
+		414029A7D683878F4CD14F06 /* MediaStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED58CFD68DED280BE2DF244 /* MediaStoreTests.swift */; };
+		4160D2E94D52BCA3F0F62E59 /* StickerTryOnDeliveryQualityGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E1CD5DC6A223931F7E8350 /* StickerTryOnDeliveryQualityGate.swift */; };
+		4279D2D86A85D2F9B835D40C /* StickerFidelityReviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C954C074455745A5D8626FE /* StickerFidelityReviewTests.swift */; };
+		43E6AA1676BCFBB86EBFB5AD /* WardrobeCandidateMatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6482332B0A70A6EA8BBD0C /* WardrobeCandidateMatcherTests.swift */; };
+		44015E64D2DDEA411BE79466 /* OutfitGarmentObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F7E33A182FA55295DF806C /* OutfitGarmentObserver.swift */; };
+		4A1E3C3E45D7EC6522BB1DB3 /* OutfitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B94B3A409C47E41CDEBE4 /* OutfitDetailView.swift */; };
+		4CF61C971849215A315CAB2C /* ReBloomShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F0CE4DA05AAF9853F8FCD0A2 /* ReBloomShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		4D62949BAECAE765AF02CD05 /* DigitalFigurineCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DA09B0487B415DFADF3328 /* DigitalFigurineCardRendererTests.swift */; };
+		508E3E14F40A76DC2047DC7E /* AccessibilityContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7111ABE94856C9B3C2B0BBD6 /* AccessibilityContractTests.swift */; };
+		50A8BFF6A2C98D2843822059 /* SharedWardrobeImportCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80E043ECFA01468355E2662 /* SharedWardrobeImportCoordinator.swift */; };
+		50ECA7FFBB5E81ECC34F4E0D /* DigitalCabinetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A9D74D23657CE9BD48BD56 /* DigitalCabinetView.swift */; };
+		52C1DC85F11659A52E442DAA /* GenerationDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1B5D844337AD0AC2D9A54B /* GenerationDraft.swift */; };
+		536728B6D45C1736166540E5 /* StickerQualityAssessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FED592959AA90D8BC376C0 /* StickerQualityAssessorTests.swift */; };
+		5370B354777AAAF108245884 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39CA5B0ED428AAFC5811329 /* CameraPicker.swift */; };
+		56165AE0A6ADBA4D681F3726 /* WardrobeTestImageFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDB0001120551CD7322CD96 /* WardrobeTestImageFactory.swift */; };
+		56997834CD06AA74C33397C3 /* sample-01-ai-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = EB62DB327E23E7D2E4769C85 /* sample-01-ai-sticker.png */; };
+		5872B54547E5056751972EF1 /* MythicGardenCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31485EF8620977C6BEA9A2CC /* MythicGardenCardRendererTests.swift */; };
+		58BBA877482283CD34BD91E9 /* StickerTryOnRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B12B933C982B18A034EEE5 /* StickerTryOnRenderer.swift */; };
+		598CCD7CFF31EA0799127BC8 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 045F23723EF62DD5F1D35CD5 /* README.md */; };
+		5BB19485579AD5E601A57EA4 /* CreativeWorkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F38D58C1D92CB865BF273E0 /* CreativeWorkView.swift */; };
+		5CCFB0B81909A9C91FF18487 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81CFEAB496C4E6EB6DF3775 /* ActivityView.swift */; };
+		5F56836194B9FE5DB26EA623 /* sample-03-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F1541D62263222A95919669 /* sample-03-sticker.png */; };
+		638A0986C0AA27C3E18EDBCB /* GenerationResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEF84C9AE175061D8C93B0D /* GenerationResultView.swift */; };
+		6BE1D53F2394C901AAFA3353 /* CreativeWorkStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4914BDF8F10031B3EE3C42 /* CreativeWorkStore.swift */; };
+		6CBF0E6340DFFB685DD1D11C /* StickerFidelityReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4852043D69F5C31D05C35C /* StickerFidelityReviewView.swift */; };
+		6D5176479A378650FE72DC15 /* AIStickerCloudExtractionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17E5453C36CD95C9086D7DE /* AIStickerCloudExtractionClient.swift */; };
+		6FCE3908B7703739D487EF3F /* StickerProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5A287B9E969895489E2D90 /* StickerProcessorTests.swift */; };
+		70A55DFC2C3CE0FB38CC46AA /* AIStickerCloudExtractionClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04FDB9B3BCCA60635353B3 /* AIStickerCloudExtractionClientTests.swift */; };
+		713454354C5ECFB31264384A /* sample-03-ai-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FEB07C9DFCAFC019BA4B7E /* sample-03-ai-sticker.png */; };
+		71CAD91DBF9BD49C51ACE6C1 /* sample-03.png in Resources */ = {isa = PBXBuildFile; fileRef = 7FC757065AC590908E1D7BB4 /* sample-03.png */; };
+		7291AAD354AD321E970BD07E /* sample-02-ai-source.png in Resources */ = {isa = PBXBuildFile; fileRef = A89048FF27F9AF0AC0EA4097 /* sample-02-ai-source.png */; };
+		72A0A5BC728F93205A1E6F2A /* ModelStorePolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76117E30B378804F1F7B16A8 /* ModelStorePolicyTests.swift */; };
+		73017453BD262BF8C5737465 /* ProcessingTrace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5354F70FD9418233906647D1 /* ProcessingTrace.swift */; };
+		744392F7097FE26C9E6F5735 /* StickerSourceFidelityAssessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3FFF165D980153A98EEE950 /* StickerSourceFidelityAssessor.swift */; };
+		78703E02A50548CFE4B8DD58 /* StickerTryOnEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8061C759EBA350105B618626 /* StickerTryOnEntry.swift */; };
+		793D619680DD19C4D233C55F /* WardrobeItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C085A340E1CC09B28E6F8DD /* WardrobeItem.swift */; };
+		7D6E363E8129094734A8FD48 /* MonthlyLookbookRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9469702C5D0012D38027DC9 /* MonthlyLookbookRendererTests.swift */; };
+		7FC9809050673DD0778C0EB7 /* AppEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE3BEB9E9CA96374C13B061 /* AppEvent.swift */; };
+		82710EA72E7B554AA0C68C11 /* CuratedStyleGardenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6C1A2D5CEA8EBA13D7D3D4 /* CuratedStyleGardenView.swift */; };
+		839D06A88C95095795788574 /* CreativeExecutionMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78E014801C1067D97D7CA8B /* CreativeExecutionMetadata.swift */; };
+		87E2DBC1B84FA41283B6668C /* CreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B8F8BAFB2AA36FE4442F3C /* CreateView.swift */; };
+		89E08AEB86C2B7A87BDFCCE5 /* RawMatteQualityAssessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE553DF36E62FC1F23FCAEE /* RawMatteQualityAssessor.swift */; };
+		8B3DE17F727A6CF7818E8AAB /* AIStickerCreationPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8E97D5A0FC1032F7853381 /* AIStickerCreationPipeline.swift */; };
+		9491ADF3C69A8D3BF4B17D23 /* CameraAccessServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573DD38FCC6A17E73F6BC0AA /* CameraAccessServiceTests.swift */; };
+		952A7E2A42C0318186795B63 /* VisualContentProvenance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C88C001E6470465DBFE4C5 /* VisualContentProvenance.swift */; };
+		9567F110F3CFD3BADD14DB7A /* sample-04-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 5082C2114F15F489CDAA1AC6 /* sample-04-sticker.png */; };
+		95DA5C58CB2D2FEF8FE22EB8 /* ModelStorePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CDC55301919DDBBE4467835 /* ModelStorePolicy.swift */; };
+		96EF0D8676B43B482C7CA146 /* CreationImageIntentRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5FF555C85B1E878CCA70889 /* CreationImageIntentRouterTests.swift */; };
+		97825D1F455C69660BC36997 /* sample-02-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = B8626C7907B9AAC60D4A19B0 /* sample-02-sticker.png */; };
+		98C987A33FE53DC1BABE344E /* WardrobeItemImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C61B876A78795F689979563 /* WardrobeItemImportService.swift */; };
+		9AE75D8F33B214A7431B83CB /* GenerationFallbackNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA8A2A57CCF4795A8381579 /* GenerationFallbackNotice.swift */; };
+		9FADB4F3A35DA8F7D86151E2 /* LegacyImageCreatorGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C003FC5BBD79CD8D5BD0CFD /* LegacyImageCreatorGenerator.swift */; };
+		A2CBBD5E0D6DB6D936B03674 /* AdonisAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 709B427B38BCFC1DDFCF5EEB /* AdonisAppDelegate.swift */; };
+		A47D144B33AF0E760D5EDAD8 /* ShareCardRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572C73D01E84978D177A3B16 /* ShareCardRenderer.swift */; };
+		A554008844F393020A44FE84 /* GarmentVisualSignatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76D7A6E73F6BFE5B2116AB8 /* GarmentVisualSignatureTests.swift */; };
+		A59951F3B97D65F5879E8F85 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB319F3EE4539C4B1BE76ABC /* Assets.xcassets */; };
+		A879160F6FB56B2CF041A83B /* WardrobeItemImageUpgradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5A2A0858C2A29C33D8F8D5 /* WardrobeItemImageUpgradeView.swift */; };
+		A93E18F15F5F1FE261EDFF77 /* StoredImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C759D33BF6FC2810831FF9 /* StoredImageView.swift */; };
+		AA5074B3C61858EA8C671127 /* StickerFidelityReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8363A176CB2F9A1543FC891F /* StickerFidelityReview.swift */; };
+		AAD1B3BB500BD0121DE50030 /* WardrobeItemImageUpgradeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BD237407FE55CD4F8A9278 /* WardrobeItemImageUpgradeService.swift */; };
+		AAE4045D361D6076E0FA7C98 /* ShareCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA84DB202157A3229705997 /* ShareCardRendererTests.swift */; };
+		AD3A0CCC84884A2D34E9C59E /* DigitalCabinetCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E855255357AB971207ABB924 /* DigitalCabinetCatalog.swift */; };
+		AD7D3521661F492F09C2E2A2 /* AdonisDateText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0EB6126043103C15693E0A /* AdonisDateText.swift */; };
+		AEF1A2E6A6E7C6FA768F26B4 /* WardrobeItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F6642B3A882FEE04E8DA3 /* WardrobeItemDetailView.swift */; };
+		AFA419FD00EE5EC9A983E9F0 /* sample-01-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 74278A378EA6ADF7F22FD9AB /* sample-01-sticker.png */; };
+		B008FD38571A3E5F9AB9D2E3 /* MythicGardenCardRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D631921CCDD78509139A5941 /* MythicGardenCardRenderer.swift */; };
+		B145312BEB011D27FCBB8971 /* PhotoLibrarySaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A6FDD3EB7DFD3EF9172799 /* PhotoLibrarySaver.swift */; };
+		B741C9059B18D8ED7AD481F4 /* SharedImageInboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFC4A324F8695B8ACEE88F10 /* SharedImageInboxTests.swift */; };
+		B92A3CE4A67B1521DCA3BE8F /* AdonisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E4F888DEE9828ED646BE2E /* AdonisApp.swift */; };
+		BC0A6FD42B5BA6265D9840C8 /* RebloomReminderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89530D20FFD0B7E6A1D639DB /* RebloomReminderService.swift */; };
+		BC69CF806171C88D167F0CAD /* RebloomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE473549A394288B47FEDA2 /* RebloomView.swift */; };
+		C0DDC29944FB5FA06256B289 /* LocalSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E64E1535C3C04931F4A1CC5 /* LocalSettingsView.swift */; };
+		C29E1FC6AFEAB42F5D5702B1 /* GarmentObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6455F6C91A49E5181F46C4D /* GarmentObservation.swift */; };
+		C7E49A5A621D36FE109F566C /* EventLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA21D601333C9A6946FC19BE /* EventLogger.swift */; };
+		C820DC1E1F9FB8A8C690F77A /* homepage-ai-showcase.json in Resources */ = {isa = PBXBuildFile; fileRef = CBC62D4A93DE10F0F4405EEC /* homepage-ai-showcase.json */; };
+		C869EA650A60E2CA155F01AA /* VisualContentProvenanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CBE9407019CF66628956153 /* VisualContentProvenanceTests.swift */; };
+		C92340922DFE999638005B4D /* RebloomCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338B3A200D94FF4365AF7266 /* RebloomCatalogTests.swift */; };
+		C97EFA5AF0AE1C37320432E8 /* DigitalFigurineCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 252C197FFD3DDF10BFF7B1DC /* DigitalFigurineCardView.swift */; };
+		CA18A1A113F23EFA633E0468 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D62FEAD8A7D17C724B9AC806 /* AppRootView.swift */; };
+		CACE759D95C6B11BAD42410F /* CreationImageIntentRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816093DE4891FA7382E4178A /* CreationImageIntentRouter.swift */; };
+		CD544B4094AF9B4410F0908E /* BotanicalPosterRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446D87EEEC1DC89EB477A9C4 /* BotanicalPosterRenderer.swift */; };
+		CDEED2C42DA286992E4A1207 /* DigitalCabinetCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B7DD4536D40C49348BD47C /* DigitalCabinetCatalogTests.swift */; };
+		CE8510BFA1B66A4D2D4545D2 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082B717A5AF4024AAC4A90DB /* Components.swift */; };
+		D08B4AE3CF9ED489F6901BB4 /* OutfitRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54432B69530D3F10CAE30152 /* OutfitRecord.swift */; };
+		D3835371642E50F8D1409DB9 /* WardrobeItemNaming.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88E2FF26982BE72036666D3 /* WardrobeItemNaming.swift */; };
+		D4012B5372A8A23C4E5A055D /* RebloomCardRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3ED985678650A5B0853A0E /* RebloomCardRenderer.swift */; };
+		D4AD4B0DF8009FE92B08C9F9 /* StickerProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB64CEB7C3873F8817CC555 /* StickerProcessor.swift */; };
+		D6BE313D7C00E7443FBDE11D /* sample-02-ai-sticker.png in Resources */ = {isa = PBXBuildFile; fileRef = 5727421A80E31FDDAC6A8D39 /* sample-02-ai-sticker.png */; };
+		D7CD754A98E203BAD782A2AD /* PhotoLibrarySaverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1810A5E2D79D87F8BB55C2 /* PhotoLibrarySaverTests.swift */; };
+		D85FEF4D0FDEFCB5C7D11FF6 /* RebloomReminderServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A275021A7697C1DECD8A86A /* RebloomReminderServiceTests.swift */; };
+		D8B734A44E40133727A91116 /* WardrobeHistoryMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D5728E875F24301E25B40 /* WardrobeHistoryMatcher.swift */; };
+		D99733F1E77A7D73A46A6FEC /* OutfitGarmentObservationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531DC14A6528F5B806B8551D /* OutfitGarmentObservationsView.swift */; };
+		DACB9AD54AA8278F62977765 /* sample-03-ai-source.png in Resources */ = {isa = PBXBuildFile; fileRef = 175C925FECF367F4128F9AFC /* sample-03-ai-source.png */; };
+		DD29E16F5AC8FFC7F15F8C05 /* StickerMatteRefinerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392950E17EB6CD319A2F4924 /* StickerMatteRefinerTests.swift */; };
+		DED80270A2C51209DB02FD71 /* CreativeWorkPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3159C77F26D8B3BABF00C0D /* CreativeWorkPersistenceTests.swift */; };
+		E2ED36D691DDDCC7EC429F91 /* MonthlyLookbookRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C754B272FCADC68B559C0F /* MonthlyLookbookRenderer.swift */; };
+		E33D783BB800A69F47EA23CA /* BloomCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F252445E3CBFF49AD065794B /* BloomCalendarView.swift */; };
+		E3E1E6DD6C52A279F834E538 /* SystemImagePlaygroundStickerSourceSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE324A98FC9AA50191C53FC /* SystemImagePlaygroundStickerSourceSheet.swift */; };
+		E55E7CB678F129791D748ECD /* StickerSourceFidelityAssessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AA7B031021FCEFA860E28D /* StickerSourceFidelityAssessorTests.swift */; };
+		E56F4D35C70E573EABC5A28B /* CreativeRecipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3E89C8B5096C3319D524B /* CreativeRecipe.swift */; };
+		E58C2ECE12A2A51DC7AFE2F2 /* WardrobeHistoryMatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07C24D09ACEAEFD7DD21725 /* WardrobeHistoryMatcherTests.swift */; };
+		E7BEC8ED6D7F76A79BB3024A /* GenerationDeadlineControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E23BAC4E5F92B503A6766DF /* GenerationDeadlineControllerTests.swift */; };
+		EDC0EC8905089A9800D5E9F9 /* MediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30288653B762C430A1D04D25 /* MediaStore.swift */; };
+		F0E643171F38F0843C7DCA17 /* sample-04.png in Resources */ = {isa = PBXBuildFile; fileRef = B9E27141AA5048179033F5DE /* sample-04.png */; };
+		F13A2620A8694B92B75D2256 /* SeasonalBloomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2580B55685F52EF48BD6ED1 /* SeasonalBloomView.swift */; };
+		F1CE9371C390AA0F541DC72D /* PersonalDataControlTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4FE523667FF9E1F770C691B /* PersonalDataControlTests.swift */; };
+		F42CF174B08BF4764FFA1753 /* WardrobeVisualSignatureBackfillService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C55DCA3597DEA01C90A7C3F /* WardrobeVisualSignatureBackfillService.swift */; };
+		F48896F7DEE3A0329944F94D /* sample-02.png in Resources */ = {isa = PBXBuildFile; fileRef = 24835FAC8042A84AA22E3C11 /* sample-02.png */; };
+		F6D0F5123D336C2046CE21CA /* WardrobeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9606AA640CA97657F672C772 /* WardrobeComponents.swift */; };
+		F8DA4304A3878A8734846AB1 /* WardrobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224A18D70771AC0003D544D6 /* WardrobeView.swift */; };
+		FC9C1C69E9A688AA13A8BBB4 /* GenerationDeadlineController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774A6654E62FA7C5FDFC0B1E /* GenerationDeadlineController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		331C43F47AC2704770876C8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4AD08293D17863F6EF1D9D15 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 897BF2C5E2AB4B81E90E9EC1;
+			remoteInfo = ReBloom;
+		};
+		A406D7F270020C88D3512869 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4AD08293D17863F6EF1D9D15 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 70DFAE4CAAE76408C887EC68;
+			remoteInfo = ReBloomShareExtension;
+		};
+		E4E7FBA55C4E09FDD8FADF7D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4AD08293D17863F6EF1D9D15 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 897BF2C5E2AB4B81E90E9EC1;
+			remoteInfo = ReBloom;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		579B229408EB11F353E42AA7 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				4CF61C971849215A315CAB2C /* ReBloomShareExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		02A9D74D23657CE9BD48BD56 /* DigitalCabinetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalCabinetView.swift; sourceTree = "<group>"; };
+		02AA7B031021FCEFA860E28D /* StickerSourceFidelityAssessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerSourceFidelityAssessorTests.swift; sourceTree = "<group>"; };
+		03C52C4078BD0D4EB9186CE1 /* PersonalDataArchiveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalDataArchiveService.swift; sourceTree = "<group>"; };
+		045F23723EF62DD5F1D35CD5 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		059D5728E875F24301E25B40 /* WardrobeHistoryMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeHistoryMatcher.swift; sourceTree = "<group>"; };
+		05F7E33A182FA55295DF806C /* OutfitGarmentObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitGarmentObserver.swift; sourceTree = "<group>"; };
+		082B717A5AF4024AAC4A90DB /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		09C754B272FCADC68B559C0F /* MonthlyLookbookRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyLookbookRenderer.swift; sourceTree = "<group>"; };
+		0B559386E2A7626D90C3860C /* ReBloomTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ReBloomTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0BD562F954A048FED2229C94 /* sample-01-ai-source.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-01-ai-source.png"; sourceTree = "<group>"; };
+		0BE553DF36E62FC1F23FCAEE /* RawMatteQualityAssessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawMatteQualityAssessor.swift; sourceTree = "<group>"; };
+		0C085A340E1CC09B28E6F8DD /* WardrobeItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItem.swift; sourceTree = "<group>"; };
+		0D79CE18F4E6C2468D8E4DE0 /* WardrobeItemImageUpgradeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemImageUpgradeTests.swift; sourceTree = "<group>"; };
+		0DA84DB202157A3229705997 /* ShareCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRendererTests.swift; sourceTree = "<group>"; };
+		1015C7DE19A49978B76E402E /* WardrobeImageAnalyzerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeImageAnalyzerTests.swift; sourceTree = "<group>"; };
+		10B8F8BAFB2AA36FE4442F3C /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
+		10E9E0F42F35CF7B561712E1 /* sample-01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-01.png"; sourceTree = "<group>"; };
+		11B12B933C982B18A034EEE5 /* StickerTryOnRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerTryOnRenderer.swift; sourceTree = "<group>"; };
+		175C925FECF367F4128F9AFC /* sample-03-ai-source.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03-ai-source.png"; sourceTree = "<group>"; };
+		179B94B3A409C47E41CDEBE4 /* OutfitDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitDetailView.swift; sourceTree = "<group>"; };
+		17DC483E68C7D091DBC9D49A /* MonthlyLookbookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyLookbookView.swift; sourceTree = "<group>"; };
+		1C55DCA3597DEA01C90A7C3F /* WardrobeVisualSignatureBackfillService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeVisualSignatureBackfillService.swift; sourceTree = "<group>"; };
+		1DC0B58655CBFD6780A919AE /* StickerTryOnRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerTryOnRendererTests.swift; sourceTree = "<group>"; };
+		1E3ED985678650A5B0853A0E /* RebloomCardRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RebloomCardRenderer.swift; sourceTree = "<group>"; };
+		1E64E1535C3C04931F4A1CC5 /* LocalSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSettingsView.swift; sourceTree = "<group>"; };
+		224A18D70771AC0003D544D6 /* WardrobeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeView.swift; sourceTree = "<group>"; };
+		24835FAC8042A84AA22E3C11 /* sample-02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-02.png"; sourceTree = "<group>"; };
+		24DA09B0487B415DFADF3328 /* DigitalFigurineCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalFigurineCardRendererTests.swift; sourceTree = "<group>"; };
+		252C197FFD3DDF10BFF7B1DC /* DigitalFigurineCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalFigurineCardView.swift; sourceTree = "<group>"; };
+		255D52E7F3BCCDD61E0ADE3A /* AdonisTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisTheme.swift; sourceTree = "<group>"; };
+		287D28DDF8E57420DC2F8972 /* SampleCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleCatalog.swift; sourceTree = "<group>"; };
+		2A8D13CFDAB80B81BB3D2EA2 /* CameraAccessService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraAccessService.swift; sourceTree = "<group>"; };
+		2EB64CEB7C3873F8817CC555 /* StickerProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerProcessor.swift; sourceTree = "<group>"; };
+		2FEC820373EB10598EAF95DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		30288653B762C430A1D04D25 /* MediaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStore.swift; sourceTree = "<group>"; };
+		307B76E398784C86BA33D987 /* SampleRegressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleRegressionTests.swift; sourceTree = "<group>"; };
+		30CBBC40D96ECC799D388AE8 /* WardrobeCandidateMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeCandidateMatcher.swift; sourceTree = "<group>"; };
+		31485EF8620977C6BEA9A2CC /* MythicGardenCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MythicGardenCardRendererTests.swift; sourceTree = "<group>"; };
+		338B3A200D94FF4365AF7266 /* RebloomCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RebloomCatalogTests.swift; sourceTree = "<group>"; };
+		34BD237407FE55CD4F8A9278 /* WardrobeItemImageUpgradeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemImageUpgradeService.swift; sourceTree = "<group>"; };
+		35499DE95F432E76FCEC7000 /* AITransparentStickerProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITransparentStickerProcessor.swift; sourceTree = "<group>"; };
+		392950E17EB6CD319A2F4924 /* StickerMatteRefinerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerMatteRefinerTests.swift; sourceTree = "<group>"; };
+		3C61B876A78795F689979563 /* WardrobeItemImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemImportService.swift; sourceTree = "<group>"; };
+		3F1541D62263222A95919669 /* sample-03-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03-sticker.png"; sourceTree = "<group>"; };
+		40AB0422D2E953A60595B706 /* GarmentObservationPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarmentObservationPersistenceTests.swift; sourceTree = "<group>"; };
+		43E1CD5DC6A223931F7E8350 /* StickerTryOnDeliveryQualityGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerTryOnDeliveryQualityGate.swift; sourceTree = "<group>"; };
+		44654E9C43B4974E7D3A0749 /* CreativeImageGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeImageGenerator.swift; sourceTree = "<group>"; };
+		446D87EEEC1DC89EB477A9C4 /* BotanicalPosterRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotanicalPosterRenderer.swift; sourceTree = "<group>"; };
+		44EF5726626F4072913E269D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		4599C7CCBDE258485C5F2DD5 /* AdonisShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AdonisShareExtension.entitlements; sourceTree = "<group>"; };
+		4B9B34D23572D0295A9CD778 /* RawMatteQualityAssessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawMatteQualityAssessorTests.swift; sourceTree = "<group>"; };
+		5082C2114F15F489CDAA1AC6 /* sample-04-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-04-sticker.png"; sourceTree = "<group>"; };
+		51FEB07C9DFCAFC019BA4B7E /* sample-03-ai-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03-ai-sticker.png"; sourceTree = "<group>"; };
+		531DC14A6528F5B806B8551D /* OutfitGarmentObservationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitGarmentObservationsView.swift; sourceTree = "<group>"; };
+		5354F70FD9418233906647D1 /* ProcessingTrace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingTrace.swift; sourceTree = "<group>"; };
+		54432B69530D3F10CAE30152 /* OutfitRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitRecord.swift; sourceTree = "<group>"; };
+		54FED592959AA90D8BC376C0 /* StickerQualityAssessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerQualityAssessorTests.swift; sourceTree = "<group>"; };
+		5566CFFA3419CB9A1CB34714 /* SharedWardrobeImportCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedWardrobeImportCoordinatorTests.swift; sourceTree = "<group>"; };
+		5727421A80E31FDDAC6A8D39 /* sample-02-ai-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-02-ai-sticker.png"; sourceTree = "<group>"; };
+		572C73D01E84978D177A3B16 /* ShareCardRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRenderer.swift; sourceTree = "<group>"; };
+		573DD38FCC6A17E73F6BC0AA /* CameraAccessServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraAccessServiceTests.swift; sourceTree = "<group>"; };
+		5A275021A7697C1DECD8A86A /* RebloomReminderServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RebloomReminderServiceTests.swift; sourceTree = "<group>"; };
+		5A5A2A0858C2A29C33D8F8D5 /* WardrobeItemImageUpgradeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemImageUpgradeView.swift; sourceTree = "<group>"; };
+		5D04FDB9B3BCCA60635353B3 /* AIStickerCloudExtractionClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIStickerCloudExtractionClientTests.swift; sourceTree = "<group>"; };
+		5D69ECAB19F7A2EEC7747CF2 /* OutfitGarmentObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitGarmentObserverTests.swift; sourceTree = "<group>"; };
+		5E0EB6126043103C15693E0A /* AdonisDateText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisDateText.swift; sourceTree = "<group>"; };
+		5F4852043D69F5C31D05C35C /* StickerFidelityReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerFidelityReviewView.swift; sourceTree = "<group>"; };
+		62E4F888DEE9828ED646BE2E /* AdonisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisApp.swift; sourceTree = "<group>"; };
+		63EBC7875BE9E0A8F9B86630 /* AITransparentStickerProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITransparentStickerProcessorTests.swift; sourceTree = "<group>"; };
+		67E3D8AB2BDBAB62223440B2 /* StickerMatteRefiner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerMatteRefiner.swift; sourceTree = "<group>"; };
+		6C003FC5BBD79CD8D5BD0CFD /* LegacyImageCreatorGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyImageCreatorGenerator.swift; sourceTree = "<group>"; };
+		6C22B3553F9A5DB6AFD6EA86 /* SeasonalBloomCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalBloomCatalogTests.swift; sourceTree = "<group>"; };
+		709B427B38BCFC1DDFCF5EEB /* AdonisAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisAppDelegate.swift; sourceTree = "<group>"; };
+		7111ABE94856C9B3C2B0BBD6 /* AccessibilityContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityContractTests.swift; sourceTree = "<group>"; };
+		739F6F1A5E20E7836C891509 /* AppNavigationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigationRouter.swift; sourceTree = "<group>"; };
+		73A583A9F6E57338719BEE07 /* ReBloomUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ReBloomUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		74278A378EA6ADF7F22FD9AB /* sample-01-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-01-sticker.png"; sourceTree = "<group>"; };
+		76117E30B378804F1F7B16A8 /* ModelStorePolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStorePolicyTests.swift; sourceTree = "<group>"; };
+		7712A8C4D4B60878D9341E96 /* DigitalFigurineCardRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalFigurineCardRenderer.swift; sourceTree = "<group>"; };
+		774A6654E62FA7C5FDFC0B1E /* GenerationDeadlineController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationDeadlineController.swift; sourceTree = "<group>"; };
+		7AAD8170B817494E647AED40 /* GarmentVisualSignature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarmentVisualSignature.swift; sourceTree = "<group>"; };
+		7FA8FB696A12C0716EF6B423 /* regression-baseline.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "regression-baseline.json"; sourceTree = "<group>"; };
+		7FC757065AC590908E1D7BB4 /* sample-03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-03.png"; sourceTree = "<group>"; };
+		8061C759EBA350105B618626 /* StickerTryOnEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerTryOnEntry.swift; sourceTree = "<group>"; };
+		816093DE4891FA7382E4178A /* CreationImageIntentRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreationImageIntentRouter.swift; sourceTree = "<group>"; };
+		8363A176CB2F9A1543FC891F /* StickerFidelityReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerFidelityReview.swift; sourceTree = "<group>"; };
+		83A05CD1CCB8779ABBAFFE61 /* StickerQualityAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerQualityAssessment.swift; sourceTree = "<group>"; };
+		87C88C001E6470465DBFE4C5 /* VisualContentProvenance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualContentProvenance.swift; sourceTree = "<group>"; };
+		89530D20FFD0B7E6A1D639DB /* RebloomReminderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RebloomReminderService.swift; sourceTree = "<group>"; };
+		89A3E89C8B5096C3319D524B /* CreativeRecipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeRecipe.swift; sourceTree = "<group>"; };
+		8C6C1A2D5CEA8EBA13D7D3D4 /* CuratedStyleGardenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CuratedStyleGardenView.swift; sourceTree = "<group>"; };
+		8CDC55301919DDBBE4467835 /* ModelStorePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStorePolicy.swift; sourceTree = "<group>"; };
+		8E4914BDF8F10031B3EE3C42 /* CreativeWorkStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeWorkStore.swift; sourceTree = "<group>"; };
+		8EEF84C9AE175061D8C93B0D /* GenerationResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationResultView.swift; sourceTree = "<group>"; };
+		94388B6DABF91700362933D2 /* AdonisFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdonisFlowUITests.swift; sourceTree = "<group>"; };
+		9606AA640CA97657F672C772 /* WardrobeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeComponents.swift; sourceTree = "<group>"; };
+		96B7DD4536D40C49348BD47C /* DigitalCabinetCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalCabinetCatalogTests.swift; sourceTree = "<group>"; };
+		9BDB0001120551CD7322CD96 /* WardrobeTestImageFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeTestImageFactory.swift; sourceTree = "<group>"; };
+		9C954C074455745A5D8626FE /* StickerFidelityReviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerFidelityReviewTests.swift; sourceTree = "<group>"; };
+		9CBE9407019CF66628956153 /* VisualContentProvenanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualContentProvenanceTests.swift; sourceTree = "<group>"; };
+		9CE473549A394288B47FEDA2 /* RebloomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RebloomView.swift; sourceTree = "<group>"; };
+		9D1810A5E2D79D87F8BB55C2 /* PhotoLibrarySaverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibrarySaverTests.swift; sourceTree = "<group>"; };
+		9D5648B044340E377C6E6FD3 /* WardrobeHistorySuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeHistorySuggestionsView.swift; sourceTree = "<group>"; };
+		9E23BAC4E5F92B503A6766DF /* GenerationDeadlineControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationDeadlineControllerTests.swift; sourceTree = "<group>"; };
+		9E57AB99D54461A4BE5F14DC /* RebloomCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RebloomCardRendererTests.swift; sourceTree = "<group>"; };
+		9F38D58C1D92CB865BF273E0 /* CreativeWorkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeWorkView.swift; sourceTree = "<group>"; };
+		A02174721D58A580470377CC /* RebloomCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RebloomCatalog.swift; sourceTree = "<group>"; };
+		A5A6FDD3EB7DFD3EF9172799 /* PhotoLibrarySaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibrarySaver.swift; sourceTree = "<group>"; };
+		A7DE10E6121F2D0DE1A65150 /* AIStickerCreationPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIStickerCreationPipelineTests.swift; sourceTree = "<group>"; };
+		A89048FF27F9AF0AC0EA4097 /* sample-02-ai-source.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-02-ai-source.png"; sourceTree = "<group>"; };
+		AA5A287B9E969895489E2D90 /* StickerProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerProcessorTests.swift; sourceTree = "<group>"; };
+		AB06C6FD9BEA91247DCE81EE /* CreativeExecutionMetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeExecutionMetadataTests.swift; sourceTree = "<group>"; };
+		ADCF83B2ED5E92C998F5D044 /* Adonis.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Adonis.entitlements; sourceTree = "<group>"; };
+		AEA8A2A57CCF4795A8381579 /* GenerationFallbackNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationFallbackNotice.swift; sourceTree = "<group>"; };
+		B2C759D33BF6FC2810831FF9 /* StoredImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredImageView.swift; sourceTree = "<group>"; };
+		B4C8EB80F2EE6C6F9B8AAD9B /* WardrobeVisualSignatureBackfillServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeVisualSignatureBackfillServiceTests.swift; sourceTree = "<group>"; };
+		B581D6705A3C9A73C4919212 /* SharedImageInbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedImageInbox.swift; sourceTree = "<group>"; };
+		B80E043ECFA01468355E2662 /* SharedWardrobeImportCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedWardrobeImportCoordinator.swift; sourceTree = "<group>"; };
+		B8626C7907B9AAC60D4A19B0 /* sample-02-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-02-sticker.png"; sourceTree = "<group>"; };
+		B9E27141AA5048179033F5DE /* sample-04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-04.png"; sourceTree = "<group>"; };
+		BB1B5D844337AD0AC2D9A54B /* GenerationDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationDraft.swift; sourceTree = "<group>"; };
+		BBE3BEB9E9CA96374C13B061 /* AppEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEvent.swift; sourceTree = "<group>"; };
+		C39CA5B0ED428AAFC5811329 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
+		C5FF555C85B1E878CCA70889 /* CreationImageIntentRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreationImageIntentRouterTests.swift; sourceTree = "<group>"; };
+		C81CFEAB496C4E6EB6DF3775 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		CB319F3EE4539C4B1BE76ABC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CBC62D4A93DE10F0F4405EEC /* homepage-ai-showcase.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "homepage-ai-showcase.json"; sourceTree = "<group>"; };
+		CC6A306EC028ACF9BD5E8B08 /* WardrobeImageAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeImageAnalyzer.swift; sourceTree = "<group>"; };
+		CCE21EB264D6AFE53A0AF418 /* BotanicalPosterRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotanicalPosterRendererTests.swift; sourceTree = "<group>"; };
+		CED58CFD68DED280BE2DF244 /* MediaStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStoreTests.swift; sourceTree = "<group>"; };
+		D3159C77F26D8B3BABF00C0D /* CreativeWorkPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeWorkPersistenceTests.swift; sourceTree = "<group>"; };
+		D35CF78CB61E427E7F8D1B60 /* StickerQualityAssessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerQualityAssessor.swift; sourceTree = "<group>"; };
+		D4FE523667FF9E1F770C691B /* PersonalDataControlTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalDataControlTests.swift; sourceTree = "<group>"; };
+		D56E992989FACECF51B54ADA /* SeasonalBloomCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalBloomCatalog.swift; sourceTree = "<group>"; };
+		D62FEAD8A7D17C724B9AC806 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
+		D631921CCDD78509139A5941 /* MythicGardenCardRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MythicGardenCardRenderer.swift; sourceTree = "<group>"; };
+		D78E014801C1067D97D7CA8B /* CreativeExecutionMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeExecutionMetadata.swift; sourceTree = "<group>"; };
+		D88E2FF26982BE72036666D3 /* WardrobeItemNaming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemNaming.swift; sourceTree = "<group>"; };
+		DC6482332B0A70A6EA8BBD0C /* WardrobeCandidateMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeCandidateMatcherTests.swift; sourceTree = "<group>"; };
+		DFCBB5C7E1FF4A7B35B3207A /* ProcessingTraceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingTraceTests.swift; sourceTree = "<group>"; };
+		E07C24D09ACEAEFD7DD21725 /* WardrobeHistoryMatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeHistoryMatcherTests.swift; sourceTree = "<group>"; };
+		E2580B55685F52EF48BD6ED1 /* SeasonalBloomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalBloomView.swift; sourceTree = "<group>"; };
+		E72F6642B3A882FEE04E8DA3 /* WardrobeItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WardrobeItemDetailView.swift; sourceTree = "<group>"; };
+		E76D7A6E73F6BFE5B2116AB8 /* GarmentVisualSignatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarmentVisualSignatureTests.swift; sourceTree = "<group>"; };
+		E855255357AB971207ABB924 /* DigitalCabinetCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalCabinetCatalog.swift; sourceTree = "<group>"; };
+		E9469702C5D0012D38027DC9 /* MonthlyLookbookRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyLookbookRendererTests.swift; sourceTree = "<group>"; };
+		EA21D601333C9A6946FC19BE /* EventLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLogger.swift; sourceTree = "<group>"; };
+		EB62DB327E23E7D2E4769C85 /* sample-01-ai-sticker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sample-01-ai-sticker.png"; sourceTree = "<group>"; };
+		F0CE4DA05AAF9853F8FCD0A2 /* ReBloomShareExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = ReBloomShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F17E5453C36CD95C9086D7DE /* AIStickerCloudExtractionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIStickerCloudExtractionClient.swift; sourceTree = "<group>"; };
+		F252445E3CBFF49AD065794B /* BloomCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloomCalendarView.swift; sourceTree = "<group>"; };
+		F313F84DAE3E1B949C741956 /* ReBloom.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ReBloom.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3FFF165D980153A98EEE950 /* StickerSourceFidelityAssessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerSourceFidelityAssessor.swift; sourceTree = "<group>"; };
+		F6455F6C91A49E5181F46C4D /* GarmentObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarmentObservation.swift; sourceTree = "<group>"; };
+		F6FF51081106B74B7983585C /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		F8A1237A15087498F8CA3196 /* CreativeWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeWork.swift; sourceTree = "<group>"; };
+		FA40B953A6525E04B9D24274 /* CreativeRecipeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeRecipeTests.swift; sourceTree = "<group>"; };
+		FBE324A98FC9AA50191C53FC /* SystemImagePlaygroundStickerSourceSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemImagePlaygroundStickerSourceSheet.swift; sourceTree = "<group>"; };
+		FC9A12D17A431C41415EBECA /* SystemCreativeProcessingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemCreativeProcessingOverlay.swift; sourceTree = "<group>"; };
+		FE8E97D5A0FC1032F7853381 /* AIStickerCreationPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIStickerCreationPipeline.swift; sourceTree = "<group>"; };
+		FFC4A324F8695B8ACEE88F10 /* SharedImageInboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedImageInboxTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		122B4319AB4D846646AC600E /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				5E0EB6126043103C15693E0A /* AdonisDateText.swift */,
+				255D52E7F3BCCDD61E0ADE3A /* AdonisTheme.swift */,
+				082B717A5AF4024AAC4A90DB /* Components.swift */,
+				9606AA640CA97657F672C772 /* WardrobeComponents.swift */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		23F3348421722B43F6339A6F /* Samples */ = {
+			isa = PBXGroup;
+			children = (
+				CBC62D4A93DE10F0F4405EEC /* homepage-ai-showcase.json */,
+				045F23723EF62DD5F1D35CD5 /* README.md */,
+				7FA8FB696A12C0716EF6B423 /* regression-baseline.json */,
+				0BD562F954A048FED2229C94 /* sample-01-ai-source.png */,
+				EB62DB327E23E7D2E4769C85 /* sample-01-ai-sticker.png */,
+				74278A378EA6ADF7F22FD9AB /* sample-01-sticker.png */,
+				10E9E0F42F35CF7B561712E1 /* sample-01.png */,
+				A89048FF27F9AF0AC0EA4097 /* sample-02-ai-source.png */,
+				5727421A80E31FDDAC6A8D39 /* sample-02-ai-sticker.png */,
+				B8626C7907B9AAC60D4A19B0 /* sample-02-sticker.png */,
+				24835FAC8042A84AA22E3C11 /* sample-02.png */,
+				175C925FECF367F4128F9AFC /* sample-03-ai-source.png */,
+				51FEB07C9DFCAFC019BA4B7E /* sample-03-ai-sticker.png */,
+				3F1541D62263222A95919669 /* sample-03-sticker.png */,
+				7FC757065AC590908E1D7BB4 /* sample-03.png */,
+				5082C2114F15F489CDAA1AC6 /* sample-04-sticker.png */,
+				B9E27141AA5048179033F5DE /* sample-04.png */,
+			);
+			path = Samples;
+			sourceTree = "<group>";
+		};
+		414EC1D2286FA9639EECA82B = {
+			isa = PBXGroup;
+			children = (
+				73657FA937A626551E436508 /* ReBloom */,
+				B29308EA824FEEDE80BB69AA /* ReBloomShared */,
+				B09478A93441DB8263EF3C96 /* ReBloomShareExtension */,
+				BE9C372A89E285AFBCACF103 /* ReBloomTests */,
+				7E2F9C401426A8A4A9C9DDF8 /* ReBloomUITests */,
+				E33420367ECEF9ABDEB0591F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		42B78170C0D60306E03783A8 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				62E4F888DEE9828ED646BE2E /* AdonisApp.swift */,
+				709B427B38BCFC1DDFCF5EEB /* AdonisAppDelegate.swift */,
+				739F6F1A5E20E7836C891509 /* AppNavigationRouter.swift */,
+				D62FEAD8A7D17C724B9AC806 /* AppRootView.swift */,
+				8CDC55301919DDBBE4467835 /* ModelStorePolicy.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		47D56AF404C4F68C81675BA9 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				F17E5453C36CD95C9086D7DE /* AIStickerCloudExtractionClient.swift */,
+				FE8E97D5A0FC1032F7853381 /* AIStickerCreationPipeline.swift */,
+				35499DE95F432E76FCEC7000 /* AITransparentStickerProcessor.swift */,
+				446D87EEEC1DC89EB477A9C4 /* BotanicalPosterRenderer.swift */,
+				2A8D13CFDAB80B81BB3D2EA2 /* CameraAccessService.swift */,
+				816093DE4891FA7382E4178A /* CreationImageIntentRouter.swift */,
+				44654E9C43B4974E7D3A0749 /* CreativeImageGenerator.swift */,
+				8E4914BDF8F10031B3EE3C42 /* CreativeWorkStore.swift */,
+				E855255357AB971207ABB924 /* DigitalCabinetCatalog.swift */,
+				7712A8C4D4B60878D9341E96 /* DigitalFigurineCardRenderer.swift */,
+				EA21D601333C9A6946FC19BE /* EventLogger.swift */,
+				7AAD8170B817494E647AED40 /* GarmentVisualSignature.swift */,
+				774A6654E62FA7C5FDFC0B1E /* GenerationDeadlineController.swift */,
+				6C003FC5BBD79CD8D5BD0CFD /* LegacyImageCreatorGenerator.swift */,
+				30288653B762C430A1D04D25 /* MediaStore.swift */,
+				09C754B272FCADC68B559C0F /* MonthlyLookbookRenderer.swift */,
+				D631921CCDD78509139A5941 /* MythicGardenCardRenderer.swift */,
+				05F7E33A182FA55295DF806C /* OutfitGarmentObserver.swift */,
+				03C52C4078BD0D4EB9186CE1 /* PersonalDataArchiveService.swift */,
+				A5A6FDD3EB7DFD3EF9172799 /* PhotoLibrarySaver.swift */,
+				0BE553DF36E62FC1F23FCAEE /* RawMatteQualityAssessor.swift */,
+				1E3ED985678650A5B0853A0E /* RebloomCardRenderer.swift */,
+				A02174721D58A580470377CC /* RebloomCatalog.swift */,
+				89530D20FFD0B7E6A1D639DB /* RebloomReminderService.swift */,
+				287D28DDF8E57420DC2F8972 /* SampleCatalog.swift */,
+				D56E992989FACECF51B54ADA /* SeasonalBloomCatalog.swift */,
+				572C73D01E84978D177A3B16 /* ShareCardRenderer.swift */,
+				B80E043ECFA01468355E2662 /* SharedWardrobeImportCoordinator.swift */,
+				67E3D8AB2BDBAB62223440B2 /* StickerMatteRefiner.swift */,
+				2EB64CEB7C3873F8817CC555 /* StickerProcessor.swift */,
+				D35CF78CB61E427E7F8D1B60 /* StickerQualityAssessor.swift */,
+				F3FFF165D980153A98EEE950 /* StickerSourceFidelityAssessor.swift */,
+				43E1CD5DC6A223931F7E8350 /* StickerTryOnDeliveryQualityGate.swift */,
+				11B12B933C982B18A034EEE5 /* StickerTryOnRenderer.swift */,
+				30CBBC40D96ECC799D388AE8 /* WardrobeCandidateMatcher.swift */,
+				059D5728E875F24301E25B40 /* WardrobeHistoryMatcher.swift */,
+				CC6A306EC028ACF9BD5E8B08 /* WardrobeImageAnalyzer.swift */,
+				34BD237407FE55CD4F8A9278 /* WardrobeItemImageUpgradeService.swift */,
+				3C61B876A78795F689979563 /* WardrobeItemImportService.swift */,
+				D88E2FF26982BE72036666D3 /* WardrobeItemNaming.swift */,
+				9BDB0001120551CD7322CD96 /* WardrobeTestImageFactory.swift */,
+				1C55DCA3597DEA01C90A7C3F /* WardrobeVisualSignatureBackfillService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		73657FA937A626551E436508 /* ReBloom */ = {
+			isa = PBXGroup;
+			children = (
+				CB319F3EE4539C4B1BE76ABC /* Assets.xcassets */,
+				42B78170C0D60306E03783A8 /* App */,
+				122B4319AB4D846646AC600E /* DesignSystem */,
+				996798E95CF93852187409BC /* Models */,
+				EBAA48DF76B5596F58BFA1E1 /* Resources */,
+				47D56AF404C4F68C81675BA9 /* Services */,
+				D276D54669DD4FB98E6FE68E /* Views */,
+			);
+			path = ReBloom;
+			sourceTree = "<group>";
+		};
+		7931BE5F8FA1D14632A62733 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				C81CFEAB496C4E6EB6DF3775 /* ActivityView.swift */,
+				C39CA5B0ED428AAFC5811329 /* CameraPicker.swift */,
+				9F38D58C1D92CB865BF273E0 /* CreativeWorkView.swift */,
+				8C6C1A2D5CEA8EBA13D7D3D4 /* CuratedStyleGardenView.swift */,
+				252C197FFD3DDF10BFF7B1DC /* DigitalFigurineCardView.swift */,
+				AEA8A2A57CCF4795A8381579 /* GenerationFallbackNotice.swift */,
+				5F4852043D69F5C31D05C35C /* StickerFidelityReviewView.swift */,
+				B2C759D33BF6FC2810831FF9 /* StoredImageView.swift */,
+				FC9A12D17A431C41415EBECA /* SystemCreativeProcessingOverlay.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		7E2F9C401426A8A4A9C9DDF8 /* ReBloomUITests */ = {
+			isa = PBXGroup;
+			children = (
+				94388B6DABF91700362933D2 /* AdonisFlowUITests.swift */,
+			);
+			path = ReBloomUITests;
+			sourceTree = "<group>";
+		};
+		919A2E83F98FF127470EACB9 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				1E64E1535C3C04931F4A1CC5 /* LocalSettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		98FFD7DDC4BF0E648D4C9A7B /* Bloom */ = {
+			isa = PBXGroup;
+			children = (
+				F252445E3CBFF49AD065794B /* BloomCalendarView.swift */,
+				02A9D74D23657CE9BD48BD56 /* DigitalCabinetView.swift */,
+				17DC483E68C7D091DBC9D49A /* MonthlyLookbookView.swift */,
+				179B94B3A409C47E41CDEBE4 /* OutfitDetailView.swift */,
+				531DC14A6528F5B806B8551D /* OutfitGarmentObservationsView.swift */,
+				9CE473549A394288B47FEDA2 /* RebloomView.swift */,
+				E2580B55685F52EF48BD6ED1 /* SeasonalBloomView.swift */,
+			);
+			path = Bloom;
+			sourceTree = "<group>";
+		};
+		996798E95CF93852187409BC /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BBE3BEB9E9CA96374C13B061 /* AppEvent.swift */,
+				D78E014801C1067D97D7CA8B /* CreativeExecutionMetadata.swift */,
+				89A3E89C8B5096C3319D524B /* CreativeRecipe.swift */,
+				F8A1237A15087498F8CA3196 /* CreativeWork.swift */,
+				F6455F6C91A49E5181F46C4D /* GarmentObservation.swift */,
+				BB1B5D844337AD0AC2D9A54B /* GenerationDraft.swift */,
+				54432B69530D3F10CAE30152 /* OutfitRecord.swift */,
+				5354F70FD9418233906647D1 /* ProcessingTrace.swift */,
+				8363A176CB2F9A1543FC891F /* StickerFidelityReview.swift */,
+				83A05CD1CCB8779ABBAFFE61 /* StickerQualityAssessment.swift */,
+				87C88C001E6470465DBFE4C5 /* VisualContentProvenance.swift */,
+				0C085A340E1CC09B28E6F8DD /* WardrobeItem.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A0C826C9B6505269C89445F7 /* Wardrobe */ = {
+			isa = PBXGroup;
+			children = (
+				8061C759EBA350105B618626 /* StickerTryOnEntry.swift */,
+				9D5648B044340E377C6E6FD3 /* WardrobeHistorySuggestionsView.swift */,
+				E72F6642B3A882FEE04E8DA3 /* WardrobeItemDetailView.swift */,
+				5A5A2A0858C2A29C33D8F8D5 /* WardrobeItemImageUpgradeView.swift */,
+				224A18D70771AC0003D544D6 /* WardrobeView.swift */,
+			);
+			path = Wardrobe;
+			sourceTree = "<group>";
+		};
+		B09478A93441DB8263EF3C96 /* ReBloomShareExtension */ = {
+			isa = PBXGroup;
+			children = (
+				4599C7CCBDE258485C5F2DD5 /* AdonisShareExtension.entitlements */,
+				2FEC820373EB10598EAF95DF /* Info.plist */,
+				F6FF51081106B74B7983585C /* ShareViewController.swift */,
+			);
+			path = ReBloomShareExtension;
+			sourceTree = "<group>";
+		};
+		B29308EA824FEEDE80BB69AA /* ReBloomShared */ = {
+			isa = PBXGroup;
+			children = (
+				B581D6705A3C9A73C4919212 /* SharedImageInbox.swift */,
+			);
+			path = ReBloomShared;
+			sourceTree = "<group>";
+		};
+		BE9C372A89E285AFBCACF103 /* ReBloomTests */ = {
+			isa = PBXGroup;
+			children = (
+				7111ABE94856C9B3C2B0BBD6 /* AccessibilityContractTests.swift */,
+				5D04FDB9B3BCCA60635353B3 /* AIStickerCloudExtractionClientTests.swift */,
+				A7DE10E6121F2D0DE1A65150 /* AIStickerCreationPipelineTests.swift */,
+				63EBC7875BE9E0A8F9B86630 /* AITransparentStickerProcessorTests.swift */,
+				CCE21EB264D6AFE53A0AF418 /* BotanicalPosterRendererTests.swift */,
+				573DD38FCC6A17E73F6BC0AA /* CameraAccessServiceTests.swift */,
+				C5FF555C85B1E878CCA70889 /* CreationImageIntentRouterTests.swift */,
+				AB06C6FD9BEA91247DCE81EE /* CreativeExecutionMetadataTests.swift */,
+				FA40B953A6525E04B9D24274 /* CreativeRecipeTests.swift */,
+				D3159C77F26D8B3BABF00C0D /* CreativeWorkPersistenceTests.swift */,
+				96B7DD4536D40C49348BD47C /* DigitalCabinetCatalogTests.swift */,
+				24DA09B0487B415DFADF3328 /* DigitalFigurineCardRendererTests.swift */,
+				40AB0422D2E953A60595B706 /* GarmentObservationPersistenceTests.swift */,
+				E76D7A6E73F6BFE5B2116AB8 /* GarmentVisualSignatureTests.swift */,
+				9E23BAC4E5F92B503A6766DF /* GenerationDeadlineControllerTests.swift */,
+				CED58CFD68DED280BE2DF244 /* MediaStoreTests.swift */,
+				76117E30B378804F1F7B16A8 /* ModelStorePolicyTests.swift */,
+				E9469702C5D0012D38027DC9 /* MonthlyLookbookRendererTests.swift */,
+				31485EF8620977C6BEA9A2CC /* MythicGardenCardRendererTests.swift */,
+				5D69ECAB19F7A2EEC7747CF2 /* OutfitGarmentObserverTests.swift */,
+				D4FE523667FF9E1F770C691B /* PersonalDataControlTests.swift */,
+				9D1810A5E2D79D87F8BB55C2 /* PhotoLibrarySaverTests.swift */,
+				DFCBB5C7E1FF4A7B35B3207A /* ProcessingTraceTests.swift */,
+				4B9B34D23572D0295A9CD778 /* RawMatteQualityAssessorTests.swift */,
+				9E57AB99D54461A4BE5F14DC /* RebloomCardRendererTests.swift */,
+				338B3A200D94FF4365AF7266 /* RebloomCatalogTests.swift */,
+				5A275021A7697C1DECD8A86A /* RebloomReminderServiceTests.swift */,
+				307B76E398784C86BA33D987 /* SampleRegressionTests.swift */,
+				6C22B3553F9A5DB6AFD6EA86 /* SeasonalBloomCatalogTests.swift */,
+				0DA84DB202157A3229705997 /* ShareCardRendererTests.swift */,
+				FFC4A324F8695B8ACEE88F10 /* SharedImageInboxTests.swift */,
+				5566CFFA3419CB9A1CB34714 /* SharedWardrobeImportCoordinatorTests.swift */,
+				9C954C074455745A5D8626FE /* StickerFidelityReviewTests.swift */,
+				392950E17EB6CD319A2F4924 /* StickerMatteRefinerTests.swift */,
+				AA5A287B9E969895489E2D90 /* StickerProcessorTests.swift */,
+				54FED592959AA90D8BC376C0 /* StickerQualityAssessorTests.swift */,
+				02AA7B031021FCEFA860E28D /* StickerSourceFidelityAssessorTests.swift */,
+				1DC0B58655CBFD6780A919AE /* StickerTryOnRendererTests.swift */,
+				9CBE9407019CF66628956153 /* VisualContentProvenanceTests.swift */,
+				DC6482332B0A70A6EA8BBD0C /* WardrobeCandidateMatcherTests.swift */,
+				E07C24D09ACEAEFD7DD21725 /* WardrobeHistoryMatcherTests.swift */,
+				1015C7DE19A49978B76E402E /* WardrobeImageAnalyzerTests.swift */,
+				0D79CE18F4E6C2468D8E4DE0 /* WardrobeItemImageUpgradeTests.swift */,
+				B4C8EB80F2EE6C6F9B8AAD9B /* WardrobeVisualSignatureBackfillServiceTests.swift */,
+			);
+			path = ReBloomTests;
+			sourceTree = "<group>";
+		};
+		D276D54669DD4FB98E6FE68E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				98FFD7DDC4BF0E648D4C9A7B /* Bloom */,
+				EA09295C2ED7CD2AD9DD6829 /* Create */,
+				919A2E83F98FF127470EACB9 /* Settings */,
+				7931BE5F8FA1D14632A62733 /* Shared */,
+				A0C826C9B6505269C89445F7 /* Wardrobe */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E33420367ECEF9ABDEB0591F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F313F84DAE3E1B949C741956 /* ReBloom.app */,
+				F0CE4DA05AAF9853F8FCD0A2 /* ReBloomShareExtension.appex */,
+				0B559386E2A7626D90C3860C /* ReBloomTests.xctest */,
+				73A583A9F6E57338719BEE07 /* ReBloomUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EA09295C2ED7CD2AD9DD6829 /* Create */ = {
+			isa = PBXGroup;
+			children = (
+				10B8F8BAFB2AA36FE4442F3C /* CreateView.swift */,
+				8EEF84C9AE175061D8C93B0D /* GenerationResultView.swift */,
+				FBE324A98FC9AA50191C53FC /* SystemImagePlaygroundStickerSourceSheet.swift */,
+			);
+			path = Create;
+			sourceTree = "<group>";
+		};
+		EBAA48DF76B5596F58BFA1E1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				ADCF83B2ED5E92C998F5D044 /* Adonis.entitlements */,
+				44EF5726626F4072913E269D /* Info.plist */,
+				23F3348421722B43F6339A6F /* Samples */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		70DFAE4CAAE76408C887EC68 /* ReBloomShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FFF5CB5794FC7633B21D7793 /* Build configuration list for PBXNativeTarget "ReBloomShareExtension" */;
+			buildPhases = (
+				836C1D7D7A5FE661754457F1 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ReBloomShareExtension;
+			packageProductDependencies = (
+			);
+			productName = ReBloomShareExtension;
+			productReference = F0CE4DA05AAF9853F8FCD0A2 /* ReBloomShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		897BF2C5E2AB4B81E90E9EC1 /* ReBloom */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 69C2BE293F02BE0664C5669D /* Build configuration list for PBXNativeTarget "ReBloom" */;
+			buildPhases = (
+				D9489720AECFA2545E6191B8 /* Sources */,
+				60AA6BF0072AA9836E8C61E6 /* Resources */,
+				579B229408EB11F353E42AA7 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				09F6CA88B38AF39B63D8CE97 /* PBXTargetDependency */,
+			);
+			name = ReBloom;
+			packageProductDependencies = (
+			);
+			productName = ReBloom;
+			productReference = F313F84DAE3E1B949C741956 /* ReBloom.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F2DD53E5DB2F0B20568A4EEA /* ReBloomUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 704287260A5572B1739BFEFF /* Build configuration list for PBXNativeTarget "ReBloomUITests" */;
+			buildPhases = (
+				AAAE16A0D0CDFC6146FBC0A0 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BEC7AC8A79B0566425F00D4B /* PBXTargetDependency */,
+			);
+			name = ReBloomUITests;
+			packageProductDependencies = (
+			);
+			productName = ReBloomUITests;
+			productReference = 73A583A9F6E57338719BEE07 /* ReBloomUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		FA54665C9E1CB204ABEE8FB4 /* ReBloomTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2246526B0AD28CB8E66D52F6 /* Build configuration list for PBXNativeTarget "ReBloomTests" */;
+			buildPhases = (
+				4B99403ACE4F5BA0E25759F9 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				96B9247D7992EB46ED6972EA /* PBXTargetDependency */,
+			);
+			name = ReBloomTests;
+			packageProductDependencies = (
+			);
+			productName = ReBloomTests;
+			productReference = 0B559386E2A7626D90C3860C /* ReBloomTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4AD08293D17863F6EF1D9D15 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					F2DD53E5DB2F0B20568A4EEA = {
+						TestTargetID = 897BF2C5E2AB4B81E90E9EC1;
+					};
+				};
+			};
+			buildConfigurationList = 77556F90D894D2638A4D156B /* Build configuration list for PBXProject "ReBloom" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 414EC1D2286FA9639EECA82B;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = E33420367ECEF9ABDEB0591F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				897BF2C5E2AB4B81E90E9EC1 /* ReBloom */,
+				70DFAE4CAAE76408C887EC68 /* ReBloomShareExtension */,
+				FA54665C9E1CB204ABEE8FB4 /* ReBloomTests */,
+				F2DD53E5DB2F0B20568A4EEA /* ReBloomUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		60AA6BF0072AA9836E8C61E6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A59951F3B97D65F5879E8F85 /* Assets.xcassets in Resources */,
+				598CCD7CFF31EA0799127BC8 /* README.md in Resources */,
+				C820DC1E1F9FB8A8C690F77A /* homepage-ai-showcase.json in Resources */,
+				1F6A240493F9C032B1247350 /* regression-baseline.json in Resources */,
+				3A198F0DAA7C7D482A1D2240 /* sample-01-ai-source.png in Resources */,
+				56997834CD06AA74C33397C3 /* sample-01-ai-sticker.png in Resources */,
+				AFA419FD00EE5EC9A983E9F0 /* sample-01-sticker.png in Resources */,
+				35A6FF3709896DBFA674EEA6 /* sample-01.png in Resources */,
+				7291AAD354AD321E970BD07E /* sample-02-ai-source.png in Resources */,
+				D6BE313D7C00E7443FBDE11D /* sample-02-ai-sticker.png in Resources */,
+				97825D1F455C69660BC36997 /* sample-02-sticker.png in Resources */,
+				F48896F7DEE3A0329944F94D /* sample-02.png in Resources */,
+				DACB9AD54AA8278F62977765 /* sample-03-ai-source.png in Resources */,
+				713454354C5ECFB31264384A /* sample-03-ai-sticker.png in Resources */,
+				5F56836194B9FE5DB26EA623 /* sample-03-sticker.png in Resources */,
+				71CAD91DBF9BD49C51ACE6C1 /* sample-03.png in Resources */,
+				9567F110F3CFD3BADD14DB7A /* sample-04-sticker.png in Resources */,
+				F0E643171F38F0843C7DCA17 /* sample-04.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4B99403ACE4F5BA0E25759F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70A55DFC2C3CE0FB38CC46AA /* AIStickerCloudExtractionClientTests.swift in Sources */,
+				0D125CEEA25484A807EDC4D0 /* AIStickerCreationPipelineTests.swift in Sources */,
+				34F2B27C92728A247B55E260 /* AITransparentStickerProcessorTests.swift in Sources */,
+				508E3E14F40A76DC2047DC7E /* AccessibilityContractTests.swift in Sources */,
+				0DE1C815E99738679BBF60B5 /* BotanicalPosterRendererTests.swift in Sources */,
+				9491ADF3C69A8D3BF4B17D23 /* CameraAccessServiceTests.swift in Sources */,
+				96EF0D8676B43B482C7CA146 /* CreationImageIntentRouterTests.swift in Sources */,
+				1A1EDD303FEDC1BE93AD42A2 /* CreativeExecutionMetadataTests.swift in Sources */,
+				04BFEF56CCFA7F517D066252 /* CreativeRecipeTests.swift in Sources */,
+				DED80270A2C51209DB02FD71 /* CreativeWorkPersistenceTests.swift in Sources */,
+				CDEED2C42DA286992E4A1207 /* DigitalCabinetCatalogTests.swift in Sources */,
+				4D62949BAECAE765AF02CD05 /* DigitalFigurineCardRendererTests.swift in Sources */,
+				1A7074AEEFDC3B8CECCAD2A4 /* GarmentObservationPersistenceTests.swift in Sources */,
+				A554008844F393020A44FE84 /* GarmentVisualSignatureTests.swift in Sources */,
+				E7BEC8ED6D7F76A79BB3024A /* GenerationDeadlineControllerTests.swift in Sources */,
+				414029A7D683878F4CD14F06 /* MediaStoreTests.swift in Sources */,
+				72A0A5BC728F93205A1E6F2A /* ModelStorePolicyTests.swift in Sources */,
+				7D6E363E8129094734A8FD48 /* MonthlyLookbookRendererTests.swift in Sources */,
+				5872B54547E5056751972EF1 /* MythicGardenCardRendererTests.swift in Sources */,
+				0F851B3DE84041C645B7A0F6 /* OutfitGarmentObserverTests.swift in Sources */,
+				F1CE9371C390AA0F541DC72D /* PersonalDataControlTests.swift in Sources */,
+				D7CD754A98E203BAD782A2AD /* PhotoLibrarySaverTests.swift in Sources */,
+				0A6E6D7745458CC48F8792E0 /* ProcessingTraceTests.swift in Sources */,
+				3C65993C3E1A78DE296EEA32 /* RawMatteQualityAssessorTests.swift in Sources */,
+				333D4A802E3A7E0507D35BCF /* RebloomCardRendererTests.swift in Sources */,
+				C92340922DFE999638005B4D /* RebloomCatalogTests.swift in Sources */,
+				D85FEF4D0FDEFCB5C7D11FF6 /* RebloomReminderServiceTests.swift in Sources */,
+				3878C32AE065CE55D4DFE184 /* SampleRegressionTests.swift in Sources */,
+				3BA6261D3779AF671C6A5ADE /* SeasonalBloomCatalogTests.swift in Sources */,
+				AAE4045D361D6076E0FA7C98 /* ShareCardRendererTests.swift in Sources */,
+				B741C9059B18D8ED7AD481F4 /* SharedImageInboxTests.swift in Sources */,
+				3DFDB801362532866DA2A619 /* SharedWardrobeImportCoordinatorTests.swift in Sources */,
+				4279D2D86A85D2F9B835D40C /* StickerFidelityReviewTests.swift in Sources */,
+				DD29E16F5AC8FFC7F15F8C05 /* StickerMatteRefinerTests.swift in Sources */,
+				6FCE3908B7703739D487EF3F /* StickerProcessorTests.swift in Sources */,
+				536728B6D45C1736166540E5 /* StickerQualityAssessorTests.swift in Sources */,
+				E55E7CB678F129791D748ECD /* StickerSourceFidelityAssessorTests.swift in Sources */,
+				28F489040546F0DB79A8638B /* StickerTryOnRendererTests.swift in Sources */,
+				C869EA650A60E2CA155F01AA /* VisualContentProvenanceTests.swift in Sources */,
+				43E6AA1676BCFBB86EBFB5AD /* WardrobeCandidateMatcherTests.swift in Sources */,
+				E58C2ECE12A2A51DC7AFE2F2 /* WardrobeHistoryMatcherTests.swift in Sources */,
+				2B4A22B47EE7BB005CA27034 /* WardrobeImageAnalyzerTests.swift in Sources */,
+				0D06C87EE94CAE375743E55A /* WardrobeItemImageUpgradeTests.swift in Sources */,
+				3ACD02629F9B2E21B826A3B4 /* WardrobeVisualSignatureBackfillServiceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		836C1D7D7A5FE661754457F1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1376A21D40FC1523EFF3AE4A /* ShareViewController.swift in Sources */,
+				3DDBD4804FB4D30065CD755F /* SharedImageInbox.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAAE16A0D0CDFC6146FBC0A0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1273BF08A3FA328E647A8C8D /* AdonisFlowUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D9489720AECFA2545E6191B8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D5176479A378650FE72DC15 /* AIStickerCloudExtractionClient.swift in Sources */,
+				8B3DE17F727A6CF7818E8AAB /* AIStickerCreationPipeline.swift in Sources */,
+				3303922EEB6948F4440FF18D /* AITransparentStickerProcessor.swift in Sources */,
+				5CCFB0B81909A9C91FF18487 /* ActivityView.swift in Sources */,
+				B92A3CE4A67B1521DCA3BE8F /* AdonisApp.swift in Sources */,
+				A2CBBD5E0D6DB6D936B03674 /* AdonisAppDelegate.swift in Sources */,
+				AD7D3521661F492F09C2E2A2 /* AdonisDateText.swift in Sources */,
+				401411BE255BDF0BA897333A /* AdonisTheme.swift in Sources */,
+				7FC9809050673DD0778C0EB7 /* AppEvent.swift in Sources */,
+				18812DFF266A3D1139CE22DB /* AppNavigationRouter.swift in Sources */,
+				CA18A1A113F23EFA633E0468 /* AppRootView.swift in Sources */,
+				E33D783BB800A69F47EA23CA /* BloomCalendarView.swift in Sources */,
+				CD544B4094AF9B4410F0908E /* BotanicalPosterRenderer.swift in Sources */,
+				3D55C761DE9BF9B7A4A5D396 /* CameraAccessService.swift in Sources */,
+				5370B354777AAAF108245884 /* CameraPicker.swift in Sources */,
+				CE8510BFA1B66A4D2D4545D2 /* Components.swift in Sources */,
+				87E2DBC1B84FA41283B6668C /* CreateView.swift in Sources */,
+				CACE759D95C6B11BAD42410F /* CreationImageIntentRouter.swift in Sources */,
+				839D06A88C95095795788574 /* CreativeExecutionMetadata.swift in Sources */,
+				1BD0BE70D1F8DABF69FA1740 /* CreativeImageGenerator.swift in Sources */,
+				E56F4D35C70E573EABC5A28B /* CreativeRecipe.swift in Sources */,
+				15F321158EF95DCF97446034 /* CreativeWork.swift in Sources */,
+				6BE1D53F2394C901AAFA3353 /* CreativeWorkStore.swift in Sources */,
+				5BB19485579AD5E601A57EA4 /* CreativeWorkView.swift in Sources */,
+				82710EA72E7B554AA0C68C11 /* CuratedStyleGardenView.swift in Sources */,
+				AD3A0CCC84884A2D34E9C59E /* DigitalCabinetCatalog.swift in Sources */,
+				50ECA7FFBB5E81ECC34F4E0D /* DigitalCabinetView.swift in Sources */,
+				023EAA9433CBD23A4F5AA095 /* DigitalFigurineCardRenderer.swift in Sources */,
+				C97EFA5AF0AE1C37320432E8 /* DigitalFigurineCardView.swift in Sources */,
+				C7E49A5A621D36FE109F566C /* EventLogger.swift in Sources */,
+				C29E1FC6AFEAB42F5D5702B1 /* GarmentObservation.swift in Sources */,
+				35ED057C29ED097EB06D1597 /* GarmentVisualSignature.swift in Sources */,
+				FC9C1C69E9A688AA13A8BBB4 /* GenerationDeadlineController.swift in Sources */,
+				52C1DC85F11659A52E442DAA /* GenerationDraft.swift in Sources */,
+				9AE75D8F33B214A7431B83CB /* GenerationFallbackNotice.swift in Sources */,
+				638A0986C0AA27C3E18EDBCB /* GenerationResultView.swift in Sources */,
+				9FADB4F3A35DA8F7D86151E2 /* LegacyImageCreatorGenerator.swift in Sources */,
+				C0DDC29944FB5FA06256B289 /* LocalSettingsView.swift in Sources */,
+				EDC0EC8905089A9800D5E9F9 /* MediaStore.swift in Sources */,
+				95DA5C58CB2D2FEF8FE22EB8 /* ModelStorePolicy.swift in Sources */,
+				E2ED36D691DDDCC7EC429F91 /* MonthlyLookbookRenderer.swift in Sources */,
+				04365615BEF204CC3E0E2DDA /* MonthlyLookbookView.swift in Sources */,
+				B008FD38571A3E5F9AB9D2E3 /* MythicGardenCardRenderer.swift in Sources */,
+				4A1E3C3E45D7EC6522BB1DB3 /* OutfitDetailView.swift in Sources */,
+				D99733F1E77A7D73A46A6FEC /* OutfitGarmentObservationsView.swift in Sources */,
+				44015E64D2DDEA411BE79466 /* OutfitGarmentObserver.swift in Sources */,
+				D08B4AE3CF9ED489F6901BB4 /* OutfitRecord.swift in Sources */,
+				30E86E538EC79F9962CC8C1E /* PersonalDataArchiveService.swift in Sources */,
+				B145312BEB011D27FCBB8971 /* PhotoLibrarySaver.swift in Sources */,
+				73017453BD262BF8C5737465 /* ProcessingTrace.swift in Sources */,
+				89E08AEB86C2B7A87BDFCCE5 /* RawMatteQualityAssessor.swift in Sources */,
+				D4012B5372A8A23C4E5A055D /* RebloomCardRenderer.swift in Sources */,
+				2F66FD678DAEBD6DB93EC83F /* RebloomCatalog.swift in Sources */,
+				BC0A6FD42B5BA6265D9840C8 /* RebloomReminderService.swift in Sources */,
+				BC69CF806171C88D167F0CAD /* RebloomView.swift in Sources */,
+				328D92319E3502EC58F812C8 /* SampleCatalog.swift in Sources */,
+				33C74DB471ABF0AC14EBBD2E /* SeasonalBloomCatalog.swift in Sources */,
+				F13A2620A8694B92B75D2256 /* SeasonalBloomView.swift in Sources */,
+				A47D144B33AF0E760D5EDAD8 /* ShareCardRenderer.swift in Sources */,
+				307F57E220406638D1F804C5 /* SharedImageInbox.swift in Sources */,
+				50A8BFF6A2C98D2843822059 /* SharedWardrobeImportCoordinator.swift in Sources */,
+				AA5074B3C61858EA8C671127 /* StickerFidelityReview.swift in Sources */,
+				6CBF0E6340DFFB685DD1D11C /* StickerFidelityReviewView.swift in Sources */,
+				15268CA604445B22BDA6D9E8 /* StickerMatteRefiner.swift in Sources */,
+				D4AD4B0DF8009FE92B08C9F9 /* StickerProcessor.swift in Sources */,
+				0175ED7E67C727801BB5CE12 /* StickerQualityAssessment.swift in Sources */,
+				373EBF51BF677A69654D540D /* StickerQualityAssessor.swift in Sources */,
+				744392F7097FE26C9E6F5735 /* StickerSourceFidelityAssessor.swift in Sources */,
+				4160D2E94D52BCA3F0F62E59 /* StickerTryOnDeliveryQualityGate.swift in Sources */,
+				78703E02A50548CFE4B8DD58 /* StickerTryOnEntry.swift in Sources */,
+				58BBA877482283CD34BD91E9 /* StickerTryOnRenderer.swift in Sources */,
+				A93E18F15F5F1FE261EDFF77 /* StoredImageView.swift in Sources */,
+				37FB5BA6A756CB56F8931CD9 /* SystemCreativeProcessingOverlay.swift in Sources */,
+				E3E1E6DD6C52A279F834E538 /* SystemImagePlaygroundStickerSourceSheet.swift in Sources */,
+				952A7E2A42C0318186795B63 /* VisualContentProvenance.swift in Sources */,
+				211D89A770914F144C250C85 /* WardrobeCandidateMatcher.swift in Sources */,
+				F6D0F5123D336C2046CE21CA /* WardrobeComponents.swift in Sources */,
+				D8B734A44E40133727A91116 /* WardrobeHistoryMatcher.swift in Sources */,
+				40BF0B18972813ED215E60BF /* WardrobeHistorySuggestionsView.swift in Sources */,
+				287468B615ED7B77A13AC770 /* WardrobeImageAnalyzer.swift in Sources */,
+				793D619680DD19C4D233C55F /* WardrobeItem.swift in Sources */,
+				AEF1A2E6A6E7C6FA768F26B4 /* WardrobeItemDetailView.swift in Sources */,
+				AAD1B3BB500BD0121DE50030 /* WardrobeItemImageUpgradeService.swift in Sources */,
+				A879160F6FB56B2CF041A83B /* WardrobeItemImageUpgradeView.swift in Sources */,
+				98C987A33FE53DC1BABE344E /* WardrobeItemImportService.swift in Sources */,
+				D3835371642E50F8D1409DB9 /* WardrobeItemNaming.swift in Sources */,
+				56165AE0A6ADBA4D681F3726 /* WardrobeTestImageFactory.swift in Sources */,
+				F8DA4304A3878A8734846AB1 /* WardrobeView.swift in Sources */,
+				F42CF174B08BF4764FFA1753 /* WardrobeVisualSignatureBackfillService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		09F6CA88B38AF39B63D8CE97 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 70DFAE4CAAE76408C887EC68 /* ReBloomShareExtension */;
+			targetProxy = A406D7F270020C88D3512869 /* PBXContainerItemProxy */;
+		};
+		96B9247D7992EB46ED6972EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 897BF2C5E2AB4B81E90E9EC1 /* ReBloom */;
+			targetProxy = 331C43F47AC2704770876C8D /* PBXContainerItemProxy */;
+		};
+		BEC7AC8A79B0566425F00D4B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 897BF2C5E2AB4B81E90E9EC1 /* ReBloom */;
+			targetProxy = E4E7FBA55C4E09FDD8FADF7D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0BB4F227CE48960881956161 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ReBloom/Resources/Adonis.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = ReBloom/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo;
+				PRODUCT_MODULE_NAME = Adonis;
+				PRODUCT_NAME = ReBloom;
+				SDKROOT = iphoneos;
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos26.*]" = "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator26.*]" = "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		2F48090758BAAD6E8A64322B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ReBloom/Resources/Adonis.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = ReBloom/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo;
+				PRODUCT_MODULE_NAME = Adonis;
+				PRODUCT_NAME = ReBloom;
+				SDKROOT = iphoneos;
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos26.*]" = "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator26.*]" = "$(inherited) ADONIS_ENABLE_LEGACY_IMAGE_CREATOR";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		3533BA68C014D110544C67E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = ReBloomShareExtension/AdonisShareExtension.entitlements;
+				INFOPLIST_FILE = ReBloomShareExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo.share;
+				PRODUCT_MODULE_NAME = AdonisShareExtension;
+				PRODUCT_NAME = ReBloomShareExtension;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		4E2426734D31E706804838B3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReBloom.app/ReBloom";
+			};
+			name = Release;
+		};
+		53A45F4FB39B98AAF13F8785 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReBloom.app/ReBloom";
+			};
+			name = Debug;
+		};
+		807F651CA183F2A78D1FEA2B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CC927AC751DE9E526EF6F43F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = ReBloomShareExtension/AdonisShareExtension.entitlements;
+				INFOPLIST_FILE = ReBloomShareExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo.share;
+				PRODUCT_MODULE_NAME = AdonisShareExtension;
+				PRODUCT_NAME = ReBloomShareExtension;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		F3B950AD8F9A563CE2E42C3C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ReBloom;
+			};
+			name = Debug;
+		};
+		F84B971571D0BE9497CC1051 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.adonis.localdemo.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ReBloom;
+			};
+			name = Release;
+		};
+		FE95196F40BD99EE74FB200B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2246526B0AD28CB8E66D52F6 /* Build configuration list for PBXNativeTarget "ReBloomTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				53A45F4FB39B98AAF13F8785 /* Debug */,
+				4E2426734D31E706804838B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		69C2BE293F02BE0664C5669D /* Build configuration list for PBXNativeTarget "ReBloom" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2F48090758BAAD6E8A64322B /* Debug */,
+				0BB4F227CE48960881956161 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		704287260A5572B1739BFEFF /* Build configuration list for PBXNativeTarget "ReBloomUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F3B950AD8F9A563CE2E42C3C /* Debug */,
+				F84B971571D0BE9497CC1051 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		77556F90D894D2638A4D156B /* Build configuration list for PBXProject "ReBloom" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				807F651CA183F2A78D1FEA2B /* Debug */,
+				FE95196F40BD99EE74FB200B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FFF5CB5794FC7633B21D7793 /* Build configuration list for PBXNativeTarget "ReBloomShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC927AC751DE9E526EF6F43F /* Debug */,
+				3533BA68C014D110544C67E3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4AD08293D17863F6EF1D9D15 /* Project object */;
+}

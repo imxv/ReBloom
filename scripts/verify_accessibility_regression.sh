@@ -66,20 +66,20 @@ print "增强对比度：$task_active_contrast"
 
 cd "$task_project_root"
 xcodebuild \
-  -project Adonis.xcodeproj \
-  -scheme Adonis \
+  -project ReBloom.xcodeproj \
+  -scheme ReBloom \
   -destination "platform=iOS Simulator,id=$task_device_id" \
   -derivedDataPath .derivedData \
   test \
-  -only-testing:AdonisTests/AccessibilityContractTests \
-  -only-testing:AdonisUITests/AdonisFlowUITests/testSampleCardExplainsOriginalPhotoBecomesTransparentSticker \
-  -only-testing:AdonisUITests/AdonisFlowUITests/testHomepageAISampleKeepsAIProvenanceAfterOpeningResult \
-  -only-testing:AdonisUITests/AdonisFlowUITests/testAccessibleCoreFlowSurvivesBackgroundAndKeepsActionsReachable \
-  -only-testing:AdonisUITests/AdonisFlowUITests/testAIStickerFidelityReviewPersistsFromResultIntoHistory \
-  -only-testing:AdonisUITests/AdonisFlowUITests/testUnavailableAIStickerOffersAnHonestPreparedSampleRecovery \
-  -only-testing:AdonisUITests/AdonisFlowUITests/testGeneratedStickerCreatesTraceableBotanicalPosterReadyToCompareSaveAndShare \
-  -only-testing:AdonisUITests/AdonisFlowUITests/testCuratedStyleGardenSelectsPersistsAndReopensFloralSketch \
-  -only-testing:AdonisUITests/AdonisFlowUITests/testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt \
-  -only-testing:AdonisUITests/AdonisFlowUITests/testCatalogTopCanCreateReviewSaveShareAndReopenStickerTryOn \
-  -only-testing:AdonisUITests/AdonisFlowUITests/testConfirmedPiecesFromDifferentOutfitsCreateShareableRebloomSuggestion \
-  -only-testing:AdonisUITests/AdonisFlowUITests/testProcessingOverlayKeepsCancelReachable
+  -only-testing:ReBloomTests/AccessibilityContractTests \
+  -only-testing:ReBloomUITests/AdonisFlowUITests/testSampleCardExplainsOriginalPhotoBecomesTransparentSticker \
+  -only-testing:ReBloomUITests/AdonisFlowUITests/testHomepageAISampleKeepsAIProvenanceAfterOpeningResult \
+  -only-testing:ReBloomUITests/AdonisFlowUITests/testAccessibleCoreFlowSurvivesBackgroundAndKeepsActionsReachable \
+  -only-testing:ReBloomUITests/AdonisFlowUITests/testAIStickerFidelityReviewPersistsFromResultIntoHistory \
+  -only-testing:ReBloomUITests/AdonisFlowUITests/testUnavailableAIStickerOffersAnHonestPreparedSampleRecovery \
+  -only-testing:ReBloomUITests/AdonisFlowUITests/testGeneratedStickerCreatesTraceableBotanicalPosterReadyToCompareSaveAndShare \
+  -only-testing:ReBloomUITests/AdonisFlowUITests/testCuratedStyleGardenSelectsPersistsAndReopensFloralSketch \
+  -only-testing:ReBloomUITests/AdonisFlowUITests/testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt \
+  -only-testing:ReBloomUITests/AdonisFlowUITests/testCatalogTopCanCreateReviewSaveShareAndReopenStickerTryOn \
+  -only-testing:ReBloomUITests/AdonisFlowUITests/testConfirmedPiecesFromDifferentOutfitsCreateShareableRebloomSuggestion \
+  -only-testing:ReBloomUITests/AdonisFlowUITests/testProcessingOverlayKeepsCancelReachable

@@ -3,11 +3,11 @@
 set -euo pipefail
 
 readonly repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-readonly manifest_path="$repository_root/Adonis/Resources/Samples/regression-baseline.json"
-readonly homepage_manifest_path="$repository_root/Adonis/Resources/Samples/homepage-ai-showcase.json"
+readonly manifest_path="$repository_root/ReBloom/Resources/Samples/regression-baseline.json"
+readonly homepage_manifest_path="$repository_root/ReBloom/Resources/Samples/homepage-ai-showcase.json"
 readonly generator_path="$repository_root/scripts/generate_sample_stickers.swift"
 readonly homepage_generator_path="$repository_root/scripts/generate_homepage_ai_sticker.sh"
-readonly sample_directory="$repository_root/Adonis/Resources/Samples"
+readonly sample_directory="$repository_root/ReBloom/Resources/Samples"
 
 if [[ ! -f "$manifest_path" || ! -f "$homepage_manifest_path" || ! -f "$generator_path" \
   || ! -x "$homepage_generator_path" ]]; then

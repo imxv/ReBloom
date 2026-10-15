@@ -41,10 +41,10 @@ The current checkout has been built with **Xcode 27**. The deployment target is 
 ```bash
 git clone https://github.com/imxv/ReBloom.git
 cd ReBloom
-open Adonis.xcodeproj
+open ReBloom.xcodeproj
 ```
 
-1. Select the **Adonis** scheme and an installed iPhone simulator in Xcode.
+1. Select the **ReBloom** scheme and an installed iPhone simulator in Xcode.
 2. Press **⌘R**. The app appears as **ReBloom**.
 3. Tap a built-in sample on the home screen to explore stickers, collection cards, and the Bloom Calendar without configuring a provider key.
 
@@ -101,6 +101,6 @@ Most implementation and verification documents are currently in Chinese.
 | [Derived creations](docs/agent-guidance/derived-artifacts.md) | Lookbooks, posters, figurines, and outfit collages |
 | [Verification guide](docs/agent-guidance/verification.md) | Existing checks and what their evidence can establish |
 
-### Why does the project still say Adonis?
+### Compatibility with existing installations
 
-ReBloom was previously named Adonis. The app and share extension display the new name, while the Xcode project and targets, Bundle ID, App Group, storage and export identifiers, and `ADONIS_*` configuration names remain unchanged for compatibility. Historical evidence retains the name it had when captured.
+ReBloom was previously named Adonis. The local project directory, Xcode project, schemes, targets, and source directories now use ReBloom. The Swift app module remains `Adonis` to preserve persisted model identities; Bundle IDs, App Group, storage and export identifiers, and `ADONIS_*` configuration names also retain their existing values. Historical evidence retains the name it had when captured.

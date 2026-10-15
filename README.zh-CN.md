@@ -32,10 +32,10 @@ ReBloom 以本地存储和本机派生为主；默认人物链路在用户确认
 当前已验证的构建工具链为 Xcode 27，最低目标系统为 iOS 17。新照片的 AI 生成还需要支持 Apple Intelligence 的设备、可用的系统 Image Playground，以及配置好的透明处理代理；模拟器可以先体验内置样片、收藏卡和花历。
 
 ```bash
-open Adonis.xcodeproj
+open ReBloom.xcodeproj
 ```
 
-在 Xcode 中选择 `Adonis` scheme 和已安装的 iPhone 模拟器，点击 Run（⌘R）。App 显示名为 **ReBloom**，当前界面语言为中文。首页点一张内置样片即可体验结果、收藏和分享，无需配置供应商密钥。真实透明处理的本地配置见 [代理说明](server/README.md)。
+在 Xcode 中选择 `ReBloom` scheme 和已安装的 iPhone 模拟器，点击 Run（⌘R）。App 显示名为 **ReBloom**，当前界面语言为中文。首页点一张内置样片即可体验结果、收藏和分享，无需配置供应商密钥。真实透明处理的本地配置见 [代理说明](server/README.md)。
 
 也可以使用命令行构建和运行已有检查：
 
@@ -93,7 +93,7 @@ ReBloom 不做账号云同步；默认人物链路会在用户确认 AI 底图�
 
 ## 工程名称兼容
 
-项目原名 Adonis，现更名为 ReBloom，代码仓库为 [imxv/ReBloom](https://github.com/imxv/ReBloom)。App 与系统分享入口使用新名称；为兼容现有本地数据与开发配置，Xcode 工程/target、Bundle ID、App Group、存储与导出标识、`ADONIS_*` 环境变量暂时沿用原名。因此以下命令仍打开 `Adonis.xcodeproj`。历史截图、样片和验证记录保留生成时的名称与证据范围。
+项目原名 Adonis，现更名为 ReBloom，代码仓库为 [imxv/ReBloom](https://github.com/imxv/ReBloom)。本地项目目录、Xcode 工程、scheme、target 和源码目录均使用 ReBloom。为保持已有持久化模型身份，App 的 Swift 模块名仍为 `Adonis`；Bundle ID、App Group、存储与导出标识、`ADONIS_*` 环境变量也保留原值。历史截图、样片和验证记录保留生成时的名称与证据范围。
 
 ## 产品与开发上下文
 

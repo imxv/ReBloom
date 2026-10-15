@@ -10,7 +10,7 @@
 make verified-test
 ```
 
-它运行完整 iOS 测试，要求至少 234 项、`AdonisTests` 与 `AdonisUITests` 都实际执行、零失败、零跳过、零预期失败。234 是当前已记录全量回归的最低数量；未来有意删除或拆分测试时，应先解释覆盖变化，再调整 `MINIMUM_TESTS`，不要为得到绿色结果降低它。数量下限与两个 target 存在不等于逐个证明当前源码中所有用例都被选中；关键用例可用下述 `--require` 单独锁定。
+它运行完整 iOS 测试，要求至少 234 项、`ReBloomTests` 与 `ReBloomUITests` 都实际执行、零失败、零跳过、零预期失败。234 是当前已记录全量回归的最低数量；未来有意删除或拆分测试时，应先解释覆盖变化，再调整 `MINIMUM_TESTS`，不要为得到绿色结果降低它。数量下限与两个 target 存在不等于逐个证明当前源码中所有用例都被选中；关键用例可用下述 `--require` 单独锁定。
 
 每次运行都会创建独立的 `.artifacts/verified-tests/<UUID>/tests.xcresult`。只有 `xcodebuild` 退出 0 且该结果包通过核验，才产生同目录的 `verification.json` 并返回 0。已有包不覆盖，失败包保留，不从公共日志目录猜测“最新一次”。此目录已被仓库忽略；需交付的 JSON 可显式复制进 `docs/evidence`，不要把截图或图片包自动提交。
 
@@ -20,10 +20,10 @@ make verified-test
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 python3 scripts/run_verified_tests.py --minimum-tests 1 -- \
-  -project Adonis.xcodeproj -scheme Adonis \
+  -project ReBloom.xcodeproj -scheme ReBloom \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest' \
   -derivedDataPath .derivedData test \
-  -only-testing:AdonisTests/ModelStorePolicyTests
+  -only-testing:ReBloomTests/ModelStorePolicyTests
 ```
 
 runner 自动把每个 `-only-testing:Target/Suite/Method` 或 `-only-testing Target/Suite/Method` 转成必需覆盖条件，两种写法混用也逐项检查。指定单个方法时必须精确执行该方法；指定 suite 或 target 时，检查其中至少一个用例实际通过，并不推断该 suite 的源码用例总数。命令执行不使用 shell 拼接，带空格的路径作为独立参数传递。取消、进程失败或验证失败均不会生成成功报告。
@@ -33,10 +33,12 @@ runner 自动把每个 `-only-testing:Target/Suite/Method` 或 `-only-testing Ta
 ```bash
 python3 scripts/verify_xcresult.py '/absolute/path/to/tests.xcresult' \
   --minimum-tests 234 \
-  --require AdonisTests \
-  --require AdonisUITests/AdonisFlowUITests/testPreparedSampleCanBeCollectedAndFoundInBloomCalendar \
+  --require ReBloomTests \
+  --require ReBloomUITests/AdonisFlowUITests/testPreparedSampleCanBeCollectedAndFoundInBloomCalendar \
   --output '/absolute/path/to/new-verification.json'
 ```
+
+以上 target 名称适用于工程更名后的新结果包；读取历史 Adonis 结果包时，`--require` 应使用该包实际记录的 `AdonisTests` / `AdonisUITests` 名称。
 
 要求显式结果路径。它只读取该包，不启动 App、不修改模拟器、不重跑测试，也不会创建缺失的结果包。`--require` 可重复，按 target / suite / method 完整路径段匹配，不接受通配符；方法末尾的 `()` 可省略。`--output` 是可选的，默认向标准输出写 JSON；已有输出文件一律拒绝覆盖，也禁止写进输入结果包。
 

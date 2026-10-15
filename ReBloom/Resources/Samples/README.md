@@ -47,8 +47,8 @@ make sample-regression
 
 ```bash
 xcrun swift scripts/generate_sample_stickers.swift \
-  Adonis/Resources/Samples/sample-01.png \
-  Adonis/Resources/Samples/sample-01-sticker.png
+  ReBloom/Resources/Samples/sample-01.png \
+  ReBloom/Resources/Samples/sample-01-sticker.png
 ```
 
 | 派生文件 | SHA-256 |

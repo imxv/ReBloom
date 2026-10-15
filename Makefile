@@ -1,6 +1,6 @@
 SHELL := /bin/zsh
-PROJECT := Adonis.xcodeproj
-SCHEME := Adonis
+PROJECT := ReBloom.xcodeproj
+SCHEME := ReBloom
 DESTINATION := platform=iOS Simulator,name=iPhone 17 Pro,OS=latest
 DERIVED_DATA := .derivedData
 
@@ -21,33 +21,33 @@ server-test:
 sample-regression: project
 	./scripts/verify_sample_regression.sh
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/SampleRegressionTests \
-		-only-testing:AdonisTests/StickerMatteRefinerTests \
-		-only-testing:AdonisTests/StickerProcessorTests \
-		-only-testing:AdonisTests/RawMatteQualityAssessorTests \
-		-only-testing:AdonisTests/StickerSourceFidelityAssessorTests \
-		-only-testing:AdonisTests/StickerQualityAssessorTests
+		-only-testing:ReBloomTests/SampleRegressionTests \
+		-only-testing:ReBloomTests/StickerMatteRefinerTests \
+		-only-testing:ReBloomTests/StickerProcessorTests \
+		-only-testing:ReBloomTests/RawMatteQualityAssessorTests \
+		-only-testing:ReBloomTests/StickerSourceFidelityAssessorTests \
+		-only-testing:ReBloomTests/StickerQualityAssessorTests
 
 ai-sticker-regression: project
 	npm --prefix server test
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/AIStickerCreationPipelineTests \
-		-only-testing:AdonisTests/AIStickerCloudExtractionClientTests \
-		-only-testing:AdonisTests/AITransparentStickerProcessorTests \
-		-only-testing:AdonisTests/StickerFidelityReviewTests \
-		-only-testing:AdonisTests/CreativeExecutionMetadataTests/testAppleSystemSheetHasDistinctTraceAndKeepsSystemBoundaryHonest \
-		-only-testing:AdonisTests/CreativeExecutionMetadataTests/testTwoPassStickerMetadataKeepsSourceAndTransparentEditProvidersDistinct \
-		-only-testing:AdonisTests/CreativeExecutionMetadataTests/testOlderExecutionMetadataStillDecodesWithoutTwoPassProviderFields \
-		-only-testing:AdonisTests/CreativeExecutionMetadataTests/testCreativeGenerationErrorsUseStableCodesAndPlainRecoveryCopy \
-		-only-testing:AdonisTests/ProcessingTraceTests/testAIStickerGenerationStageAndProviderMetadataSurviveEventPersistence \
-		-only-testing:AdonisTests/ShareCardRendererTests/testProvenanceFooterDisclosesAIGeneratedStickerPixels \
-		-only-testing:AdonisTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testMainCreationGeneratesAIStickerSourceBeforeTransparentStickerAndPersistsIt \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testCancellingSystemImagePlaygroundNeverSendsOriginalToTransparentStage \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testAIStickerFidelityReviewPersistsFromResultIntoHistory \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testHomepageAISampleKeepsAIProvenanceAfterOpeningResult \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testAmbiguousInputDoesNotBypassUnavailableAIStickerGeneration \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testUnavailableAIStickerOffersAnHonestPreparedSampleRecovery
+		-only-testing:ReBloomTests/AIStickerCreationPipelineTests \
+		-only-testing:ReBloomTests/AIStickerCloudExtractionClientTests \
+		-only-testing:ReBloomTests/AITransparentStickerProcessorTests \
+		-only-testing:ReBloomTests/StickerFidelityReviewTests \
+		-only-testing:ReBloomTests/CreativeExecutionMetadataTests/testAppleSystemSheetHasDistinctTraceAndKeepsSystemBoundaryHonest \
+		-only-testing:ReBloomTests/CreativeExecutionMetadataTests/testTwoPassStickerMetadataKeepsSourceAndTransparentEditProvidersDistinct \
+		-only-testing:ReBloomTests/CreativeExecutionMetadataTests/testOlderExecutionMetadataStillDecodesWithoutTwoPassProviderFields \
+		-only-testing:ReBloomTests/CreativeExecutionMetadataTests/testCreativeGenerationErrorsUseStableCodesAndPlainRecoveryCopy \
+		-only-testing:ReBloomTests/ProcessingTraceTests/testAIStickerGenerationStageAndProviderMetadataSurviveEventPersistence \
+		-only-testing:ReBloomTests/ShareCardRendererTests/testProvenanceFooterDisclosesAIGeneratedStickerPixels \
+		-only-testing:ReBloomTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testMainCreationGeneratesAIStickerSourceBeforeTransparentStickerAndPersistsIt \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testCancellingSystemImagePlaygroundNeverSendsOriginalToTransparentStage \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testAIStickerFidelityReviewPersistsFromResultIntoHistory \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testHomepageAISampleKeepsAIProvenanceAfterOpeningResult \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testAmbiguousInputDoesNotBypassUnavailableAIStickerGeneration \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testUnavailableAIStickerOffersAnHonestPreparedSampleRecovery
 
 ai-sticker-visual-regression:
 	ruby scripts/verify_ai_sticker_visual_experiment.rb
@@ -60,113 +60,113 @@ accessibility-regression: project
 
 permission-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/CameraAccessServiceTests \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testDeniedCameraPermissionOffersSettingsWithoutOpeningCamera \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testRestrictedCameraPermissionKeepsAlbumAlternativeWithoutSettingsShortcut
+		-only-testing:ReBloomTests/CameraAccessServiceTests \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testDeniedCameraPermissionOffersSettingsWithoutOpeningCamera \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testRestrictedCameraPermissionKeepsAlbumAlternativeWithoutSettingsShortcut
 
 photo-save-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/PhotoLibrarySaverTests \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testPreparedStickerCanBeSavedToPhotosWithoutLeavingResult \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testDeniedPhotoSaveOffersStickerShareWithoutLosingResult
+		-only-testing:ReBloomTests/PhotoLibrarySaverTests \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testPreparedStickerCanBeSavedToPhotosWithoutLeavingResult \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testDeniedPhotoSaveOffersStickerShareWithoutLosingResult
 
 persistence-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/ModelStorePolicyTests \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testCollectedOutfitSurvivesProcessTerminationAndRelaunch
+		-only-testing:ReBloomTests/ModelStorePolicyTests \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testCollectedOutfitSurvivesProcessTerminationAndRelaunch
 
 wardrobe-visual-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/GarmentVisualSignatureTests \
-		-only-testing:AdonisTests/WardrobeCandidateMatcherTests \
-		-only-testing:AdonisTests/WardrobeVisualSignatureBackfillServiceTests \
-		-only-testing:AdonisTests/WardrobeImageAnalyzerTests \
-		-only-testing:AdonisTests/OutfitGarmentObserverTests \
-		-only-testing:AdonisTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testOutfitCluesStayProvisionalUntilOneTapConfirmation
+		-only-testing:ReBloomTests/GarmentVisualSignatureTests \
+		-only-testing:ReBloomTests/WardrobeCandidateMatcherTests \
+		-only-testing:ReBloomTests/WardrobeVisualSignatureBackfillServiceTests \
+		-only-testing:ReBloomTests/WardrobeImageAnalyzerTests \
+		-only-testing:ReBloomTests/OutfitGarmentObserverTests \
+		-only-testing:ReBloomTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testOutfitCluesStayProvisionalUntilOneTapConfirmation
 
 input-routing-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/CreationImageIntentRouterTests \
-		-only-testing:AdonisTests/WardrobeImageAnalyzerTests \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testCreateInputAutomaticallyRoutesHighConfidenceCatalogGarmentToWardrobe \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testAmbiguousInputDoesNotBypassUnavailableAIStickerGeneration
+		-only-testing:ReBloomTests/CreationImageIntentRouterTests \
+		-only-testing:ReBloomTests/WardrobeImageAnalyzerTests \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testCreateInputAutomaticallyRoutesHighConfidenceCatalogGarmentToWardrobe \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testAmbiguousInputDoesNotBypassUnavailableAIStickerGeneration
 
 performance-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/GenerationDeadlineControllerTests \
-		-only-testing:AdonisTests/ProcessingTraceTests \
-		-only-testing:AdonisTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testLocalPerformanceTraceShowsBudgetAndStages \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testProcessingOverlayKeepsCancelReachable \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testHardTimeoutExitsWaitingAndRejectsLateResult \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testTimeoutDeliversAndPersistsValidatedBasicStickerFallback
+		-only-testing:ReBloomTests/GenerationDeadlineControllerTests \
+		-only-testing:ReBloomTests/ProcessingTraceTests \
+		-only-testing:ReBloomTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testLocalPerformanceTraceShowsBudgetAndStages \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testProcessingOverlayKeepsCancelReachable \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testHardTimeoutExitsWaitingAndRejectsLateResult \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testTimeoutDeliversAndPersistsValidatedBasicStickerFallback
 
 lookbook-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/MonthlyLookbookRendererTests \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testSavedOutfitCreatesMonthlyStickerLookbookReadyToShare
+		-only-testing:ReBloomTests/MonthlyLookbookRendererTests \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testSavedOutfitCreatesMonthlyStickerLookbookReadyToShare
 
 figurine-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/DigitalFigurineCardRendererTests \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testGeneratedStickerCreatesShareableDigitalFigurineCardWithoutConfiguration \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testPreparedSampleCanBeCollectedAndFoundInBloomCalendar
+		-only-testing:ReBloomTests/DigitalFigurineCardRendererTests \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testGeneratedStickerCreatesShareableDigitalFigurineCardWithoutConfiguration \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testPreparedSampleCanBeCollectedAndFoundInBloomCalendar
 
 cabinet-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/DigitalCabinetCatalogTests \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testSavedOutfitAutomaticallyAppearsInTraceableDigitalCabinet
+		-only-testing:ReBloomTests/DigitalCabinetCatalogTests \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testSavedOutfitAutomaticallyAppearsInTraceableDigitalCabinet
 
 seasonal-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/SeasonalBloomCatalogTests \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testSavedOutfitAutomaticallyBuildsSeasonalBloomArchive
+		-only-testing:ReBloomTests/SeasonalBloomCatalogTests \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testSavedOutfitAutomaticallyBuildsSeasonalBloomArchive
 
 rebloom-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/RebloomCatalogTests \
-		-only-testing:AdonisTests/RebloomCardRendererTests \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testConfirmedPiecesFromDifferentOutfitsCreateShareableRebloomSuggestion
+		-only-testing:ReBloomTests/RebloomCatalogTests \
+		-only-testing:ReBloomTests/RebloomCardRendererTests \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testConfirmedPiecesFromDifferentOutfitsCreateShareableRebloomSuggestion
 
 rebloom-reminder-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/RebloomReminderServiceTests \
-		-only-testing:AdonisTests/PersonalDataControlTests/testDeleteAllClearsModelsMediaSharedInboxAndTemporaryExports \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testConfirmedPiecesFromDifferentOutfitsCreateShareableRebloomSuggestion
+		-only-testing:ReBloomTests/RebloomReminderServiceTests \
+		-only-testing:ReBloomTests/PersonalDataControlTests/testDeleteAllClearsModelsMediaSharedInboxAndTemporaryExports \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testConfirmedPiecesFromDifferentOutfitsCreateShareableRebloomSuggestion
 
 creative-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/CreativeExecutionMetadataTests \
-		-only-testing:AdonisTests/CreativeRecipeTests \
-		-only-testing:AdonisTests/BotanicalPosterRendererTests \
-		-only-testing:AdonisTests/MythicGardenCardRendererTests \
-		-only-testing:AdonisTests/CreativeWorkPersistenceTests \
-		-only-testing:AdonisTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
-		-only-testing:AdonisTests/PersonalDataControlTests/testDeleteAllClearsModelsMediaSharedInboxAndTemporaryExports \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testGeneratedStickerCreatesTraceableBotanicalPosterReadyToCompareSaveAndShare \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testUnavailableSystemCreationDoesNotShowADeadEntry \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testCuratedStyleGardenSelectsPersistsAndReopensFloralSketch \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testSystemCreationCanBeCancelledWithoutChangingOriginalResult \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testSystemCreationTimeoutStopsWaitingAndKeepsOriginalResult
+		-only-testing:ReBloomTests/CreativeExecutionMetadataTests \
+		-only-testing:ReBloomTests/CreativeRecipeTests \
+		-only-testing:ReBloomTests/BotanicalPosterRendererTests \
+		-only-testing:ReBloomTests/MythicGardenCardRendererTests \
+		-only-testing:ReBloomTests/CreativeWorkPersistenceTests \
+		-only-testing:ReBloomTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
+		-only-testing:ReBloomTests/PersonalDataControlTests/testDeleteAllClearsModelsMediaSharedInboxAndTemporaryExports \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testGeneratedStickerCreatesTraceableBotanicalPosterReadyToCompareSaveAndShare \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testUnavailableSystemCreationDoesNotShowADeadEntry \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testCuratedStyleGardenSelectsPersistsAndReopensFloralSketch \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testSystemCreationCanBeCancelledWithoutChangingOriginalResult \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testSystemCreationTimeoutStopsWaitingAndKeepsOriginalResult
 
 tryon-regression: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test \
-		-only-testing:AdonisTests/StickerTryOnRendererTests \
-		-only-testing:AdonisTests/CreativeExecutionMetadataTests/testStickerTryOnTraceIsLocalZeroRequestAndRequiresVisualReview \
-		-only-testing:AdonisTests/CreativeRecipeTests/testStickerTryOnIsAOneTapLocalCompositionWithExplicitFitBoundary \
-		-only-testing:AdonisTests/CreativeWorkPersistenceTests \
-		-only-testing:AdonisTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testCatalogTopCanCreateReviewSaveShareAndReopenStickerTryOn \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testStickerTryOnQualityGateStopsBadResultWithoutCreatingAWork \
-		-only-testing:AdonisUITests/AdonisFlowUITests/testStickerTryOnCanBeStoppedWithoutOpeningOrChangingAWork
+		-only-testing:ReBloomTests/StickerTryOnRendererTests \
+		-only-testing:ReBloomTests/CreativeExecutionMetadataTests/testStickerTryOnTraceIsLocalZeroRequestAndRequiresVisualReview \
+		-only-testing:ReBloomTests/CreativeRecipeTests/testStickerTryOnIsAOneTapLocalCompositionWithExplicitFitBoundary \
+		-only-testing:ReBloomTests/CreativeWorkPersistenceTests \
+		-only-testing:ReBloomTests/PersonalDataControlTests/testExportContainsReadableManifestMediaAndPendingSharedImages \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testCatalogTopCanCreateReviewSaveShareAndReopenStickerTryOn \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testStickerTryOnQualityGateStopsBadResultWithoutCreatingAWork \
+		-only-testing:ReBloomUITests/AdonisFlowUITests/testStickerTryOnCanBeStoppedWithoutOpeningOrChangingAWork
 
 lint:
-	xcrun swift-format lint --recursive --parallel --strict Adonis AdonisShared AdonisShareExtension AdonisTests AdonisUITests
+	xcrun swift-format lint --recursive --parallel --strict ReBloom ReBloomShared ReBloomShareExtension ReBloomTests ReBloomUITests
 
 format:
-	xcrun swift-format format --in-place --recursive --parallel Adonis AdonisShared AdonisShareExtension AdonisTests AdonisUITests
+	xcrun swift-format format --in-place --recursive --parallel ReBloom ReBloomShared ReBloomShareExtension ReBloomTests ReBloomUITests
 
 analyze: project
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination 'generic/platform=iOS' -derivedDataPath $(DERIVED_DATA)-analyze analyze CODE_SIGNING_ALLOWED=NO
@@ -182,7 +182,7 @@ MINIMUM_TESTS ?= 234
 
 verified-test: project
 	PYTHONDONTWRITEBYTECODE=1 python3 scripts/run_verified_tests.py \
-		--minimum-tests $(MINIMUM_TESTS) --require AdonisTests --require AdonisUITests -- \
+		--minimum-tests $(MINIMUM_TESTS) --require ReBloomTests --require ReBloomUITests -- \
 		-project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test
 
 test-tools:

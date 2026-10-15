@@ -5,7 +5,7 @@
 当前 App 图标由 Codex 内置 `imagegen` 模式生成，未调用第三方插件或付费 API。
 
 - 生成源图：`assets/brand/app-icon-source.png`
-- App 资产：`Adonis/Assets.xcassets/AppIcon.appiconset/AppIcon.png`
+- App 资产：`ReBloom/Assets.xcassets/AppIcon.appiconset/AppIcon.png`
 - 生成日期：2026-08-29
 
 ## 生成提示词
