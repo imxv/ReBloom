@@ -2,7 +2,7 @@ import UIKit
 
 struct DigitalFigurineCardRenderer {
   static let provenance = VisualContentProvenance.programmaticComposition
-  static let provenanceFooter = "人物与衣物来自原图贴纸 · 展台由 ADONIS 排版"
+  static let provenanceFooter = "人物与衣物来自原图贴纸 · 展台由 REBLOOM 排版"
 
   static func provenance(
     for stickerProvenance: VisualContentProvenance
@@ -12,7 +12,7 @@ struct DigitalFigurineCardRenderer {
 
   static func provenanceFooter(for stickerProvenance: VisualContentProvenance) -> String {
     stickerProvenance.containsAIGeneratedPixels
-      ? "人物与衣物来自 AI 贴纸 · 展台由 ADONIS 排版"
+      ? "人物与衣物来自 AI 贴纸 · 展台由 REBLOOM 排版"
       : provenanceFooter
   }
 
@@ -80,7 +80,7 @@ struct DigitalFigurineCardRenderer {
     let centered = NSMutableParagraphStyle()
     centered.alignment = .center
 
-    ("ADONIS" as NSString).draw(
+    ("REBLOOM" as NSString).draw(
       in: CGRect(x: 260, y: 78, width: 560, height: 62),
       withAttributes: [
         .font: UIFont.systemFont(ofSize: 45, weight: .black),
@@ -211,7 +211,7 @@ struct DigitalFigurineCardRenderer {
 
     let centered = NSMutableParagraphStyle()
     centered.alignment = .center
-    ("ADONIS · BLOOM EDITION" as NSString).draw(
+    ("REBLOOM · BLOOM EDITION" as NSString).draw(
       in: CGRect(x: 378, y: 963, width: 324, height: 30),
       withAttributes: [
         .font: UIFont.systemFont(ofSize: 17, weight: .heavy),

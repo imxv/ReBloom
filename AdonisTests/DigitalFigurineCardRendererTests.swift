@@ -7,7 +7,7 @@ final class DigitalFigurineCardRendererTests: XCTestCase {
   func testLegacyContractNamesOriginalStickerAndProgrammaticStage() {
     XCTAssertEqual(
       DigitalFigurineCardRenderer.provenanceFooter,
-      "人物与衣物来自原图贴纸 · 展台由 ADONIS 排版"
+      "人物与衣物来自原图贴纸 · 展台由 REBLOOM 排版"
     )
     XCTAssertEqual(DigitalFigurineCardRenderer.provenance, .programmaticComposition)
     XCTAssertEqual(AdonisProcessingVersion.digitalFigurineCard, "digital-figurine-card-v1")
@@ -19,7 +19,7 @@ final class DigitalFigurineCardRendererTests: XCTestCase {
     XCTAssertEqual(DigitalFigurineCardRenderer.provenance(for: .aiGenerated), .aiGenerated)
     XCTAssertEqual(
       DigitalFigurineCardRenderer.provenanceFooter(for: .aiGenerated),
-      "人物与衣物来自 AI 贴纸 · 展台由 ADONIS 排版"
+      "人物与衣物来自 AI 贴纸 · 展台由 REBLOOM 排版"
     )
   }
 

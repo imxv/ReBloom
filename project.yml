@@ -39,14 +39,14 @@ targets:
       properties:
         ADONIS_STICKER_EXTRACTION_URL: "$(ADONIS_STICKER_EXTRACTION_URL)"
         ADONIS_STICKER_PROXY_TOKEN: "$(ADONIS_STICKER_PROXY_TOKEN)"
-        CFBundleDisplayName: Adonis
+        CFBundleDisplayName: ReBloom
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSApplicationCategoryType: public.app-category.photo-video
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
-        NSCameraUsageDescription: Adonis 使用相机拍摄你想制作成贴纸的照片。
-        NSPhotoLibraryAddUsageDescription: Adonis 仅在你主动选择时把作品保存到相册。
+        NSCameraUsageDescription: ReBloom 使用相机拍摄你想制作成贴纸的照片。
+        NSPhotoLibraryAddUsageDescription: ReBloom 仅在你主动选择时把作品保存到相册。
         UIApplicationSupportsIndirectInputEvents: true
         UILaunchScreen: {}
     scheme:
@@ -72,7 +72,7 @@ targets:
     info:
       path: AdonisShareExtension/Info.plist
       properties:
-        CFBundleDisplayName: 收进 Adonis
+        CFBundleDisplayName: 收进 ReBloom
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         NSExtension:

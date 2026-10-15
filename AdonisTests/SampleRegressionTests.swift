@@ -96,19 +96,27 @@ final class SampleRegressionTests: XCTestCase {
     }
   }
 
-  func testEveryShowcaseStickerRendersAnOpaqueShareCard() throws {
+  func testEveryHomepageAIStickerRendersCurrentShareAndFigurineCards() throws {
     let fixedDate = try XCTUnwrap(
       Calendar(identifier: .gregorian).date(
         from: DateComponents(year: 2026, month: 8, day: 29)
       )
     )
 
-    for (index, sample) in SampleCatalog.showcasePhotos.enumerated() {
-      let sticker = try XCTUnwrap(sample.preparedStickerImage())
+    for (index, sample) in SampleCatalog.homepagePhotos.enumerated() {
+      let sticker = try XCTUnwrap(sample.homepageAIStickerImage())
+      let historicalSticker = try XCTUnwrap(sample.preparedStickerImage())
       let card = ShareCardRenderer().render(
         sticker: sticker,
         bloomNumber: index + 1,
-        date: fixedDate
+        date: fixedDate,
+        stickerProvenance: .aiGenerated
+      )
+      let historicalCard = ShareCardRenderer().render(
+        sticker: historicalSticker,
+        bloomNumber: index + 1,
+        date: fixedDate,
+        stickerProvenance: .derivedFromOriginal
       )
       let cardImage = try XCTUnwrap(card.cgImage)
       let measurement = try StickerPixelMeasurement(image: card)
@@ -117,9 +125,111 @@ final class SampleRegressionTests: XCTestCase {
       XCTAssertEqual(cardImage.height, 1_440, sample.id)
       XCTAssertEqual(measurement.transparentRatio, 0, accuracy: 0.000_001, sample.id)
       XCTAssertEqual(measurement.semiTransparentRatio, 0, accuracy: 0.000_001, sample.id)
+      XCTAssertNotEqual(card.pngData(), historicalCard.pngData(), sample.id)
 
       let attachment = XCTAttachment(image: card)
-      attachment.name = "\(sample.id)-share-card"
+      attachment.name = "\(sample.id)-homepage-ai-share-card"
+      attachment.lifetime = .keepAlways
+      add(attachment)
+
+      let figurineCard = try XCTUnwrap(
+        DigitalFigurineCardRenderer().render(
+          sticker: sticker,
+          bloomNumber: index + 1,
+          date: fixedDate,
+          stickerProvenance: .aiGenerated
+        )
+      )
+      let historicalFigurineCard = try XCTUnwrap(
+        DigitalFigurineCardRenderer().render(
+          sticker: historicalSticker,
+          bloomNumber: index + 1,
+          date: fixedDate,
+          stickerProvenance: .derivedFromOriginal
+        )
+      )
+      XCTAssertNotEqual(figurineCard.pngData(), historicalFigurineCard.pngData(), sample.id)
+
+      let figurineAttachment = XCTAttachment(image: figurineCard)
+      figurineAttachment.name = "\(sample.id)-homepage-ai-digital-figurine-card"
+      figurineAttachment.lifetime = .keepAlways
+      add(figurineAttachment)
+    }
+  }
+
+  func testHomepageAIShowcaseUsesReviewedRealAlphaAssetsWithoutReplacingHistoricalBaseline()
+    throws
+  {
+    let manifest = try loadHomepageManifest()
+
+    XCTAssertEqual(manifest.schemaVersion, 1)
+    XCTAssertEqual(manifest.name, "adonis-homepage-ai-showcase")
+    XCTAssertEqual(manifest.authorization.kind, "user_provided")
+    XCTAssertFalse(manifest.authorization.externalSocialPlatformImagesIncluded)
+    XCTAssertEqual(manifest.generation.tool, "Codex built-in image generation")
+    XCTAssertTrue(manifest.generation.containsAIGeneratedPixels)
+    XCTAssertEqual(manifest.generation.runtimeProviderRequestCount, 0)
+    XCTAssertEqual(
+      manifest.postProcessing.tool,
+      "scripts/generate_homepage_ai_sticker.sh"
+    )
+    XCTAssertEqual(manifest.postProcessing.minimumLongEdgePixels, 1_536)
+    XCTAssertEqual(manifest.samples.map(\.id), SampleCatalog.homepagePhotos.map(\.id))
+    XCTAssertEqual(SampleCatalog.homepagePhotos.count, 3)
+    XCTAssertEqual(SampleCatalog.photos.count, 4)
+    XCTAssertTrue(SampleCatalog.photos.contains(where: { $0.id == "sample-04" }))
+
+    let catalogByID = Dictionary(uniqueKeysWithValues: SampleCatalog.photos.map { ($0.id, $0) })
+    for baseline in manifest.samples {
+      let sample = try XCTUnwrap(catalogByID[baseline.id])
+      XCTAssertEqual(sample.homepageProvenance, .aiGenerated, baseline.id)
+      XCTAssertEqual(
+        baseline.aiSource.resourceName,
+        "\(try XCTUnwrap(sample.homepageAISourceResourceName)).png",
+        baseline.id
+      )
+      XCTAssertEqual(
+        baseline.sticker.resourceName,
+        "\(try XCTUnwrap(sample.homepageAIStickerResourceName)).png",
+        baseline.id
+      )
+      XCTAssertFalse(baseline.aiSource.hasAlpha, baseline.id)
+      XCTAssertTrue(baseline.sticker.hasAlpha, baseline.id)
+      XCTAssertEqual(baseline.manualFidelityReview.status, "changed", baseline.id)
+      XCTAssertFalse(baseline.manualFidelityReview.issues.isEmpty, baseline.id)
+      XCTAssertEqual(baseline.manualAlphaReview.status, "acceptable", baseline.id)
+      XCTAssertTrue(baseline.manualAlphaReview.issues.isEmpty, baseline.id)
+      XCTAssertEqual(baseline.productEligibility, "homepage_example_only", baseline.id)
+
+      let aiSource = try XCTUnwrap(sample.homepageAISourceImage())
+      let aiSourceImage = try XCTUnwrap(aiSource.cgImage)
+      XCTAssertEqual(aiSourceImage.width, baseline.aiSource.width, baseline.id)
+      XCTAssertEqual(aiSourceImage.height, baseline.aiSource.height, baseline.id)
+      let sourceMeasurement = try StickerPixelMeasurement(image: aiSource)
+      XCTAssertEqual(sourceMeasurement.transparentRatio, 0, accuracy: 0.000_001, baseline.id)
+
+      let sticker = try XCTUnwrap(sample.homepageAIStickerImage())
+      let stickerImage = try XCTUnwrap(sticker.cgImage)
+      XCTAssertEqual(stickerImage.width, baseline.sticker.width, baseline.id)
+      XCTAssertEqual(stickerImage.height, baseline.sticker.height, baseline.id)
+      XCTAssertGreaterThanOrEqual(
+        max(stickerImage.width, stickerImage.height),
+        manifest.postProcessing.minimumLongEdgePixels,
+        baseline.id
+      )
+
+      let measurement = try StickerPixelMeasurement(image: sticker)
+      print("ADONIS_HOMEPAGE_AI_SAMPLE_METRICS \(baseline.id) \(measurement.logLine)")
+      XCTAssertGreaterThan(measurement.transparentRatio, 0.1, baseline.id)
+      XCTAssertGreaterThan(measurement.opaqueRatio, 0.05, baseline.id)
+      XCTAssertGreaterThan(measurement.semiTransparentRatio, 0, baseline.id)
+      XCTAssertGreaterThan(measurement.cornerTransparentRatio, 0.95, baseline.id)
+      XCTAssertGreaterThan(measurement.largestComponentRatio, 0.98, baseline.id)
+      XCTAssertGreaterThan(measurement.whiteBoundaryRatio, 0.95, baseline.id)
+      XCTAssertGreaterThan(measurement.nonWhiteOpaqueRatio, 0.03, baseline.id)
+
+      let attachment = XCTAttachment(image: sticker)
+      attachment.name = "\(baseline.id)-homepage-ai-sticker"
       attachment.lifetime = .keepAlways
       add(attachment)
     }
@@ -130,6 +240,16 @@ final class SampleRegressionTests: XCTestCase {
       Bundle.main.url(forResource: "regression-baseline", withExtension: "json")
     )
     return try JSONDecoder().decode(RegressionBaselineManifest.self, from: Data(contentsOf: url))
+  }
+
+  private func loadHomepageManifest() throws -> HomepageAIShowcaseManifest {
+    let url = try XCTUnwrap(
+      Bundle.main.url(forResource: "homepage-ai-showcase", withExtension: "json")
+    )
+    return try JSONDecoder().decode(
+      HomepageAIShowcaseManifest.self,
+      from: Data(contentsOf: url)
+    )
   }
 
   private func isSHA256(_ value: String) -> Bool {
@@ -144,6 +264,52 @@ final class SampleRegressionTests: XCTestCase {
     line: UInt = #line
   ) {
     XCTAssertEqual(actual, expected, accuracy: 0.002, sampleID, file: file, line: line)
+  }
+}
+
+private struct HomepageAIShowcaseManifest: Decodable {
+  let schemaVersion: Int
+  let name: String
+  let authorization: Authorization
+  let generation: Generation
+  let postProcessing: PostProcessing
+  let samples: [Sample]
+
+  struct Authorization: Decodable {
+    let kind: String
+    let externalSocialPlatformImagesIncluded: Bool
+  }
+
+  struct Generation: Decodable {
+    let tool: String
+    let containsAIGeneratedPixels: Bool
+    let runtimeProviderRequestCount: Int
+  }
+
+  struct PostProcessing: Decodable {
+    let tool: String
+    let minimumLongEdgePixels: Int
+  }
+
+  struct Sample: Decodable {
+    let id: String
+    let aiSource: ImageAsset
+    let sticker: ImageAsset
+    let manualFidelityReview: ManualReview
+    let manualAlphaReview: ManualReview
+    let productEligibility: String
+  }
+
+  struct ImageAsset: Decodable {
+    let resourceName: String
+    let width: Int
+    let height: Int
+    let hasAlpha: Bool
+  }
+
+  struct ManualReview: Decodable {
+    let status: String
+    let issues: [String]
   }
 }
 

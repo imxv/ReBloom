@@ -1,10 +1,10 @@
-# Adonis TODO
+# ReBloom TODO
 
 > 当前阶段：M0 验证、M1 本地闭环、M2 衣橱纵向切片与 M4 首条长期收藏切片
 >
-> 产品原则与范围以 [Adonis 产品方向](docs/product-direction.md) 为准。本清单负责安排工作顺序，不替代产品方向文档。
+> 产品原则与范围以 [ReBloom 产品方向](docs/product-direction.md) 为准。本清单负责安排工作顺序，不替代产品方向文档。
 
-当前实现边界见 [Adonis iOS 本地 Demo 实施说明](docs/ios-local-demo.md)。用户已经决定先制作本地可用产品，再寻找首轮测试用户；因此实现与 M0 验证并行推进，不再等待用户研究结束后才写代码。
+当前实现边界见 [ReBloom iOS 本地 Demo 实施说明](docs/ios-local-demo.md)。用户已经决定先制作本地可用产品，再寻找首轮测试用户；因此实现与 M0 验证并行推进，不再等待用户研究结束后才写代码。
 
 ## 使用方式
 
@@ -23,11 +23,11 @@
 - [ ] 写清用户当时拥有什么输入、遇到什么问题、期待什么结果。
 - [ ] 明确第一版暂时不服务的人群和场景。
 
-当前候选假设：通过网络内容或线下活动接触 Adonis，以女性为主，对好玩、好看、风格强烈的个人图片感兴趣，希望保存或分享，但不愿学习 AI 工具的用户。
+当前候选假设：通过网络内容或线下活动接触 ReBloom，以女性为主，对好玩、好看、风格强烈的个人图片感兴趣，希望保存或分享，但不愿学习 AI 工具的用户。
 
 工作草案：[首批用户与启动场景假设](docs/launch-wedge.md)。该假设尚未经过真实用户验证，本任务暂不勾选。
 
-完成标准：形成一页启动场景说明，陌生读者能够准确复述“谁在什么时刻为什么打开 Adonis”。
+完成标准：形成一页启动场景说明，陌生读者能够准确复述“谁在什么时刻为什么打开 ReBloom”。
 
 ### ADO-002 选定首个惊艳结果
 
@@ -47,13 +47,32 @@
 - [x] 每个页面只保留一个主要动作。
 - [x] 结果页只突出“收藏今天”；“存透明贴纸 / 分享”并排作为次级动作，“再做一张”保持末级；数字手办以单个次级卡片入口出现，不增加模式、参数或模板选择。
 - [x] 为生成失败、模拟器能力不足和用户取消提供不打断主流程的降级方式。
-- [x] 内置样片在点击前直接展示“授权原图 → 固定透明贴纸”，整张卡仍一次点击，并明确标为内置样片与原图处理。
+- [x] 内置样片在点击前直接展示“授权原图 → 预生成 AI 透明贴纸”，整张卡仍一次点击，并明确标为内置 AI 样片与 AI 生成；点击不发起实时 provider 请求。进入结果后的收藏卡、数字手办卡、保存记录与历史重开统一沿用新 AI 贴纸，不再回落到旧直抠样片。
 
-当前证据：[iOS 本地 Demo 四屏与 UI 流程验证](docs/verification/2026-08-29-ios-local-demo.md)与 [内置样片原图到贴纸预览验证](docs/verification/2026-08-31-sample-transformation-preview.md)。真实用户无讲解测试仍属于 ADO-008。
+当前证据：[iOS 本地 Demo 四屏与 UI 流程验证](docs/verification/2026-08-29-ios-local-demo.md)与 [首页 AI 样片重新生成验证](docs/verification/2026-08-31-homepage-ai-showcase.md)。真实用户无讲解测试仍属于 ADO-008。
 
-完成标准：没有项目背景的人能够在不听讲解的情况下完成原型流程，并说出 Adonis 帮自己做了什么。
+完成标准：没有项目背景的人能够在不听讲解的情况下完成原型流程，并说出 ReBloom 帮自己做了什么。
+
+### ADO-003 持续优化：首屏理解与结果交付（2026-09-07）
+
+- [x] 缩短首页装饰区，让授权原图与 AI 贴纸示例更早出现。
+- [x] 结果页底部持续提供唯一“收藏今天”主动作，保存/分享位于可选创作之前；普通与最大辅助字号均需验证。
+- [x] AI 收藏的衣物空态按实际跳过原因说明，不将主动跳过写成姿势或遮挡识别失败。
+- [x] 完成当前改动的静态分析、专项回归、全量模拟器测试与截图目检。
+
+过程与证据见 [首屏与结果交付优化](docs/verification/2026-09-07-first-result-delivery.md)。本批不改变 AI 生成、上传范围、图片像素或真实衣物关联策略；ADO-006、ADO-008、ADO-108 的真实验证保持开放。
+
+### ADO-003 持续优化：透明处理取消与异常响应（2026-09-07）
+
+- [x] 客户端断开后中止对应上游连接，保持请求之间的取消隔离。
+- [x] 限制供应商响应的流式读取，覆盖分块传输、解压后超限与收到响应头后停滞。
+- [x] 完成本地 HTTP 行为验证与 AI、样片、性能、无障碍及全量回归。
+
+过程与证据见 [透明代理请求生命周期验证](docs/verification/2026-09-07-proxy-request-lifecycle.md)。本批只收紧现有透明处理的资源与恢复边界；供应商真实取消、费用与公开代理验收仍未完成。
 
 ## M0 产品收敛与可行性验证
+
+ADO-003 回归验收支持（2026-09-07）：已提供独立结果目录、零失败/跳过与必需用例检查，避免仅凭 `TEST SUCCEEDED`、失效路径或别的专项结果宣称完成。工具测试与实际 XCTest 正反例已通过，见 [回归结果验收工具验证](docs/verification/2026-09-07-test-evidence.md)；不改变 ADO-006、ADO-008、ADO-108 的未完成状态。
 
 目标：通过当前可运行产品，证明“一张图片即可得到有价值结果”既容易理解，也能达到可接受的 AI 质量。
 
@@ -63,13 +82,13 @@
   已把四张用户明确提供的 OOTD 照片固化为第一批可审计回归基线。它们覆盖全身、坐姿、浅色与深色穿搭，但仍需后续补充半身、复杂边缘、多人干扰和商品图，因此任务保持未完成。证据见 [固定样片回归基线验证](docs/verification/2026-08-30-sample-regression-baseline.md)。
 - [ ] **ADO-006：验证首个结果的 AI 可行性。** 保存原图、输出、参数、耗时、失败原因和人工评价，不只挑选成功案例。
 
-  当前进展：主链路已升级为“系统 Image Playground 生成不透明贴纸图并由用户确认 → 只把确认图发送到 Adonis 代理 → GPT Image 编辑生成真实透明 PNG → 服务端与 iOS 双重 Alpha/主体门禁 → 本机纯白边 → 透明贴纸与收藏卡”。生产默认链路不再调用 Vision，也没有用户原图直抠兜底；裁切保留全部可见部件，不只取最大连通块。来源、两段 provider 元数据、持久化、结果复核和 Debug 产品顺序均已有工程契约。历史四张“AI 底图 → Vision”实验暴露了人物/穿搭变化和配饰边缘问题；本轮 Codex 图片实验又两次得到绘制棋盘格而非真实 Alpha，因此都没有接入 App。当前环境没有服务端图片 API 密钥与公开代理，尚未产生一次真实 GPT Image 透明结果，也未在支持 Apple Intelligence 的 iPhone 上跑通，不能宣称实际边缘质量已经修好。系统生图或代理不可用时只允许退出、重试、换图或由用户主动进入明确标注的内置样片，不会用样片替换用户照片。任务保持未完成。证据见 [AI 二次透明处理验证](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)、[系统 Image Playground 迁移验证](docs/verification/2026-08-31-image-playground-sheet-migration.md)、[四张授权样片两段式视觉实验](docs/experiments/2026-08-31-ai-opaque-source-matting.md)、[AI 贴纸先生成后抠图验证](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)、[AI 生图不可用时的样片恢复验证](docs/verification/2026-08-31-unsupported-ai-sample-recovery.md)、[AI 贴纸人物与穿搭复核验证](docs/verification/2026-08-31-ai-sticker-fidelity-review.md)与 [固定样片回归基线验证](docs/verification/2026-08-30-sample-regression-baseline.md)。
+  当前进展：主链路已升级为“系统 Image Playground 生成不透明贴纸图并由用户确认 → 只把确认图发送到 ReBloom 代理 → GPT Image 编辑生成真实透明 PNG → 服务端与 iOS 双重 Alpha/主体门禁 → 本机纯白边 → 透明贴纸与收藏卡”。生产默认链路不再调用 Vision，也没有用户原图直抠兜底；裁切保留全部可见部件，不只取最大连通块。来源、两段 provider 元数据、持久化、结果复核和 Debug 产品顺序均已有工程契约。历史四张“AI 底图 → Vision”实验暴露了人物/穿搭变化和配饰边缘问题；本轮 Codex 内置图片实验直接请求透明 PNG 时也得到绘制棋盘格，已明确拒绝。随后三张授权图采用“内置 AI 不透明底图 → 内置图片能力把完整主体语义隔离到审核绿幕 → 确定性真实 Alpha 与纯白边”形成首页静态样片并接入 App；三张人物、姿势、衣服或配饰仍都有人工记录的 AI 变化，只能证明首页视觉和抠图结构，不能证明生产 provider、本人或穿搭保真。当前环境没有服务端图片 API 密钥与公开代理，尚未产生一次真实 GPT Image 透明结果，也未在支持 Apple Intelligence 的 iPhone 上跑通。系统生图或代理不可用时只允许退出、重试、换图或由用户主动进入明确标注的内置样片，不会用样片替换用户照片。任务保持未完成。证据见 [首页 AI 样片重新生成](docs/verification/2026-08-31-homepage-ai-showcase.md)、[AI 二次透明处理验证](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)、[系统 Image Playground 迁移验证](docs/verification/2026-08-31-image-playground-sheet-migration.md)、[四张授权样片两段式视觉实验](docs/experiments/2026-08-31-ai-opaque-source-matting.md)、[AI 贴纸先生成后抠图验证](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)、[AI 生图不可用时的样片恢复验证](docs/verification/2026-08-31-unsupported-ai-sample-recovery.md)、[AI 贴纸人物与穿搭复核验证](docs/verification/2026-08-31-ai-sticker-fidelity-review.md)与 [固定样片回归基线验证](docs/verification/2026-08-30-sample-regression-baseline.md)。
 
   2026-08-31 provider 生命周期更新：Apple 已公告 `ImageCreator` 在 iOS 27 停止工作。默认人物贴纸已迁移到受支持的系统 Image Playground；旧实现现只在 iOS 26 SDK 构建中编译并暂时服务风格花园。禁用条件的 Release 二进制与运行时专项门禁只证明旧 API 能被安全移除，不等于旧设备已有兼容方案，也不证明真实系统生成质量。证据见 [系统 Image Playground 迁移验证](docs/verification/2026-08-31-image-playground-sheet-migration.md)与 [Apple ImageCreator 旧适配器隔离验证](docs/verification/2026-08-31-legacy-image-creator-isolation.md)。
 - [ ] **ADO-007：验证商品图与 OOTD 的衣物匹配。** 比较商品图、平铺图和穿着照片，确认哪些情况能自动关联、哪些必须轻量询问。
 
   已完成零额外输入的本机视觉签名工程切片：受控图案样本中，同图案候选可排在同色纯色干扰项之前；真实 UI 样片只显示“画面线索有限”，仍须用户点击确认。尚缺授权的商品图、同款 OOTD 与相似干扰衣物固定集和误候选统计，因此任务保持未完成。证据见 [衣橱视觉线索排序验证记录](docs/verification/2026-08-30-wardrobe-visual-matching.md)。
-- [ ] **ADO-008：进行首次用户测试。** 至少邀请五位符合启动场景的用户，在没有讲解的情况下使用原型并记录卡点。
+- [ ] **ADO-008：进行首次用户测试。** 至少邀请五位符合启动场景的用户，在没有讲解的情况下使用原型并记录卡点。 执行脚本与匿名记录表见 [首轮五人无讲解测试](docs/first-user-test.md)；当前尚未招募或执行，不计为完成。
 - [ ] **ADO-009：根据验证结果确定 MVP。** 删除不能稳定产生价值或明显增加心智负担的能力。
 
 M0 退出条件：
@@ -88,12 +107,12 @@ M0 退出条件：
 - [x] **ADO-102：初始化项目与基本质量门禁。** 已建立固定 XcodeGen、构建、测试、通用设备编译和静态分析命令。
 - [x] **ADO-103：实现统一图片入口。** 相册与相机现已共用同一套路由：高置信度干净商品图无表单自动收进衣橱；类别不确定的干净商品图先继续创作，只在贴纸失败后询问一次；平铺图与 OOTD 不被衣橱提示打断。结果卡可继续创作或打开衣橱，尺寸失败、权限恢复和本地隐私提示继续保留。阈值、回归和真机待验证边界见 [统一图片入口路由验证记录](docs/verification/2026-08-30-unified-image-input-routing.md)。
 - [x] **ADO-104：实现异步生成状态。** 已实现中文处理中、失败说明、重新选择和取消，不出现无反馈等待。
-- [x] **ADO-105：生成第一版 OOTD 穿搭卡。** 当前人物照片先打开预置参考照片、固定概念与稳定样式的 Apple 系统 Image Playground；只有用户确认的不透明 AI 贴纸形象，才会被发送到 Adonis 代理，由 GPT Image 编辑成真实透明 PNG。服务端与客户端都检查 Alpha、主体和碎裂，本机程序保留全部可见部件并加纯白边，再完成收藏卡排版。默认生产链路不再调用 `StickerProcessor` / Vision；用户不需要理解 Prompt、模型或参数。AI 不可用、系统页取消、代理未配置、生成失败或透明结果不合格时不静默退回原图直抠。结果后可跳过的人物/穿搭复核比较原图与最终 AI 贴纸，不阻塞收藏，并与透明/白边结构质量分开。工程契约见 [AI 二次透明处理验证](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)、[系统 Image Playground 迁移验证](docs/verification/2026-08-31-image-playground-sheet-migration.md)、[AI 贴纸先生成后抠图验证](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)与 [AI 贴纸人物与穿搭复核验证](docs/verification/2026-08-31-ai-sticker-fidelity-review.md)；历史直抠算法仍由 [边缘细化验证](docs/verification/2026-08-30-sticker-edge-refinement.md)和 [低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)单独回归。
+- [x] **ADO-105：生成第一版 OOTD 穿搭卡。** 当前人物照片先打开预置参考照片、固定概念与稳定样式的 Apple 系统 Image Playground；只有用户确认的不透明 AI 贴纸形象，才会被发送到 ReBloom 代理，由 GPT Image 编辑成真实透明 PNG。服务端与客户端都检查 Alpha、主体和碎裂，本机程序保留全部可见部件并加纯白边，再完成收藏卡排版。默认生产链路不再调用 `StickerProcessor` / Vision；用户不需要理解 Prompt、模型或参数。AI 不可用、系统页取消、代理未配置、生成失败或透明结果不合格时不静默退回原图直抠。结果后可跳过的人物/穿搭复核比较原图与最终 AI 贴纸，不阻塞收藏，并与透明/白边结构质量分开。工程契约见 [AI 二次透明处理验证](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)、[系统 Image Playground 迁移验证](docs/verification/2026-08-31-image-playground-sheet-migration.md)、[AI 贴纸先生成后抠图验证](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)与 [AI 贴纸人物与穿搭复核验证](docs/verification/2026-08-31-ai-sticker-fidelity-review.md)；历史直抠算法仍由 [边缘细化验证](docs/verification/2026-08-30-sticker-edge-refinement.md)和 [低质量降级验证](docs/verification/2026-08-30-sticker-quality-degradation.md)单独回归。
 - [x] **ADO-106：保存当天穿着记录。** 用户原图、可选 AI 不透明贴纸源、透明贴纸、卡片、来源、执行元数据、可选人物/穿搭复核和日期保存为同一条记录，写入失败会回滚，删除记录时会一并删除全部媒体。
 - [x] **ADO-107：实现最小历史视图。** 花历按日期显示记录，并能再次打开、分享或删除。
 - [ ] **ADO-108：完成真实设备或目标浏览器回归。** 验证上传、生成、保存、重试和删除的完整链路。
 
-  本轮 GPT Image 透明处理改造已在 2026-08-31 完成新的 232/232 全量模拟器回归（191 个单元测试、41 个 UI 流程，0 失败、0 跳过），结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.31_15-36-29-+0800.xcresult`，并由 `xcresulttool` 独立读取为 `Passed`。AI 专项、固定样片、性能、辅助功能、持久化、相册交付、旧 provider 隔离与静态分析门禁也全部通过；最终截图已目检系统底图确认、透明结果、纯白边和原图/最终 AI 贴纸复核。此前中断的 `.derivedData/Logs/Test/Test-Adonis-2026.08.31_14-09-46-+0800.xcresult` 仍不计为通过。当前真机 iPhone 11 仍离线且不支持 Apple Intelligence，真实 iOS 27 SDK、目标真机、真实 Apple/OpenAI provider、PhotoKit、系统分享目的地和弱网边界仍未验证，因此 ADO-108 保持未完成。核心新证据见 [AI 二次透明处理验证](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)。
+  本轮首页 AI 样片重新生成已在 2026-08-31 把全量模拟器回归扩展到 234/234（192 个单元测试、42 个 UI 流程，0 失败、0 跳过），结果包为 `.derivedData/Logs/Test/Test-Adonis-2026.08.31_19-49-05-+0800.xcresult`，并由 `xcresulttool` 独立读取为 `Passed`。AI 专项、固定样片、性能、辅助功能与静态分析门禁也全部通过；三张首页图片已经按“AI 不透明底图 → AI 语义主体隔离 → 真实 Alpha 与纯白边”重新生成，结果页保持 AI 来源并提供原图/最终 AI 贴纸复核。当前真机 iPhone 11 仍离线且不支持 Apple Intelligence，真实 iOS 27 SDK、目标真机、真实 Apple/OpenAI provider、PhotoKit、系统分享目的地和弱网边界仍未验证，因此 ADO-108 保持未完成。核心证据见 [首页 AI 样片重新生成验证记录](docs/verification/2026-08-31-homepage-ai-showcase.md)与 [AI 二次透明处理验证](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)。
 
   默认主贴纸已迁移到受支持的系统 Image Playground 确认页与 GPT Image 透明编辑；Debug 可见流程只证明确认后的模拟 AI 底图才进入第二段、收藏与历史。更新后的 `make legacy-provider-isolation` 要求旧适配器禁用时仍能完成通用 iOS Release 构建：二进制保留系统 Image Playground 框架但不含 `ImageCreator` 符号。真实 iOS 27 SDK、支持 Apple Intelligence 的目标 iPhone和真实两段 AI 仍未验证，所以本任务状态不变。
 
@@ -101,7 +120,7 @@ M1 退出条件：新用户无需建立衣橱即可完成一次真实 OOTD 记�
 
 ## M2 纵向切片：让衣橱自然形成
 
-目标：用户不需要手动整理完整衣橱，Adonis 能从商品图和 OOTD 中逐渐记住真实衣物。
+目标：用户不需要手动整理完整衣橱，ReBloom 能从商品图和 OOTD 中逐渐记住真实衣物。
 
 - [x] **ADO-201：实现商品图或商品截图的轻量添加。** 已实现一键保存、本机主色与白底画面判断、iPhone 尽力类别建议、低置信度未分类保护和完全相同图片复用；不在保存前要求表单。
 - [x] **ADO-202：建立内部衣物实体。** 衣物、一次穿着记录和贴纸/收藏卡继续使用不同数据对象；衣物实体保存当前图片来源与最初建档来源、主色、类别建议、尺寸、内容指纹和分析版本。
@@ -113,7 +132,7 @@ M1 退出条件：新用户无需建立衣橱即可完成一次真实 OOTD 记�
 - [x] **ADO-206：实现一次点击纠正。** 已支持分类纠正，以及 OOTD 线索的“就是它”“不是这件”“这是新衣服”“先不管”；只有明确选择新衣服才会创建单品。
 
   ADO-204 至 ADO-206 当前状态与专项证据：[OOTD 衣物线索与确认验证记录](docs/verification/2026-08-29-ootd-garment-observations.md)与 [衣橱视觉线索排序验证记录](docs/verification/2026-08-30-wardrobe-visual-matching.md)。
-- [x] **ADO-207：支持从购物应用分享图片。** 已实现系统分享扩展：其他 App 可把最多 5 张商品图或截图交给 Adonis，主 App 下次活跃时自动在本机分析并收进衣橱；完全相同图片复用已有单品，失败项保留供重试。当前没有网页抓取、商品链接解析或 SKU 获取，链接能力留到后续单独验证。证据见 [购物应用图片分享验证记录](docs/verification/2026-08-29-shopping-app-image-share.md)。
+- [x] **ADO-207：支持从购物应用分享图片。** 已实现系统分享扩展：其他 App 可把最多 5 张商品图或截图交给 ReBloom，主 App 下次活跃时自动在本机分析并收进衣橱；完全相同图片复用已有单品，失败项保留供重试。当前没有网页抓取、商品链接解析或 SKU 获取，链接能力留到后续单独验证。证据见 [购物应用图片分享验证记录](docs/verification/2026-08-29-shopping-app-image-share.md)。
 - [x] **ADO-208：回填历史穿着关系。** 后来添加商品图时，可关联过去出现过的同一件衣服。
 
   已完成两段低风险闭环：用户从某条 OOTD 明确创建单品后，可原地补商品图并保留人工信息；用户后来从全新商品图或平铺图建档时，衣物详情会对尚未处理且未排除的历史 OOTD 提供最多 3 条画面相似候选。只有点击“是这件”才回填，点击“不是它”会持久排除，确认错误可从花历撤销。这里完成的是用户确认式回填，不代表 ADO-205 的身份级同款识别或自动关联已经完成。证据见 [OOTD 单品补商品图验证记录](docs/verification/2026-08-29-ootd-product-image-upgrade.md)与 [衣橱历史穿着回填验证记录](docs/verification/2026-08-29-wardrobe-history-backfill.md)。
@@ -138,11 +157,11 @@ M3 退出条件：试穿和创作在固定样本上有清楚的保真边界，�
 
 ## M4 纵向切片：再次盛开与长期收藏
 
-目标：让历史 OOTD 和衣橱产生持续价值，形成 Adonis 独有的时间与重生体验。
+目标：让历史 OOTD 和衣橱产生持续价值，形成 ReBloom 独有的时间与重生体验。
 
 - [x] **ADO-401：设计第一版“再次盛开”。** 花历只在至少一件上装和一件下装都由用户在不同 OOTD 中明确确认、且两件从未在同一条 OOTD 中共同确认时，零配置出现“再次盛开”。建议优先让最久未穿的单品回来，并用最近穿过的另一类单品作为熟悉底座；满 30 天才使用“隔了多少天”的理由，否则只如实描述为历史重组。结果直接给出可照着穿的两件组合、真实来源 OOTD 回链和 1080 × 1440 分享卡；当前只做本机规则组合与程序排版，不生成试穿图。来自 OOTD 且尚未被人工修正的自动颜色名不会被重复成事实，补商品图或人工改名后界面自动使用更准确素材。删除来源 OOTD 或衣橱单品会即时使建议失效。10 个逻辑/渲染契约、1 个普通字号完整 UI 流程、最大辅助字号与增强对比度链路、动态删除和真实界面证据见 [再次盛开搭配建议验证记录](docs/verification/2026-08-30-rebloom-suggestion.md)。
 - [x] **ADO-402：实现基础花历。** 花历已同时支持按月、日期和季节查看真实 OOTD。月历卡在有收藏时零配置出现“穿过的四季”，按设备本地公历将 3—5 月、6—8 月、9—11 月和跨年 12—2 月归为春夏秋冬；只展示真正有记录的季节，不显示完成率、不要求补齐。季节与记录都按时间和 Bloom 编号稳定倒序，点记录回到真实 OOTD；删除某季最后一条记录后详情原地进入空态。5 个目录契约、1 个真实 UI 流程、最大辅助字号与视觉证据见 [四季花历验证记录](docs/verification/2026-08-30-seasonal-bloom.md)。
-- [x] **ADO-403：生成月度 Lookbook。** 花历在当前月份存在收藏时提供一次点击入口，把已收藏 OOTD 的透明贴纸、日期与 Bloom 编号程序化排成 1080 × 1440 静态贴纸画册；按日期倒序最多展示最近 6 条，空月份不出现入口。画册自身不新增 AI 像素，但会检查所有输入：任一贴纸由 AI 生成时，预览与图片页脚继续标明 AI 来源；版式始终说明由 Adonis 程序完成。自动回归、系统分享入口与真实界面证据见 [月度贴纸 Lookbook 验证记录](docs/verification/2026-08-30-monthly-lookbook.md)。
+- [x] **ADO-403：生成月度 Lookbook。** 花历在当前月份存在收藏时提供一次点击入口，把已收藏 OOTD 的透明贴纸、日期与 Bloom 编号程序化排成 1080 × 1440 静态贴纸画册；按日期倒序最多展示最近 6 条，空月份不出现入口。画册自身不新增 AI 像素，但会检查所有输入：任一贴纸由 AI 生成时，预览与图片页脚继续标明 AI 来源；版式始终说明由 ReBloom 程序完成。自动回归、系统分享入口与真实界面证据见 [月度贴纸 Lookbook 验证记录](docs/verification/2026-08-30-monthly-lookbook.md)。
 - [x] **ADO-404：实现第一版数字手办。** 已选择心智负担最低的静态 2.5D 收藏卡：结果页与已收藏 OOTD 均提供“一键立起来”入口，直接复用透明贴纸，只由程序加入展台、透明罩、投影、日期与 Bloom 编号；成品固定为 1080 × 1440、不透明并可打开系统分享。当前不保存第二份永久资产、不做第二次 AI 重绘，也不宣称旋转视频、3D 网格或 AR；输入贴纸由 AI 生成时，手办卡继续保留 AI 来源。专项证据见 [数字手办收藏卡验证记录](docs/verification/2026-08-30-digital-figurine-card.md)。
 - [x] **ADO-405：建立数字展柜。** 花历在存在已收藏 OOTD 时自动出现“我的数字展柜”，无需新建收藏、选择模板或再次整理；展位按日期与 Bloom 编号稳定倒序，直接读取原透明贴纸，并同时展示日期、OOTD 标题和真实衣橱关系状态。点击展位会回到当天详情；只有明确确认且当前仍存在的衣物显示为已确认，未确认、暂放或已删除关系不会被补成事实。删除最后一条 OOTD 后展柜原地变为空态。当前是本机程序绘制的贴纸展柜，不保存第二份手办资产，也不宣称可旋转 3D。7 项专项、3 项最大辅助字号回归和真实界面证据见 [数字展柜验证记录](docs/verification/2026-08-30-digital-cabinet.md)。
 - [ ] **ADO-406：验证长期提醒。** 提醒应带来具体可用结果，不制造打卡压力。
@@ -156,9 +175,11 @@ M4 退出条件：历史数据可以生成用户愿意再次打开、保存或�
 这些任务随相关功能同步完成，不推迟到上线前集中补做。
 
 - [x] **ADO-Q01：图片与身体数据隐私。** 已明确主动选图/拍摄/分享的访问边界、App 本地存储与 iOS 系统备份的区别，并实现本机数量查看、标准 TAR 导出、文件保护、共享队列与像素尺寸上限，以及覆盖 SwiftData、媒体、App Group 收件箱和临时归档的二次确认删除。安全复查后无未解决的高/中风险；真实 iPhone 文件保护与备份恢复仍归入 ADO-Q07。证据见 [本地数据导出与删除验证记录](docs/verification/2026-08-29-local-data-controls.md)。
-- [x] **ADO-Q02：生成内容标识。** 已建立“原始图片 / 原图处理 / 程序排版 / 识别建议 / AI 补全 / AI 生成”六类稳定契约。默认透明贴纸经过 Apple 与 GPT Image 两段 AI，明确标为 AI 生成；收藏卡、花影海报、月度画册、数字手办和其他派生作品会继承输入贴纸的 AI 来源，程序排版不会抹掉 AI 像素事实。历史固定直抠样片仍可标为原图处理。结果、历史与 `adonis-personal-data-v9` 均保存实际来源与底图/透明处理 provider；可选人物/穿搭复核比较原图和最终 AI 贴纸，不会把未评价写成质量通过。Debug 成功图不能冒充真实 Apple/OpenAI 质量。证据见 [AI 二次透明处理验证](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)、[AI 贴纸人物与穿搭复核验证记录](docs/verification/2026-08-31-ai-sticker-fidelity-review.md)、[AI 贴纸先生成后抠图验证记录](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)与 [生成内容来源标识验证记录](docs/verification/2026-08-29-content-provenance.md)。
-- [x] **ADO-Q03：固定回归样本集。** 四张用户授权原图、透明贴纸、处理版本、哈希、像素指标、人工抠图结论、展示路由、覆盖标签和已知缺陷已进入 schema v2 统一清单；`make sample-regression` 会执行宿主机字节级重生成、iOS 像素、原始蒙版、源像素保真与成品结构门槛、边缘引导 Alpha 保真契约、三张 A 级展示收藏卡和模拟器/真机 Vision 边界测试。C 级 sample-04 不会被删除或伪装成成功案例。基线可防止静默退化，但不替代 ADO-005 的素材扩充或 ADO-006 的泛化与用户价值验证。证据见 [固定样片回归基线验证记录](docs/verification/2026-08-30-sample-regression-baseline.md)与 [贴纸边缘细化验证记录](docs/verification/2026-08-30-sticker-edge-refinement.md)。
+- [x] **ADO-Q02：生成内容标识。** 已建立“原始图片 / 原图处理 / 程序排版 / 识别建议 / AI 补全 / AI 生成”六类稳定契约。默认透明贴纸经过 Apple 与 GPT Image 两段 AI，明确标为 AI 生成；首页三张预生成 AI 样片及其收藏卡也保持 AI 来源，点击时没有实时请求不会把它们变成原图处理。收藏卡、花影海报、月度画册、数字手办和其他派生作品会继承输入贴纸的 AI 来源，程序排版不会抹掉 AI 像素事实。历史固定直抠样片仍可标为原图处理。结果、历史与 `adonis-personal-data-v9` 均保存实际来源与底图/透明处理 provider；可选人物/穿搭复核比较原图和最终 AI 贴纸，不会把未评价写成质量通过。Debug 成功图不能冒充真实 Apple/OpenAI 质量。证据见 [首页 AI 样片重新生成验证](docs/verification/2026-08-31-homepage-ai-showcase.md)、[AI 二次透明处理验证](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)、[AI 贴纸人物与穿搭复核验证记录](docs/verification/2026-08-31-ai-sticker-fidelity-review.md)、[AI 贴纸先生成后抠图验证记录](docs/verification/2026-08-31-ai-sticker-first-pipeline.md)与 [生成内容来源标识验证记录](docs/verification/2026-08-29-content-provenance.md)。
+- [x] **ADO-Q03：固定回归样本集。** 四张用户授权原图及历史 Vision 贴纸继续保存在 schema v2 清单；另以独立 `homepage-ai-showcase.json` 固化前三张授权图的 AI 底图、审核绿幕、真实 Alpha 贴纸、哈希、参数和人工保真/边缘结论。`make sample-regression` 同时执行历史 Vision 字节重生成、原始蒙版、源像素与结构门槛，以及首页 AI 资产哈希、绿幕到 Alpha 字节重建、透明四角、主体和纯白边门禁。C 级 sample-04 不会被删除或伪装成成功案例；三张首页样片记录的 AI 内容变化也不会被 Alpha 通过掩盖。基线可防止静默退化，但不替代 ADO-005 的素材扩充或 ADO-006 的泛化与用户价值验证。证据见 [首页 AI 样片重新生成验证](docs/verification/2026-08-31-homepage-ai-showcase.md)、[固定样片回归基线验证记录](docs/verification/2026-08-30-sample-regression-baseline.md)与 [贴纸边缘细化验证记录](docs/verification/2026-08-30-sticker-edge-refinement.md)。
 - [ ] **ADO-Q04：失败与降级。** 为超时、低质量、识别不确定和供应商不可用提供用户可理解的结果。
+
+  2026-09-07 只读探针发现透明代理尚缺主体连通性检查：32 个独立合成块被服务端判为可用，客户端另有最大连通块 80% 门禁。后续补齐服务端拒绝与分离配饰保留测试；当前不能把双端 Alpha 检查描述成连通性规则完全一致。
 
   已完成默认 AI 贴纸、历史直抠算法、贴纸试搭、风格创作和相册交付的降级切片。默认人物链路在系统 Image Playground 不可用时明确提供“先不用 / 体验内置样片”；系统页取消会安静回到创作，代理未配置、网络失败、供应商失败或 Alpha 不合格时允许重试/换图，不调用 Vision，也不把用户原图发到第二段。服务端与客户端拒绝伪透明、空主体和严重碎裂，裁切保留分离配饰；轻微边缘疑点仍交给结果目检。系统页停留不受后台截止，用户确认后的 GPT Image 透明处理使用 150 秒。结果后的人物/穿搭复核可跳过且不阻塞收藏，它是内容变化证据入口而不是 Alpha 闸门。sample-04 继续作为历史 Vision 困难样本与未来真实 provider 验收样本。iPhone 11 不支持系统生图，真实代理、弱网、联网重试、供应商边缘质量和真实相册写入尚未验证，任务保持未完成。证据见 [AI 二次透明处理验证](docs/verification/2026-08-31-ai-transparent-extraction-provider.md)、[系统 Image Playground 迁移验证记录](docs/verification/2026-08-31-image-playground-sheet-migration.md)、[AI 生图不可用时的样片恢复验证记录](docs/verification/2026-08-31-unsupported-ai-sample-recovery.md)与 [生成超时和基础贴纸降级验证记录](docs/verification/2026-08-30-generation-timeout-fallback.md)。
 

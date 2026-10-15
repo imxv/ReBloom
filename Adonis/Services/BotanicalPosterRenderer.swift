@@ -3,7 +3,7 @@ import UIKit
 struct BotanicalPosterRenderer {
   static let provenance = VisualContentProvenance.programmaticComposition
   static let provenanceFooter =
-    "人物与衣物来自原图贴纸 · ADONIS 本机排版 · 不含 AI 重绘"
+    "人物与衣物来自原图贴纸 · REBLOOM 本机排版 · 不含 AI 重绘"
 
   static func provenance(
     for stickerProvenance: VisualContentProvenance
@@ -13,7 +13,7 @@ struct BotanicalPosterRenderer {
 
   static func provenanceFooter(for stickerProvenance: VisualContentProvenance) -> String {
     stickerProvenance.containsAIGeneratedPixels
-      ? "人物与衣物来自 AI 贴纸 · ADONIS 本机排版"
+      ? "人物与衣物来自 AI 贴纸 · REBLOOM 本机排版"
       : provenanceFooter
   }
 
@@ -136,7 +136,7 @@ struct BotanicalPosterRenderer {
     let left = NSMutableParagraphStyle()
     left.alignment = .left
 
-    ("ADONIS" as NSString).draw(
+    ("REBLOOM" as NSString).draw(
       in: CGRect(x: 100, y: 90, width: 520, height: 76),
       withAttributes: [
         .font: UIFont.systemFont(ofSize: 54, weight: .black),

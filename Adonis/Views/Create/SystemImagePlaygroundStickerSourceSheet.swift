@@ -226,7 +226,7 @@ private struct SystemImagePlaygroundUnavailableView: View {
               }
             }
 
-            Text("确认后，Adonis 会先接收模拟的 AI 生成图，再交给第二段 AI 生成透明贴纸。")
+            Text("确认后，ReBloom 会先接收模拟的 AI 生成图，再交给第二段 AI 生成透明贴纸。")
               .font(.footnote)
               .foregroundStyle(AdonisTheme.secondaryInk)
 
@@ -293,30 +293,10 @@ private struct SystemImagePlaygroundUnavailableView: View {
     }
 
     private func makeFixtureOutput() -> UIImage? {
-      guard let sticker = SampleCatalog.showcasePhotos.first?.preparedStickerImage() else {
+      guard let source = SampleCatalog.homepagePhotos.first?.homepageAISourceImage() else {
         return nil
       }
-      let canvasSize = CGSize(width: 1_080, height: 1_440)
-      let inset = CGRect(x: 90, y: 54, width: 900, height: 1_332)
-      let scale = min(inset.width / sticker.size.width, inset.height / sticker.size.height)
-      let stickerSize = CGSize(
-        width: sticker.size.width * scale,
-        height: sticker.size.height * scale
-      )
-      let stickerFrame = CGRect(
-        x: inset.midX - stickerSize.width / 2,
-        y: inset.midY - stickerSize.height / 2,
-        width: stickerSize.width,
-        height: stickerSize.height
-      )
-      let format = UIGraphicsImageRendererFormat()
-      format.scale = 1
-      format.opaque = true
-      return UIGraphicsImageRenderer(size: canvasSize, format: format).image { context in
-        UIColor(red: 0.965, green: 0.949, blue: 0.925, alpha: 1).setFill()
-        context.fill(CGRect(origin: .zero, size: canvasSize))
-        sticker.draw(in: stickerFrame)
-      }
+      return source
     }
   }
 #endif

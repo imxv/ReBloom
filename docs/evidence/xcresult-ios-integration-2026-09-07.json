@@ -1,0 +1,116 @@
+{
+  "recordedAt": "2026-09-07T02:39:30.725177+00:00",
+  "scope": "Actual iOS Simulator XCTest executions with existing Debug creative fixtures. Not physical iPhone or real AI output acceptance.",
+  "runs": [
+    {
+      "case": "original-full-cold",
+      "bundle": ".artifacts/verified-tests/6b18739ee274431e9fab02cf76d2190a/tests.xcresult",
+      "runnerExitCode": 65,
+      "verificationReportExists": false,
+      "summary": {
+        "result": "Failed",
+        "startTime": 1788746915.645,
+        "finishTime": 1788747984.708,
+        "totalTestCount": 234,
+        "passedTests": 233,
+        "failedTests": 1,
+        "skippedTests": 0,
+        "expectedFailures": 0,
+        "testFailures": [
+          {
+            "failureText": "XCTAssertTrue failed",
+            "targetName": "AdonisUITests",
+            "testIdentifier": 196,
+            "testIdentifierString": "AdonisFlowUITests/testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt()",
+            "testIdentifierURL": "test://com.apple.xcode/Adonis/AdonisUITests/AdonisFlowUITests/testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt",
+            "testName": "testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt()"
+          }
+        ]
+      },
+      "summarySHA256": "d03fe0d5a0dbcd9b9d50c1bc230d1ad9e8a42376d9c51590c4b4e4d7dcae92b6"
+    },
+    {
+      "case": "original-warm-single",
+      "bundle": ".artifacts/xcresult-verifier/ios-integration/share-reruns/9e11949bdea645869647cae8ec0301e1/tests.xcresult",
+      "runnerExitCode": 0,
+      "verificationReportExists": true,
+      "summary": {
+        "result": "Passed",
+        "startTime": 1788748017.124,
+        "finishTime": 1788748086.891,
+        "totalTestCount": 1,
+        "passedTests": 1,
+        "failedTests": 0,
+        "skippedTests": 0,
+        "expectedFailures": 0,
+        "testFailures": []
+      },
+      "summarySHA256": "2be644ce01c8f79bce12850f21ab362b7ca13cd9e96c05b07214a158eb06f87a"
+    },
+    {
+      "case": "original-second-cold-single",
+      "bundle": ".artifacts/xcresult-verifier/ios-integration/share-reruns/a78ce5c005ae4c199599374bcee6d35e/tests.xcresult",
+      "runnerExitCode": 65,
+      "verificationReportExists": false,
+      "summary": {
+        "result": "Failed",
+        "startTime": 1788748199.877,
+        "finishTime": 1788748308.51,
+        "totalTestCount": 1,
+        "passedTests": 0,
+        "failedTests": 1,
+        "skippedTests": 0,
+        "expectedFailures": 0,
+        "testFailures": [
+          {
+            "failureText": "XCTAssertTrue failed",
+            "targetName": "AdonisUITests",
+            "testIdentifier": 1,
+            "testIdentifierString": "AdonisFlowUITests/testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt()",
+            "testIdentifierURL": "test://com.apple.xcode/Adonis/AdonisUITests/AdonisFlowUITests/testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt",
+            "testName": "testAvailableSystemCreationBuildsReviewableMythicGardenAndPersistsIt()"
+          }
+        ]
+      },
+      "summarySHA256": "af3bf4bbc1c830ee13227ee005a26544d0e37b95ba27d539d3be2871d858748f"
+    },
+    {
+      "case": "stable-button-cold-single",
+      "bundle": ".artifacts/xcresult-verifier/ios-integration/share-stability-runs/5402909bd4a045a79a51f773cd6eb65a/tests.xcresult",
+      "runnerExitCode": 0,
+      "verificationReportExists": true,
+      "summary": {
+        "result": "Passed",
+        "startTime": 1788748408.823,
+        "finishTime": 1788748509.601,
+        "totalTestCount": 1,
+        "passedTests": 1,
+        "failedTests": 0,
+        "skippedTests": 0,
+        "expectedFailures": 0,
+        "testFailures": []
+      },
+      "summarySHA256": "04004cc4daa7ccca80c82a7d8e50e886ae0ae5e4b3a96bd3f37450fe1ca12dcf"
+    }
+  ],
+  "initialFullRunInputCheck": {
+    "changedFiles": [],
+    "checkedFiles": 164
+  },
+  "initialFullRunInputManifestSHA256": "7d2c880a615b743f7f7c9288e03ae3f5f567f26776e67b33b2377e24d15ee827",
+  "stableReadinessChange": {
+    "file": "AdonisUITests/AdonisFlowUITests.swift",
+    "beforeSHA256": "b161d802b0f78edb68939a0c42d5bce956fe6ce0a58a4dbf7341205f3dfd488d",
+    "afterSHA256": "d71c6f5ae7b15ade85e9659885bde4421155bb22670d598065f7b8be59164f82",
+    "behavior": "Wait for exists, hittable and accessibility frame stable for one second; retain single tap and both dismissal assertions."
+  },
+  "check": {
+    "command": "make -o project check DERIVED_DATA=.derivedData-evidence-validation",
+    "exitCode": 0,
+    "logSHA256": "555f9671d90bd8c110e85bac994a1c5d0c3e26198ad059e4db5d6def637b183f"
+  },
+  "fullFollowup": {
+    "status": "running",
+    "bundle": ".artifacts/xcresult-verifier/ios-integration/full-stability-runs/2d6bb53a2d3a403c8a2f40ddd1941618/tests.xcresult"
+  }
+}

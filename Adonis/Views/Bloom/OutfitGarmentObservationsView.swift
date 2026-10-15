@@ -3,6 +3,7 @@ import SwiftUI
 
 struct OutfitGarmentObservationsView: View {
   let observations: [GarmentObservation]
+  let usesAISticker: Bool
 
   @Environment(\.modelContext) private var modelContext
   @Query(sort: \WardrobeItem.createdAt, order: .reverse) private var wardrobeItems: [WardrobeItem]
@@ -61,10 +62,12 @@ struct OutfitGarmentObservationsView: View {
           )
         }
       }
-      Text("商品图会让本机更容易比较颜色和纹理，但仍只留作候选；点一下才会关联。")
-        .font(.footnote)
-        .foregroundStyle(AdonisTheme.secondaryInk)
-        .lineSpacing(2)
+      if !observations.isEmpty || !usesAISticker {
+        Text("商品图会让本机更容易比较颜色和纹理，但仍只留作候选；点一下才会关联。")
+          .font(.footnote)
+          .foregroundStyle(AdonisTheme.secondaryInk)
+          .lineSpacing(2)
+      }
     }
   }
 
@@ -76,16 +79,22 @@ struct OutfitGarmentObservationsView: View {
         .frame(width: 44, height: 44)
         .background(AdonisTheme.lavender.opacity(0.2), in: Circle())
       VStack(alignment: .leading, spacing: 3) {
-        Text("这次没有强行猜")
+        Text(usesAISticker ? "衣物以原照片为准" : "这次没有强行猜")
           .font(.system(.subheadline, design: .rounded, weight: .bold))
           .foregroundStyle(AdonisTheme.ink)
-        Text("姿势或遮挡太复杂时，保持空白比写错更好。")
-          .font(.footnote)
-          .foregroundStyle(AdonisTheme.secondaryInk)
+        Text(
+          usesAISticker
+            ? "这张贴纸经过 AI 创作，暂不从中提取衣物。想记录单品，可以到衣橱添加商品图。"
+            : "姿势或遮挡太复杂时，保持空白比写错更好。"
+        )
+        .font(.footnote)
+        .foregroundStyle(AdonisTheme.secondaryInk)
       }
     }
     .padding(16)
     .paperSurface(radius: 20)
+    .accessibilityElement(children: .combine)
+    .accessibilityIdentifier("garment-observation-empty")
   }
 
   private var sortedObservations: [GarmentObservation] {
@@ -319,7 +328,7 @@ private struct GarmentObservationCard: View {
           }
           .buttonStyle(StickerButtonStyle())
           .accessibilityLabel(candidateAccessibilityLabel(candidate))
-          .accessibilityHint("点两下才会确认就是这件；Adonis 不会自动关联。")
+          .accessibilityHint("点两下才会确认就是这件；ReBloom 不会自动关联。")
           .accessibilityIdentifier("garment-candidate-\(candidate.item.name)")
         }
       }

@@ -15,7 +15,7 @@ enum RebloomReminderError: LocalizedError, Equatable {
   var errorDescription: String? {
     switch self {
     case .permissionDenied:
-      "通知没有打开。原搭配不会改变；需要时可以在系统设置里允许 Adonis 通知。"
+      "通知没有打开。原搭配不会改变；需要时可以在系统设置里允许 ReBloom 通知。"
     case .authorizationFailed:
       "暂时无法确认通知权限。原搭配不会改变，请稍后再试。"
     case .schedulingFailed:
@@ -92,7 +92,7 @@ struct RebloomReminderService {
   func makeRequest(for suggestionID: RebloomSuggestionID) -> UNNotificationRequest {
     let content = UNMutableNotificationContent()
     content.title = "一组真实搭配可以再次盛开"
-    content.body = "打开 Adonis，直接看看那组由过往穿着重组的搭配。"
+    content.body = "打开 ReBloom，直接看看那组由过往穿着重组的搭配。"
     content.sound = .default
     content.categoryIdentifier = Self.categoryIdentifier
     content.threadIdentifier = "adonis.rebloom"

@@ -33,11 +33,11 @@ enum VisualContentProvenance: String, CaseIterable, Codable, Sendable {
   var detail: String {
     switch self {
     case .userProvided:
-      "这是你选择或拍摄的图片，Adonis 没有改动画面内容。"
+      "这是你选择或拍摄的图片，ReBloom 没有改动画面内容。"
     case .derivedFromOriginal:
       "只做裁切、背景移除、透明通道或纯白贴纸边；人物、衣物与配饰没有被重绘。"
     case .programmaticComposition:
-      "人物来自透明贴纸；日期、花朵和版式由 Adonis 程序排版，没有补画人物或衣物。"
+      "人物来自透明贴纸；日期、花朵和版式由 ReBloom 程序排版，没有补画人物或衣物。"
     case .recognitionSuggestion:
       "颜色、类别或衣物区域来自本机画面分析；确认前只是一条建议，不会当作事实。"
     case .aiFilled:
@@ -68,7 +68,7 @@ enum VisualContentProvenance: String, CaseIterable, Codable, Sendable {
 
   var shareCardFooter: String? {
     guard self == .programmaticComposition else { return nil }
-    return "人物与衣物来自原图 · 卡面由 ADONIS 排版"
+    return "人物与衣物来自原图 · 卡面由 REBLOOM 排版"
   }
 }
 

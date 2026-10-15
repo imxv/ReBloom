@@ -64,7 +64,7 @@ struct CreateView: View {
       {
         extractSticker = { generatedSource in
           guard generatedSource.cgImage != nil,
-            let sticker = SampleCatalog.showcasePhotos.first?.preparedStickerImage()
+            let sticker = SampleCatalog.homepagePhotos.first?.homepageAIStickerImage()
           else {
             throw StickerProcessingError.renderFailed
           }
@@ -265,11 +265,13 @@ struct CreateView: View {
         .fill(AdonisTheme.lavender.opacity(0.62))
         .frame(width: 190, height: 190)
         .offset(x: 210, y: -118)
+        .allowsHitTesting(false)
 
       Circle()
         .fill(AdonisTheme.leaf.opacity(0.28))
         .frame(width: 120, height: 120)
         .offset(x: -42, y: 55)
+        .allowsHitTesting(false)
 
       VStack(alignment: .leading, spacing: 14) {
         StickerTag(title: "今天也值得收藏", color: AdonisTheme.butter, icon: "heart.fill")
@@ -285,7 +287,7 @@ struct CreateView: View {
       }
       .padding(26)
     }
-    .frame(maxWidth: .infinity, minHeight: 290, alignment: .bottomLeading)
+    .frame(maxWidth: .infinity, minHeight: 220, alignment: .bottomLeading)
     .clipShape(RoundedRectangle(cornerRadius: AdonisTheme.largeRadius, style: .continuous))
     .shadow(color: AdonisTheme.ink.opacity(0.08), radius: 18, y: 10)
     .overlay(alignment: .topTrailing) {
@@ -423,14 +425,25 @@ struct CreateView: View {
                     return
                   }
                 #endif
-                guard let sticker = sample.preparedStickerImage() else {
+                let usesHistoricalUITestFixture = usesHistoricalUITestSampleFixture
+                let sticker =
+                  usesHistoricalUITestFixture
+                  ? sample.preparedStickerImage()
+                  : sample.homepageAIStickerImage()
+                guard let sticker else {
                   presentGenerationError("样片没有正确打包进 App。")
                   return
                 }
+                let preparedAIStickerSource =
+                  usesHistoricalUITestFixture ? nil : sample.homepageAISourceImage()
+                let preparedStickerProvenance: VisualContentProvenance =
+                  usesHistoricalUITestFixture ? .derivedFromOriginal : sample.homepageProvenance
                 await generate(
                   from: image,
                   preparedSticker: sticker,
                   preparedMatteAssessment: sample.preparedMatteAssessment,
+                  preparedAIStickerSource: preparedAIStickerSource,
+                  preparedStickerProvenance: preparedStickerProvenance,
                   inputSource: .preparedSample
                 )
               }
@@ -449,7 +462,17 @@ struct CreateView: View {
         return SampleCatalog.photos
       }
     #endif
-    return SampleCatalog.showcasePhotos
+    return SampleCatalog.homepagePhotos
+  }
+
+  private var usesHistoricalUITestSampleFixture: Bool {
+    #if DEBUG
+      return ProcessInfo.processInfo.arguments.contains(
+        "-ui-testing-historical-sample-fixture"
+      )
+    #else
+      return false
+    #endif
   }
 
   @MainActor
@@ -488,7 +511,7 @@ struct CreateView: View {
         Text("看看照片怎么变成贴纸")
           .font(.system(.title3, design: .rounded, weight: .bold))
           .foregroundStyle(AdonisTheme.ink)
-        Text("内置样片 · 本机处理")
+        Text("内置 AI 样片 · 已预生成")
           .font(.caption)
           .foregroundStyle(AdonisTheme.secondaryInk)
       }
@@ -498,7 +521,7 @@ struct CreateView: View {
           .font(.system(.title3, design: .rounded, weight: .bold))
           .foregroundStyle(AdonisTheme.ink)
         Spacer()
-        Text("内置样片 · 本机处理")
+        Text("内置 AI 样片 · 已预生成")
           .font(.caption)
           .foregroundStyle(AdonisTheme.secondaryInk)
       }
@@ -511,7 +534,7 @@ struct CreateView: View {
         .foregroundStyle(AdonisTheme.leafInk)
         .frame(width: 24)
         .accessibilityHidden(true)
-      Text("没有账号或云同步。原照片只交给 Apple 系统生成贴纸底图；你确认后，仅这张 AI 底图会发送到 Adonis 图像服务做透明处理，收藏仍保存在当前设备。")
+      Text("没有账号或云同步。原照片只交给 Apple 系统生成贴纸底图；你确认后，仅这张 AI 底图会发送到 ReBloom 图像服务做透明处理，收藏仍保存在当前设备。")
         .font(.footnote)
         .foregroundStyle(AdonisTheme.secondaryInk)
         .lineSpacing(3)
@@ -917,6 +940,8 @@ struct CreateView: View {
     from image: UIImage,
     preparedSticker: UIImage?,
     preparedMatteAssessment: StickerQualityAssessment = .acceptable,
+    preparedAIStickerSource: UIImage? = nil,
+    preparedStickerProvenance: VisualContentProvenance = .derivedFromOriginal,
     acceptedProviderOutput: CreativeProviderOutput? = nil,
     inputSource: EventInputSource,
     alreadyShowingProgress: Bool = false,
@@ -945,6 +970,8 @@ struct CreateView: View {
       image: image,
       preparedSticker: preparedSticker,
       preparedMatteAssessment: preparedMatteAssessment,
+      preparedAIStickerSource: preparedAIStickerSource,
+      preparedStickerProvenance: preparedStickerProvenance,
       acceptedProviderOutput: acceptedProviderOutput,
       inputSource: inputSource,
       wardrobeCandidate: wardrobeCandidate
@@ -1011,8 +1038,8 @@ struct CreateView: View {
       let stickerProvenance: VisualContentProvenance
       let stickerExecutionMetadata: CreativeExecutionMetadata?
       if let preparedSticker {
-        aiStickerSourceImage = nil
-        stickerProvenance = .derivedFromOriginal
+        aiStickerSourceImage = preparedAIStickerSource
+        stickerProvenance = preparedStickerProvenance
         stickerExecutionMetadata = nil
         processed = StickerProcessingResult(
           image: preparedSticker,
@@ -1388,6 +1415,8 @@ struct CreateView: View {
           from: retryInput.image,
           preparedSticker: retryInput.preparedSticker,
           preparedMatteAssessment: retryInput.preparedMatteAssessment,
+          preparedAIStickerSource: retryInput.preparedAIStickerSource,
+          preparedStickerProvenance: retryInput.preparedStickerProvenance,
           acceptedProviderOutput: retryInput.acceptedProviderOutput,
           inputSource: retryInput.inputSource,
           wardrobeCandidate: retryInput.wardrobeCandidate
@@ -1424,13 +1453,13 @@ struct CreateView: View {
     switch error {
     case .unavailable, .unsupportedLanguage:
       presentGenerationError(
-        "这次需要先生成 AI 贴纸形象，再做 AI 透明处理。当前设备或系统设置不支持第一步生成。你可以先体验明确标注的内置样片；Adonis 不会用样片替换你的照片，也不会改用原图直接处理。",
+        "这次需要先生成 AI 贴纸形象，再做 AI 透明处理。当前设备或系统设置不支持第一步生成。你可以先体验明确标注的内置样片；ReBloom 不会用样片替换你的照片，也不会改用原图直接处理。",
         title: "当前设备不能生成 AI 贴纸",
-        preparedSampleRecovery: SampleCatalog.showcasePhotos.first
+        preparedSampleRecovery: SampleCatalog.homepagePhotos.first
       )
     case .unsupportedSource, .personTooSmall:
       presentGenerationError(
-        "系统没能根据这张照片生成完整的贴纸形象。请换一张人物更清楚、全身更完整的照片；Adonis 没有改用原照片直接处理。",
+        "系统没能根据这张照片生成完整的贴纸形象。请换一张人物更清楚、全身更完整的照片；ReBloom 没有改用原照片直接处理。",
         title: "换一张更清楚的照片"
       )
     case .cancelled:
@@ -1446,10 +1475,19 @@ struct CreateView: View {
 
   @MainActor
   private func startPreparedSampleRecovery(_ sample: SamplePhoto) {
-    guard let image = sample.image(), let sticker = sample.preparedStickerImage() else {
+    let usesHistoricalUITestFixture = usesHistoricalUITestSampleFixture
+    let sticker =
+      usesHistoricalUITestFixture
+      ? sample.preparedStickerImage()
+      : sample.homepageAIStickerImage()
+    guard let image = sample.image(), let sticker else {
       presentGenerationError("样片没有正确打包进 App。")
       return
     }
+    let preparedAIStickerSource =
+      usesHistoricalUITestFixture ? nil : sample.homepageAISourceImage()
+    let preparedStickerProvenance: VisualContentProvenance =
+      usesHistoricalUITestFixture ? .derivedFromOriginal : sample.homepageProvenance
     errorMessage = nil
     offersRetry = false
     retryInput = nil
@@ -1460,6 +1498,8 @@ struct CreateView: View {
         from: image,
         preparedSticker: sticker,
         preparedMatteAssessment: sample.preparedMatteAssessment,
+        preparedAIStickerSource: preparedAIStickerSource,
+        preparedStickerProvenance: preparedStickerProvenance,
         inputSource: .preparedSample
       )
     }
@@ -1629,6 +1669,8 @@ private struct GenerationRetryInput {
   let image: UIImage
   let preparedSticker: UIImage?
   let preparedMatteAssessment: StickerQualityAssessment
+  let preparedAIStickerSource: UIImage?
+  let preparedStickerProvenance: VisualContentProvenance
   let acceptedProviderOutput: CreativeProviderOutput?
   let inputSource: EventInputSource
   let wardrobeCandidate: CreationWardrobeCandidate?
@@ -1736,9 +1778,9 @@ private enum CameraAccessAlert: String, Identifiable {
     case .unavailable:
       "可以选择相册照片，或先用下面的内置样片体验完整流程。"
     case .permissionDenied:
-      "要拍一张新照片，请先在系统设置里允许 Adonis 使用相机。你也可以继续从相册选择。"
+      "要拍一张新照片，请先在系统设置里允许 ReBloom 使用相机。你也可以继续从相册选择。"
     case .restricted:
-      "当前系统限制不允许 Adonis 使用相机。你仍然可以从相册选择照片。"
+      "当前系统限制不允许 ReBloom 使用相机。你仍然可以从相册选择照片。"
     }
   }
 }
@@ -1795,9 +1837,12 @@ private struct SamplePhotoButton: View {
           .foregroundStyle(AdonisTheme.ink)
 
         VStack(alignment: .leading, spacing: 3) {
-          Text("原图 → 透明贴纸")
-            .font(.system(.caption2, design: .rounded, weight: .bold))
-            .foregroundStyle(AdonisTheme.leafInk)
+          Text(
+            sample.homepageProvenance == .aiGenerated
+              ? "原图 → AI 透明贴纸" : "原图 → 透明贴纸"
+          )
+          .font(.system(.caption2, design: .rounded, weight: .bold))
+          .foregroundStyle(AdonisTheme.leafInk)
 
           Text(sample.subtitle)
             .font(.caption2)
@@ -1813,7 +1858,9 @@ private struct SamplePhotoButton: View {
     }
     .buttonStyle(StickerButtonStyle())
     .accessibilityLabel(
-      "使用样片：\(sample.title)。原始照片变成透明贴纸，来自内置样片，属于原图处理。"
+      sample.homepageProvenance == .aiGenerated
+        ? "使用样片：\(sample.title)。原始照片变成 AI 透明贴纸，来自内置 AI 样片，属于 AI 生成。"
+        : "使用样片：\(sample.title)。原始照片变成透明贴纸，来自内置样片，属于原图处理。"
     )
     .accessibilityHint("点一下体验完整的贴纸和收藏卡流程")
     .accessibilityIdentifier(sample.id)
@@ -1898,7 +1945,10 @@ private struct SampleTransformationPreview: View {
         .frame(width: 62, height: 62)
         .offset(x: -52, y: -20)
 
-      if let sticker = sample.preparedStickerImage() {
+      let sticker =
+        sample.homepageAIStickerImage()
+        ?? (sample.homepageAIStickerResourceName == nil ? sample.preparedStickerImage() : nil)
+      if let sticker {
         Image(uiImage: sticker)
           .resizable()
           .scaledToFit()
@@ -1909,7 +1959,7 @@ private struct SampleTransformationPreview: View {
       }
 
       previewTag(
-        "原图处理",
+        sample.homepageProvenance.title,
         foreground: AdonisTheme.leafInk,
         background: Color.white.opacity(0.9)
       )

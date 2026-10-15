@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "name": "adonis-homepage-ai-showcase",
+  "generatedOn": "2026-08-31",
+  "authorization": {
+    "kind": "user_provided",
+    "sourceManifest": "regression-baseline.json",
+    "externalSocialPlatformImagesIncluded": false
+  },
+  "generation": {
+    "tool": "Codex built-in image generation",
+    "model": "not_exposed",
+    "recipeVersion": "adonis-homepage-ai-two-stage-v1",
+    "outputContract": "opaque AI sticker source, AI semantic chroma extraction, deterministic genuine Alpha and pure-white outline",
+    "containsAIGeneratedPixels": true,
+    "runtimeProviderRequestCount": 0,
+    "reproducibility": "nondeterministic AI outputs are archived; only chroma-to-Alpha post-processing is byte reproducible"
+  },
+  "postProcessing": {
+    "tool": "scripts/generate_homepage_ai_sticker.sh",
+    "version": "homepage-ai-chroma-alpha-outline-v1",
+    "minimumLongEdgePixels": 1536,
+    "outline": "pure white, deterministic, generated from final Alpha"
+  },
+  "samples": [
+    {
+      "id": "sample-01",
+      "original": {
+        "resourceName": "sample-01.png",
+        "sha256": "eeab59ff1e4b4ef9e8413bdd6a6f0a0b823aef520c09d39a1321a23d67759829",
+        "width": 1080,
+        "height": 1440
+      },
+      "aiSource": {
+        "resourceName": "sample-01-ai-source.png",
+        "sha256": "27f988cc47c76f9cb7d8cb8abb0008c1b5f573bb7ee53dc98318758fbe9f974b",
+        "width": 1086,
+        "height": 1448,
+        "hasAlpha": false
+      },
+      "chroma": {
+        "path": "assets/prototypes/digital-figurine-sticker/homepage-sample-01-chroma-v1.png",
+        "sha256": "ab9bb2e2cd152ea876f4e2438e4e63cfc944f1ff2b30e2b0ac9ab4c0d419d4a6",
+        "backgroundRed": 0.0588,
+        "backgroundGreen": 0.9569,
+        "backgroundBlue": 0.1059,
+        "transparentThreshold": 0.78,
+        "thresholdSpan": 0.72
+      },
+      "sticker": {
+        "resourceName": "sample-01-ai-sticker.png",
+        "sha256": "0e14530fe25404406ec9a7c2f2b1882de942985b1ac993d81c1a6e6721f855de",
+        "width": 811,
+        "height": 1536,
+        "hasAlpha": true
+      },
+      "toolRequestCount": 6,
+      "manualFidelityReview": {
+        "status": "changed",
+        "issues": ["face", "pose", "clothing", "accessory"],
+        "notes": "吸管、饮料、包、蝴蝶结、波点、袜子和鞋均保留；人物与若干细节仍有 AI 重绘，不作为本人保真证明。"
+      },
+      "manualAlphaReview": {
+        "status": "acceptable",
+        "issues": [],
+        "notes": "真实 Alpha、主体完整、纯白边连续，无街景或前景路柱。"
+      },
+      "productEligibility": "homepage_example_only"
+    },
+    {
+      "id": "sample-02",
+      "original": {
+        "resourceName": "sample-02.png",
+        "sha256": "5899d410fe7f0c39a7f8225e5db8ce231755eeee154fe1bb453f227bd967bcdd",
+        "width": 1080,
+        "height": 1440
+      },
+      "aiSource": {
+        "resourceName": "sample-02-ai-source.png",
+        "sha256": "d49ba2c6c7ff6dfdfd48a74df0bfe2d5c497969a5cfc793c53ab61f0aadd67fa",
+        "width": 1086,
+        "height": 1448,
+        "hasAlpha": false
+      },
+      "chroma": {
+        "path": "assets/prototypes/digital-figurine-sticker/homepage-sample-02-chroma-v1.png",
+        "sha256": "d6a0dd04dc45edca9cb321781c701af7549fbadb81e990f5cddec4f486d146d4",
+        "backgroundRed": 0.1137,
+        "backgroundGreen": 0.8941,
+        "backgroundBlue": 0.1255,
+        "transparentThreshold": 0.68,
+        "thresholdSpan": 0.62
+      },
+      "sticker": {
+        "resourceName": "sample-02-ai-sticker.png",
+        "sha256": "cc04b8c2a0063fdf3a1156d3072529887d5e81e7e1c90520404c3ecabe9fb00e",
+        "width": 545,
+        "height": 1536,
+        "hasAlpha": true
+      },
+      "toolRequestCount": 2,
+      "manualFidelityReview": {
+        "status": "changed",
+        "issues": ["face", "pose", "accessory"],
+        "notes": "深色穿搭、靠后手势与金属编织包完整；脸、手势细节和包的精确纹理仍有 AI 重绘。"
+      },
+      "manualAlphaReview": {
+        "status": "acceptable",
+        "issues": [],
+        "notes": "金属包和双手未被抠掉，真实 Alpha 与纯白边连续。"
+      },
+      "productEligibility": "homepage_example_only"
+    },
+    {
+      "id": "sample-03",
+      "original": {
+        "resourceName": "sample-03.png",
+        "sha256": "34bf69017581655fe7bfacce63d935fbcbd05af3bb2857f9f06ac00f7dd0ae74",
+        "width": 1080,
+        "height": 1440
+      },
+      "aiSource": {
+        "resourceName": "sample-03-ai-source.png",
+        "sha256": "1ab6b31f4556495264827b3360e6444c0cef04c04cb856c476cfa45a072474b0",
+        "width": 1086,
+        "height": 1448,
+        "hasAlpha": false
+      },
+      "chroma": {
+        "path": "assets/prototypes/digital-figurine-sticker/homepage-sample-03-chroma-v1.png",
+        "sha256": "76c84b81eac51f10661bdf99ae00085064fcd298c3ba17619f2a64849c6cc492",
+        "backgroundRed": 0.0353,
+        "backgroundGreen": 0.9725,
+        "backgroundBlue": 0.098,
+        "transparentThreshold": 0.68,
+        "thresholdSpan": 0.62
+      },
+      "sticker": {
+        "resourceName": "sample-03-ai-sticker.png",
+        "sha256": "2a061e32dcc41fa31beb4834ca433e88174241d1a4ac02086b200ae7892a268a",
+        "width": 557,
+        "height": 1536,
+        "hasAlpha": true
+      },
+      "toolRequestCount": 2,
+      "manualFidelityReview": {
+        "status": "changed",
+        "issues": ["face", "clothing", "accessory"],
+        "notes": "甜点、托盘、双手、多层蝴蝶结、肩包和宽腿裤完整；脸与局部衣物、饰品仍有 AI 重绘。"
+      },
+      "manualAlphaReview": {
+        "status": "acceptable",
+        "issues": [],
+        "notes": "甜点、包、裤腿和鞋均保留，真实 Alpha 与纯白边连续。"
+      },
+      "productEligibility": "homepage_example_only"
+    }
+  ]
+}

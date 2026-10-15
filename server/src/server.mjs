@@ -5,6 +5,9 @@ import { inflateSync } from "node:zlib";
 const MAX_REQUEST_BYTES = 18 * 1024 * 1024;
 const MAX_IMAGE_BYTES = 12 * 1024 * 1024;
 const MAX_OUTPUT_BYTES = 20 * 1024 * 1024;
+// Base64 expansion plus a bounded allowance for the provider's JSON metadata.
+const MAX_PROVIDER_RESPONSE_BYTES = Math.ceil(MAX_OUTPUT_BYTES / 3) * 4 + 1024 * 1024;
+const UPSTREAM_TIMEOUT_MILLISECONDS = 130_000;
 const OPENAI_IMAGE_EDIT_URL = "https://api.openai.com/v1/images/edits";
 const DEFAULT_MODEL = "gpt-image-2";
 
@@ -27,10 +30,23 @@ export function createAdonisStickerServer(options = {}) {
   const model = normalizedString(environment.OPENAI_IMAGE_MODEL) ?? DEFAULT_MODEL;
   const upstreamURL = normalizedString(environment.OPENAI_IMAGE_EDIT_URL)
     ?? OPENAI_IMAGE_EDIT_URL;
+  const upstreamTimeoutMilliseconds = options.upstreamTimeoutMilliseconds
+    ?? UPSTREAM_TIMEOUT_MILLISECONDS;
+  if (!Number.isInteger(upstreamTimeoutMilliseconds) || upstreamTimeoutMilliseconds < 1
+    || upstreamTimeoutMilliseconds > UPSTREAM_TIMEOUT_MILLISECONDS) {
+    throw new RangeError("invalid_upstream_timeout");
+  }
 
   return createServer(async (request, response) => {
     const startedAt = performance.now();
     const requestID = safeRequestID(request.headers["x-adonis-request-id"]);
+    const controller = new AbortController();
+    const onResponseClose = () => {
+      if (!response.writableEnded) {
+        controller.abort(new HTTPError(499, "client_disconnected"));
+      }
+    };
+    response.once("close", onResponseClose);
     try {
       if (request.method === "GET" && request.url === "/healthz") {
         sendJSON(response, 200, {
@@ -48,6 +64,7 @@ export function createAdonisStickerServer(options = {}) {
       }
 
       const body = await readJSONBody(request);
+      controller.signal.throwIfAborted();
       const input = decodeInputImage(body);
       const transparentPNG = await requestTransparentPNG({
         fetchImpl,
@@ -55,10 +72,17 @@ export function createAdonisStickerServer(options = {}) {
         model,
         upstreamURL,
         input,
-        requestID
+        requestID,
+        controller,
+        timeoutMilliseconds: upstreamTimeoutMilliseconds
       });
+      controller.signal.throwIfAborted();
       const inspection = inspectTransparentPNG(transparentPNG);
       if (!inspection.isUsableTransparentSubject) {
+        if (inspection.largestVisibleComponentRatio > 0
+          && inspection.largestVisibleComponentRatio < 0.80) {
+          throw new HTTPError(502, "provider_output_fragmented");
+        }
         throw new HTTPError(502, "provider_output_not_transparent");
       }
 
@@ -76,7 +100,9 @@ export function createAdonisStickerServer(options = {}) {
         requestID,
         durationMilliseconds: Math.round(performance.now() - startedAt)
       });
-    } catch (error) {
+    } catch (caught) {
+      const error = controller.signal.aborted && controller.signal.reason instanceof HTTPError
+        ? controller.signal.reason : caught;
       const statusCode = error instanceof HTTPError ? error.statusCode : 500;
       const code = error instanceof HTTPError ? error.code : "internal_error";
       sendJSON(response, statusCode, { error: code, requestID }, requestID);
@@ -87,6 +113,8 @@ export function createAdonisStickerServer(options = {}) {
         code,
         durationMilliseconds: Math.round(performance.now() - startedAt)
       });
+    } finally {
+      response.off("close", onResponseClose);
     }
   });
 }
@@ -97,7 +125,9 @@ async function requestTransparentPNG({
   model,
   upstreamURL,
   input,
-  requestID
+  requestID,
+  controller,
+  timeoutMilliseconds
 }) {
   const form = new FormData();
   form.append("model", model);
@@ -109,38 +139,80 @@ async function requestTransparentPNG({
   form.append("size", "auto");
 
   let upstreamResponse;
+  const timeout = setTimeout(() => {
+    controller.abort(new HTTPError(504, "provider_timeout"));
+  }, timeoutMilliseconds);
+  timeout.unref();
   try {
-    upstreamResponse = await fetchImpl(upstreamURL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${openAIKey}`,
-        "X-Client-Request-Id": requestID
-      },
-      body: form,
-      signal: AbortSignal.timeout(130_000)
-    });
-  } catch {
-    throw new HTTPError(502, "provider_unreachable");
-  }
-  if (!upstreamResponse.ok) {
-    throw new HTTPError(502, "provider_rejected_request");
-  }
+    controller.signal.throwIfAborted();
+    try {
+      upstreamResponse = await fetchImpl(upstreamURL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${openAIKey}`,
+          "X-Client-Request-Id": requestID
+        },
+        body: form,
+        signal: controller.signal
+      });
+    } catch {
+      controller.signal.throwIfAborted();
+      throw new HTTPError(502, "provider_unreachable");
+    }
+    if (!upstreamResponse.ok) {
+      throw new HTTPError(502, "provider_rejected_request");
+    }
 
-  let payload;
+    let payload;
+    try {
+      payload = await readProviderJSON(upstreamResponse);
+    } catch (error) {
+      controller.signal.throwIfAborted();
+      if (error instanceof HTTPError) throw error;
+      throw new HTTPError(502, "provider_invalid_response");
+    }
+    const encoded = payload?.data?.[0]?.b64_json;
+    if (typeof encoded !== "string" || encoded.length === 0) {
+      throw new HTTPError(502, "provider_missing_image");
+    }
+    const bytes = Buffer.from(encoded, "base64");
+    if (bytes.length === 0 || bytes.length > MAX_OUTPUT_BYTES) {
+      throw new HTTPError(502, "provider_invalid_image_size");
+    }
+    return bytes;
+  } catch (error) {
+    controller.abort(error);
+    // Rejected responses must not retain an unread connection or continue downloading.
+    await upstreamResponse?.body?.cancel().catch(() => {});
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function readProviderJSON(response) {
+  const declaredLength = Number(response.headers.get("content-length"));
+  if (declaredLength > MAX_PROVIDER_RESPONSE_BYTES) {
+    throw new HTTPError(502, "provider_response_too_large");
+  }
+  if (!response.body) throw new HTTPError(502, "provider_invalid_response");
+  const reader = response.body.getReader();
+  const chunks = [];
+  let byteCount = 0;
   try {
-    payload = await upstreamResponse.json();
-  } catch {
-    throw new HTTPError(502, "provider_invalid_response");
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      byteCount += value.byteLength;
+      if (byteCount > MAX_PROVIDER_RESPONSE_BYTES) {
+        throw new HTTPError(502, "provider_response_too_large");
+      }
+      chunks.push(Buffer.from(value));
+    }
+  } finally {
+    reader.releaseLock();
   }
-  const encoded = payload?.data?.[0]?.b64_json;
-  if (typeof encoded !== "string" || encoded.length === 0) {
-    throw new HTTPError(502, "provider_missing_image");
-  }
-  const bytes = Buffer.from(encoded, "base64");
-  if (bytes.length === 0 || bytes.length > MAX_OUTPUT_BYTES) {
-    throw new HTTPError(502, "provider_invalid_image_size");
-  }
-  return bytes;
+  return JSON.parse(Buffer.concat(chunks, byteCount).toString("utf8"));
 }
 
 async function readJSONBody(request) {
@@ -273,17 +345,52 @@ export function inspectTransparentPNG(bytes) {
     const transparentRatio = transparent / pixelCount;
     const foregroundCoverage = visible / pixelCount;
     const cornerTransparentRatio = transparentCorners / Math.max(cornerPixels, 1);
+    const hasTransparentSubject = transparentRatio >= 0.08
+      && foregroundCoverage >= 0.025 && cornerTransparentRatio >= 0.75;
+    const largestVisibleComponentRatio = hasTransparentSubject
+      ? largestVisibleComponentSize(decoded, header.width, header.height,
+        bytesPerPixel, alphaOffset, visible) / visible
+      : 0;
     return {
       transparentRatio,
       foregroundCoverage,
       cornerTransparentRatio,
-      isUsableTransparentSubject: transparentRatio >= 0.08
-        && foregroundCoverage >= 0.025
-        && cornerTransparentRatio >= 0.75
+      largestVisibleComponentRatio,
+      isUsableTransparentSubject: hasTransparentSubject && largestVisibleComponentRatio >= 0.80
     };
   } catch {
     return unusableInspection();
   }
+}
+
+function largestVisibleComponentSize(decoded, width, height, stride, alphaOffset, visibleCount) {
+  // Mark only the private decoded inspection buffer. The PNG returned to the client is untouched.
+  // A typed queue bounds extra storage to four bytes per visible pixel, at most 64 MiB (4096²).
+  const queue = new Uint32Array(visibleCount);
+  let largest = 0;
+  let tail = 0;
+  function enqueue(index) {
+    const offset = index * stride + alphaOffset;
+    if (decoded[offset] <= 16) return;
+    decoded[offset] = 0;
+    queue[tail++] = index;
+  }
+  for (let start = 0; start < width * height; start += 1) {
+    if (decoded[start * stride + alphaOffset] <= 16) continue;
+    tail = 0;
+    enqueue(start);
+    let head = 0;
+    while (head < tail) {
+      const index = queue[head++];
+      const x = index % width;
+      if (x > 0) enqueue(index - 1);
+      if (x + 1 < width) enqueue(index + 1);
+      if (index >= width) enqueue(index - width);
+      if (index + width < width * height) enqueue(index + width);
+    }
+    largest = Math.max(largest, tail);
+  }
+  return largest;
 }
 
 function unfilterByte(filter, raw, left, up, upperLeft) {
@@ -312,6 +419,7 @@ function unusableInspection() {
     transparentRatio: 0,
     foregroundCoverage: 0,
     cornerTransparentRatio: 0,
+    largestVisibleComponentRatio: 0,
     isUsableTransparentSubject: false
   };
 }
@@ -329,7 +437,7 @@ function requireClientAuthorization(request, expectedToken) {
 }
 
 function sendJSON(response, statusCode, value, requestID) {
-  if (response.headersSent) return;
+  if (response.headersSent || response.destroyed) return;
   const body = Buffer.from(JSON.stringify(value));
   response.writeHead(statusCode, {
     "Cache-Control": "no-store",

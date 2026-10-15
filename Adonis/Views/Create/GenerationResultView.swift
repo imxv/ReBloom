@@ -65,71 +65,81 @@ struct GenerationResultView: View {
       AdonisTheme.canvas
         .ignoresSafeArea()
 
-      ScrollView {
-        VStack(spacing: 20) {
-          resultHeader
+      VStack(spacing: 0) {
+        ScrollView {
+          VStack(spacing: 20) {
+            resultHeader
 
-          resultModePicker
+            resultModePicker
 
-          preview
+            preview
 
-          if draft.completionMode == .basicStickerFallback {
-            GenerationFallbackNotice(
-              identifier: "generation-fallback-notice",
-              isHistory: false
-            )
-          }
-
-          if draft.qualityAssessment.requiresReview {
-            StickerQualityNotice(assessment: draft.qualityAssessment)
-          }
-
-          AccessibilityAdaptiveStack(spacing: 8) {
-            StickerTag(
-              title: outputTagTitle,
-              color: mode == .sticker ? AdonisTheme.leaf.opacity(0.5) : AdonisTheme.butter,
-              icon: outputTagIcon
-            )
-            StickerTag(
-              title: "来自\(draft.inputSource.title)",
-              color: AdonisTheme.lavender.opacity(0.55),
-              icon: "photo.on.rectangle"
-            )
-          }
-
-          ContentProvenanceNotice(provenance: draft.provenance(for: mode))
-
-          if reviewableFinalAIStickerImage != nil {
-            StickerFidelityReviewEntry(
-              review: fidelityReview,
-              onMatches: markFidelityAsMatching,
-              onChanged: { fidelityReviewSheet = .review }
-            )
-          }
-
-          BotanicalPosterEntry {
-            makeBotanicalPoster()
-          }
-
-          if creativeImageGenerator.availability == .available {
-            CuratedStyleGardenEntry {
-              showCuratedStylePicker = true
+            if draft.completionMode == .basicStickerFallback {
+              GenerationFallbackNotice(
+                identifier: "generation-fallback-notice",
+                isHistory: false
+              )
             }
-          }
 
-          DigitalFigurineCardEntry {
-            makeDigitalFigurineCard()
-          }
+            if draft.qualityAssessment.requiresReview {
+              StickerQualityNotice(assessment: draft.qualityAssessment)
+            }
 
-          if !draft.garmentObservations.isEmpty {
-            wardrobeObservationHint
-          }
+            AccessibilityAdaptiveStack(spacing: 8) {
+              StickerTag(
+                title: outputTagTitle,
+                color: mode == .sticker ? AdonisTheme.leaf.opacity(0.5) : AdonisTheme.butter,
+                icon: outputTagIcon
+              )
+              StickerTag(
+                title: "来自\(draft.inputSource.title)",
+                color: AdonisTheme.lavender.opacity(0.55),
+                icon: "photo.on.rectangle"
+              )
+            }
 
-          actionButtons
+            ContentProvenanceNotice(provenance: draft.provenance(for: mode))
+
+            deliveryActions
+
+            if reviewableFinalAIStickerImage != nil {
+              StickerFidelityReviewEntry(
+                review: fidelityReview,
+                onMatches: markFidelityAsMatching,
+                onChanged: { fidelityReviewSheet = .review }
+              )
+            }
+
+            BotanicalPosterEntry {
+              makeBotanicalPoster()
+            }
+
+            if creativeImageGenerator.availability == .available {
+              CuratedStyleGardenEntry {
+                showCuratedStylePicker = true
+              }
+            }
+
+            DigitalFigurineCardEntry {
+              makeDigitalFigurineCard()
+            }
+
+            if !draft.garmentObservations.isEmpty {
+              wardrobeObservationHint
+            }
+
+            makeAnotherButton
+          }
+          .padding(.horizontal, 20)
+          .padding(.top, 12)
+          .padding(.bottom, 34)
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 12)
-        .padding(.bottom, 34)
+
+        saveTodayButton
+          .padding(.horizontal, 20)
+          .padding(.top, 12)
+          .padding(.bottom, 8)
+          .background(AdonisTheme.canvas)
       }
       .disabled(activeSystemCreativeID != nil)
 
@@ -733,25 +743,28 @@ struct GenerationResultView: View {
     return draft.stickerImage
   }
 
-  private var actionButtons: some View {
-    VStack(spacing: 12) {
-      Button {
-        do {
-          try onSave(fidelityReview)
-          isSaved = true
-        } catch {
-          saveError = error.localizedDescription
-        }
-      } label: {
-        PrimaryActionLabel(
-          title: saveButtonTitle,
-          systemImage: isSaved ? "checkmark.circle.fill" : "heart.fill"
-        )
+  private var saveTodayButton: some View {
+    Button {
+      do {
+        try onSave(fidelityReview)
+        isSaved = true
+      } catch {
+        saveError = error.localizedDescription
       }
-      .buttonStyle(StickerButtonStyle())
-      .disabled(isSaved)
-      .accessibilityIdentifier("save-today")
+    } label: {
+      PrimaryActionLabel(
+        title: saveButtonTitle,
+        systemImage: isSaved ? "checkmark.circle.fill" : "heart.fill"
+      )
+    }
+    .buttonStyle(StickerButtonStyle())
+    .disabled(isSaved)
+    .accessibilityIdentifier("save-today")
+    .accessibilityHint("保存在 ReBloom 花历中，不会写入系统相册")
+  }
 
+  private var deliveryActions: some View {
+    VStack(spacing: 12) {
       AccessibilityAdaptiveStack(spacing: 12) {
         Button {
           saveStickerToPhotos()
@@ -805,22 +818,24 @@ struct GenerationResultView: View {
       if case .failed(let error) = photoSaveState {
         photoSaveFailureNotice(error)
       }
-
-      Button {
-        onReset()
-        dismiss()
-      } label: {
-        Label("再做一张", systemImage: "arrow.clockwise")
-          .font(.system(.headline, design: .rounded, weight: .bold))
-          .foregroundStyle(AdonisTheme.ink)
-          .frame(maxWidth: .infinity, minHeight: 52)
-          .background(
-            AdonisTheme.butter.opacity(0.72),
-            in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-      }
-      .buttonStyle(StickerButtonStyle())
-      .accessibilityIdentifier("make-another")
     }
+  }
+
+  private var makeAnotherButton: some View {
+    Button {
+      onReset()
+      dismiss()
+    } label: {
+      Label("再做一张", systemImage: "arrow.clockwise")
+        .font(.system(.headline, design: .rounded, weight: .bold))
+        .foregroundStyle(AdonisTheme.ink)
+        .frame(maxWidth: .infinity, minHeight: 52)
+        .background(
+          AdonisTheme.butter.opacity(0.72),
+          in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+    }
+    .buttonStyle(StickerButtonStyle())
+    .accessibilityIdentifier("make-another")
   }
 
   private func markFidelityAsMatching() {

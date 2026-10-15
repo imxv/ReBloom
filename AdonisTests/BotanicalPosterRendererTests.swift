@@ -8,7 +8,7 @@ final class BotanicalPosterRendererTests: XCTestCase {
     XCTAssertEqual(BotanicalPosterRenderer.provenance, .programmaticComposition)
     XCTAssertEqual(
       BotanicalPosterRenderer.provenanceFooter,
-      "人物与衣物来自原图贴纸 · ADONIS 本机排版 · 不含 AI 重绘"
+      "人物与衣物来自原图贴纸 · REBLOOM 本机排版 · 不含 AI 重绘"
     )
   }
 
@@ -16,7 +16,7 @@ final class BotanicalPosterRendererTests: XCTestCase {
     XCTAssertEqual(BotanicalPosterRenderer.provenance(for: .aiGenerated), .aiGenerated)
     XCTAssertEqual(
       BotanicalPosterRenderer.provenanceFooter(for: .aiGenerated),
-      "人物与衣物来自 AI 贴纸 · ADONIS 本机排版"
+      "人物与衣物来自 AI 贴纸 · REBLOOM 本机排版"
     )
   }
 

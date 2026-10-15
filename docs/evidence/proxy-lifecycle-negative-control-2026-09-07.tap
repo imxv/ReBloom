@@ -1,0 +1,63 @@
+TAP version 13
+# Subtest: client disconnect aborts the real upstream connection before headers
+not ok 1 - client disconnect aborts the real upstream connection before headers
+  ---
+  duration_ms: 5003.021167
+  location: '/private/tmp/adonis-proxy-negative-control/test/upstream-lifecycle.test.mjs:18:3'
+  failureType: 'testTimeoutFailure'
+  error: 'test timed out after 5000ms'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: upstream deadline aborts a stalled request before headers
+ok 2 - upstream deadline aborts a stalled request before headers # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.722375
+  ...
+# Subtest: client disconnect aborts the real upstream connection during response body
+ok 3 - client disconnect aborts the real upstream connection during response body # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.133542
+  ...
+# Subtest: upstream deadline aborts a stalled request during response body
+ok 4 - upstream deadline aborts a stalled request during response body # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.228583
+  ...
+# Subtest: oversized declared response is rejected without waiting for its body
+not ok 5 - oversized declared response is rejected without waiting for its body
+  ---
+  duration_ms: 5000.975625
+  location: '/private/tmp/adonis-proxy-negative-control/test/upstream-lifecycle.test.mjs:57:1'
+  failureType: 'testTimeoutFailure'
+  error: 'test timed out after 5000ms'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: chunked provider response is bounded before JSON parsing
+ok 6 - chunked provider response is bounded before JSON parsing # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.673792
+  ...
+# Subtest: response limit also applies after HTTP content decompression
+ok 7 - response limit also applies after HTTP content decompression # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.101125
+  ...
+# Subtest: provider rejection closes the unread body and never forwards private error details
+ok 8 - provider rejection closes the unread body and never forwards private error details # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.260209
+  ...
+# Subtest: cancelling one extraction leaves a simultaneous extraction connected
+ok 9 - cancelling one extraction leaves a simultaneous extraction connected # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.177208
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 0
+# fail 0
+# cancelled 2
+# skipped 7
+# todo 0
+# duration_ms 10056.593083

@@ -4,10 +4,13 @@ set -euo pipefail
 
 readonly repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly manifest_path="$repository_root/Adonis/Resources/Samples/regression-baseline.json"
+readonly homepage_manifest_path="$repository_root/Adonis/Resources/Samples/homepage-ai-showcase.json"
 readonly generator_path="$repository_root/scripts/generate_sample_stickers.swift"
+readonly homepage_generator_path="$repository_root/scripts/generate_homepage_ai_sticker.sh"
 readonly sample_directory="$repository_root/Adonis/Resources/Samples"
 
-if [[ ! -f "$manifest_path" || ! -f "$generator_path" ]]; then
+if [[ ! -f "$manifest_path" || ! -f "$homepage_manifest_path" || ! -f "$generator_path" \
+  || ! -x "$homepage_generator_path" ]]; then
   echo "Sample regression inputs are missing." >&2
   exit 1
 fi
@@ -103,3 +106,113 @@ for ((index = 0; index < sample_count; index++)); do
 
   echo "Verified $sample_id: source hash, sticker hash, and byte-identical regeneration."
 done
+
+homepage_sample_count=0
+while homepage_sample_id="$(
+  /usr/bin/plutil -extract "samples.$homepage_sample_count.id" raw -o - \
+    "$homepage_manifest_path" 2>/dev/null
+)"; do
+  homepage_source_name="$(
+    /usr/bin/plutil -extract "samples.$homepage_sample_count.aiSource.resourceName" raw -o - \
+      "$homepage_manifest_path"
+  )"
+  homepage_sticker_name="$(
+    /usr/bin/plutil -extract "samples.$homepage_sample_count.sticker.resourceName" raw -o - \
+      "$homepage_manifest_path"
+  )"
+  homepage_chroma_relative_path="$(
+    /usr/bin/plutil -extract "samples.$homepage_sample_count.chroma.path" raw -o - \
+      "$homepage_manifest_path"
+  )"
+  expected_homepage_source_hash="$(
+    /usr/bin/plutil -extract "samples.$homepage_sample_count.aiSource.sha256" raw -o - \
+      "$homepage_manifest_path"
+  )"
+  expected_homepage_sticker_hash="$(
+    /usr/bin/plutil -extract "samples.$homepage_sample_count.sticker.sha256" raw -o - \
+      "$homepage_manifest_path"
+  )"
+  expected_homepage_chroma_hash="$(
+    /usr/bin/plutil -extract "samples.$homepage_sample_count.chroma.sha256" raw -o - \
+      "$homepage_manifest_path"
+  )"
+
+  if [[ "$homepage_source_name" == */* || "$homepage_sticker_name" == */* \
+    || "$homepage_chroma_relative_path" != assets/prototypes/digital-figurine-sticker/* ]]; then
+    echo "Homepage sample paths are outside their allowed directories: $homepage_sample_id" >&2
+    exit 1
+  fi
+
+  homepage_source_path="$sample_directory/$homepage_source_name"
+  homepage_sticker_path="$sample_directory/$homepage_sticker_name"
+  homepage_chroma_path="$repository_root/$homepage_chroma_relative_path"
+  actual_homepage_source_hash="$(
+    /usr/bin/shasum -a 256 "$homepage_source_path" | /usr/bin/awk '{print $1}'
+  )"
+  actual_homepage_sticker_hash="$(
+    /usr/bin/shasum -a 256 "$homepage_sticker_path" | /usr/bin/awk '{print $1}'
+  )"
+  actual_homepage_chroma_hash="$(
+    /usr/bin/shasum -a 256 "$homepage_chroma_path" | /usr/bin/awk '{print $1}'
+  )"
+
+  if [[ "$actual_homepage_source_hash" != "$expected_homepage_source_hash" ]]; then
+    echo "$homepage_sample_id homepage AI source hash changed: $actual_homepage_source_hash" >&2
+    exit 1
+  fi
+  if [[ "$actual_homepage_sticker_hash" != "$expected_homepage_sticker_hash" ]]; then
+    echo "$homepage_sample_id homepage AI sticker hash changed: $actual_homepage_sticker_hash" >&2
+    exit 1
+  fi
+  if [[ "$actual_homepage_chroma_hash" != "$expected_homepage_chroma_hash" ]]; then
+    echo "$homepage_sample_id homepage chroma hash changed: $actual_homepage_chroma_hash" >&2
+    exit 1
+  fi
+
+  background_red="$(
+    /usr/bin/plutil -extract "samples.$homepage_sample_count.chroma.backgroundRed" raw -o - \
+      "$homepage_manifest_path"
+  )"
+  background_green="$(
+    /usr/bin/plutil -extract "samples.$homepage_sample_count.chroma.backgroundGreen" raw -o - \
+      "$homepage_manifest_path"
+  )"
+  background_blue="$(
+    /usr/bin/plutil -extract "samples.$homepage_sample_count.chroma.backgroundBlue" raw -o - \
+      "$homepage_manifest_path"
+  )"
+  transparent_threshold="$(
+    /usr/bin/plutil -extract "samples.$homepage_sample_count.chroma.transparentThreshold" raw -o - \
+      "$homepage_manifest_path"
+  )"
+  threshold_span="$(
+    /usr/bin/plutil -extract "samples.$homepage_sample_count.chroma.thresholdSpan" raw -o - \
+      "$homepage_manifest_path"
+  )"
+  regenerated_homepage_sticker="$temporary_directory/homepage-$homepage_sticker_name"
+
+  "$homepage_generator_path" \
+    "$homepage_chroma_path" \
+    "$regenerated_homepage_sticker" \
+    "$background_red" \
+    "$background_green" \
+    "$background_blue" \
+    "$transparent_threshold" \
+    "$threshold_span"
+
+  if ! /usr/bin/cmp -s "$homepage_sticker_path" "$regenerated_homepage_sticker"; then
+    regenerated_homepage_hash="$(
+      /usr/bin/shasum -a 256 "$regenerated_homepage_sticker" | /usr/bin/awk '{print $1}'
+    )"
+    echo "$homepage_sample_id regenerated homepage sticker differs: $regenerated_homepage_hash" >&2
+    exit 1
+  fi
+
+  echo "Verified $homepage_sample_id homepage AI source, chroma input, real-Alpha sticker, and byte-identical post-processing."
+  homepage_sample_count=$((homepage_sample_count + 1))
+done
+
+if [[ "$homepage_sample_count" -ne 3 ]]; then
+  echo "Expected exactly three homepage AI samples, found $homepage_sample_count." >&2
+  exit 1
+fi

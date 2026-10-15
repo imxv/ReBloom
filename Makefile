@@ -45,6 +45,7 @@ ai-sticker-regression: project
 		-only-testing:AdonisUITests/AdonisFlowUITests/testMainCreationGeneratesAIStickerSourceBeforeTransparentStickerAndPersistsIt \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testCancellingSystemImagePlaygroundNeverSendsOriginalToTransparentStage \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testAIStickerFidelityReviewPersistsFromResultIntoHistory \
+		-only-testing:AdonisUITests/AdonisFlowUITests/testHomepageAISampleKeepsAIProvenanceAfterOpeningResult \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testAmbiguousInputDoesNotBypassUnavailableAIStickerGeneration \
 		-only-testing:AdonisUITests/AdonisFlowUITests/testUnavailableAIStickerOffersAnHonestPreparedSampleRecovery
 
@@ -174,3 +175,15 @@ check: lint analyze
 
 clean:
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -derivedDataPath $(DERIVED_DATA) clean
+
+# Optional evidence-preserving full run. Existing focused regressions remain unchanged.
+.PHONY: verified-test test-tools
+MINIMUM_TESTS ?= 234
+
+verified-test: project
+	PYTHONDONTWRITEBYTECODE=1 python3 scripts/run_verified_tests.py \
+		--minimum-tests $(MINIMUM_TESTS) --require AdonisTests --require AdonisUITests -- \
+		-project $(PROJECT) -scheme $(SCHEME) -destination '$(DESTINATION)' -derivedDataPath $(DERIVED_DATA) test
+
+test-tools:
+	PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -v

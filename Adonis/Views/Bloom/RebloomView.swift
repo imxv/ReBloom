@@ -64,7 +64,7 @@ struct RebloomView: View {
               ContentProvenanceNotice(
                 provenance: .programmaticComposition,
                 detail:
-                  "单品图片来自你确认过的本机衣橱；Adonis 只做规则组合与排版，没有生成试穿照片，也没有改动画面中的衣服。来自 OOTD 的局部图可能带到相邻衣物，补商品图后这里会自动使用更干净的图片。",
+                  "单品图片来自你确认过的本机衣橱；ReBloom 只做规则组合与排版，没有生成试穿照片，也没有改动画面中的衣服。来自 OOTD 的局部图可能带到相邻衣物，补商品图后这里会自动使用更干净的图片。",
                 identifier: "rebloom-provenance"
               )
 
@@ -148,7 +148,7 @@ struct RebloomView: View {
         .foregroundStyle(AdonisTheme.ink)
         .fixedSize(horizontal: false, vertical: true)
         .accessibilityAddTraits(.isHeader)
-      Text("不用写 Prompt，也不用选模板。Adonis 从你确认过的穿着里，先递来一组可以直接采用的新组合。")
+      Text("不用写 Prompt，也不用选模板。ReBloom 从你确认过的穿着里，先递来一组可以直接采用的新组合。")
         .font(.subheadline)
         .foregroundStyle(AdonisTheme.secondaryInk)
         .lineSpacing(3)
@@ -210,7 +210,7 @@ struct RebloomView: View {
             )
             .accessibilityIdentifier("rebloom-reminder-status")
           } else {
-            Text("你主动点下按钮后，Adonis 才会申请通知权限，并在 7 天后把这组真实搭配送回来。")
+            Text("你主动点下按钮后，ReBloom 才会申请通知权限，并在 7 天后把这组真实搭配送回来。")
           }
         }
         .font(.footnote)

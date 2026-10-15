@@ -197,7 +197,7 @@ enum SharedImageInboxError: Equatable, LocalizedError {
   var errorDescription: String? {
     switch self {
     case .sharedContainerUnavailable:
-      "Adonis 的共享空间暂时不可用，请先打开 App 后再试。"
+      "ReBloom 的共享空间暂时不可用，请先打开 App 后再试。"
     case .unreadableImage:
       "没有读到可以保存的图片，请改为分享商品图或截图。"
     case .imageTooSmall:
@@ -207,7 +207,7 @@ enum SharedImageInboxError: Equatable, LocalizedError {
     case .imageDimensionsTooLarge:
       "这张图片尺寸太大了，请先保存较小的版本或截图后再分享。"
     case .inboxFull:
-      "Adonis 里还有一些图片没处理，请先打开 App 收进衣橱后再试。"
+      "ReBloom 里还有一些图片没处理，请先打开 App 收进衣橱后再试。"
     }
   }
 }

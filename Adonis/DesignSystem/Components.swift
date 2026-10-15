@@ -7,13 +7,13 @@ struct AdonisWordmark: View {
     HStack(spacing: 8) {
       DoodleFlower(size: compact ? 24 : 30)
 
-      Text("ADONIS")
+      Text("REBLOOM")
         .font(.system(size: compact ? 20 : 25, weight: .black, design: .rounded))
         .tracking(1.8)
         .foregroundStyle(AdonisTheme.ink)
     }
     .accessibilityElement(children: .combine)
-    .accessibilityLabel("Adonis")
+    .accessibilityLabel("ReBloom")
   }
 }
 

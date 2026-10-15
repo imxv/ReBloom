@@ -112,7 +112,7 @@ struct SystemCreativeCardRenderer {
         ink: UIColor(red: 0.16, green: 0.12, blue: 0.10, alpha: 1),
         paper: UIColor(red: 1, green: 0.96, blue: 0.87, alpha: 1),
         accent: UIColor(red: 0.91, green: 0.36, blue: 0.32, alpha: 1),
-        eyebrow: "ADONIS / FLORAL SKETCH",
+        eyebrow: "REBLOOM / FLORAL SKETCH",
         caption: "花神速写 · 纸上的轻盈新生"
       )
     case .moonlitTheater:
@@ -120,7 +120,7 @@ struct SystemCreativeCardRenderer {
         ink: UIColor(red: 0.045, green: 0.075, blue: 0.20, alpha: 1),
         paper: UIColor(red: 0.96, green: 0.94, blue: 0.80, alpha: 1),
         accent: UIColor(red: 1, green: 0.42, blue: 0.42, alpha: 1),
-        eyebrow: "ADONIS / MOONLIT THEATER",
+        eyebrow: "REBLOOM / MOONLIT THEATER",
         caption: "月光剧场 · 在蓝夜里重新登场"
       )
     case .mythicGarden:
@@ -128,7 +128,7 @@ struct SystemCreativeCardRenderer {
         ink: UIColor(red: 0.09, green: 0.055, blue: 0.08, alpha: 1),
         paper: UIColor(red: 1, green: 0.973, blue: 0.925, alpha: 1),
         accent: UIColor(red: 0.957, green: 0.847, blue: 0.541, alpha: 1),
-        eyebrow: "ADONIS / MYTHIC GARDEN",
+        eyebrow: "REBLOOM / MYTHIC GARDEN",
         caption: "永生花园 · 青春、欲望与再次盛开"
       )
     case .aiStickerSource, .botanicalPoster, .stickerTryOn:
@@ -136,7 +136,7 @@ struct SystemCreativeCardRenderer {
         ink: .black,
         paper: .white,
         accent: .white,
-        eyebrow: "ADONIS",
+        eyebrow: "REBLOOM",
         caption: recipe.title
       )
     }

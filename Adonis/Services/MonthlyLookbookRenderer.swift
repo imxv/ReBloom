@@ -20,11 +20,11 @@ struct MonthlyLookbookEntry {
 }
 
 struct MonthlyLookbookRenderer {
-  static let provenanceFooter = "人物与衣物来自已收藏原图 · 画册由 ADONIS 排版"
+  static let provenanceFooter = "人物与衣物来自已收藏原图 · 画册由 REBLOOM 排版"
 
   static func provenanceFooter(for entries: [MonthlyLookbookEntry]) -> String {
     entries.contains { $0.stickerProvenance.containsAIGeneratedPixels }
-      ? "画册包含 AI 生成贴纸 · 画册由 ADONIS 排版"
+      ? "画册包含 AI 生成贴纸 · 画册由 REBLOOM 排版"
       : provenanceFooter
   }
 
@@ -114,7 +114,7 @@ struct MonthlyLookbookRenderer {
     let centered = NSMutableParagraphStyle()
     centered.alignment = .center
 
-    ("ADONIS" as NSString).draw(
+    ("REBLOOM" as NSString).draw(
       in: CGRect(x: 250, y: 82, width: 580, height: 66),
       withAttributes: [
         .font: UIFont.systemFont(ofSize: 47, weight: .black),

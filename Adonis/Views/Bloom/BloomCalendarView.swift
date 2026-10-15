@@ -225,7 +225,7 @@ struct BloomCalendarView: View {
     if let requestedID = route.suggestionID {
       guard rebloomSuggestions.contains(where: { $0.id == requestedID }) else {
         reminderRouteMessage =
-          "原来那组衣物或来源 OOTD 已经变化，Adonis 没有把它补成仍然有效的建议。花历保留的是当前真实记录。"
+          "原来那组衣物或来源 OOTD 已经变化，ReBloom 没有把它补成仍然有效的建议。花历保留的是当前真实记录。"
         return
       }
       selectedRebloomSuggestionID = requestedID

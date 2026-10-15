@@ -11,8 +11,55 @@ final class AdonisFlowUITests: XCTestCase {
     let sample = app.buttons["sample-01"]
     XCTAssertTrue(sample.waitForExistence(timeout: 8))
     XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
-    XCTAssertTrue(sample.label.contains("原始照片变成透明贴纸"))
+    XCTAssertTrue(sample.label.contains("原始照片变成 AI 透明贴纸"))
+    XCTAssertTrue(sample.label.contains("属于 AI 生成"))
     keepScreenshot(named: "Adonis-sample-transformation-preview")
+  }
+
+  @MainActor
+  func testHomepageAISampleKeepsAIProvenanceAfterOpeningResult() {
+    let app = XCUIApplication()
+    app.launchArguments.append("-ui-testing")
+    app.launch()
+
+    let sample = app.buttons["sample-01"]
+    XCTAssertTrue(sample.waitForExistence(timeout: 8))
+    XCTAssertTrue(scrollToHittable(sample, in: app, attempts: 8))
+    sample.tap()
+
+    XCTAssertTrue(app.staticTexts["result-title"].waitForExistence(timeout: 10))
+    let resultModes = app.segmentedControls["result-mode-picker"]
+    if resultModes.exists {
+      XCTAssertTrue(resultModes.buttons["收藏卡"].isSelected)
+    } else {
+      let resultModeMenu = app.buttons["result-mode-menu"]
+      XCTAssertTrue(resultModeMenu.waitForExistence(timeout: 3))
+      XCTAssertTrue(resultModeMenu.label.contains("收藏卡"))
+    }
+    let primarySave = app.buttons["save-today"]
+    XCTAssertTrue(primarySave.isHittable, "首次看到结果即可收藏，无需滚过其他创作入口")
+    XCTAssertTrue(app.frame.contains(primarySave.frame))
+    keepScreenshot(named: "Adonis-homepage-ai-share-card")
+
+    let provenance = app.descendants(matching: .any)["content-provenance-ai_generated"]
+    XCTAssertTrue(scrollToHittable(provenance, in: app, attempts: 8))
+    XCTAssertTrue(provenance.label.contains("AI 生成"))
+
+    let review = app.descendants(matching: .any)["sticker-fidelity-review-entry"]
+    XCTAssertTrue(scrollToHittable(review, in: app, attempts: 8))
+    keepScreenshot(named: "Adonis-homepage-ai-showcase-result")
+
+    let figurineEntry = app.buttons["digital-figurine-card-entry"]
+    XCTAssertTrue(scrollToHittable(figurineEntry, in: app, attempts: 8))
+    figurineEntry.tap()
+    let figurinePreview = app.descendants(matching: .any)["digital-figurine-card-preview"]
+    XCTAssertTrue(figurinePreview.waitForExistence(timeout: 6))
+    keepScreenshot(named: "Adonis-homepage-ai-digital-figurine-card")
+    let figurineProvenance =
+      app.descendants(matching: .any)["digital-figurine-card-provenance"]
+    XCTAssertTrue(scrollToHittable(figurineProvenance, in: app, attempts: 8))
+    XCTAssertTrue(figurineProvenance.label.contains("沿用 AI 贴纸像素"))
+    app.buttons["close-digital-figurine-card"].tap()
   }
 
   @MainActor
@@ -307,7 +354,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(alert.waitForExistence(timeout: 8))
     XCTAssertTrue(
       alert.staticTexts[
-        "这次需要先生成 AI 贴纸形象，再做 AI 透明处理。当前设备或系统设置不支持第一步生成。你可以先体验明确标注的内置样片；Adonis 不会用样片替换你的照片，也不会改用原图直接处理。"
+        "这次需要先生成 AI 贴纸形象，再做 AI 透明处理。当前设备或系统设置不支持第一步生成。你可以先体验明确标注的内置样片；ReBloom 不会用样片替换你的照片，也不会改用原图直接处理。"
       ].exists
     )
     XCTAssertFalse(alert.buttons["再试一次"].exists)
@@ -328,7 +375,10 @@ final class AdonisFlowUITests: XCTestCase {
       XCTAssertTrue(resultModePicker.buttons["透明贴纸"].exists)
       XCTAssertTrue(resultModePicker.buttons["原始照片"].exists)
     }
-    XCTAssertFalse(app.descendants(matching: .any)["sticker-fidelity-review-entry"].exists)
+    let provenance = app.descendants(matching: .any)["content-provenance-ai_generated"]
+    XCTAssertTrue(provenance.waitForExistence(timeout: 3))
+    let review = app.descendants(matching: .any)["sticker-fidelity-review-entry"]
+    XCTAssertTrue(scrollToHittable(review, in: app, attempts: 8))
     keepScreenshot(named: "Adonis-unavailable-ai-prepared-sample-recovery")
   }
 
@@ -424,8 +474,12 @@ final class AdonisFlowUITests: XCTestCase {
     let share = app.buttons["share-creative-work"]
     XCTAssertTrue(scrollToHittable(share, in: app, attempts: 5))
     share.tap()
-    XCTAssertTrue(app.buttons["关闭"].waitForExistence(timeout: 8))
-    app.buttons["关闭"].tap()
+    let closeShareSheet = app.buttons["header.closeButton"]
+    XCTAssertTrue(waitForStableHittable(closeShareSheet, timeout: 8))
+    closeShareSheet.tap()
+    XCTAssertTrue(closeShareSheet.waitForNonExistence(timeout: 10))
+    let activityList = app.descendants(matching: .any)["ActivityListView"]
+    XCTAssertTrue(activityList.waitForNonExistence(timeout: 5))
     let closeWork = app.buttons["close-creative-work"]
     XCTAssertTrue(scrollDownToHittable(closeWork, in: app, attempts: 8))
     closeWork.tap()
@@ -501,7 +555,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(preview.label.contains("花影海报"))
     let provenance = app.descendants(matching: .any)["creative-work-provenance"]
     XCTAssertTrue(scrollToHittable(provenance, in: app, attempts: 8))
-    XCTAssertTrue(provenance.label.contains("不含 AI 重绘"))
+    XCTAssertTrue(provenance.label.contains("沿用 AI 贴纸像素"))
 
     selectCreativeWorkPreview(
       assetID: "originalPhoto",
@@ -543,7 +597,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(preview.waitForExistence(timeout: 5))
     XCTAssertTrue(preview.label.contains("花影海报"))
     XCTAssertTrue(scrollToHittable(provenance, in: app, attempts: 8))
-    XCTAssertTrue(provenance.label.contains("不含 AI 重绘"))
+    XCTAssertTrue(provenance.label.contains("沿用 AI 贴纸像素"))
     keepScreenshot(named: "Adonis-botanical-poster-history")
   }
 
@@ -561,7 +615,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(alert.waitForExistence(timeout: 4))
     XCTAssertTrue(
       app.staticTexts[
-        "要拍一张新照片，请先在系统设置里允许 Adonis 使用相机。你也可以继续从相册选择。"
+        "要拍一张新照片，请先在系统设置里允许 ReBloom 使用相机。你也可以继续从相册选择。"
       ].exists
     )
     XCTAssertTrue(alert.buttons["打开系统设置"].exists)
@@ -583,7 +637,7 @@ final class AdonisFlowUITests: XCTestCase {
     let alert = app.alerts["这台 iPhone 限制了相机"]
     XCTAssertTrue(alert.waitForExistence(timeout: 4))
     XCTAssertTrue(
-      app.staticTexts["当前系统限制不允许 Adonis 使用相机。你仍然可以从相册选择照片。"].exists
+      app.staticTexts["当前系统限制不允许 ReBloom 使用相机。你仍然可以从相册选择照片。"].exists
     )
     XCTAssertTrue(alert.buttons["知道了"].exists)
     XCTAssertFalse(alert.buttons["打开系统设置"].exists)
@@ -614,6 +668,9 @@ final class AdonisFlowUITests: XCTestCase {
     let resultModeMenu = app.descendants(matching: .any)["result-mode-menu"]
     let resultModePicker = app.segmentedControls["result-mode-picker"]
     XCTAssertTrue(resultModeMenu.exists || resultModePicker.exists)
+    let primarySave = app.buttons["save-today"]
+    XCTAssertTrue(primarySave.isHittable, "最大辅助字号也应直接到达收藏动作")
+    XCTAssertTrue(app.frame.contains(primarySave.frame))
     keepScreenshot(named: "Adonis-accessibility-result")
 
     XCUIDevice.shared.press(.home)
@@ -659,9 +716,9 @@ final class AdonisFlowUITests: XCTestCase {
     let lookbookPreview = app.descendants(matching: .any)["monthly-lookbook-preview"]
     XCTAssertTrue(lookbookPreview.waitForExistence(timeout: 5))
     let lookbookProvenance =
-      app.descendants(matching: .any)["content-provenance-programmatic_composition"]
+      app.descendants(matching: .any)["content-provenance-ai_generated"]
     XCTAssertTrue(scrollToHittable(lookbookProvenance, in: app, attempts: 8))
-    XCTAssertTrue(lookbookProvenance.label.contains("没有补画人物或衣物"))
+    XCTAssertTrue(lookbookProvenance.label.contains("没有再次补画人物或衣物"))
     let lookbookShare = app.buttons["share-monthly-lookbook"]
     XCTAssertTrue(scrollToHittable(lookbookShare, in: app, attempts: 5))
     XCTAssertTrue(lookbookShare.isHittable)
@@ -810,7 +867,11 @@ final class AdonisFlowUITests: XCTestCase {
   func testTimeoutDeliversAndPersistsValidatedBasicStickerFallback() {
     let app = XCUIApplication()
     app.launchArguments.append(
-      contentsOf: ["-ui-testing", "-ui-testing-force-generation-fallback-timeout"]
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-historical-sample-fixture",
+        "-ui-testing-force-generation-fallback-timeout",
+      ]
     )
     app.launch()
 
@@ -992,7 +1053,7 @@ final class AdonisFlowUITests: XCTestCase {
       app.descendants(matching: .any)["sticker-quality-review_recommended"].exists
     )
     XCTAssertTrue(
-      app.descendants(matching: .any)["content-provenance-programmatic_composition"]
+      app.descendants(matching: .any)["content-provenance-ai_generated"]
         .waitForExistence(timeout: 3)
     )
 
@@ -1000,7 +1061,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(resultModes.buttons["透明贴纸"].waitForExistence(timeout: 3))
     resultModes.buttons["透明贴纸"].tap()
     XCTAssertTrue(
-      app.descendants(matching: .any)["content-provenance-derived_from_original"]
+      app.descendants(matching: .any)["content-provenance-ai_generated"]
         .waitForExistence(timeout: 3)
     )
     resultModes.buttons["原始照片"].tap()
@@ -1011,7 +1072,7 @@ final class AdonisFlowUITests: XCTestCase {
     resultModes.buttons["收藏卡"].tap()
 
     let resultProvenance =
-      app.descendants(matching: .any)["content-provenance-programmatic_composition"]
+      app.descendants(matching: .any)["content-provenance-ai_generated"]
     for _ in 0..<3 where !resultProvenance.isHittable {
       app.swipeUp()
     }
@@ -1047,7 +1108,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(historyModes.buttons["透明贴纸"].exists)
     XCTAssertTrue(historyModes.buttons["原始照片"].exists)
     let historyProvenance =
-      app.descendants(matching: .any)["content-provenance-programmatic_composition"]
+      app.descendants(matching: .any)["content-provenance-ai_generated"]
     XCTAssertTrue(historyProvenance.waitForExistence(timeout: 3))
     for _ in 0..<3 where !historyProvenance.isHittable {
       app.swipeUp()
@@ -1063,6 +1124,12 @@ final class AdonisFlowUITests: XCTestCase {
         .waitForExistence(timeout: 6)
     )
     app.buttons["close-digital-figurine-card"].tap()
+
+    let clothingNotice = app.descendants(matching: .any)["garment-observation-empty"]
+    XCTAssertTrue(scrollToHittable(clothingNotice, in: app, attempts: 5))
+    XCTAssertTrue(clothingNotice.label.contains("衣物以原照片为准"))
+    XCTAssertFalse(clothingNotice.label.contains("姿势或遮挡太复杂"))
+    keepScreenshot(named: "Adonis-ai-outfit-clothing-boundary")
   }
 
   @MainActor
@@ -1088,7 +1155,7 @@ final class AdonisFlowUITests: XCTestCase {
 
     let provenance = app.descendants(matching: .any)["digital-figurine-card-provenance"]
     XCTAssertTrue(scrollToHittable(provenance, in: app, attempts: 8))
-    XCTAssertTrue(provenance.label.contains("没有重绘人物或衣物"))
+    XCTAssertTrue(provenance.label.contains("沿用 AI 贴纸像素"))
 
     let boundary = app.descendants(matching: .any)["digital-figurine-card-boundary"]
     XCTAssertTrue(scrollToHittable(boundary, in: app, attempts: 4))
@@ -1136,9 +1203,9 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(preview.waitForExistence(timeout: 6))
     XCTAssertTrue(preview.label.contains("包含 1 次盛开"))
     let provenance =
-      app.descendants(matching: .any)["content-provenance-programmatic_composition"]
+      app.descendants(matching: .any)["content-provenance-ai_generated"]
     XCTAssertTrue(provenance.waitForExistence(timeout: 4))
-    XCTAssertTrue(provenance.label.contains("没有补画人物或衣物"))
+    XCTAssertTrue(provenance.label.contains("没有再次补画人物或衣物"))
     keepScreenshot(named: "Adonis-monthly-lookbook")
 
     let share = app.buttons["share-monthly-lookbook"]
@@ -1153,6 +1220,7 @@ final class AdonisFlowUITests: XCTestCase {
     let persistentStoreID = UUID().uuidString
     let baseLaunchArguments = [
       "-ui-testing",
+      "-ui-testing-historical-sample-fixture",
       "-ui-testing-persistent-store",
       persistentStoreID,
     ]
@@ -1230,7 +1298,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(deniedAlert.waitForExistence(timeout: 4))
     XCTAssertTrue(
       app.staticTexts[
-        "通知没有打开。原搭配不会改变；需要时可以在系统设置里允许 Adonis 通知。"
+        "通知没有打开。原搭配不会改变；需要时可以在系统设置里允许 ReBloom 通知。"
       ].exists
     )
     XCTAssertTrue(deniedAlert.buttons["打开系统设置"].exists)
@@ -1392,7 +1460,9 @@ final class AdonisFlowUITests: XCTestCase {
   @MainActor
   func testSavedOutfitAutomaticallyAppearsInTraceableDigitalCabinet() {
     let app = XCUIApplication()
-    app.launchArguments.append("-ui-testing")
+    app.launchArguments.append(
+      contentsOf: ["-ui-testing", "-ui-testing-historical-sample-fixture"]
+    )
     app.launch()
 
     app.tabBars.buttons["花历"].tap()
@@ -1492,7 +1562,7 @@ final class AdonisFlowUITests: XCTestCase {
     let historyModes = app.segmentedControls["history-visual-picker"]
     XCTAssertTrue(historyModes.buttons["收藏卡"].waitForExistence(timeout: 5))
     XCTAssertTrue(
-      app.descendants(matching: .any)["content-provenance-programmatic_composition"]
+      app.descendants(matching: .any)["content-provenance-ai_generated"]
         .waitForExistence(timeout: 3)
     )
     keepScreenshot(named: "Adonis-cold-launch-restored-outfit")
@@ -1502,7 +1572,11 @@ final class AdonisFlowUITests: XCTestCase {
   func testRejectedPreparedMatteStopsBeforeCollectionCard() {
     let app = XCUIApplication()
     app.launchArguments.append(
-      contentsOf: ["-ui-testing", "-ui-testing-show-rejected-sample"]
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-historical-sample-fixture",
+        "-ui-testing-show-rejected-sample",
+      ]
     )
     app.launch()
 
@@ -1571,7 +1645,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(unavailableAlert.waitForExistence(timeout: 10))
     XCTAssertTrue(
       app.staticTexts[
-        "这次需要先生成 AI 贴纸形象，再做 AI 透明处理。当前设备或系统设置不支持第一步生成。你可以先体验明确标注的内置样片；Adonis 不会用样片替换你的照片，也不会改用原图直接处理。"
+        "这次需要先生成 AI 贴纸形象，再做 AI 透明处理。当前设备或系统设置不支持第一步生成。你可以先体验明确标注的内置样片；ReBloom 不会用样片替换你的照片，也不会改用原图直接处理。"
       ].exists
     )
     XCTAssertTrue(unavailableAlert.buttons["先不用"].exists)
@@ -1890,7 +1964,7 @@ final class AdonisFlowUITests: XCTestCase {
     XCTAssertTrue(openShare.waitForExistence(timeout: 6))
     openShare.tap()
 
-    let shareAction = app.cells["Adonis"]
+    let shareAction = app.cells["ReBloom"]
     XCTAssertTrue(shareAction.waitForExistence(timeout: 8))
     shareAction.tap()
 
@@ -1910,7 +1984,13 @@ final class AdonisFlowUITests: XCTestCase {
   @MainActor
   func testOutfitCluesStayProvisionalUntilOneTapConfirmation() {
     let app = XCUIApplication()
-    app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-wardrobe-import"])
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-historical-sample-fixture",
+        "-ui-testing-wardrobe-import",
+      ]
+    )
     app.launch()
 
     app.tabBars.buttons["衣橱"].tap()
@@ -1990,7 +2070,13 @@ final class AdonisFlowUITests: XCTestCase {
   @MainActor
   func testWardrobeItemCanExplicitlyReconnectPastOutfit() {
     let app = XCUIApplication()
-    app.launchArguments.append(contentsOf: ["-ui-testing", "-ui-testing-wardrobe-import"])
+    app.launchArguments.append(
+      contentsOf: [
+        "-ui-testing",
+        "-ui-testing-historical-sample-fixture",
+        "-ui-testing-wardrobe-import",
+      ]
+    )
     app.launch()
 
     let sample = app.buttons["sample-02"]
@@ -2079,6 +2165,34 @@ final class AdonisFlowUITests: XCTestCase {
     createItem.tap()
     XCTAssertTrue(app.staticTexts["garment-linked-\(slot)"].waitForExistence(timeout: 4))
     app.buttons["完成"].tap()
+  }
+
+  @MainActor
+  private func waitForStableHittable(_ element: XCUIElement, timeout: TimeInterval) -> Bool {
+    // A newly launched system share sheet can expose its close button before settling.
+    // Keep the dismissal assertions below the tap; readiness is not dismissal evidence.
+    var previousFrame: CGRect?
+    var stableSince: TimeInterval?
+    let expectation = XCTNSPredicateExpectation(
+      predicate: NSPredicate { _, _ in
+        guard element.exists, element.isHittable else {
+          previousFrame = nil
+          stableSince = nil
+          return false
+        }
+        let frame = element.frame
+        let now = ProcessInfo.processInfo.systemUptime
+        guard !frame.isEmpty else { return false }
+        if previousFrame != frame {
+          previousFrame = frame
+          stableSince = now
+          return false
+        }
+        return now - (stableSince ?? now) >= 1
+      },
+      object: nil
+    )
+    return XCTWaiter().wait(for: [expectation], timeout: timeout) == .completed
   }
 
   @MainActor

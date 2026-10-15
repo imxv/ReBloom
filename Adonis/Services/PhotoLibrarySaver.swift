@@ -78,7 +78,7 @@ enum PhotoLibrarySaveError: LocalizedError, Equatable {
   var errorDescription: String? {
     switch self {
     case .permissionDenied:
-      "Adonis 没有获得相册权限。你可以稍后在系统设置里允许添加照片。"
+      "ReBloom 没有获得相册权限。你可以稍后在系统设置里允许添加照片。"
     case .writeFailed:
       "相册这次没有完成写入，可以稍后再试。"
     }

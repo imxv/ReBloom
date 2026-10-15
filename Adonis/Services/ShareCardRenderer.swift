@@ -5,9 +5,9 @@ struct ShareCardRenderer {
 
   static func provenanceFooter(for stickerProvenance: VisualContentProvenance) -> String {
     if stickerProvenance.containsAIGeneratedPixels {
-      return "贴纸由 AI 生成 · 卡面由 ADONIS 排版"
+      return "贴纸由 AI 生成 · 卡面由 REBLOOM 排版"
     }
-    return "人物与衣物来自原图 · 卡面由 ADONIS 排版"
+    return "人物与衣物来自原图 · 卡面由 REBLOOM 排版"
   }
 
   func render(
@@ -156,7 +156,7 @@ struct ShareCardRenderer {
     let paragraph = NSMutableParagraphStyle()
     paragraph.alignment = .center
 
-    ("ADONIS" as NSString).draw(
+    ("REBLOOM" as NSString).draw(
       in: CGRect(x: 250, y: 102, width: 580, height: 74),
       withAttributes: [
         .font: UIFont.systemFont(ofSize: 52, weight: .black),

@@ -44,7 +44,7 @@ struct MonthlyLookbookView: View {
             ContentProvenanceNotice(
               provenance: presentation.provenance,
               detail: presentation.provenance.containsAIGeneratedPixels
-                ? "这张画册包含 AI 生成贴纸，并把贴纸、日期与 Bloom 编号重新排版；Adonis 没有再次补画人物或衣物。"
+                ? "这张画册包含 AI 生成贴纸，并把贴纸、日期与 Bloom 编号重新排版；ReBloom 没有再次补画人物或衣物。"
                 : "这张画册只把本月已经收藏的原图贴纸、日期与 Bloom 编号重新排版；没有补画人物或衣物。"
             )
 

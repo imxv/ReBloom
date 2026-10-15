@@ -48,7 +48,7 @@ final class VisualContentProvenanceTests: XCTestCase {
     XCTAssertTrue(VisualContentProvenance.aiGenerated.detail.contains("AI"))
     XCTAssertEqual(
       VisualContentProvenance.programmaticComposition.shareCardFooter,
-      "人物与衣物来自原图 · 卡面由 ADONIS 排版"
+      "人物与衣物来自原图 · 卡面由 REBLOOM 排版"
     )
   }
 }

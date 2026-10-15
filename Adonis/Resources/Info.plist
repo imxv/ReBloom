@@ -9,7 +9,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Adonis</string>
+	<string>ReBloom</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -32,9 +32,9 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Adonis 使用相机拍摄你想制作成贴纸的照片。</string>
+	<string>ReBloom 使用相机拍摄你想制作成贴纸的照片。</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Adonis 仅在你主动选择时把作品保存到相册。</string>
+	<string>ReBloom 仅在你主动选择时把作品保存到相册。</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchScreen</key>

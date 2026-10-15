@@ -1,0 +1,67 @@
+{
+  "recordedAt": "2026-09-07T10:32:32.488682+08:00",
+  "scope": "Local HTTP fixtures and iOS 26.5 Simulator; no real provider or physical device evidence",
+  "serverSourceSHA256": "aa4a01621b2c2762553c7a18b6ed1c0d1948bc491cae0f849448ae049ca9b007",
+  "gates": [
+    {
+      "command": "make ai-sticker-regression",
+      "exitCode": 0,
+      "elapsedSeconds": 136.4,
+      "xcresult": "/Users/sunmozong/Adonis/.derivedData/Logs/Test/Test-Adonis-2026.09.07_09-57-52-+0800.xcresult",
+      "result": "Passed",
+      "passedTests": 28,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    {
+      "command": "make ai-sticker-visual-regression",
+      "exitCode": 0,
+      "elapsedSeconds": 2.8,
+      "xcresult": null,
+      "result": "Passed",
+      "passedTests": null,
+      "failedTests": null,
+      "skippedTests": null
+    },
+    {
+      "command": "make sample-regression",
+      "exitCode": 0,
+      "elapsedSeconds": 21.0,
+      "xcresult": "/Users/sunmozong/Adonis/.derivedData/Logs/Test/Test-Adonis-2026.09.07_10-00-18-+0800.xcresult",
+      "result": "Passed",
+      "passedTests": 28,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    {
+      "command": "make performance-regression",
+      "exitCode": 0,
+      "elapsedSeconds": 80.7,
+      "xcresult": "/Users/sunmozong/Adonis/.derivedData/Logs/Test/Test-Adonis-2026.09.07_10-00-31-+0800.xcresult",
+      "result": "Passed",
+      "passedTests": 18,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    {
+      "command": "make accessibility-regression",
+      "exitCode": 0,
+      "elapsedSeconds": 800.6,
+      "xcresult": "/Users/sunmozong/Adonis/.derivedData/Logs/Test/Test-Adonis-2026.09.07_10-01-53-+0800.xcresult",
+      "result": "Passed",
+      "passedTests": 12,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    {
+      "command": "make test",
+      "exitCode": 0,
+      "elapsedSeconds": 985.7,
+      "xcresult": "/Users/sunmozong/Adonis/.derivedData/Logs/Test/Test-Adonis-2026.09.07_10-15-13-+0800.xcresult",
+      "result": "Passed",
+      "passedTests": 234,
+      "failedTests": 0,
+      "skippedTests": 0
+    }
+  ]
+}

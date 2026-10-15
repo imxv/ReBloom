@@ -1,0 +1,75 @@
+npm --prefix server test
+
+> adonis-sticker-proxy@0.1.0 test
+> node --test
+
+TAP version 13
+# Subtest: proxy sends the generated source to GPT Image with a real transparent PNG contract
+ok 1 - proxy sends the generated source to GPT Image with a real transparent PNG contract
+  ---
+  duration_ms: 22.587875
+  ...
+# Subtest: proxy rejects an opaque checkerboard even when the provider calls it PNG
+ok 2 - proxy rejects an opaque checkerboard even when the provider calls it PNG
+  ---
+  duration_ms: 5.936083
+  ...
+# Subtest: PNG inspection requires transparent corners and a visible subject
+ok 3 - PNG inspection requires transparent corners and a visible subject
+  ---
+  duration_ms: 4.522167
+  ...
+# Subtest: client disconnect aborts the real upstream connection before headers
+ok 4 - client disconnect aborts the real upstream connection before headers
+  ---
+  duration_ms: 23.566125
+  ...
+# Subtest: upstream deadline aborts a stalled request before headers
+ok 5 - upstream deadline aborts a stalled request before headers
+  ---
+  duration_ms: 210.20425
+  ...
+# Subtest: client disconnect aborts the real upstream connection during response body
+ok 6 - client disconnect aborts the real upstream connection during response body
+  ---
+  duration_ms: 10.0415
+  ...
+# Subtest: upstream deadline aborts a stalled request during response body
+ok 7 - upstream deadline aborts a stalled request during response body
+  ---
+  duration_ms: 208.851
+  ...
+# Subtest: oversized declared response is rejected without waiting for its body
+ok 8 - oversized declared response is rejected without waiting for its body
+  ---
+  duration_ms: 6.851209
+  ...
+# Subtest: chunked provider response is bounded before JSON parsing
+ok 9 - chunked provider response is bounded before JSON parsing
+  ---
+  duration_ms: 40.048
+  ...
+# Subtest: response limit also applies after HTTP content decompression
+ok 10 - response limit also applies after HTTP content decompression
+  ---
+  duration_ms: 82.829542
+  ...
+# Subtest: provider rejection closes the unread body and never forwards private error details
+ok 11 - provider rejection closes the unread body and never forwards private error details
+  ---
+  duration_ms: 5.482416
+  ...
+# Subtest: cancelling one extraction leaves a simultaneous extraction connected
+ok 12 - cancelling one extraction leaves a simultaneous extraction connected
+  ---
+  duration_ms: 3.651708
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 627.99325

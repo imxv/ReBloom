@@ -30,7 +30,7 @@ final class ShareViewController: UIViewController {
     view.backgroundColor = UIColor(red: 0.98, green: 0.96, blue: 0.91, alpha: 1)
 
     let mark = UILabel()
-    mark.text = "✿  ADONIS"
+    mark.text = "✿  REBLOOM"
     mark.font = .systemFont(ofSize: 14, weight: .black)
     mark.textColor = UIColor(red: 0.58, green: 0.12, blue: 0.19, alpha: 1)
 
@@ -41,7 +41,7 @@ final class ShareViewController: UIViewController {
     statusLabel.numberOfLines = 0
     statusLabel.accessibilityIdentifier = "share-extension-status"
 
-    detailLabel.text = "Adonis 不会自动上传这张图片"
+    detailLabel.text = "ReBloom 不会自动上传这张图片"
     detailLabel.font = .preferredFont(forTextStyle: .subheadline)
     detailLabel.textColor = UIColor.secondaryLabel
     detailLabel.textAlignment = .center
@@ -106,17 +106,17 @@ final class ShareViewController: UIViewController {
       }
 
       guard savedCount > 0 else {
-        showFailure("这次没有收好", detail: "请先保存为截图，再从照片 App 分享给 Adonis。")
+        showFailure("这次没有收好", detail: "请先保存为截图，再从照片 App 分享给 ReBloom。")
         return
       }
 
       progressView.stopAnimating()
       progressView.isHidden = true
-      statusLabel.text = savedCount == 1 ? "已经交给 Adonis" : "已经交给 Adonis \(savedCount) 张"
+      statusLabel.text = savedCount == 1 ? "已经交给 ReBloom" : "已经交给 ReBloom \(savedCount) 张"
       if failedCount == 0 {
-        detailLabel.text = "下次打开 Adonis，会自动收进衣橱。"
+        detailLabel.text = "下次打开 ReBloom，会自动收进衣橱。"
       } else {
-        detailLabel.text = "有 \(failedCount) 张没有读到；其余图片会在打开 Adonis 后自动入衣橱。"
+        detailLabel.text = "有 \(failedCount) 张没有读到；其余图片会在打开 ReBloom 后自动入衣橱。"
       }
 
       try? await Task.sleep(for: .milliseconds(700))

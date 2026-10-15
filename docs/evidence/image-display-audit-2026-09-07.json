@@ -1,0 +1,191 @@
+{
+  "records": [
+    {
+      "bitmapBytes": 6220800,
+      "file": "Adonis/Resources/Samples/sample-01.png",
+      "height": 1440,
+      "maximumDimension": 0,
+      "milliseconds": 35.437941551208496,
+      "width": 1080
+    },
+    {
+      "bitmapBytes": 786432,
+      "file": "Adonis/Resources/Samples/sample-01.png",
+      "height": 512,
+      "maximumDimension": 512,
+      "milliseconds": 20.93791961669922,
+      "width": 384
+    },
+    {
+      "bitmapBytes": 3145728,
+      "file": "Adonis/Resources/Samples/sample-01.png",
+      "height": 1024,
+      "maximumDimension": 1024,
+      "milliseconds": 21.09992504119873,
+      "width": 768
+    },
+    {
+      "bitmapBytes": 6220800,
+      "file": "Adonis/Resources/Samples/sample-02.png",
+      "height": 1440,
+      "maximumDimension": 0,
+      "milliseconds": 15.92409610748291,
+      "width": 1080
+    },
+    {
+      "bitmapBytes": 786432,
+      "file": "Adonis/Resources/Samples/sample-02.png",
+      "height": 512,
+      "maximumDimension": 512,
+      "milliseconds": 14.062047004699707,
+      "width": 384
+    },
+    {
+      "bitmapBytes": 3145728,
+      "file": "Adonis/Resources/Samples/sample-02.png",
+      "height": 1024,
+      "maximumDimension": 1024,
+      "milliseconds": 15.933036804199219,
+      "width": 768
+    },
+    {
+      "bitmapBytes": 6220800,
+      "file": "Adonis/Resources/Samples/sample-03.png",
+      "height": 1440,
+      "maximumDimension": 0,
+      "milliseconds": 19.449949264526367,
+      "width": 1080
+    },
+    {
+      "bitmapBytes": 786432,
+      "file": "Adonis/Resources/Samples/sample-03.png",
+      "height": 512,
+      "maximumDimension": 512,
+      "milliseconds": 17.453908920288086,
+      "width": 384
+    },
+    {
+      "bitmapBytes": 3145728,
+      "file": "Adonis/Resources/Samples/sample-03.png",
+      "height": 1024,
+      "maximumDimension": 1024,
+      "milliseconds": 20.579934120178223,
+      "width": 768
+    },
+    {
+      "bitmapBytes": 6220800,
+      "file": "Adonis/Resources/Samples/sample-04.png",
+      "height": 1440,
+      "maximumDimension": 0,
+      "milliseconds": 18.508076667785645,
+      "width": 1080
+    },
+    {
+      "bitmapBytes": 786432,
+      "file": "Adonis/Resources/Samples/sample-04.png",
+      "height": 512,
+      "maximumDimension": 512,
+      "milliseconds": 15.701055526733398,
+      "width": 384
+    },
+    {
+      "bitmapBytes": 3145728,
+      "file": "Adonis/Resources/Samples/sample-04.png",
+      "height": 1024,
+      "maximumDimension": 1024,
+      "milliseconds": 17.233967781066895,
+      "width": 768
+    },
+    {
+      "bitmapBytes": 4982784,
+      "file": "Adonis/Resources/Samples/sample-01-ai-sticker.png",
+      "height": 1536,
+      "maximumDimension": 0,
+      "milliseconds": 10.90991497039795,
+      "width": 811
+    },
+    {
+      "bitmapBytes": 557056,
+      "file": "Adonis/Resources/Samples/sample-01-ai-sticker.png",
+      "height": 512,
+      "maximumDimension": 512,
+      "milliseconds": 10.625004768371582,
+      "width": 270
+    },
+    {
+      "bitmapBytes": 2228224,
+      "file": "Adonis/Resources/Samples/sample-01-ai-sticker.png",
+      "height": 1024,
+      "maximumDimension": 1024,
+      "milliseconds": 11.876940727233887,
+      "width": 541
+    },
+    {
+      "bitmapBytes": 3348480,
+      "file": "Adonis/Resources/Samples/sample-02-ai-sticker.png",
+      "height": 1536,
+      "maximumDimension": 0,
+      "milliseconds": 9.301900863647461,
+      "width": 545
+    },
+    {
+      "bitmapBytes": 376832,
+      "file": "Adonis/Resources/Samples/sample-02-ai-sticker.png",
+      "height": 512,
+      "maximumDimension": 512,
+      "milliseconds": 7.728934288024902,
+      "width": 181
+    },
+    {
+      "bitmapBytes": 1490944,
+      "file": "Adonis/Resources/Samples/sample-02-ai-sticker.png",
+      "height": 1024,
+      "maximumDimension": 1024,
+      "milliseconds": 9.305000305175781,
+      "width": 363
+    },
+    {
+      "bitmapBytes": 3422208,
+      "file": "Adonis/Resources/Samples/sample-03-ai-sticker.png",
+      "height": 1536,
+      "maximumDimension": 0,
+      "milliseconds": 12.189030647277832,
+      "width": 557
+    },
+    {
+      "bitmapBytes": 385024,
+      "file": "Adonis/Resources/Samples/sample-03-ai-sticker.png",
+      "height": 512,
+      "maximumDimension": 512,
+      "milliseconds": 9.1780424118042,
+      "width": 185
+    },
+    {
+      "bitmapBytes": 1523712,
+      "file": "Adonis/Resources/Samples/sample-03-ai-sticker.png",
+      "height": 1024,
+      "maximumDimension": 1024,
+      "milliseconds": 11.010050773620605,
+      "width": 371
+    }
+  ],
+  "scope": "macOS ImageIO decode experiment, not iOS app RSS, frame rate, or device benchmark",
+  "recordedAt": "2026-09-07T02:16:30.547453+00:00",
+  "inputSHA256": {
+    "Adonis/Resources/Samples/sample-01.png": "eeab59ff1e4b4ef9e8413bdd6a6f0a0b823aef520c09d39a1321a23d67759829",
+    "Adonis/Resources/Samples/sample-02.png": "5899d410fe7f0c39a7f8225e5db8ce231755eeee154fe1bb453f227bd967bcdd",
+    "Adonis/Resources/Samples/sample-03.png": "34bf69017581655fe7bfacce63d935fbcbd05af3bb2857f9f06ac00f7dd0ae74",
+    "Adonis/Resources/Samples/sample-04.png": "ff47e939b5cd42f479182e5ecd81e00fc6ff9f06b119e822f8edba4485efba19",
+    "Adonis/Resources/Samples/sample-01-ai-sticker.png": "0e14530fe25404406ec9a7c2f2b1882de942985b1ac993d81c1a6e6721f855de",
+    "Adonis/Resources/Samples/sample-02-ai-sticker.png": "cc04b8c2a0063fdf3a1156d3072529887d5e81e7e1c90520404c3ecabe9fb00e",
+    "Adonis/Resources/Samples/sample-03-ai-sticker.png": "2a061e32dcc41fa31beb4834ca433e88174241d1a4ac02086b200ae7892a268a"
+  },
+  "benchmarkSource": "import Foundation\nimport ImageIO\nimport CoreGraphics\n\nvar records: [[String: Any]] = []\nfor name in CommandLine.arguments.dropFirst() {\n  let url = URL(fileURLWithPath: name)\n  for dimension in [0, 512, 1024] {\n    autoreleasepool {\n      let start = Date.timeIntervalSinceReferenceDate\n      guard let source = CGImageSourceCreateWithURL(url as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary) else { fatalError(\"Cannot open input\") }\n      let result: CGImage?\n      if dimension == 0 {\n        result = CGImageSourceCreateImageAtIndex(source, 0, [kCGImageSourceShouldCacheImmediately: true] as CFDictionary)\n      } else {\n        result = CGImageSourceCreateThumbnailAtIndex(source, 0, [\n          kCGImageSourceCreateThumbnailFromImageAlways: true,\n          kCGImageSourceCreateThumbnailWithTransform: true,\n          kCGImageSourceShouldCacheImmediately: true,\n          kCGImageSourceThumbnailMaxPixelSize: dimension\n        ] as CFDictionary)\n      }\n      guard let image = result else { fatalError(\"Cannot decode input\") }\n      records.append([\n        \"file\": name, \"maximumDimension\": dimension,\n        \"width\": image.width, \"height\": image.height,\n        \"bitmapBytes\": image.bytesPerRow * image.height,\n        \"milliseconds\": (Date.timeIntervalSinceReferenceDate - start) * 1000\n      ])\n    }\n  }\n}\nlet report: [String: Any] = [\"scope\": \"macOS ImageIO decode experiment, not iOS app RSS, frame rate, or device benchmark\", \"records\": records]\nlet data = try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])\nprint(String(decoding: data, as: UTF8.self))\n",
+  "benchmarkCommand": "xcrun swiftc -O .artifacts/thumbnail-audit/benchmark.swift -o .artifacts/thumbnail-audit/benchmark; run with the seven input paths listed in records",
+  "limitations": [
+    "bitmapBytes is bytesPerRow * height, not process RSS or allocation peak.",
+    "macOS ImageIO measurements do not prove iOS UI latency, scrolling performance, or true-device behavior.",
+    "Elapsed times are one pass on a busy developer machine and are not used as a performance comparison.",
+    "No original, AI source, sticker, stored media, or regression baseline was changed."
+  ]
+}

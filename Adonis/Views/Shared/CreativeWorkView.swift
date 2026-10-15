@@ -298,8 +298,8 @@ struct CreativeWorkView: View {
     switch presentation.draft.recipe {
     case .botanicalPoster:
       presentation.draft.provenance.containsAIGeneratedPixels
-        ? "人物、衣物、姿势和纯白边沿用 AI 贴纸像素；背景、花影与文字由 Adonis 本机排版，没有再次重绘人物或衣物。"
-        : "人物、衣物、姿势和纯白边直接复用原图贴纸；背景、花影与文字由 Adonis 本机排版，不含 AI 重绘。"
+        ? "人物、衣物、姿势和纯白边沿用 AI 贴纸像素；背景、花影与文字由 ReBloom 本机排版，没有再次重绘人物或衣物。"
+        : "人物、衣物、姿势和纯白边直接复用原图贴纸；背景、花影与文字由 ReBloom 本机排版，不含 AI 重绘。"
     case .aiStickerSource, .floralSketch, .mythicGarden, .moonlitTheater:
       "原始照片只作为创作参考；画面包含系统生成或重绘的人物、衣物和背景，请与原图对照后再收藏。"
     case .stickerTryOn:

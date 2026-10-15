@@ -1,7 +1,7 @@
 import UIKit
 
 struct RebloomCardRenderer {
-  static let provenanceFooter = "真实衣橱图片 · ADONIS 本机组合建议 · 非试穿效果"
+  static let provenanceFooter = "真实衣橱图片 · REBLOOM 本机组合建议 · 非试穿效果"
   static let provenance = VisualContentProvenance.programmaticComposition
 
   private let size = CGSize(width: 1080, height: 1440)
@@ -76,7 +76,7 @@ struct RebloomCardRenderer {
     let centered = NSMutableParagraphStyle()
     centered.alignment = .center
 
-    ("ADONIS" as NSString).draw(
+    ("REBLOOM" as NSString).draw(
       in: CGRect(x: 250, y: 82, width: 580, height: 58),
       withAttributes: [
         .font: UIFont.systemFont(ofSize: 46, weight: .black),

@@ -6,16 +6,16 @@ final class ShareCardRendererTests: XCTestCase {
   func testProvenanceFooterDisclosesAIGeneratedStickerPixels() {
     XCTAssertEqual(
       ShareCardRenderer.provenanceFooter(for: .aiGenerated),
-      "贴纸由 AI 生成 · 卡面由 ADONIS 排版"
+      "贴纸由 AI 生成 · 卡面由 REBLOOM 排版"
     )
     XCTAssertEqual(
       ShareCardRenderer.provenanceFooter(for: .derivedFromOriginal),
-      "人物与衣物来自原图 · 卡面由 ADONIS 排版"
+      "人物与衣物来自原图 · 卡面由 REBLOOM 排版"
     )
   }
 
   func testRendererProducesOpaqueSocialCardAtContractSize() throws {
-    let sticker = try XCTUnwrap(SampleCatalog.photos.first?.preparedStickerImage())
+    let sticker = try XCTUnwrap(SampleCatalog.homepagePhotos.first?.homepageAIStickerImage())
     let date = try XCTUnwrap(
       Calendar(identifier: .gregorian).date(
         from: DateComponents(year: 2026, month: 8, day: 29)

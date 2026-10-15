@@ -116,8 +116,8 @@ struct DigitalFigurineCardView: View {
                 for: presentation.stickerProvenance
               ),
               detail: presentation.stickerProvenance.containsAIGeneratedPixels
-                ? "人物、衣物、姿势与纯白边沿用 AI 贴纸像素；Adonis 只添加展台、透明罩、投影和文字，没有再次重绘人物或衣物。"
-                : "人物、衣物、姿势与纯白边沿用原图贴纸像素；Adonis 只添加展台、透明罩、投影和文字，没有重绘人物或衣物。",
+                ? "人物、衣物、姿势与纯白边沿用 AI 贴纸像素；ReBloom 只添加展台、透明罩、投影和文字，没有再次重绘人物或衣物。"
+                : "人物、衣物、姿势与纯白边沿用原图贴纸像素；ReBloom 只添加展台、透明罩、投影和文字，没有重绘人物或衣物。",
               identifier: "digital-figurine-card-provenance"
             )
 

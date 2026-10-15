@@ -7,7 +7,7 @@ final class MonthlyLookbookRendererTests: XCTestCase {
   func testLegacyProvenanceFooterNamesSavedOriginalsAndProgrammaticLayout() {
     XCTAssertEqual(
       MonthlyLookbookRenderer.provenanceFooter,
-      "人物与衣物来自已收藏原图 · 画册由 ADONIS 排版"
+      "人物与衣物来自已收藏原图 · 画册由 REBLOOM 排版"
     )
   }
 
@@ -23,7 +23,7 @@ final class MonthlyLookbookRendererTests: XCTestCase {
 
     XCTAssertEqual(
       MonthlyLookbookRenderer.provenanceFooter(for: entries),
-      "画册包含 AI 生成贴纸 · 画册由 ADONIS 排版"
+      "画册包含 AI 生成贴纸 · 画册由 REBLOOM 排版"
     )
   }
 

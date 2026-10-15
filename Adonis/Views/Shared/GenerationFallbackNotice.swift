@@ -23,7 +23,7 @@ struct GenerationFallbackNotice: View {
         Text(
           isHistory
             ? "当时等待到 90 秒后结束了后续整理；贴纸与收藏卡可以正常使用，但没有生成衣物线索。"
-            : "等待到 90 秒后，Adonis 结束了后续整理。贴纸与收藏卡可以正常保存；这次没有生成衣物线索。"
+            : "等待到 90 秒后，ReBloom 结束了后续整理。贴纸与收藏卡可以正常保存；这次没有生成衣物线索。"
         )
         .font(.footnote)
         .foregroundStyle(AdonisTheme.secondaryInk)

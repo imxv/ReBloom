@@ -1,0 +1,198 @@
+{
+  "recordedAt": "2026-09-07T02:06:06.559220+00:00",
+  "scope": "Verifier/tool acceptance only. Adonis bundles were produced by the other active task; macOS harness is a synthetic tool test, not App evidence.",
+  "unitTests": {
+    "command": "make test-tools",
+    "exitCode": 0,
+    "count": 32,
+    "log": ".artifacts/xcresult-verifier/tool-tests.log"
+  },
+  "realBundleChecks": [
+    {
+      "case": "ai-success",
+      "bundle": ".artifacts/xcresult-verifier/Test-Adonis-2026.09.07_09-57-52-+0800.xcresult",
+      "expectedExit": 0,
+      "exitCode": 0,
+      "error": "",
+      "verified": {
+        "status": "verified",
+        "counts": {
+          "totalTestCount": 28,
+          "passedTests": 28,
+          "failedTests": 0,
+          "skippedTests": 0,
+          "expectedFailures": 0
+        },
+        "startTime": 1788746272.972,
+        "finishTime": 1788746406.592,
+        "minimumTests": 28,
+        "requiredCoverage": {
+          "AdonisTests": 22,
+          "AdonisUITests": 6
+        },
+        "testsByTarget": {
+          "AdonisTests": 22,
+          "AdonisUITests": 6
+        },
+        "schemaVersion": "adonis-xcresult-verification-v1",
+        "verifiedAt": "2026-09-07T02:02:32.641622+00:00",
+        "bundle": "/Users/sunmozong/Adonis/.artifacts/xcresult-verifier/Test-Adonis-2026.09.07_09-57-52-+0800.xcresult",
+        "sourceReportSHA256": {
+          "summary": "85cf95ff4c4fb5077e8a030ad3e63f463b79465f5ac108e3ffc8ec1bce9a0d84",
+          "tests": "a7036455e47019cbad9d64754dd945111d427ca7c7cfe5636f2d85dc7e75df6b"
+        },
+        "devices": [
+          {
+            "deviceName": "iPhone 17 Pro",
+            "platform": "iOS Simulator",
+            "osVersion": "26.5"
+          }
+        ],
+        "scope": "Recorded XCTest execution only; not current checkout, screenshot review, real provider, or physical-device acceptance."
+      }
+    },
+    {
+      "case": "sample-success",
+      "bundle": ".artifacts/xcresult-verifier/Test-Adonis-2026.09.07_10-00-18-+0800.xcresult",
+      "expectedExit": 0,
+      "exitCode": 0,
+      "error": "",
+      "verified": {
+        "status": "verified",
+        "counts": {
+          "totalTestCount": 28,
+          "passedTests": 28,
+          "failedTests": 0,
+          "skippedTests": 0,
+          "expectedFailures": 0
+        },
+        "startTime": 1788746418.553,
+        "finishTime": 1788746430.693,
+        "minimumTests": 28,
+        "requiredCoverage": {
+          "AdonisTests/SampleRegressionTests": 4
+        },
+        "testsByTarget": {
+          "AdonisTests": 28
+        },
+        "schemaVersion": "adonis-xcresult-verification-v1",
+        "verifiedAt": "2026-09-07T02:02:32.774873+00:00",
+        "bundle": "/Users/sunmozong/Adonis/.artifacts/xcresult-verifier/Test-Adonis-2026.09.07_10-00-18-+0800.xcresult",
+        "sourceReportSHA256": {
+          "summary": "84f30751fbc790d56445de80b03a6587abc377c73c68382f0cf978f098a3be42",
+          "tests": "eb780516d929435469325286c8d7a6d798409824c2c2f7437eabc922874eb3d9"
+        },
+        "devices": [
+          {
+            "deviceName": "iPhone 17 Pro",
+            "platform": "iOS Simulator",
+            "osVersion": "26.5"
+          }
+        ],
+        "scope": "Recorded XCTest execution only; not current checkout, screenshot review, real provider, or physical-device acceptance."
+      }
+    },
+    {
+      "case": "partial-as-full",
+      "bundle": ".artifacts/xcresult-verifier/Test-Adonis-2026.09.07_10-00-18-+0800.xcresult",
+      "expectedExit": 1,
+      "exitCode": 1,
+      "error": "XCResult verification failed: Expected at least 234 tests, observed 28."
+    },
+    {
+      "case": "missing-ui",
+      "bundle": ".artifacts/xcresult-verifier/Test-Adonis-2026.09.07_10-00-18-+0800.xcresult",
+      "expectedExit": 1,
+      "exitCode": 1,
+      "error": "XCResult verification failed: Required test/target/suite was not run successfully: AdonisUITests."
+    },
+    {
+      "case": "missing-method",
+      "bundle": ".artifacts/xcresult-verifier/Test-Adonis-2026.09.07_09-57-52-+0800.xcresult",
+      "expectedExit": 1,
+      "exitCode": 1,
+      "error": "XCResult verification failed: Required test/target/suite was not run successfully: AdonisUITests/AdonisFlowUITests/testDoesNotExist."
+    }
+  ],
+  "macOSXCTestExperiments": [
+    {
+      "case": "pass",
+      "bundle": "/Users/sunmozong/Adonis/.artifacts/xcresult-verifier/harness-runs/911c3bd5f8154b25a57559462f4e4749/tests.xcresult",
+      "xcodeReportedSuccess": true,
+      "runnerExitCode": 0,
+      "verificationReportExists": true,
+      "counts": {
+        "result": "Passed",
+        "totalTestCount": 1,
+        "passedTests": 1,
+        "failedTests": 0,
+        "skippedTests": 0
+      },
+      "log": ".artifacts/xcresult-verifier/harness-pass.log",
+      "logSHA256": "eded9159bcb04d0eeb454eb5b7184745938b9a002c96752e6bd896366766bdc1"
+    },
+    {
+      "case": "empty",
+      "bundle": "/Users/sunmozong/Adonis/.artifacts/xcresult-verifier/harness-runs/8a939c2a14584621ac1f6a81349f2570/tests.xcresult",
+      "xcodeReportedSuccess": true,
+      "runnerExitCode": 1,
+      "verificationReportExists": false,
+      "counts": {
+        "result": "unknown",
+        "totalTestCount": 0,
+        "passedTests": 0,
+        "failedTests": 0,
+        "skippedTests": 0
+      },
+      "log": ".artifacts/xcresult-verifier/harness-empty.log",
+      "logSHA256": "39d27166d01e97b37fa6804ecbc40043342cd80265f3e752d691f50be6d9a706"
+    },
+    {
+      "case": "skipped",
+      "bundle": "/Users/sunmozong/Adonis/.artifacts/xcresult-verifier/harness-runs/b2188d4a77cc4e7e91d9f67d3e159a96/tests.xcresult",
+      "xcodeReportedSuccess": true,
+      "runnerExitCode": 1,
+      "verificationReportExists": false,
+      "counts": {
+        "result": "Skipped",
+        "totalTestCount": 1,
+        "passedTests": 0,
+        "failedTests": 0,
+        "skippedTests": 1
+      },
+      "log": ".artifacts/xcresult-verifier/harness-skipped.log",
+      "logSHA256": "fdf6474ca9eb7a3f1de16793349cbcbbfeb904e3add87df39ecd1c40bdd98a52"
+    }
+  ],
+  "boundaries": [
+    "The initial tool-only phase did not rerun Adonis. Subsequent iOS executions are recorded separately in xcresult-ios-integration-2026-09-07.json.",
+    "Source checkout, screenshot review, real providers, and physical iPhone remain separate.",
+    "Historical 04:12:15 full result was later absent from the rotating Xcode log directory."
+  ],
+  "selectorSyntaxFollowup": {
+    "toolTests": 34,
+    "toolTestsExitCode": 0,
+    "cases": [
+      {
+        "case": "before-missing-selector-incorrectly-accepted",
+        "bundle": ".artifacts/xcresult-verifier/selector-syntax-runs/f7ad05feb6f54ef49018a6674e8425fc/tests.xcresult",
+        "runnerExitCode": 0,
+        "xcodebuildExitCode": 0,
+        "totalTestCount": 1,
+        "passedTests": 1,
+        "verificationReportExists": true,
+        "acceptanceMeaning": "The before report is a retained negative control, not valid acceptance evidence."
+      },
+      {
+        "case": "after-missing-selector-rejected",
+        "bundle": ".artifacts/xcresult-verifier/selector-syntax-runs/564edd10467144f28ad53f268de177db/tests.xcresult",
+        "runnerExitCode": 1,
+        "xcodebuildExitCode": 0,
+        "totalTestCount": 1,
+        "passedTests": 1,
+        "verificationReportExists": false,
+        "acceptanceMeaning": "The before report is a retained negative control, not valid acceptance evidence."
+      }
+    ]
+  }
+}

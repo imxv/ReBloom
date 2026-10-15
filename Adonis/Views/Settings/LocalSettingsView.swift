@@ -67,7 +67,7 @@ struct LocalSettingsView: View {
     .alert("已经清空本地数据", isPresented: $showClearSuccess) {
       Button("知道了", role: .cancel) {}
     } message: {
-      Text("Adonis 在这台设备里保存的内容已经删除。")
+      Text("ReBloom 在这台设备里保存的内容已经删除。")
     }
     .alert(
       "导出失败",
@@ -100,7 +100,7 @@ struct LocalSettingsView: View {
         VStack(alignment: .leading, spacing: 3) {
           Text("由你保管")
             .font(.system(.headline, design: .rounded, weight: .bold))
-          Text("没有账号或 Adonis 云同步；AI 图片生成由 Apple 系统管理")
+          Text("没有账号或 ReBloom 云同步；AI 图片生成由 Apple 系统管理")
             .font(.caption)
             .foregroundStyle(.secondary)
         }
@@ -108,7 +108,7 @@ struct LocalSettingsView: View {
       .padding(.vertical, 4)
     } footer: {
       Text(
-        "只读取你主动选择或分享的图片。原照片交给 Apple 系统生成 AI 底图；仅用户确认的 AI 底图会经 Adonis 服务转交图片模型生成透明 PNG。收藏不做 Adonis 云同步；设备备份由你的 iOS 设置决定。"
+        "只读取你主动选择或分享的图片。原照片交给 Apple 系统生成 AI 底图；仅用户确认的 AI 底图会经 ReBloom 服务转交图片模型生成透明 PNG。收藏不做 ReBloom 云同步；设备备份由你的 iOS 设置决定。"
       )
     }
   }
@@ -334,7 +334,7 @@ struct LocalSettingsView: View {
 
   private func providerTitle(_ provider: CreativeProviderIdentifier) -> String {
     switch provider {
-    case .adonisLocalRenderer: "Adonis 本机"
+    case .adonisLocalRenderer: "ReBloom 本机"
     case .aiStickerTwoPass: "两段 AI 贴纸链路"
     case .appleImagePlayground: "Apple 系统图片生成"
     case .appleImagePlaygroundSheet: "Apple 系统 Image Playground"
@@ -346,8 +346,8 @@ struct LocalSettingsView: View {
 
   private func transportTitle(_ transport: CreativeNetworkTransport) -> String {
     switch transport {
-    case .developerProxy: "经 Adonis 服务"
-    case .mixedSystemAndDeveloperProxy: "系统托管 + Adonis 服务"
+    case .developerProxy: "经 ReBloom 服务"
+    case .mixedSystemAndDeveloperProxy: "系统托管 + ReBloom 服务"
     case .none: "无"
     case .systemManaged: "由系统管理"
     case .unknown: "未知"

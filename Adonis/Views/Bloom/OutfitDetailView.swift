@@ -71,7 +71,10 @@ struct OutfitDetailView: View {
             creativeWorksSection
           }
 
-          OutfitGarmentObservationsView(observations: record.garmentObservations)
+          OutfitGarmentObservationsView(
+            observations: record.garmentObservations,
+            usesAISticker: record.stickerProvenance.containsAIGeneratedPixels
+          )
 
           VStack(alignment: .leading, spacing: 12) {
             TextField("今日穿搭", text: $record.title)

@@ -1,0 +1,22 @@
+{
+  "nodeVersion": "v20.20.2",
+  "sourceHashes": {
+    "server/src/server.mjs": "aa4a01621b2c2762553c7a18b6ed1c0d1948bc491cae0f849448ae049ca9b007",
+    "server/test/server.test.mjs": "cf29d88d134db8461b616da0db46fe4ef60e40e6961bb49cb420d8c88b2df9fb",
+    "server/test/upstream-lifecycle.test.mjs": "eadfd1f0116baac09e98ebac2b2c734d649fd22a887d3e66bdd46a3bcf0d532c"
+  },
+  "localHTTPTests": {
+    "command": "make server-test",
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "log": "proxy-lifecycle-node-2026-09-07.tap"
+  },
+  "negativeControl": {
+    "source": "HEAD:server/src/server.mjs",
+    "sourceSHA256": "1d55292ae07cf3e8da8edc1db301ad4001727cbdf3b3dff9959bdfc5964de6fb",
+    "timedOutTests": 2,
+    "timeoutPerTestSeconds": 5,
+    "log": "proxy-lifecycle-negative-control-2026-09-07.tap"
+  }
+}

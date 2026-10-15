@@ -7,7 +7,7 @@ final class RebloomCardRendererTests: XCTestCase {
   func testContractNamesRealWardrobeImagesAndNonTryOnComposition() {
     XCTAssertEqual(
       RebloomCardRenderer.provenanceFooter,
-      "真实衣橱图片 · ADONIS 本机组合建议 · 非试穿效果"
+      "真实衣橱图片 · REBLOOM 本机组合建议 · 非试穿效果"
     )
     XCTAssertEqual(RebloomCardRenderer.provenance, .programmaticComposition)
   }
